@@ -1,0 +1,10 @@
+post	1	うぇぶさーぶ課題概要	本課題は、サーバーとクライアントでハートをキャッチします。	ServerとClient<br>ふたりはプリキュア
+post	2	うぇぶさーぶ課題概要	socketを並べておしゃべりに花を咲かせます。	socketとpoll<br>ふたりはプリキュア
+post	3	config	まずは複数Serverに変身します。Locationもモリモリです。	ServerとLocation<br>ふたりはプリキュア
+post	4	セットアップ	bindをクルクルミラクル。たくさんlistenします。	bindとlisten<br>ふたりはプリキュア
+post	5	メインループ概要	pollして、server見て、POLLIN見て、POLLOUT見ます。4つをクルクルクローバー	POLLINとPOLLOUT<br>ふたりはプリキュア
+post	6	サーバーでaccept	クライアントにオッケーを。ノンブロッキングで誰も止められません		ソケットは<br>もぎたてフレッシュ<br>プリキュア
+post	7	リクエスト処理	リクエスト処理がキックオフです。stateによって分岐します。	headerとbody<br>ふたりはプリキュア
+post	8	レスポンス処理	poll()のビットフラグ監視で幸せゲットです	eventとrevent<br>ふたりはプリキュア
+post	9	ワークフロー	リクエストはLimiter max処理します	recv()とparser<br>ふたりはMax Heart
+post	10	データ型	vector<char>で「0」と「1」の２文字を読みます。	stringとbyte<br>バイナリーはプリキュア
