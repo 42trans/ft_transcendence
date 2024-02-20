@@ -1,7 +1,7 @@
 
 # 使い方
 
-## 初回のみ .env, ssl環境設定など
+## Docker 初回のみ .env, ssl環境設定など
 
 - `make init` をしてください。下記がまとめて実行されます。
   - `make key`
