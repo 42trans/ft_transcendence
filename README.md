@@ -3,6 +3,8 @@
 - `⌘ + Shift + v`でプレビュー表示
 
 ## チーム内のドキュメント `other/team_docs/`
+- [subject.pdf](other/subject/en.subject.pdf) 
+  - [日本語訳](other/subject/subject.md)
 - [Tips.md](other/team_docs/Tips.md)
 - [PostgreSQL.md](other/team_docs/PostgreSQL.md)
 
