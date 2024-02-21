@@ -10,6 +10,7 @@ define set_env
 	@OSTYPE=`uname -s` && \
 	if [ "$$OSTYPE" = "Linux" ]; then \
 		export VOLUME_PATH=$(LINUX_VOLUME_PATH) && \
+		export DJANGO_PORT=$(LINUX_DJANGO_PORT) && \
 		export POSTGRES_PORT=$(LINUX_POSTGRES_PORT) && \
 		export MARIADB_PORT=$(LINUX_DB_PORT) && \
 		export NGINX_PORT=$(LINUX_NGINX_PORT) && \
@@ -18,22 +19,18 @@ define set_env
 			sudo mkdir -p $$VOLUME_PATH && \
 			sudo chown $(shell whoami) $$VOLUME_PATH; \
 		fi && \
+		if [ ! -d "$$VOLUME_PATH/django" ]; then \
+			sudo mkdir -p "$$VOLUME_PATH/django" && \
+			sudo chown $(shell whoami) $$VOLUME_PATH/django; \
+		fi && \
 		if [ ! -d "$$VOLUME_PATH/postgres" ]; then \
 			sudo mkdir -p "$$VOLUME_PATH/postgres" && \
 			sudo chown $(shell whoami) $$VOLUME_PATH/postgres; \
 		fi && \
-		if [ ! -d "$$VOLUME_PATH/mariadb" ]; then \
-			sudo mkdir -p "$$VOLUME_PATH/mariadb" && \
-			sudo chown $(shell whoami) $$VOLUME_PATH/mariadb; \
-		fi && \
-		if [ ! -d "$$VOLUME_PATH/wordpress" ]; then \
-			sudo mkdir -p "$$VOLUME_PATH/wordpress" && \
-			sudo chown $(shell whoami) $$VOLUME_PATH/wordpress; \
-		fi; \
 	elif [ "$$OSTYPE" = "Darwin" ]; then \
 		export VOLUME_PATH=$(MAC_VOLUME_PATH) && \
+		export DJANGO_PORT=$(MAC_DJANGO_PORT) && \
 		export POSTGRES_PORT=$(MAC_POSTGRES_PORT) && \
-		export MARIADB_PORT=$(MAC_DB_PORT) && \
 		export NGINX_PORT=$(MAC_NGINX_PORT) && \
 		export NGINX_SSL_PORT=$(MAC_NGINX_SSL_PORT); \
 	fi
