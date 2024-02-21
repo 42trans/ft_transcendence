@@ -1,5 +1,30 @@
 version: "3.7"
 
+networks:
+  http_transcendence:
+    driver: bridge
+    name: http_transcendence
+  db_transcendence:
+    driver: bridge
+    name: db_transcendence
+
+volumes:
+  postgres_vol:
+    driver_opts:
+      type: none
+      device: ${VOLUME_PATH}/postgres
+      o: bind
+  wp_vol:
+    driver_opts:
+      type: none
+      device: ${VOLUME_PATH}/wordpress
+      o: bind
+  maria_vol:
+    driver_opts:
+      type: none
+      device: ${VOLUME_PATH}/mariadb
+      o: bind
+
 services:
   nginx:
     container_name: nginx
@@ -17,6 +42,26 @@ services:
       - http_transcendence
     depends_on:
       - wordpress
+    restart: unless-stopped
+    init: true
+
+  postgres:
+    container_name: postgres
+    build: ./postgres
+    image: postgres
+    env_file:
+      - .env
+    environment:
+      # 冗長だが明示的に指定。　.envを上書きしたい場合変更する
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST_AUTH_METHOD=${POSTGRES_HOST_AUTH_METHOD}
+    volumes:
+      - ${VOLUME_PATH}/postgres:/var/lib/postgresql/data
+      - ${VOLUME_PATH}:/container_output
+    networks:
+      - db_transcendence
+    ports:
+      - ${POSTGRES_PORT}:5432 
     restart: unless-stopped
     init: true
 
@@ -54,23 +99,3 @@ services:
       - db_transcendence
     restart: unless-stopped
     init: true
-
-networks:
-  http_transcendence:
-    driver: bridge
-    name: http_transcendence
-  db_transcendence:
-    driver: bridge
-    name: db_transcendence
-
-volumes:
-  wp_vol:
-    driver_opts:
-      type: none
-      device: ${VOLUME_PATH}/wordpress
-      o: bind
-  maria_vol:
-    driver_opts:
-      type: none
-      device: ${VOLUME_PATH}/mariadb
-      o: bind
