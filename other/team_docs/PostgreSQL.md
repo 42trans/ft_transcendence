@@ -1,5 +1,9 @@
 # team_docs/PostgreSQL
 
+## 方針
+- Docker hub公式イメージのソースをカスタマイズして使う
+  - 公式imageをそのまま利用するのが基本で、課題用に少し変える感じでいけたら
+
 ## 参考資料
 - dockerfile, entrypoint.sh 
   - postgres/15/bullseye/
