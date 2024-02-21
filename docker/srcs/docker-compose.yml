@@ -14,16 +14,16 @@ volumes:
       type: none
       device: ${VOLUME_PATH}/postgres
       o: bind
-  wp_vol:
-    driver_opts:
-      type: none
-      device: ${VOLUME_PATH}/wordpress
-      o: bind
-  maria_vol:
-    driver_opts:
-      type: none
-      device: ${VOLUME_PATH}/mariadb
-      o: bind
+  # wp_vol:
+  #   driver_opts:
+  #     type: none
+  #     device: ${VOLUME_PATH}/wordpress
+  #     o: bind
+  # maria_vol:
+  #   driver_opts:
+  #     type: none
+  #     device: ${VOLUME_PATH}/mariadb
+  #     o: bind
 
 services:
   nginx:
@@ -40,8 +40,8 @@ services:
       - ${SSL_KEY_PATH}:/etc/nginx/ssl/nginx.key
     networks:
       - http_transcendence
-    depends_on:
-      - wordpress
+    # depends_on:
+    #   - wordpress
     restart: unless-stopped
     init: true
 
@@ -65,37 +65,37 @@ services:
     restart: unless-stopped
     init: true
 
-  mariadb:
-    container_name: mariadb
-    build: ./mariadb
-    image: mariadb
-    env_file:
-      - .env
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-    volumes:
-      - ${VOLUME_PATH}/mariadb:/var/lib/mysql
-      - ${VOLUME_PATH}:/container_output
-    networks:
-      - db_transcendence
-    ports:
-      - ${MARIADB_PORT}:3306
-    restart: unless-stopped
-    init: true
+  # mariadb:
+  #   container_name: mariadb
+  #   build: ./mariadb
+  #   image: mariadb
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+  #   volumes:
+  #     - ${VOLUME_PATH}/mariadb:/var/lib/mysql
+  #     - ${VOLUME_PATH}:/container_output
+  #   networks:
+  #     - db_transcendence
+  #   ports:
+  #     - ${MARIADB_PORT}:3306
+  #   restart: unless-stopped
+  #   init: true
 
-  wordpress:
-    container_name: wordpress
-    build:  ./wordpress
-    image: wordpress
-    env_file:
-      - .env
-    depends_on:
-      - mariadb
-    volumes:
-      - ${VOLUME_PATH}/wordpress:/var/www/html
-      - ${VOLUME_PATH}:/container_output
-    networks:
-      - http_transcendence
-      - db_transcendence
-    restart: unless-stopped
-    init: true
+  # wordpress:
+  #   container_name: wordpress
+  #   build:  ./wordpress
+  #   image: wordpress
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - mariadb
+  #   volumes:
+  #     - ${VOLUME_PATH}/wordpress:/var/www/html
+  #     - ${VOLUME_PATH}:/container_output
+  #   networks:
+  #     - http_transcendence
+  #     - db_transcendence
+  #   restart: unless-stopped
+  #   init: true
