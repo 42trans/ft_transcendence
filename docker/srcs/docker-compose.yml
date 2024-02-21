@@ -74,7 +74,7 @@ services:
       - ${DJANGO_PORT}:8000
     depends_on:
       - postgres
-    restart: unless-stopped
+    # restart: unless-stopped
     init: true
 
 networks:
