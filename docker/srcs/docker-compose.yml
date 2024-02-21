@@ -31,8 +31,8 @@ services:
     networks:
       - http_transcendence
     # restart: unless-stopped
-    depends_on:
-      - django
+    # depends_on:
+    #   - django
     init: true
 
   postgres:
@@ -58,24 +58,24 @@ services:
     restart: unless-stopped
     init: true
 
-  django:
-    container_name: django
-    build: ./django
-    image: django
-    env_file:
-      - .env
-    volumes:
-      - ${VOLUME_PATH}/django/src:/code
-      - ${VOLUME_PATH}/django/uwsgi:/etc/uwsgi
-    networks:
-      - db_transcendence
-      - http_transcendence
-    ports:
-      - ${DJANGO_PORT}:8000
-    depends_on:
-      - postgres
-    # restart: unless-stopped
-    init: true
+  # django:
+  #   container_name: django
+  #   build: ./django
+  #   image: django
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ${VOLUME_PATH}/django/src:/code
+  #     - ${VOLUME_PATH}/django/uwsgi:/etc/uwsgi
+  #   networks:
+  #     - db_transcendence
+  #     - http_transcendence
+  #   ports:
+  #     - ${DJANGO_PORT}:8000
+  #   depends_on:
+  #     - postgres
+  #   # restart: unless-stopped
+  #   init: true
 
 networks:
   http_transcendence:
