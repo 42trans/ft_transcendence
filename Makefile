@@ -35,9 +35,9 @@ define set_env
 		export NGINX_SSL_PORT=$(MAC_NGINX_SSL_PORT); \
 	fi
 endef
-
 # -----------------------------------------------
-
+#  docker-compose
+# -----------------------------------------------
 all: build up
 
 build:
@@ -80,6 +80,38 @@ down:
 d:
 	make down
 
+reset_nginx:
+	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml down nginx 
+	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml build nginx
+	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml up nginx -d
+# -----------------------------------------------
+#  other docker command
+# -----------------------------------------------
+docker_rm:
+	docker stop $(docker ps -qa); docker rm $(docker ps -qa); docker rmi -f $(docker image -qa); docker volume rm $( docker volume ls -q); docker network rm $(docker network ls -q) 2>/dev/null
+
+remove_mount_volume_mariadb:
+		sudo rm -rf mount_voulme/mariadb/
+
+remove_mount_volume_wp:
+	sudo rm -rf mount_voulme/wordpress/
+
+remove_mount_volume_data:
+	sudo rm -rf mount_voulme/
+
+
+log_wordpress:
+	docker logs wordpress
+lw:
+	make log_wordpress
+
+log_mariadb:
+	docker logs mariadb
+lm:
+	make log_mariadb
+# -----------------------------------------------
+#  init
+# -----------------------------------------------
 env:
 	cp docker/srcs/.env_example docker/srcs/.env
 
@@ -107,42 +139,14 @@ init:
 	mkdir -p ./docker/srcs/nginx/ssl
 	make key
 	make env
-
-docker_rm:
-	docker stop $(docker ps -qa); docker rm $(docker ps -qa); docker rmi -f $(docker image -qa); docker volume rm $( docker volume ls -q); docker network rm $(docker network ls -q) 2>/dev/null
-
-remove_mount_volume_mariadb:
-		sudo rm -rf mount_voulme/mariadb/
-
-remove_mount_volume_wp:
-	sudo rm -rf mount_voulme/wordpress/
-
-remove_mount_volume_data:
-	sudo rm -rf mount_voulme/
+# -----------------------------------------------
+#  test
+# -----------------------------------------------
+test_main:
+	bash ./test/main_test.sh
+t:
+	make test_main
+	
 
 
-log_wordpress:
-	docker logs wordpress
-lw:
-	make log_wordpress
-
-log_mariadb:
-	docker logs mariadb
-lm:
-	make log_mariadb
-
-reset_wp:
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml down wordpress
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml build wordpress
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml up wordpress -d
-
-reset_mariadb:
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml down mariadb 
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml build mariadb
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml up mariadb -d
-
-reset_nginx:
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml down nginx 
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml build nginx
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml up nginx -d
 

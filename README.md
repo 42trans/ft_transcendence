@@ -9,6 +9,9 @@
 - [PostgreSQL.md](other/team_docs/PostgreSQL.md)
 - [nginx.md](other/team_docs/nginx.md)
 
+## TEST CASE
+- `make t`
+  - `test/main_test.sh` にまとめていけたら。とりあえず
 
 ## Docker 初回のみ .env, ssl環境設定など
 

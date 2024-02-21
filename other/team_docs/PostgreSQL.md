@@ -4,6 +4,9 @@
 - Docker hub公式イメージのソースをカスタマイズして使う
   - 公式imageをそのまま利用するのが基本で、課題用に少し変える感じでいけたら
 
+## test
+- `sh test/postgres/sample.sh
+`
 ## 参考資料
 - dockerfile, entrypoint.sh 
   - postgres/15/bullseye/
