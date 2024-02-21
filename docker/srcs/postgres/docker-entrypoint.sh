@@ -257,7 +257,7 @@ pg_setup_hba_conf() {
 		printf 'host all all all %s\n' "$POSTGRES_HOST_AUTH_METHOD"
 		
 		# ⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️
-		printf 'local all all %s\n' "$POSTGRES_HOST_AUTH_METHOD"
+		printf 'local all all %s\n' "$POSTGRES_LOCAL_AUTH_METHOD"
 		# ⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️
 
 	} >> "$PGDATA/pg_hba.conf"
