@@ -1,5 +1,10 @@
 
 # 使い方
+- `⌘ + Shift + v`でプレビュー表示
+
+## チーム内のドキュメント `other/team_docs/`
+- [Tips.md](other/team_docs/Tips.md)
+- [PostgreSQL.md](other/team_docs/PostgreSQL.md)
 
 ## Docker 初回のみ .env, ssl環境設定など
 
@@ -27,4 +32,3 @@
   - down  
     - `make d`  
       - etc/hosts からの削除も一緒に行われる  
-
