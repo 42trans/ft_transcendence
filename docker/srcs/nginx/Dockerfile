@@ -1,12 +1,16 @@
 FROM debian:bullseye
 # install -y 自動的に全てyes
 RUN apt-get update && \
-	apt-get install -y nginx && \
+	apt-get install -y \
+	nginx \
+	gettext-base \
+	&& \
 	rm -rf /var/lib/apt/lists/*
 # SSL用ディレクトリ
 RUN mkdir -p /etc/nginx/ssl
 # # Nginxの設定ファイルを追加
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx.conf.tpl /
+# COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY nginx_docker-entrypoint.sh /
 RUN chmod +x /nginx_docker-entrypoint.sh

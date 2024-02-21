@@ -7,12 +7,12 @@
 # OSに応じて環境変数の設定と、ディレクトリの設定をする
 # -----------------------------------------------
 define set_env
-	@OSTYPE=`uname -s` && \
+	export SERVER_NAME=${SERVER_NAME} && \
+	OSTYPE=`uname -s` && \
 	if [ "$$OSTYPE" = "Linux" ]; then \
 		export VOLUME_PATH=$(LINUX_VOLUME_PATH) && \
 		export DJANGO_PORT=$(LINUX_DJANGO_PORT) && \
 		export POSTGRES_PORT=$(LINUX_POSTGRES_PORT) && \
-		export MARIADB_PORT=$(LINUX_DB_PORT) && \
 		export NGINX_PORT=$(LINUX_NGINX_PORT) && \
 		export NGINX_SSL_PORT=$(LINUX_NGINX_SSL_PORT) && \
 		if [ ! -d "$$VOLUME_PATH" ]; then \
@@ -26,7 +26,7 @@ define set_env
 		if [ ! -d "$$VOLUME_PATH/postgres" ]; then \
 			sudo mkdir -p "$$VOLUME_PATH/postgres" && \
 			sudo chown $(shell whoami) $$VOLUME_PATH/postgres; \
-		fi && \
+		fi;\
 	elif [ "$$OSTYPE" = "Darwin" ]; then \
 		export VOLUME_PATH=$(MAC_VOLUME_PATH) && \
 		export DJANGO_PORT=$(MAC_DJANGO_PORT) && \
@@ -45,7 +45,7 @@ build:
 	$(call set_env) && \
 	docker-compose -f ./docker/srcs/docker-compose.yml build
 # DEBUG: 環境変数チェック
-# echo $$VOLUME_PATH 
+# echo $$SERVER_NAME 
 # DEBUG: キャッシュ不使用
 # docker-compose -f ./docker/srcs/docker-compose.yml build --no-cache
 b:
