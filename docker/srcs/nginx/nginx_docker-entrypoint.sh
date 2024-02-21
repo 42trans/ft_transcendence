@@ -17,7 +17,7 @@ if [ -f "$NOTIFY_FILE" ]; then
 fi
 # -------------------------------------
 # 環境変数を使用してnginxの設定ファイルを生成
-envsubst < nginx.conf.tpl > /etc/nginx/nginx.conf
+envsubst < nginx.conf > /etc/nginx/nginx.conf
 # -------------------------------------
 # ホストでの確認のためにマウントvolumeにファイル出力
 # -------------------------------------

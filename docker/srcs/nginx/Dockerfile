@@ -8,7 +8,7 @@ RUN apt-get update && \
 # SSL用ディレクトリ
 RUN mkdir -p /etc/nginx/ssl
 # Nginxの設定ファイルを環境変数で設定するためのテンプレート
-COPY ./nginx.conf.tpl /
+COPY ./nginx.conf /
 
 COPY nginx_docker-entrypoint.sh /
 RUN chmod +x /nginx_docker-entrypoint.sh
