@@ -21,13 +21,16 @@ services:
       - .env
     ports:
       - ${NGINX_SSL_PORT}:443
+    environment:
+      - SERVER_NAME=${SERVER_NAME}
     volumes:
       # - ${VOLUME_PATH}/wordpress:/var/www/html
       - ${SSL_CERT_PATH}:/etc/nginx/ssl/nginx.crt
       - ${SSL_KEY_PATH}:/etc/nginx/ssl/nginx.key
+      - ${VOLUME_PATH}:/container_output
     networks:
       - http_transcendence
-    restart: unless-stopped
+    # restart: unless-stopped
     init: true
 
   postgres:
@@ -58,7 +61,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ${VOLUME_PATH)/django:/code
+      - ${VOLUME_PATH}/django:/code
     networks:
       - db_transcendence
       - http_transcendence
@@ -67,7 +70,7 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
-    intit: true
+    init: true
 
 networks:
   http_transcendence:
