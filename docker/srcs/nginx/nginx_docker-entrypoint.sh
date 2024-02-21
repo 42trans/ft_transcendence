@@ -8,7 +8,7 @@
 # エラー時にスクリプトの実行を停止
 set -e
 # -------------------------------------
-# notify.txtファイルが存在する場合、削除する
+# ホストでの確認用ファイルが存在する場合、削除する
 # -------------------------------------
 NOTIFY_FILE="/container_output/fin_nginx_entrypoint.txt"
 if [ -f "$NOTIFY_FILE" ]; then

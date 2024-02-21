@@ -7,6 +7,8 @@
   - [日本語訳](other/subject/subject.md)
 - [Tips.md](other/team_docs/Tips.md)
 - [PostgreSQL.md](other/team_docs/PostgreSQL.md)
+- [nginx.md](other/team_docs/nginx.md)
+
 
 ## Docker 初回のみ .env, ssl環境設定など
 
