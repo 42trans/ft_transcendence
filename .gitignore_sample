@@ -1,0 +1,38 @@
+.gitignore
+# .dockerignore
+.env
+.make_env
+old/
+*.crt
+*.key
+ssl/*
+
+.vscode
+play/
+obj/
+backup/
+memo.md
+
+clone*/
+# other/
+sample/
+
+memo*
+docker/README*
+mount_volume/
+
+backup/
+memo/
+
+# srcs/strapi/y-strapi-project/node_modules/*
+# !srcs/strapi/y-strapi-project/node_modules/@strapi/
+# srcs/strapi/y-strapi-project/node_modules/@strapi/*
+# !srcs/strapi/y-strapi-project/node_modules/@strapi/strapi
+
+# git rm --cached falename
+# git rm --cached .env
+# git rm --cached README.md
+# git rm --cached .DS_Store
+
+# git rm -r --cached dirname
+# git rm -r --cached sample
