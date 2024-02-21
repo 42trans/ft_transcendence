@@ -20,7 +20,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${NGINX_SSL_PORT}:443
+      - "${NGINX_SSL_PORT}:443"
     environment:
       - SERVER_NAME=${SERVER_NAME}
     volumes:
@@ -30,9 +30,9 @@ services:
       - ${VOLUME_PATH}:/container_output
     networks:
       - http_transcendence
-    # restart: unless-stopped
-    # depends_on:
-    #   - django
+    restart: unless-stopped
+    depends_on:
+      - ft_django
     init: true
 
   postgres:
@@ -54,28 +54,30 @@ services:
     networks:
       - db_transcendence
     ports:
-      - ${POSTGRES_PORT}:5432 
+      - "${POSTGRES_PORT}:5432" 
     restart: unless-stopped
     init: true
 
-  # django:
-  #   container_name: django
-  #   build: ./django
-  #   image: django
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ${VOLUME_PATH}/django/src:/code
-  #     - ${VOLUME_PATH}/django/uwsgi:/etc/uwsgi
-  #   networks:
-  #     - db_transcendence
-  #     - http_transcendence
-  #   ports:
-  #     - ${DJANGO_PORT}:8000
-  #   depends_on:
-  #     - postgres
-  #   # restart: unless-stopped
-  #   init: true
+  ft_django:
+    container_name: ft_django
+    build: ./ft_django
+    image: ft_django
+    env_file:
+      - .env
+    volumes:
+      - ${VOLUME_PATH}/ft_django/src:/code
+      - ${VOLUME_PATH}/ft_django/static:/static/
+      - ${VOLUME_PATH}/ft_django/uwsgi:/etc/uwsgi
+      - ${VOLUME_PATH}:/container_output
+    networks:
+      - db_transcendence
+      - http_transcendence
+    ports:
+      - "${DJANGO_PORT}:8080"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    init: true
 
 networks:
   http_transcendence:

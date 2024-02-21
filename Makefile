@@ -90,25 +90,16 @@ reset_nginx:
 docker_rm:
 	docker stop $(docker ps -qa); docker rm $(docker ps -qa); docker rmi -f $(docker image -qa); docker volume rm $( docker volume ls -q); docker network rm $(docker network ls -q) 2>/dev/null
 
-remove_mount_volume_mariadb:
-		sudo rm -rf mount_voulme/mariadb/
+remove_mount_volume_mac:
+	rm -rf mount_volume
+rm:
+	make remove_mount_volume_mac
 
-remove_mount_volume_wp:
-	sudo rm -rf mount_voulme/wordpress/
+log_django:
+	docker logs ft_django
+ld:
+	make log_django
 
-remove_mount_volume_data:
-	sudo rm -rf mount_voulme/
-
-
-log_wordpress:
-	docker logs wordpress
-lw:
-	make log_wordpress
-
-log_mariadb:
-	docker logs mariadb
-lm:
-	make log_mariadb
 # -----------------------------------------------
 #  init
 # -----------------------------------------------

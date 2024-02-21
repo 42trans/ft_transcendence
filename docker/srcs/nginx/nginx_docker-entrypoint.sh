@@ -18,6 +18,7 @@ fi
 # -------------------------------------
 # 環境変数を使用してnginxの設定ファイルを生成
 envsubst < nginx.conf > /etc/nginx/nginx.conf
+cp /uwsgi_params /etc/nginx/uwsgi_parames
 # -------------------------------------
 # ホストでの確認のためにマウントvolumeにファイル出力
 # -------------------------------------
