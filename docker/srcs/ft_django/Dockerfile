@@ -1,6 +1,8 @@
 FROM python:3.12-bullseye
-RUN apt-get update && apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
-
+RUN apt-get update && apt-get install -y \
+	tzdata \
+	postgresql-client \
+	&& rm -rf /var/lib/apt/lists/*
 ENV PYTHONUNBUFFERED=1
 RUN mkdir /code
 WORKDIR /code

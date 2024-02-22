@@ -3,7 +3,7 @@
 # PostgreSQLのコンテナ名
 CONTAINER_NAME="postgres"
 USER="user"
-DB_NAME="mydatabase"
+DB_NAME="ft_tc_test"
 
 # データベース作成
 docker exec -it $CONTAINER_NAME psql -U $USER -d postgres -c "CREATE DATABASE $DB_NAME;"
