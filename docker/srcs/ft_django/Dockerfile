@@ -9,9 +9,10 @@ WORKDIR /code
 COPY requirements.txt /code/
 RUN pip3 install -r requirements.txt
 
-COPY . /ft_django
+COPY . /tmp_ft_django
 COPY static /tmp_static/
 COPY uwsgi.ini /
+COPY manage.py /
 
 COPY django_entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

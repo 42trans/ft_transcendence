@@ -25,7 +25,7 @@ fi
 if [ -z "$(ls -A /code)" ]; then
 	mkdir -p /code
 	chown www-data:www-data /code
-	cp -r /ft_django/. /code/
+	cp -r /tmp_ft_django/. /code/
 	find /code -type d -exec chmod 755 {} \;
 	find /code -type f -exec chmod 644 {} \;
 fi
@@ -62,6 +62,7 @@ if [ $count -eq $max_retries ]; then
 	exit 1
 fi
 # -------------------------------------
+cp /manage.py /code/manage.py
 python /code/manage.py migrate
 # 静的ファイルの収集
 python /code/manage.py collectstatic --no-input --clear

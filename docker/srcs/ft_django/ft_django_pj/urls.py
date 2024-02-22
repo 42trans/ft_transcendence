@@ -1,5 +1,4 @@
 """
-URL configuration for ft_django project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -16,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from . import views 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('bootstrap-test/', views.bootstrap_test, name='bootstrap_test'),  # 新しいURLパターンを追加
 ]
+

@@ -84,6 +84,11 @@ reset_nginx:
 	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml down nginx 
 	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml build nginx
 	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml up nginx -d
+reset_ft_django:
+	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml down ft_django 
+	rm -rf mount_volume/ft_django
+	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml build ft_django
+	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml up ft_django -d
 # -----------------------------------------------
 #  other docker command
 # -----------------------------------------------

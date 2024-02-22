@@ -65,7 +65,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ${VOLUME_PATH}/ft_django/src:/code
+      - ${VOLUME_PATH}/ft_django/code:/code
       - ${VOLUME_PATH}/ft_django/static:/static/
       - ${VOLUME_PATH}/ft_django/uwsgi:/etc/uwsgi
       - ${VOLUME_PATH}:/container_output
@@ -76,7 +76,7 @@ services:
       - "${DJANGO_PORT}:8080"
     depends_on:
       - postgres
-    restart: unless-stopped
+    # restart: unless-stopped
     init: true
 
 networks:
