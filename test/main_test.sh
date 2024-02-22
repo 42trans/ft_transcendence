@@ -11,3 +11,7 @@ echo "=============="
 echo "bootstrap test"
 echo "=============="
 bash ./test/bootstrap/sample_bootstrap.sh
+echo "=============="
+echo "pgadmin test"
+echo "=============="
+bash ./test/pgadmin/sample.pgadmin.sh

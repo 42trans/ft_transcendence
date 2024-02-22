@@ -44,3 +44,22 @@ services:
       - "${POSTGRES_PORT}:5432" 
     restart: unless-stopped
     init: true
+
+  pgadmin:
+    container_name: pgadmin
+    build: ./pgadmin
+    image: pgadmin
+    env_file:
+      - .env
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "80:80"
+    volumes:
+      - ${VOLUME_PATH}/pgadmin:/var/lib/pgadmin
+    networks:
+      - db_transcendence
+      - http_transcendence
+    restart: unless-stopped
+    init: true

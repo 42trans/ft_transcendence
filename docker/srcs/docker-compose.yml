@@ -6,6 +6,11 @@ volumes:
       type: none
       device: ${VOLUME_PATH}/postgres
       o: bind
+  pgadmin_vol:
+    driver_opts:
+      type: none
+      device: ${VOLUME_PATH}/pgadmin
+      o: bind
   django_vol:
     driver_opts:
       type: none
@@ -40,6 +45,7 @@ services:
       - http_transcendence
     restart: unless-stopped
     depends_on:
+      - pgadmin
       - ft_django
     init: true
 
