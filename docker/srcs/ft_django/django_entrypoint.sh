@@ -29,6 +29,32 @@ fi
 if [ ! -f "/etc/uwsgi/uwsgi.ini" ]; then
 	cp /uwsgi.ini /etc/uwsgi/
 fi
+if [ -z "$(ls -A /static)" ]; then
+	mkdir -p /static
+	chown www-data:www-data /static
+	cp -r /tmp_static/. /static/
+	find /static -type d -exec chmod 755 {} \;
+	find /static -type f -exec chmod 644 {} \;
+fi
+# -------------------------------------
+count=0
+max_retries=90
+HOST="postgres"
+DB_PORT=5432 
+while [ $count -lt $max_retries ]; do
+if pg_isready ping -h"$HOST" -P"$DB_PORT" --quiet; then
+	echo "PostgreSQL ok"
+	break
+fi
+echo "waiting"
+count=$((count+1))
+sleep 5
+#   sleep 30
+done
+if [ $count -eq $max_retries ]; then
+	echo "failed"
+	exit 1
+fi
 # -------------------------------------
 python /code/manage.py migrate
 # 静的ファイルの収集
