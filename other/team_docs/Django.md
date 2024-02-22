@@ -2,6 +2,9 @@
 
 ## 方針
 - Docker hub公式イメージのソースをカスタマイズして使う
+- uWSGIを選択
+  - 多機能
+  - CのOSS
 
 ## memo
 - pythonのコンテナを立てる。django単体のimageはない
