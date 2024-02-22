@@ -3,11 +3,14 @@
 # ※詳細はREADME.md
 # -----------------------------------------------
 -include .make_env
+# 複数の.ymlを環境変数から読み込む
+COMPOSE_FILES_ARGS=$(subst :, -f ,$(COMPOSE_FILES))
 # -----------------------------------------------
 # OSに応じて環境変数の設定と、ディレクトリの設定をする
 # -----------------------------------------------
+# debug時: @をはずす
 define set_env
-	export SERVER_NAME=${SERVER_NAME} && \
+	@export SERVER_NAME=${SERVER_NAME} && \
 	OSTYPE=`uname -s` && \
 	if [ "$$OSTYPE" = "Linux" ]; then \
 		export VOLUME_PATH=$(LINUX_VOLUME_PATH) && \
@@ -43,33 +46,35 @@ all: build up
 build:
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
-	docker-compose -f ./docker/srcs/docker-compose.yml build
+	docker-compose -f $(COMPOSE_FILES_ARGS) build
+# docker-compose -f docker-compose.yml build
+
 # DEBUG: 環境変数チェック
 # echo $$SERVER_NAME 
 # DEBUG: キャッシュ不使用
-# docker-compose -f ./docker/srcs/docker-compose.yml build --no-cache
+# docker-compose -f docker-compose.yml build --no-cache
 b:
 	make build
 
 up:
 	$(call set_env) && \
-	docker-compose -f ./docker/srcs/docker-compose.yml up -d
+	docker-compose -f $(COMPOSE_FILES_ARGS) up -d
 u:
 	make up
 
 stop:
 	$(call set_env) && \
-	docker-compose -f ./docker/srcs/docker-compose.yml stop
+	docker-compose -f $(COMPOSE_FILES_ARGS) stop
 s:
 	make stop
 
 start:
 	$(call set_env) && \
-	docker-compose -f ./docker/srcs/docker-compose.yml start
+	docker-compose -f $(COMPOSE_FILES_ARGS) start
 
 down:
 	$(call set_env) && \
-	docker-compose -f ./docker/srcs/docker-compose.yml down; \
+	docker-compose -f $(COMPOSE_FILES_ARGS) down; \
 	PATTERN='127.0.0.1 $(SERVER_NAME)'; \
 	OSTYPE=`uname -s`; \
 	if [ "$$OSTYPE" = "Darwin" ]; then \
@@ -81,14 +86,14 @@ d:
 	make down
 
 reset_nginx:
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml down nginx 
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml build nginx
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml up nginx -d
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down nginx 
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build nginx
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up nginx -d
 reset_ft_django:
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml down ft_django 
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down ft_django 
 	rm -rf mount_volume/ft_django
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml build ft_django
-	$(call set_env) && docker-compose -f ./docker/srcs/docker-compose.yml up ft_django -d
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build ft_django
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up ft_django -d
 # -----------------------------------------------
 #  other docker command
 # -----------------------------------------------
