@@ -19,6 +19,7 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('bootstrap-test/', views.bootstrap_test, name='bootstrap_test'),  # 新しいURLパターンを追加
+	path('', views.index, name='index'),
+    path('bootstrap_test/', views.bootstrap_test, name='bootstrap_test'),  # 新しいURLパターンを追加
 ]
 

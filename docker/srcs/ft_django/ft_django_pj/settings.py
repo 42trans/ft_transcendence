@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-*-$mp4&(9s34!#)s$t@omfs%5hjvqp3^8v#_2qa-ywb%bteff0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['hioikawa.42.fr', 'localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'ft_django_pj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'ft_django_pj/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
