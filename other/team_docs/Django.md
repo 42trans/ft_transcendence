@@ -1,15 +1,18 @@
 # team_docs/Django
 
 ## 方針
+
 - Docker hub公式イメージのソースをカスタマイズして使う
 - uWSGIを選択
   - 多機能
   - CのOSS
 
 ## memo
-- pythonのコンテナを立てる。django単体のimageはない
+
+- pythonのコンテナを立てる。django単体のimageはない。bootstrapも同様。
 
 ## 参考資料
+
 - DL: dockerfile, entrypoint.sh 
   - ここからclone(DL)しました 
     - dockerhub
@@ -26,7 +29,7 @@
   - uWSGI
     - 参考:【uWSGI プロジェクト — uWSGI 2.0 ドキュメント】 https://uwsgi-docs.readthedocs.io/en/latest/index.html
     - 参考:【skel.c — uwsgi — Visual Studio Code — github+7b2276223a312c22726566223a7b2274797065223a322c226964223a2233363765366335343765373331313438353736356466336661333136333034643966643261373333227d7d】 https://github.dev/unbit/uwsgi/blob/367e6c547e7311485765df3fa316304d9fd2a733/core/skel.c#L5
-    - 参考:【Docker Composeを使った、Nginx+uWSGI+Djangoのデプロイ - Djangoroidの奮闘記】 https://pythonskywalker.hatenablog.com/entry/2016/11/17/152830
+    - 参考:【Docker Composeを使った、Nginx+uWSGI+Djangoのデプロイ - Djangoroidの奮闘記】 https://pythonskywalker.hatenablog.com/entry/2016/11/17/152830  
 
 ## カスタマイズ内容
 
