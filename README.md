@@ -8,6 +8,9 @@
 - [Tips.md](other/team_docs/Tips.md)
 - [PostgreSQL.md](other/team_docs/PostgreSQL.md)
 - [nginx.md](other/team_docs/nginx.md)
+- [Django.md](other/team_docs/Django.md)
+- [ELK.md](other/team_docs/ELK.md)
+- [minimal_requirement.md](other/team_docs/minimal_requirement.md)
 
 ## TEST CASE
 - `make t`
