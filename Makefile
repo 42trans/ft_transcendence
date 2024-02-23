@@ -62,10 +62,15 @@ reset_ft_django:
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build ft_django
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up ft_django -d
 reset_kibana:
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down kibana 
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down kibana -v
 # rm -rf mount_volume/kibana
 # $(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build kibana
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up kibana -d
+reset_logstash:
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down logstash -v
+# rm -rf mount_volume/logstash
+# $(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build logstash
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up logstash -d
 # -----------------------------------------------
 #  other docker command
 # -----------------------------------------------
@@ -112,6 +117,11 @@ init:
 	mkdir -p ./docker/srcs/nginx/ssl
 	make key
 	make env
+
+ELK_certs:
+	chmod +x srcs/make/generate_certs.sh
+	bash srcs/make/generate_certs.sh
+	openssl x509 -in docker/srcs/elasticsearch/cert/elasticsearch.crt -text -noout
 # -----------------------------------------------
 #  test
 # -----------------------------------------------

@@ -1,0 +1,16 @@
+instances:
+  - name: "elasticsearch"
+    dns:
+      - "elasticsearch.example.com"
+      - "localhost"
+      - "elasticsearch.hioikawa.42.fr"
+    ip:
+      - "127.0.0.1"
+
+  - name: "kibana"
+    dns:
+      - "kibana.example.com"
+      - "localhost"
+      - "kibana.hioikawa.42.fr"
+    ip:
+      - "127.0.0.1"

@@ -1,0 +1,4 @@
+# Logstash の設定ファイル。パイプラインの設定、バッチサイズ、ログレベルなどを記述
+http.host: "0.0.0.0"
+path.config: "/usr/share/logstash/pipeline"
+xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
