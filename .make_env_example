@@ -2,12 +2,14 @@
 SERVER_NAME=hioikawa.42.fr
 
 LINUX_VOLUME_PATH=/home/user42/trans_volume
+LINUX_PGADMIN_PORT=80
 LINUX_DJANGO_PORT=8080
 LINUX_POSTGRES_PORT=5433
 LINUX_NGINX_PORT=8085
 LINUX_NGINX_SSL_PORT=443
 
 MAC_VOLUME_PATH=../../mount_volume
+MAC_PGADMIN_PORT=80
 MAC_DJANGO_PORT=8080
 MAC_POSTGRES_PORT=5433
 MAC_NGINX_PORT=8085
@@ -15,4 +17,5 @@ MAC_NGINX_SSL_PORT=443
 
 COMPOSE_FILES=\
 	./docker/srcs/docker-compose.yml:\
-	./docker/srcs/docker-compose.web.yml
+	./docker/srcs/docker-compose-elk.yml:\
+	./docker/srcs/docker-compose-web.yml
