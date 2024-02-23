@@ -29,6 +29,7 @@ memo/
 # srcs/strapi/y-strapi-project/node_modules/@strapi/*
 # !srcs/strapi/y-strapi-project/node_modules/@strapi/strapi
 
+
 # git rm --cached falename
 # git rm --cached .env
 # git rm --cached README.md

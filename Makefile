@@ -1,43 +1,12 @@
 # -----------------------------------------------
-# まずは最初に ターミナルで`make init`で .make_env を作成ください 
-# ※詳細はREADME.md
+# まずは最初に ターミナルで`make init`で .make_env を作成ください ※詳細はREADME.md
 # -----------------------------------------------
+# Makefile用の環境変数の読み込み
 -include .make_env
+# OSに応じて環境変数の設定と、ディレクトリの設定をする
+-include set_env
 # 複数の.ymlを環境変数から読み込む
 COMPOSE_FILES_ARGS=$(subst :, -f ,$(COMPOSE_FILES))
-# -----------------------------------------------
-# OSに応じて環境変数の設定と、ディレクトリの設定をする
-# -----------------------------------------------
-# debug時: @をはずす
-define set_env
-	@export SERVER_NAME=${SERVER_NAME} && \
-	OSTYPE=`uname -s` && \
-	if [ "$$OSTYPE" = "Linux" ]; then \
-		export VOLUME_PATH=$(LINUX_VOLUME_PATH) && \
-		export DJANGO_PORT=$(LINUX_DJANGO_PORT) && \
-		export POSTGRES_PORT=$(LINUX_POSTGRES_PORT) && \
-		export NGINX_PORT=$(LINUX_NGINX_PORT) && \
-		export NGINX_SSL_PORT=$(LINUX_NGINX_SSL_PORT) && \
-		if [ ! -d "$$VOLUME_PATH" ]; then \
-			sudo mkdir -p $$VOLUME_PATH && \
-			sudo chown $(shell whoami) $$VOLUME_PATH; \
-		fi && \
-		if [ ! -d "$$VOLUME_PATH/django" ]; then \
-			sudo mkdir -p "$$VOLUME_PATH/django" && \
-			sudo chown $(shell whoami) $$VOLUME_PATH/django; \
-		fi && \
-		if [ ! -d "$$VOLUME_PATH/postgres" ]; then \
-			sudo mkdir -p "$$VOLUME_PATH/postgres" && \
-			sudo chown $(shell whoami) $$VOLUME_PATH/postgres; \
-		fi;\
-	elif [ "$$OSTYPE" = "Darwin" ]; then \
-		export VOLUME_PATH=$(MAC_VOLUME_PATH) && \
-		export DJANGO_PORT=$(MAC_DJANGO_PORT) && \
-		export POSTGRES_PORT=$(MAC_POSTGRES_PORT) && \
-		export NGINX_PORT=$(MAC_NGINX_PORT) && \
-		export NGINX_SSL_PORT=$(MAC_NGINX_SSL_PORT); \
-	fi
-endef
 # -----------------------------------------------
 #  docker-compose
 # -----------------------------------------------
@@ -47,8 +16,6 @@ build:
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
 	docker-compose -f $(COMPOSE_FILES_ARGS) build
-# docker-compose -f docker-compose.yml build
-
 # DEBUG: 環境変数チェック
 # echo $$SERVER_NAME 
 # DEBUG: キャッシュ不使用

@@ -1,0 +1,51 @@
+version: "3.7"
+
+services:
+  elasticsearch:
+    container_name: elasticsearch
+    build: ./elasticsearch
+    image: elasticsearch
+    env_file:
+      .env
+    environment:
+      - "discovery.type=single-node"
+    volumes:
+      - ${VOLUME_PATH}/elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - db_transcendence
+      - web_transcendence
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    depends_on:
+      - nginx
+    # restart: unless-stopped
+    init: true
+
+
+  # logstash:
+  #   container_name: logstash
+  #   image: docker.elastic.co/logstash/logstash:7.9.3
+  #   volumes:
+  #     - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+  #     - ./logstash/pipeline:/usr/share/logstash/pipeline
+  #   ports:
+  #     - "5000:5000"
+  #   networks:
+  #     - db_transcendence
+  #   depends_on:
+  #     - elasticsearch
+  #   restart: unless-stopped
+
+  # kibana:
+  #   container_name: kibana
+  #   image: docker.elastic.co/kibana/kibana:7.9.3
+  #   environment:
+  #     - ELASTICSEARCH_URL=http://elasticsearch:9200
+  #   ports:
+  #     - "5601:5601"
+  #   networks:
+  #     - web_transcendence
+  #   depends_on:
+  #     - elasticsearch
+  #   restart: unless-stopped

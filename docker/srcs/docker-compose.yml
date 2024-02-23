@@ -18,9 +18,9 @@ volumes:
       o: bind
 
 networks:
-  http_transcendence:
+  web_transcendence:
     driver: bridge
-    name: http_transcendence
+    name: web_transcendence
   db_transcendence:
     driver: bridge
     name: db_transcendence
@@ -42,7 +42,7 @@ services:
       - ${SSL_KEY_PATH}:/etc/nginx/ssl/nginx.key
       - ${VOLUME_PATH}:/container_output
     networks:
-      - http_transcendence
+      - web_transcendence
     restart: unless-stopped
     depends_on:
       - pgadmin
