@@ -9,7 +9,9 @@
 
 ## memo
 
-- pythonのコンテナを立てる。django単体のimageはない。bootstrapも同様。
+- pythonのコンテナを立てる。django単体のimageはない。
+- bootstrapはdjangoのテンプレートとして入れた
+- uWSGIは別コンテナにするのか後で考える
 
 ## 参考資料
 
