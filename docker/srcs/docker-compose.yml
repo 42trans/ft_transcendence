@@ -16,6 +16,11 @@ volumes:
       type: none
       device: ${VOLUME_PATH}/django
       o: bind
+  elk_vol:
+    driver_opts:
+      type: none
+      device: ${VOLUME_PATH}/elk
+      o: bind
 
 networks:
   web_transcendence:
@@ -24,6 +29,9 @@ networks:
   db_transcendence:
     driver: bridge
     name: db_transcendence
+  elastic_transcendence:
+    driver: bridge
+    name: elastic_transcendence
 
 services:
   nginx:
@@ -48,4 +56,3 @@ services:
       - pgadmin
       - ft_django
     init: true
-

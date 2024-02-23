@@ -41,7 +41,7 @@ start:
 
 down:
 	$(call set_env) && \
-	docker-compose -f $(COMPOSE_FILES_ARGS) down; \
+	docker-compose -f $(COMPOSE_FILES_ARGS) down -v; \
 	PATTERN='127.0.0.1 $(SERVER_NAME)'; \
 	OSTYPE=`uname -s`; \
 	if [ "$$OSTYPE" = "Darwin" ]; then \
@@ -61,11 +61,11 @@ reset_ft_django:
 	rm -rf mount_volume/ft_django
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build ft_django
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up ft_django -d
-reset_elasticsearch:
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down elasticsearch 
-	rm -rf mount_volume/elasticsearch
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build elasticsearch
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up elasticsearch -d
+reset_kibana:
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down kibana 
+	rm -rf mount_volume/kibana
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build kibana
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up kibana -d
 # -----------------------------------------------
 #  other docker command
 # -----------------------------------------------
