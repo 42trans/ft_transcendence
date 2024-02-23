@@ -61,6 +61,11 @@ reset_ft_django:
 	rm -rf mount_volume/ft_django
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build ft_django
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up ft_django -d
+reset_elasticsearch:
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down elasticsearch 
+	rm -rf mount_volume/elasticsearch
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build elasticsearch
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up elasticsearch -d
 # -----------------------------------------------
 #  other docker command
 # -----------------------------------------------

@@ -10,7 +10,7 @@ services:
     environment:
       - "discovery.type=single-node"
     volumes:
-      - ${VOLUME_PATH}/elasticsearch_data:/usr/share/elasticsearch/data
+      - ${VOLUME_PATH}/elasticsearch:/usr/share/elasticsearch/data
     networks:
       - db_transcendence
       - web_transcendence
