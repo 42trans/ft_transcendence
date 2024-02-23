@@ -30,4 +30,9 @@ echo "=============="
 echo "pgadmin test"
 echo "=============="
 bash ./test/pgadmin/sample.pgadmin.sh
+echo "${ESC}${COLOR198}"
+echo "=============="
+echo "ELK test"
+echo "=============="
+bash ./test/ELK/sample_ELK.sh
 echo "${ESC}[m"

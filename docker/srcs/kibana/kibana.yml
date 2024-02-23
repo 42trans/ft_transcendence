@@ -5,3 +5,9 @@ elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 monitoring.ui.container.elasticsearch.enabled: true
 elasticsearch.username: "kibana_system"
 elasticsearch.password: "${ELASTIC_PASSWORD}"
+
+# node.legacyExternalOpenSSL: false
+
+xpack.security.encryptionKey: "<7e9ce2714d526b9a3ac54f4e7a945bfa>"
+xpack.encryptedSavedObjects.encryptionKey: "<7e9ce2714d526b9a3ac54f4e7a945bfa>"
+xpack.reporting.encryptionKey: "<7e9ce2714d526b9a3ac54f4e7a945bfa>"

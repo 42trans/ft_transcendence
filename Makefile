@@ -63,8 +63,8 @@ reset_ft_django:
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up ft_django -d
 reset_kibana:
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down kibana 
-	rm -rf mount_volume/kibana
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build kibana
+# rm -rf mount_volume/kibana
+# $(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build kibana
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up kibana -d
 # -----------------------------------------------
 #  other docker command

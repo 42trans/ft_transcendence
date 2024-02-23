@@ -15,10 +15,12 @@
 ### 作業MEMO
 
 - インストールガイド　公式
-  - 参考:【Install Elasticsearch with Docker | Elasticsearch Guide [8.12] | Elastic】 https://www.elastic.co/guide/en/elasticsearch/reference/8.12/docker.html
+  - 参考:【Install Elasticsearch with Docker | Elasticsearch Guide [8.12] | Elastic】 <https://www.elastic.co/guide/en/elasticsearch/reference/8.12/docker.html>
 
 ## 参考資料
 
+- 初歩: ELK Stackとは
+  - 参考:【【初心者向け】Elastic Stackについて知ろう | DevelopersIO】 <https://dev.classmethod.jp/articles/elastic-stack-for-beginners/>
 - install, setup
   - 参考:【Install Elasticsearch with Docker | Elasticsearch Guide [8.12] | Elastic】 <https://www.elastic.co/guide/en/elasticsearch/reference/8.12/docker.html#_c_customized_image>
   - DL  
