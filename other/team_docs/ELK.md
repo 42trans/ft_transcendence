@@ -15,23 +15,20 @@
   - 3つは多いので一つに減
   - 名称がわかりづらいので変更
   - health checkをはずした
+  - entorypoint.shでsetupを行うことにした。(inceptionのように)
 
 ## Logstash
 
 - config  
   - 参考:【logstash.yml | Logstash Reference [8.12] | Elastic】 https://www.elastic.co/guide/en/logstash/8.12/logstash-settings-file.html 
 
-### 作業MEMO
-
-- インストールガイド　公式
-  - 参考:【Install Elasticsearch with Docker | Elasticsearch Guide [8.12] | Elastic】 <https://www.elastic.co/guide/en/elasticsearch/reference/8.12/docker.html>
-  - 参考:【Running Logstash on Docker | Logstash Reference [8.12] | Elastic】 https://www.elastic.co/guide/en/logstash/8.12/docker.html
-
 ## 参考資料
 
 - 初歩: ELK Stackとは
   - 参考:【【初心者向け】Elastic Stackについて知ろう | DevelopersIO】 <https://dev.classmethod.jp/articles/elastic-stack-for-beginners/>
 - install, setup
+  - 参考:【Install Elasticsearch with Docker | Elasticsearch Guide [8.12] | Elastic】 <https://www.elastic.co/guide/en/elasticsearch/reference/8.12/docker.html>
+  - 参考:【Running Logstash on Docker | Logstash Reference [8.12] | Elastic】 https://www.elastic.co/guide/en/logstash/8.12/docker.html
   - 参考:【Install Elasticsearch with Docker | Elasticsearch Guide [8.12] | Elastic】 <https://www.elastic.co/guide/en/elasticsearch/reference/8.12/docker.html#_c_customized_image>
   - DL  
     - docker hub からclone(DL)しました  
