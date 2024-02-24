@@ -8,6 +8,7 @@ echo $ELASTIC_PASSWORD
 # -----------------------------------------------
 # エラー時にスクリプトの実行を停止
 set -e
+CERTS_DIR="/usr/share/elasticsearch/config/certs"
 # -----------------------------------------------
 # notify.txtファイルが存在する場合、削除する
 # -----------------------------------------------
@@ -60,17 +61,57 @@ fi
 
 # Elasticsearch の準備ができるまで待機
 echo "Waiting for Elasticsearch availability"
-until curl -s --cacert "${CERTS_DIR}/ca/ca.crt" "https://elasticsearch:9200" | grep -q "missing authentication credentials"; do
+until curl -s --cacert "${CERTS_DIR}/ca/ca.crt" "https://${HOST}:${PORT}" | grep -q "missing authentication credentials"; do
+# until curl -s --cacert "${CERTS_DIR}/ca/ca.crt" "https://elasticsearch:9200" | grep -q "missing authentication credentials"; do
   sleep 30
 done
 
-# Kibana のパスワード設定
-echo "Setting kibana_system password"
-until curl -s -X POST --cacert "${CERTS_DIR}/ca/ca.crt" -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" "https://elasticsearch:9200/_security/user/kibana_system/_password" -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do
+# # 初期パスワード設定 (ここで elastic ユーザーのパスワードを設定)
+# echo "Setting initial passwords..."
+# curl -s -X POST --cacert "${CERTS_DIR}/ca/ca.crt" -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" "https://elasticsearch:9200/_security/user/elastic/_password" -d "{ \"password\": \"${ELASTIC_PASSWORD}\" }"
+
+
+echo "Checking Elasticsearch cluster health..."
+curl -k -u "elastic:${ELASTIC_PASSWORD}" "https://${HOST}:${PORT}/_cluster/health" | tee health_response.json
+
+echo "Attempting to authenticate with elastic user..."
+curl -k -u "elastic:${ELASTIC_PASSWORD}" "https://${HOST}:${PORT}/" | tee auth_response.json
+
+echo "Retrieving current kibana_system user information..."
+curl -k -u "elastic:${ELASTIC_PASSWORD}" "https://${HOST}:${PORT}/_security/user/kibana_system" | tee kibana_user_before.json
+
+echo "Setting kibana_system password..."
+PASSWORD_SET_RESPONSE=$(curl -s -k -X POST -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" "https://${HOST}:${PORT}/_security/user/kibana_system/_password" -d "{\"password\":\"${KIBANA_PASSWORD}\"}")
+echo "Password set response: $PASSWORD_SET_RESPONSE"
+
+if echo "$PASSWORD_SET_RESPONSE" | grep -q "^{}$"; then
+  echo "kibana_system password set successfully."
+else
+  echo "Failed to set kibana_system password."
+fi
+
+echo "Retrieving updated kibana_system user information..."
+curl -k -u "elastic:${ELASTIC_PASSWORD}" "https://${HOST}:${PORT}/_security/user/kibana_system" | tee kibana_user_after.json
+
+
+# # Kibana のパスワード設定
+# echo "Setting kibana_system password"
+# echo "ELASTIC_PASSWORD ${ELASTIC_PASSWORD}"
+# echo "KIBANA_PASSWORD ${KIBANA_PASSWORD}"
+# echo "${CERTS_DIR}/ca/ca.crt"
+# # DEBUG
+# curl -k -u "elastic:${ELASTIC_PASSWORD}" "https://${HOST}:${PORT}/_cluster/health"
+# curl -k -u "elastic:${ELASTIC_PASSWORD}" "https://${HOST}:${PORT}/"
+
+until curl -s -X POST --cacert "${CERTS_DIR}/ca/ca.crt" -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" "https://${HOST}:${PORT}/_security/user/kibana_system/_password" -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do
+# until curl -s -X POST --cacert "${CERTS_DIR}/ca/ca.crt" -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" "https://elasticsearch:9200/_security/user/kibana_system/_password" -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do
   sleep 10
 done
-echo "ana_system password done!"
+echo " password done!"
 
+
+# curl -k -u "elastic:changeme" "https://localhost:9200/_cluster/health"
+# curl -k -u "elastic:pw_kibana_1234567890" "https://localhost:9200/_cluster/health"
 
 # -----------------------------------------------
 # start foreground

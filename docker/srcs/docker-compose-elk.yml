@@ -28,6 +28,8 @@ services:
     env_file:
       - .env
     environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - KIBANA_PASSWORD=${KIBANA_PASSWORD}
       - cluster.name=${CLUSTER_NAME}
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - xpack.license.self_generated.type=${LICENSE}
@@ -48,7 +50,12 @@ services:
 
 
   kibana:
-    build: ./kibana
+    build: 
+      context: ./kibana
+      dockerfile: Dockerfile
+      args:
+        - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
+        - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
     image: kibana
     depends_on:
       elasticsearch:
@@ -58,6 +65,7 @@ services:
       - certs:/usr/share/kibana/config/certs
       - kibanadata:/usr/share/kibana/data
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ${VOLUME_PATH}:/container_output
     ports:
       - ${KIBANA_PORT}:5601
     env_file:
@@ -65,7 +73,8 @@ services:
     networks:
       - elastic_transcendence
     environment:
-      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
     mem_limit: ${MEM_LIMIT}
     healthcheck:
       test:

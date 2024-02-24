@@ -4,8 +4,8 @@ server.shutdownTimeout: "5s"
 elasticsearch.hosts: [ "https://elasticsearch:9200" ]
 monitoring.ui.container.elasticsearch.enabled: true
 # elasticsearch.username: "${ELASTICSEARCH_USERNAMEME}"
-elasticsearch.username: "kibana_system"
-elasticsearch.password: "${KIBANA_PASSWORD}"
+# elasticsearch.username: "kibana_system"
+# elasticsearch.password: "${KIBANA_PASSWORD}"
 # elasticsearch.password: "${ELASTIC_PASSWORD}"
 
 # node.legacyExternalOpenSSL: false
@@ -13,3 +13,5 @@ elasticsearch.password: "${KIBANA_PASSWORD}"
 xpack.security.encryptionKey: "<7e9ce2714d526b9a3ac54f4e7a945bfa>"
 xpack.encryptedSavedObjects.encryptionKey: "<7e9ce2714d526b9a3ac54f4e7a945bfa>"
 xpack.reporting.encryptionKey: "<7e9ce2714d526b9a3ac54f4e7a945bfa>"
+elasticsearch.username: kibana_system
+elasticsearch.password: pw_kibana_1234567890
