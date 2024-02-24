@@ -41,7 +41,7 @@ start:
 
 down:
 	$(call set_env) && \
-	docker-compose -f $(COMPOSE_FILES_ARGS) down; \
+	docker-compose -f $(COMPOSE_FILES_ARGS) down -v; \
 	PATTERN='127.0.0.1 $(SERVER_NAME)'; \
 	OSTYPE=`uname -s`; \
 	if [ "$$OSTYPE" = "Darwin" ]; then \

@@ -44,8 +44,8 @@ services:
     networks:
       - web_transcendence
     restart: unless-stopped
-    depends_on:
-      - pgadmin
-      - ft_django
+    # depends_on:
+    #   - pgadmin
+    #   - ft_django
     init: true
 
