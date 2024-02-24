@@ -39,17 +39,3 @@ echo "Setting file permissions"
 chown -R root:root "${CERTS_DIR}"
 find "${CERTS_DIR}" -type d -exec chmod 750 {} \;
 find "${CERTS_DIR}" -type f -exec chmod 640 {} \;
-
-# Elasticsearch の準備ができるまで待機
-echo "Waiting for Elasticsearch availability"
-until curl -s --cacert "${CERTS_DIR}/ca/ca.crt" "https://elasticsearch:9200" | grep -q "missing authentication credentials"; do
-  sleep 30
-done
-
-# Kibana のパスワード設定
-echo "Setting kibana_system password"
-until curl -s -X POST --cacert "${CERTS_DIR}/ca/ca.crt" -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" "https://elasticsearch:9200/_security/user/kibana_system/_password" -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do
-  sleep 10
-done
-
-echo "All done!"

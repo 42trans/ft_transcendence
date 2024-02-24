@@ -1,11 +1,12 @@
-
+# docker/srcs/kibana/Dockerfile
 server.host: "0.0.0.0"
 server.shutdownTimeout: "5s"
-elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+elasticsearch.hosts: [ "https://elasticsearch:9200" ]
 monitoring.ui.container.elasticsearch.enabled: true
-elasticsearch.username: "${ELASTICSEARCH_USERNAMEME}"
-# elasticsearch.username: "kibana_system"
-elasticsearch.password: "${ELASTIC_PASSWORD}"
+# elasticsearch.username: "${ELASTICSEARCH_USERNAMEME}"
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "${KIBANA_PASSWORD}"
+# elasticsearch.password: "${ELASTIC_PASSWORD}"
 
 # node.legacyExternalOpenSSL: false
 

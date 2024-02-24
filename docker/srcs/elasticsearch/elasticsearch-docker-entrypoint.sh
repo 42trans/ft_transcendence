@@ -3,7 +3,7 @@
 # -----------------------------------------------
 # DEBUG
 # -----------------------------------------------
-# echo "elasticsearch-docker-entrypoint.sh start"
+echo "elasticsearch-docker-entrypoint.sh start"
 echo $ELASTIC_PASSWORD
 # -----------------------------------------------
 # エラー時にスクリプトの実行を停止
@@ -17,14 +17,21 @@ if [ -f "$NOTIFY_FILE" ]; then
 	rm -f "$NOTIFY_FILE"
 fi
 # -----------------------------------------------
+# 証明書がない場合作成する
+# -----------------------------------------------
+if [ ! -f "/usr/share/elasticsearch/config/certs/ca/ca.crt" ]; then
+	echo "bash setup.sh"
+	bash /tmp/setup.sh
+fi
+# -----------------------------------------------
 # start db background
 # -----------------------------------------------
-# Elasticsearchをバックグラウンドで起動
 # `pid.txt` にプロセスID保存
 PID_FILE="pid.txt"
+# Elasticsearchをバックグラウンドで起動
 /usr/share/elasticsearch/bin/elasticsearch -d -p ${PID_FILE}
 # -----------------------------------------------
-# サーバーが起動するまで指定回数だけ ping 試行
+# サーバーが起動するまで指定回数だけ curl 試行
 # -----------------------------------------------
 HOST="localhost"
 PORT="9200"
@@ -47,11 +54,24 @@ fi
 # -----------------------------------------------
 # 初回の起動フラグ
 if [ ! -d "/usr/share/elasticsearch/data" ]; then
+	echo "/data not found"
 	cp /usr/share/elasticsearch/config/elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml.orig
-	# setup.sh
-	echo "bash setup.sh"
-	bash /tmp/setup.sh
 fi
+
+# Elasticsearch の準備ができるまで待機
+echo "Waiting for Elasticsearch availability"
+until curl -s --cacert "${CERTS_DIR}/ca/ca.crt" "https://elasticsearch:9200" | grep -q "missing authentication credentials"; do
+  sleep 30
+done
+
+# Kibana のパスワード設定
+echo "Setting kibana_system password"
+until curl -s -X POST --cacert "${CERTS_DIR}/ca/ca.crt" -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" "https://elasticsearch:9200/_security/user/kibana_system/_password" -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do
+  sleep 10
+done
+echo "ana_system password done!"
+
+
 # -----------------------------------------------
 # start foreground
 # -----------------------------------------------

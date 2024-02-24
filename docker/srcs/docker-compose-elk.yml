@@ -1,5 +1,5 @@
 version: "3.7"
-
+# docker/srcs/docker-compose-elk.yml
 volumes:
   certs:
     driver: local
@@ -10,7 +10,12 @@ volumes:
 
 services:
   elasticsearch:
-    build: ./elasticsearch
+    build: 
+      context: ./elasticsearch
+      dockerfile: Dockerfile
+      args:
+          - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+          - KIBANA_PASSWORD=${KIBANA_PASSWORD}
     volumes:
       # - ./docker/srcs/elasticsearch/certs:/usr/share/elasticsearch/config/certs
       - certs:/usr/share/elasticsearch/config/certs
