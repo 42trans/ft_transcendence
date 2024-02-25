@@ -25,13 +25,14 @@ if [ -f "$NOTIFY_FILE" ]; then
 	rm -f "$NOTIFY_FILE"
 fi
 
+TRUSTSTORE_PASSWORD=changeit
 
 # 初回のみTruststoreへのElasticsearch証明書の追加
 # if keytool -list -keystore $JAVA_HOME/lib/security/cacerts -storepass $TRUSTSTORE_PASSWORD -alias elasticsearch-cert > /dev/null 2>&1; then
 #     echo "Alias elasticsearch-cert already exists, removing..."
 #     keytool -delete -alias elasticsearch-cert -keystore $JAVA_HOME/lib/security/cacerts -storepass $TRUSTSTORE_PASSWORD
 # fi
-# keytool -importcert -noprompt -trustcacerts -file /usr/share/elasticsearch/config/certs/elasticsearch/elasticsearch.crt -keystore $JAVA_HOME/lib/security/cacerts -storepass $TRUSTSTORE_PASSWORD -alias elasticsearch-cert
+keytool -importcert -noprompt -trustcacerts -file /usr/share/elasticsearch/config/certs/elasticsearch/elasticsearch.crt -keystore $JAVA_HOME/lib/security/cacerts -storepass $TRUSTSTORE_PASSWORD -alias elasticsearch-cert
 
 # -----------------------------------------------
 echo "exec ${NAME}"

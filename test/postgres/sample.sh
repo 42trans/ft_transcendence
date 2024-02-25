@@ -2,7 +2,7 @@
 
 # PostgreSQLのコンテナ名
 CONTAINER_NAME="postgres"
-USER="user"
+USER="postgres_user"
 DB_NAME="ft_test"
 TABLE_NAME="cures"
 

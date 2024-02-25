@@ -14,10 +14,10 @@ location=$(echo "$response" | grep Location | awk '{print $2}')
 
 # ステータスコードが302（Found）であることを確認
 if [ "$status_code" = "302" ]; then
-    echo "Status code: $status_code"
     # リダイレクト先が/loginであることを確認
     if echo "$location" | grep -q "/login"; then
-        echo "pgAdmin ok: Redirecting to: $location"
+        echo "ok: Redirect先: 期待"/login?next=%2F": 結果:$location"
+        echo "Status code: 期待"302": 結果:$status_code"
     else
         echo "ng location: $location"
     fi
