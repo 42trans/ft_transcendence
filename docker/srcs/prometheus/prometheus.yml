@@ -1,9 +1,10 @@
 # docker/srcs/prometheus/prometheus.yml
 global:
-  scrape_interval: 15s # デフォルトのスクレイプ間隔
+  # デフォルトのスクレイプ間隔
+  scrape_interval: 15s 
 
 scrape_configs:
   - job_name: 'nginx'
     scheme: 'http'
     static_configs:
-      - targets: ['nginx_exporter:9113'] # Nginxエクスポーターのアドレスとポート
+      - targets: ['nginx_exporter:9113']

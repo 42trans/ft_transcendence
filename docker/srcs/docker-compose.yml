@@ -73,3 +73,19 @@ services:
     volumes:
       - ${VOLUME_PATH}/prometheus:/prometheus
 
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    # restart: unless-stopped
+    ports:
+     - '3000:3000'
+    volumes:
+      - ${VOLUME_PATH}/grafana:/var/lib/grafana
+    env_file:
+      - .env
+    environment:
+     - GF_SERVER_ROOT_URL=http://my.grafana.server/
+     - GF_INSTALL_PLUGINS=grafana-clock-panel
+     - GF_LOG_LEVEL=debug
+    networks:
+      - web_transcendence
