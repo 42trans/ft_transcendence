@@ -1,0 +1,14 @@
+version: "3.7"
+# docker/srcs/docker-yml/docker-compose-exporter.yml
+
+services:
+  nginx_exporter:
+    image: nginx/nginx-prometheus-exporter
+    ports:
+      - "9113:9113"
+    command: ["-nginx.scrape-uri=http://localhost:8085/stub_status"]
+    networks:
+      - web_transcendence
+    volumes:
+      - ${VOLUME_PATH}/exporters:/exporters
+

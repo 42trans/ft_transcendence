@@ -40,4 +40,8 @@ echo "========================================================="
 echo "ELK: logstash test"
 echo "========================================================="
 bash ./test/ELK/sample_logstash.sh
+echo "========================================================="
+echo "Prometheus test"
+echo "========================================================="
+bash ./test/prometheus/sample_prometheus.sh
 echo "${ESC}[m"

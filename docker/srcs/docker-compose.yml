@@ -42,6 +42,7 @@ services:
       - .env
     ports:
       - "${NGINX_SSL_PORT}:443"
+      - "${NGINX_PORT}:8085"
     environment:
       - SERVER_NAME=${SERVER_NAME}
     volumes:
@@ -56,3 +57,19 @@ services:
     #   - pgadmin
     #   - ft_django
     init: true
+
+  prometheus:
+    container_name: prometheus
+    build: ./prometheus
+    image: prometheus
+    env_file:
+      - .env
+    ports:
+      - "9090:9090"
+    networks:
+      - web_transcendence
+      # - db_transcendence
+    #   - elastic_transcendence
+    volumes:
+      - ${VOLUME_PATH}/prometheus:/prometheus
+
