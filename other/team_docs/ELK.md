@@ -12,10 +12,12 @@
 
 - .envでSTACK_VERSION=8.12.1を指定
 - 公式ドキュメントにしたがって、.env .ymlを DLしてベースに使用してplay後に
-  - 3つは多いので一つに減
+  - コンテナが3つは多いので一つに減
   - 名称がわかりづらいので変更
-  - health checkをはずした
-  - entorypoint.shでsetupを行うことにした。(inceptionのように)
+  - entorypoint.shでsetupを行うことにした。(inceptionのように)が、どうあっても（何もしないentrypoint.shでも）バグる。
+  - なので、Dockerfileだけでやれることに止めるべき。
+    - 試行錯誤の結果、ここに近い感じになった
+      - 参考:【[v8.6] Elasticsearch/Kibanaをdocker-composeでインストールする手順（試用用途） #docker-compose - Qiita】 https://qiita.com/takeo-furukubo/items/c2f194679afadc06a4e9
 
 ## Logstash
 

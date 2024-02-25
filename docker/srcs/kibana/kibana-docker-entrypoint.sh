@@ -17,13 +17,13 @@ if [ -f "$NOTIFY_FILE" ]; then
 	rm -f "$NOTIFY_FILE"
 fi
 
-# kibana.ymlに環境変数の値を設定
-if ! grep -q '^elasticsearch.username:' /usr/share/kibana/config/kibana.yml; then
-    echo "elasticsearch.username: ${ELASTICSEARCH_USERNAME}" >> /usr/share/kibana/config/kibana.yml
-fi
-if ! grep -q '^elasticsearch.password:' /usr/share/kibana/config/kibana.yml; then
-    echo "elasticsearch.password: ${ELASTICSEARCH_PASSWORD}" >> /usr/share/kibana/config/kibana.yml
-fi
+# # kibana.ymlに環境変数の値を設定
+# if ! grep -q '^elasticsearch.username:' /usr/share/kibana/config/kibana.yml; then
+#     echo "elasticsearch.username: ${ELASTICSEARCH_USERNAME}" >> /usr/share/kibana/config/kibana.yml
+# fi
+# if ! grep -q '^elasticsearch.password:' /usr/share/kibana/config/kibana.yml; then
+#     echo "elasticsearch.password: ${ELASTICSEARCH_PASSWORD}" >> /usr/share/kibana/config/kibana.yml
+# fi
 # echo "elasticsearch.username: ${ELASTICSEARCH_USERNAME}" >> /usr/share/kibana/config/kibana.yml
 # echo "elasticsearch.password: ${ELASTICSEARCH_PASSWORD}" >> /usr/share/kibana/config/kibana.yml
 

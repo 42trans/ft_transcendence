@@ -1,39 +1,51 @@
 version: "3.7"
-# docker/srcs/docker-compose-elk.yml
+
 volumes:
   certs:
     driver: local
-  esdata:
+  elasticsearchdata:
     driver: local
   kibanadata:
     driver: local
 
 services:
   elasticsearch:
+    depends_on:
+      setup:
+        condition: service_healthy
     build: 
       context: ./elasticsearch
       dockerfile: Dockerfile
-      args:
-          - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-          - KIBANA_PASSWORD=${KIBANA_PASSWORD}
     volumes:
-      # - ./docker/srcs/elasticsearch/certs:/usr/share/elasticsearch/config/certs
       - certs:/usr/share/elasticsearch/config/certs
-      - esdata:/usr/share/elasticsearch/data
-      - ${VOLUME_PATH}:/container_output
-    networks:
-      - elastic_transcendence
-    ports:
-      - ${ES_PORT}:9200
+      - elasticsearchdata:/usr/share/elasticsearch/data
+      # - ${VOLUME_PATH}:/container_output
     env_file:
       - .env
+    ports:
+      - ${ES_PORT}:9200
     environment:
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - KIBANA_PASSWORD=${KIBANA_PASSWORD}
-      - cluster.name=${CLUSTER_NAME}
-      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - xpack.license.self_generated.type=${LICENSE}
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=elasticsearch
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - xpack.license.self_generated.type=${LICENSE}
+      # .ymlがわからない
+      - node.name=elasticsearch
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/elasticsearch/elasticsearch.key
+      - xpack.security.http.ssl.certificate=certs/elasticsearch/elasticsearch.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/elasticsearch/elasticsearch.key
+      - xpack.security.transport.ssl.certificate=certs/elasticsearch/elasticsearch.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
     mem_limit: ${MEM_LIMIT}
+    networks:
+      - elastic_transcendence
     ulimits:
       memlock:
         soft: -1
@@ -48,20 +60,15 @@ services:
       timeout: 10s
       retries: 120
 
-
   kibana:
-    build: 
-      context: ./kibana
-      dockerfile: Dockerfile
-      args:
-        - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
-        - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
-    image: kibana
     depends_on:
       elasticsearch:
         condition: service_healthy
+    build: 
+      context: ./kibana
+      dockerfile: Dockerfile
+    image: kibana_transcendence
     volumes:
-      # - ./docker/srcs/elasticsearch/certs:/usr/share/kibana/config/certs
       - certs:/usr/share/kibana/config/certs
       - kibanadata:/usr/share/kibana/data
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
@@ -70,12 +77,15 @@ services:
       - ${KIBANA_PORT}:5601
     env_file:
       - .env
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+    mem_limit: ${MEM_LIMIT}
     networks:
       - elastic_transcendence
-    environment:
-      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
-      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
-    mem_limit: ${MEM_LIMIT}
     healthcheck:
       test:
         [
@@ -86,15 +96,70 @@ services:
       timeout: 10s
       retries: 120
 
-  # logstash:
-  #   build: ./logstash
-  #   image: logstash
-  #   volumes:
-  #     - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-  #     - ./logstash/pipeline:/usr/share/logstash/pipeline
-  #   ports:
-  #     - "5044:5044"
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - elastic_transcendence
+  setup:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+    networks:
+      - elastic_transcendence
+    user: "0"
+    command: >
+      bash -c '
+        if [ x${ELASTIC_PASSWORD} == x ]; then
+          echo "Set the ELASTIC_PASSWORD environment variable in the .env file";
+          exit 1;
+        elif [ x${KIBANA_PASSWORD} == x ]; then
+          echo "Set the KIBANA_PASSWORD environment variable in the .env file";
+          exit 1;
+        fi;
+        if [ ! -f config/certs/ca.zip ]; then
+          echo "Creating CA";
+          bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
+          unzip config/certs/ca.zip -d config/certs;
+        fi;
+        if [ ! -f config/certs/certs.zip ]; then
+          echo "Creating certs";
+          echo -ne \
+          "instances:\n"\
+          "  - name: elasticsearch\n"\
+          "    dns:\n"\
+          "      - elasticsearch\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          > config/certs/instances.yml;
+          bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
+          unzip config/certs/certs.zip -d config/certs;
+        fi;
+        echo "Setting file permissions"
+        chown -R root:root config/certs;
+        find . -type d -exec chmod 750 \{\} \;;
+        find . -type f -exec chmod 640 \{\} \;;
+        echo "Waiting for Elasticsearch availability";
+        until curl -s --cacert config/certs/ca/ca.crt https://elasticsearch:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
+        echo "Setting kibana_system password";
+        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://elasticsearch:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
+        echo "All done!";
+      '
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f config/certs/elasticsearch/elasticsearch.crt ]"]
+      interval: 1s
+      timeout: 5s
+      retries: 120
+
+
+
+
+#   # logstash:
+#   #   build: ./logstash
+#   #   image: logstash
+#   #   volumes:
+#   #     - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+#   #     - ./logstash/pipeline:/usr/share/logstash/pipeline
+#   #   ports:
+#   #     - "5044:5044"
+#   #   env_file:
+#   #     - .env
+#   #   networks:
+#   #     - elastic_transcendence
+
