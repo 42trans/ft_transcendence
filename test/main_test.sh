@@ -35,4 +35,9 @@ echo "=============="
 echo "ELK test"
 echo "=============="
 bash ./test/ELK/sample_ELK.sh
+echo "${ESC}${COLOR180}"
+echo "=============="
+echo "logstash test"
+echo "=============="
+bash ./test/ELK/sample_logstash.sh
 echo "${ESC}[m"

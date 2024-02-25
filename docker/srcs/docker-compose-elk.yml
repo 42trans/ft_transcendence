@@ -8,7 +8,26 @@ volumes:
   kibanadata:
     driver: local
 
+# TODO: port　makefileにset_envで
 services:
+  logstash:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    build: ./logstash
+    image: logstash_transcendence
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      # - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ${VOLUME_PATH}:/container_output
+    ports:
+      - "5044:5044"
+    env_file:
+      - .env
+    networks:
+      - elastic_transcendence
+
   elasticsearch:
     depends_on:
       setup:
@@ -16,6 +35,7 @@ services:
     build: 
       context: ./elasticsearch
       dockerfile: Dockerfile
+    image: elasticsearch_transcendence
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
       - elasticsearchdata:/usr/share/elasticsearch/data
@@ -23,7 +43,8 @@ services:
     env_file:
       - .env
     ports:
-      - ${ES_PORT}:9200
+      - "9200:9200"
+      # - ${ES_PORT}:9200
     environment:
       - xpack.license.self_generated.type=${LICENSE}
       - cluster.name=${CLUSTER_NAME}
@@ -74,7 +95,8 @@ services:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
       - ${VOLUME_PATH}:/container_output
     ports:
-      - ${KIBANA_PORT}:5601
+      - "5601:5601"
+      # - ${KIBANA_PORT}:5601
     env_file:
       - .env
     environment:
@@ -133,8 +155,8 @@ services:
         fi;
         echo "Setting file permissions"
         chown -R root:root config/certs;
-        find . -type d -exec chmod 750 \{\} \;;
-        find . -type f -exec chmod 640 \{\} \;;
+        find . -type d -exec chmod 755 \{\} \;;
+        find . -type f -exec chmod 644 \{\} \;;
         echo "Waiting for Elasticsearch availability";
         until curl -s --cacert config/certs/ca/ca.crt https://elasticsearch:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
         echo "Setting kibana_system password";
@@ -146,20 +168,4 @@ services:
       interval: 1s
       timeout: 5s
       retries: 120
-
-
-
-
-#   # logstash:
-#   #   build: ./logstash
-#   #   image: logstash
-#   #   volumes:
-#   #     - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-#   #     - ./logstash/pipeline:/usr/share/logstash/pipeline
-#   #   ports:
-#   #     - "5044:5044"
-#   #   env_file:
-#   #     - .env
-#   #   networks:
-#   #     - elastic_transcendence
 

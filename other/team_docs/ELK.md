@@ -20,8 +20,10 @@
       - 参考:【[v8.6] Elasticsearch/Kibanaをdocker-composeでインストールする手順（試用用途） #docker-compose - Qiita】 https://qiita.com/takeo-furukubo/items/c2f194679afadc06a4e9
 
 ## Logstash
-
+- install
+  - 参考:【Running Logstash on Docker | Logstash Reference [8.12] | Elastic】 https://www.elastic.co/guide/en/logstash/current/docker.html
 - config  
+  - 参考:【Configuring Logstash for Docker | Logstash Reference [8.12] | Elastic】 https://www.elastic.co/guide/en/logstash/current/docker-config.html
   - 参考:【logstash.yml | Logstash Reference [8.12] | Elastic】 https://www.elastic.co/guide/en/logstash/8.12/logstash-settings-file.html 
 
 ## 参考資料
