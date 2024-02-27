@@ -1,10 +1,10 @@
 version: "3.7"
 # docker/srcs/docker-compose-web.yml
 services:
-  frontend-server:
-    container_name: frontend-server
-    build: ./frontend-server
-    image: frontend-server
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    image: frontend
     env_file:
       - .env
     networks:

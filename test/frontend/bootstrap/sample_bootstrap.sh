@@ -1,5 +1,5 @@
 #!/bin/bash
-# test/frontend-server/bootstrap/sample_bootstrap.sh
+# test/frontend/bootstrap/sample_bootstrap.sh
 
 # -o /dev/null: curlの出力を/dev/nullに
 # -w "%{http_code}\n": HTTPレスポンスコードを出力　※それを変数に

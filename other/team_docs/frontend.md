@@ -1,4 +1,4 @@
-# team_docs/frontend-server.md
+# team_docs/frontend.md
 
 ## 方針
 
@@ -19,6 +19,9 @@
 
 ## 作業
 
+- test
+  - 参考:【Three.jsでモデルデータを読み込む - ICS MEDIA】 https://ics.media/tutorial-three/model_basic/
+  
 ## 参考資料
 
 ## カスタマイズ内容

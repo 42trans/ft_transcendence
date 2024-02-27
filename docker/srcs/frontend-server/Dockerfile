@@ -1,4 +1,4 @@
-# docker/srcs/frontend-server/Dockerfile
+# docker/srcs/frontend/Dockerfile
 FROM node:20-alpine
 # RUN apk update && apk add git
 WORKDIR /usr/src/app
