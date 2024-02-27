@@ -1,4 +1,4 @@
-# team_docs/Django
+# team_docs/pgadmin.md
 
 ## 方針
 

@@ -1,18 +1,29 @@
 
 # 使い方
+
 - `⌘ + Shift + v`でプレビュー表示
 
 ## チーム内のドキュメント `other/team_docs/`
-- [subject.pdf](other/subject/en.subject.pdf) 
+
+- [subject.pdf](other/subject/en.subject.pdf)  
   - [日本語訳](other/subject/subject.md)
 - [Tips.md](other/team_docs/Tips.md)
-- [PostgreSQL.md](other/team_docs/PostgreSQL.md)
+- [port.md](other/team_docs/port.md)
+
+### module
+
 - [nginx.md](other/team_docs/nginx.md)
+- [frontend.md(Bootstrap, three.js)](other/team_docs/frontend.md)
 - [Django.md](other/team_docs/Django.md)
-- [ELK.md](other/team_docs/ELK.md)
+- [PostgreSQL.md](other/team_docs/PostgreSQL.md)
+- [pgadmin.md](other/team_docs/pgadmin.md)
+- [Blockchain.md](other/team_docs/Blockchain.md)
+- [ELK.md(Elastic Stack)](other/team_docs/ELK.md)
+- [Monitor.md(Prometheus,Grafana)](other/team_docs/Monitor.md)
 - [minimal_requirement.md](other/team_docs/minimal_requirement.md)
 
 ## TEST CASE
+
 - `make t`
   - `test/main_test.sh` にまとめていけたら。とりあえず
 
