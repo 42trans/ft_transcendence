@@ -1,0 +1,21 @@
+version: "3.7"
+# docker/srcs/docker-compose-web.yml
+services:
+  hardhat:
+    container_name: hardhat
+    build: ./hardhat
+    image: hardhat
+    env_file:
+      - .env
+    ports:
+      - ${HARDHAT_PORT}:3000
+    volumes:
+    # # コンパイルされたアーティファクトを保管するディレクトリ
+    - ${VOLUME_PATH}/hardhat/artifacts:/app/artifacts
+    # - ./your-hardhat-project/artifacts:/app/artifacts
+    # # テスト結果を保管するディレクトリ
+    - ${VOLUME_PATH}/hardhat/test-results:/app/test-results
+    # - ./your-hardhat-project/test-results:/app/test-results
+    networks:
+      - blockchain_transcendence
+    

@@ -53,3 +53,12 @@
   - down  
     - `make d`  
       - etc/hosts からの削除も一緒に行われる  
+- profile 
+  - コンテナを選択して起動する
+    - 参考:【Compose で プロフィール(profile) を使う — Docker-docs-ja 24.0 ドキュメント】 https://docs.docker.jp/compose/profiles.html
+　- .ymlにprofilesで指定
+    - 常時起動する基本のwebアプリ関連
+      - make_build_up_default
+    - blockchain
+      - make_build_up_blockchain
+    - 他、etk, monitorも同様に設定済み  

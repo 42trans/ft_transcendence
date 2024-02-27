@@ -1,5 +1,5 @@
 version: "3.7"
-# docker/srcs/docker-yml/docker-compose-exporter.yml
+# docker/srcs/docker-compose-yml/docker-compose-exporter.yml
 
 services:
   nginx_exporter:
@@ -11,4 +11,7 @@ services:
       - web_transcendence
     volumes:
       - ${VOLUME_PATH}/exporters:/exporters
+    profiles:
+      - monitor
+
 

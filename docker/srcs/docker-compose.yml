@@ -1,62 +1,15 @@
 version: "3.7"
 # docker/srcs/docker-compose.yml
+
+# ----------------------------------------------------------
+# 他のdocker-compose-*.ymlは ./docker-compose-yml/
+# ----------------------------------------------------------
+
 volumes:
-  postgres_vol:
+  ft_transcendence_vol:
+    driver: local
     driver_opts:
-      type: none
-      device: ${VOLUME_PATH}/postgres
-      o: bind
-  pgadmin_vol:
-    driver_opts:
-      type: none
-      device: ${VOLUME_PATH}/pgadmin
-      o: bind
-  django_vol:
-    driver_opts:
-      type: none
-      device: ${VOLUME_PATH}/django
-      o: bind
-  elk_vol:
-    driver_opts:
-      type: none
-      device: ${VOLUME_PATH}/elk
-      o: bind
+      type: 'bind'
+      device: '${VOLUME_PATH}/ft_transcendence'
 
-networks:
-  web_transcendence:
-    driver: bridge
-    name: web_transcendence
-  db_transcendence:
-    driver: bridge
-    name: db_transcendence
-  elastic_transcendence:
-    driver: bridge
-    name: elastic_transcendence
-  evm_transcendence:
-    driver: bridge
-    name: evm_transcendence
-
-services:
-  nginx:
-    container_name: nginx
-    build: ./nginx
-    image: nginx
-    env_file:
-      - .env
-    ports:
-      - "${NGINX_SSL_PORT}:443"
-      - "${NGINX_PORT}:8085"
-    environment:
-      - SERVER_NAME=${SERVER_NAME}
-    volumes:
-      - ${VOLUME_PATH}/nginx/static:/static
-      - ${SSL_CERT_PATH}:/etc/nginx/ssl/nginx.crt
-      - ${SSL_KEY_PATH}:/etc/nginx/ssl/nginx.key
-      - ${VOLUME_PATH}:/container_output
-    networks:
-      - web_transcendence
-    restart: unless-stopped
-    # depends_on:
-    #   - pgadmin
-    #   - ft_django
-    init: true
+# 参考:【Compose ファイル version 3 リファレンス — Docker-docs-ja 24.0 ドキュメント】 https://docs.docker.jp/compose/compose-file/compose-file-v3.html#compose-file-v3-volume-configuration-reference

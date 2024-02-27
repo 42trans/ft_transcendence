@@ -1,6 +1,31 @@
 version: "3.7"
 # docker/srcs/docker-compose-web.yml
 services:
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    image: nginx
+    env_file:
+      - .env
+    ports:
+      - "${NGINX_SSL_PORT}:443"
+      - "${NGINX_PORT}:8085"
+    environment:
+      - SERVER_NAME=${SERVER_NAME}
+    volumes:
+      - ${VOLUME_PATH}/nginx/static:/static
+      - ${SSL_CERT_PATH}:/etc/nginx/ssl/nginx.crt
+      - ${SSL_KEY_PATH}:/etc/nginx/ssl/nginx.key
+      - ${VOLUME_PATH}:/container_output
+    networks:
+      - web_transcendence
+      - monitor_transcendence
+    restart: unless-stopped
+    depends_on:
+      - pgadmin
+      - ft_django
+    init: true
+
   frontend:
     container_name: frontend
     build: ./frontend
@@ -9,8 +34,10 @@ services:
       - .env
     networks:
       - web_transcendence
+      - monitor_transcendence
     ports:
       - "${FRONTEND_PORT}:3000"
+    restart: unless-stopped
     init: true
 
   ft_django:
@@ -27,12 +54,14 @@ services:
     networks:
       - db_transcendence
       - web_transcendence
-      - evm_transcendence
+      - blockchain_transcendence
+      - elastic_transcendence
+      - monitor_transcendence
     ports:
       - "${DJANGO_PORT}:8080"
     depends_on:
       - postgres
-    # restart: unless-stopped
+    restart: unless-stopped
     init: true
 
   postgres:
@@ -53,6 +82,8 @@ services:
       - ${VOLUME_PATH}:/container_output
     networks:
       - db_transcendence
+      - elastic_transcendence
+      - monitor_transcendence
     ports:
       - "${POSTGRES_PORT}:5432" 
     restart: unless-stopped
@@ -76,20 +107,3 @@ services:
       - web_transcendence
     restart: unless-stopped
     init: true
-
-  hardhat:
-    container_name: hardhat
-    build: ./hardhat
-    image: hardhat
-    env_file:
-      - .env
-    ports:
-      - ${HARDHAT_PORT}:3000
-    # volumes:
-    # # コンパイルされたアーティファクトを保管するディレクトリ
-    # - ./your-hardhat-project/artifacts:/app/artifacts
-    # # テスト結果を保管するディレクトリ
-    # - ./your-hardhat-project/test-results:/app/test-results
-    networks:
-      - evm_transcendence
-    

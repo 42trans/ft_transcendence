@@ -8,7 +8,10 @@ volumes:
   kibanadata:
     driver: local
 
-# TODO: port　makefileにset_envで
+# TODO: profile
+# TODO: volumes top level
+# TODO: .yml 切り分け　ディレクトリに入れる
+# 参考:【DockerでElastic Stack 8.2環境の構築 #Docker - Qiita】 https://qiita.com/ohhara_shiojiri/items/0b45fd000103b7345073
 services:
   logstash:
     depends_on:
@@ -17,6 +20,7 @@ services:
     build: ./logstash
     image: logstash_transcendence
     volumes:
+      # - elk_cert_vol:/usr/share/elasticsearch/config/certs
       - certs:/usr/share/elasticsearch/config/certs
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       # - ./logstash/pipeline:/usr/share/logstash/pipeline
@@ -27,6 +31,9 @@ services:
       - .env
     networks:
       - elastic_transcendence
+    profiles:
+      - elk
+
 
   elasticsearch:
     depends_on:
@@ -38,13 +45,12 @@ services:
     image: elasticsearch_transcendence
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
+      # - ${VOLUME_PATH}/elastic_search:/usr/share/elasticsearch/data
       - elasticsearchdata:/usr/share/elasticsearch/data
-      # - ${VOLUME_PATH}:/container_output
     env_file:
       - .env
     ports:
       - "${ELASTIC_SEARCH_PORT}:9200"
-      # - ${ES_PORT}:9200
     environment:
       - xpack.license.self_generated.type=${LICENSE}
       - cluster.name=${CLUSTER_NAME}
@@ -80,6 +86,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+    profiles:
+      - elk
 
   kibana:
     depends_on:
@@ -90,12 +98,13 @@ services:
       dockerfile: Dockerfile
     image: kibana_transcendence
     volumes:
+      # - elk_cert_vol:/usr/share/kibana/config/certs
       - certs:/usr/share/kibana/config/certs
+      # - ${VOLUME_PATH}/kibana:/usr/share/kibana/data
       - kibanadata:/usr/share/kibana/data
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
       - ${VOLUME_PATH}:/container_output
     ports:
-      # - "5601:5601"
       - ${KIBANA_PORT}:5601
     env_file:
       - .env
@@ -117,10 +126,13 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+    profiles:
+      - elk
 
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
+      # - elk_cert_vol:/usr/share/elasticsearch/config/certs
       - certs:/usr/share/elasticsearch/config/certs
     networks:
       - elastic_transcendence
@@ -168,4 +180,6 @@ services:
       interval: 1s
       timeout: 5s
       retries: 120
+    profiles:
+      - elk
 

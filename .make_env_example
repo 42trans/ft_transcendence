@@ -38,7 +38,7 @@ COMPOSE_FILES=\
 	./docker/srcs/docker-compose-web.yml:\
 	./docker/srcs/docker-compose-elk.yml:\
 	./docker/srcs/docker-compose-prometheus.yml:\
-	./docker/srcs/docker-yml/docker-compose-exporter.yml
+	./docker/srcs/docker-compose-yml/docker-compose-exporter.yml
 
 # COMPOSE_FILES=\
 # 	./docker/srcs/docker-compose.yml:\

@@ -12,25 +12,52 @@ COMPOSE_FILES_ARGS=$(subst :, -f ,$(COMPOSE_FILES))
 # -----------------------------------------------
 all: build up
 
-monitor_build:
-	$(call set_env) && docker-compose -f docker/srcs/docker-compose.yml -f docker/srcs/docker-compose-prometheus.yml up -d
-
-build:
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
-	$(call set_env) && \
-	docker-compose -f $(COMPOSE_FILES_ARGS) build
 # DEBUG: 環境変数チェック
 # echo $$SERVER_NAME 
 # DEBUG: キャッシュ不使用
 # docker-compose -f docker-compose.yml build --no-cache
+
+build:
+	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
+	$(call set_env) && \
+	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose -f $(COMPOSE_FILES_ARGS) build
+
 b:
 	make build
 
 up:
 	$(call set_env) && \
-	docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose -f $(COMPOSE_FILES_ARGS) up -d
 u:
 	make up
+
+build_up_elk:
+	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
+	$(call set_env) && \
+	COMPOSE_PROFILES=elk docker-compose -f $(COMPOSE_FILES_ARGS) build
+	$(call set_env) && \
+	COMPOSE_PROFILES=elk docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+
+build_up_blockchain:
+	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
+	$(call set_env) && \
+	COMPOSE_PROFILES=blockchain docker-compose -f $(COMPOSE_FILES_ARGS) build
+	$(call set_env) && \
+	COMPOSE_PROFILES=blockchain docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+
+build_up_monitor:
+	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
+	$(call set_env) && \
+	COMPOSE_PROFILES=monitor docker-compose -f $(COMPOSE_FILES_ARGS) build
+	$(call set_env) && \
+	COMPOSE_PROFILES=monitor docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+
+build_up_default:
+	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
+	$(call set_env) && \
+	docker-compose -f $(COMPOSE_FILES_ARGS) build
+	$(call set_env) && \
+	docker-compose -f $(COMPOSE_FILES_ARGS) up -d
 
 stop:
 	$(call set_env) && \
@@ -45,7 +72,7 @@ start:
 
 down:
 	$(call set_env) && \
-	docker-compose -f $(COMPOSE_FILES_ARGS) down -v; \
+	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose -f $(COMPOSE_FILES_ARGS) down; \
 	PATTERN='127.0.0.1 $(SERVER_NAME)'; \
 	OSTYPE=`uname -s`; \
 	if [ "$$OSTYPE" = "Darwin" ]; then \
@@ -67,19 +94,19 @@ reset_ft_django:
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up ft_django -d
 
 reset_kibana:
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down kibana -v
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down kibana
 # rm -rf mount_volume/kibana
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build kibana
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up kibana -d
 
 reset_es:
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down elasticsearch -v
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down elasticsearch
 # rm -rf mount_volume/elasticsearch
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build elasticsearch
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up elasticsearch -d
 
 reset_logstash:
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down logstash -v
+	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down logstash
 # rm -rf mount_volume/logstash
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build logstash
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up logstash -d

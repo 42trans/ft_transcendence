@@ -15,6 +15,8 @@ services:
       - elastic_transcendence
     volumes:
       - ${VOLUME_PATH}/prometheus:/prometheus
+    profiles:
+      - monitor
 
   grafana:
     image: grafana/grafana-enterprise
@@ -32,3 +34,5 @@ services:
      - GF_LOG_LEVEL=debug
     networks:
       - web_transcendence
+    profiles:
+      - monitor

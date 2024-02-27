@@ -7,9 +7,12 @@
     - Elasticsearch 8.12
       - kibana 上記に付属
     - Logstash 8.12.1
+- 公式のものがマウントでバグるので下記で試したい
+  - 参考:【DockerでElastic Stack 8.2環境の構築 #Docker - Qiita】 https://qiita.com/ohhara_shiojiri/items/0b45fd000103b7345073
 
 ## elasticsearch, kibana
 
+- マウントボリュームを使うとエラー出るバグあり。
 - .envでSTACK_VERSION=8.12.1を指定
 - 公式ドキュメントにしたがって、.env .ymlを DLしてベースに使用してplay後に
   - コンテナが3つは多いので一つに減
@@ -20,6 +23,7 @@
       - 参考:【[v8.6] Elasticsearch/Kibanaをdocker-composeでインストールする手順（試用用途） #docker-compose - Qiita】 https://qiita.com/takeo-furukubo/items/c2f194679afadc06a4e9
 
 ## Logstash
+
 - install
   - 参考:【Running Logstash on Docker | Logstash Reference [8.12] | Elastic】 https://www.elastic.co/guide/en/logstash/current/docker.html
 - config  

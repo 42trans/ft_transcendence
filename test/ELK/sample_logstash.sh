@@ -32,4 +32,4 @@ while read -r line; do
   echo "$line" | nc $LOGSTASH_HOST $LOGSTASH_PORT
 done
 
-echo "Data sent to Logstash. Check the Logstash output for results."
+# echo "Data sent to Logstash. Check the Logstash output for results."

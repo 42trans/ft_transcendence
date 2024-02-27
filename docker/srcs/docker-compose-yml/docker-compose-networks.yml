@@ -1,0 +1,19 @@
+version: "3.7"
+# docker/srcs/docker-compose-yml/docker-compose-networks.yml
+
+networks:
+  web_transcendence:
+    driver: bridge
+    name: web_transcendence
+  db_transcendence:
+    driver: bridge
+    name: db_transcendence
+  blockchain_transcendence:
+    driver: bridge
+    name: blockchain_transcendence
+  elastic_transcendence:
+    driver: bridge
+    name: elastic_transcendence
+  monitor_transcendence:
+    driver: bridge
+    name: monitor_transcendence
