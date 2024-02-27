@@ -50,4 +50,9 @@ echo "========================================================="
 echo "grafana test"
 echo "========================================================="
 bash ./test/grafana/sample_grafana.sh
+echo "${ESC}${COLOR183}"
+echo "========================================================="
+echo "hardhat test"
+echo "========================================================="
+bash ./test/hardhat/sample_hardhat.sh
 echo "${ESC}[m"

@@ -74,7 +74,10 @@ services:
     ports:
       - 3005:3000
     # volumes:
-      # - ${VOLUME_PATH}/hardhat:/hardhat
+    # # コンパイルされたアーティファクトを保管するディレクトリ
+    # - ./your-hardhat-project/artifacts:/app/artifacts
+    # # テスト結果を保管するディレクトリ
+    # - ./your-hardhat-project/test-results:/app/test-results
     networks:
       - evm_transcendence
     
