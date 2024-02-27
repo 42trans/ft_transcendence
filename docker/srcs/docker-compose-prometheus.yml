@@ -11,8 +11,8 @@ services:
       - "9090:9090"
     networks:
       - web_transcendence
-      # - db_transcendence
-    #   - elastic_transcendence
+      - db_transcendence
+      - elastic_transcendence
     volumes:
       - ${VOLUME_PATH}/prometheus:/prometheus
 
@@ -21,7 +21,7 @@ services:
     container_name: grafana
     # restart: unless-stopped
     ports:
-     - '3000:3000'
+     - '3009:3000'
     volumes:
       - ${VOLUME_PATH}/grafana:/var/lib/grafana
     env_file:

@@ -6,11 +6,17 @@ define set_env
 	OSTYPE=`uname -s` && \
 	if [ "$$OSTYPE" = "Linux" ]; then \
 		export VOLUME_PATH=$(LINUX_VOLUME_PATH) && \
-		export PGADMIN_PORT=$(LINUX_PGADMIN_PORT) && \
+		export NGINX_SSL_PORT=$(LINUX_NGINX_SSL_PORT) && \
+		export NGINX_PORT=$(LINUX_NGINX_PORT) && \
 		export DJANGO_PORT=$(LINUX_DJANGO_PORT) && \
 		export POSTGRES_PORT=$(LINUX_POSTGRES_PORT) && \
-		export NGINX_PORT=$(LINUX_NGINX_PORT) && \
-		export NGINX_SSL_PORT=$(LINUX_NGINX_SSL_PORT) && \
+		export PGADMIN_PORT=$(LINUX_PGADMIN_PORT) && \
+		export HARDHAT_PORT=$(LINUX_HARDHAT_PORT) && \
+		export ELASTIC_SEARCH_PORT=$(LINUX_ELASTIC_SEARCH_PORT) && \
+		export KIBANA_PORT=$(LINUX_KIBANA_PORT) && \
+		export LOGSTASH_PORT=$(LINUX_LOGSTASH_PORT) && \
+		export PROMETHEUS_PORT=$(LINUX_PROMETHEUS_PORT) && \
+		export GRAFANA_PORT=$(LINUX_GRAFANA_PORT) && \
 		if [ ! -d "$$VOLUME_PATH" ]; then \
 			sudo mkdir -p $$VOLUME_PATH && \
 			sudo chown $(shell whoami) $$VOLUME_PATH; \
@@ -33,10 +39,16 @@ define set_env
 		fi;\
 	elif [ "$$OSTYPE" = "Darwin" ]; then \
 		export VOLUME_PATH=$(MAC_VOLUME_PATH) && \
-		export PGADMIN_PORT=$(MAC_PGADMIN_PORT) && \
+		export NGINX_SSL_PORT=$(MAC_NGINX_SSL_PORT)&& \
+		export NGINX_PORT=$(MAC_NGINX_PORT) && \
 		export DJANGO_PORT=$(MAC_DJANGO_PORT) && \
 		export POSTGRES_PORT=$(MAC_POSTGRES_PORT) && \
-		export NGINX_PORT=$(MAC_NGINX_PORT) && \
-		export NGINX_SSL_PORT=$(MAC_NGINX_SSL_PORT); \
+		export PGADMIN_PORT=$(MAC_PGADMIN_PORT) && \
+		export HARDHAT_PORT=$(MAC_HARDHAT_PORT) && \
+		export ELASTIC_SEARCH_PORT=$(MAC_ELASTIC_SEARCH_PORT) && \
+		export KIBANA_PORT=$(MAC_KIBANA_PORT) && \
+		export LOGSTASH_PORT=$(MAC_LOGSTASH_PORT) && \
+		export PROMETHEUS_PORT=$(MAC_PROMETHEUS_PORT) && \
+		export GRAFANA_PORT=$(MAC_GRAFANA_PORT); \
 	fi
 endef
