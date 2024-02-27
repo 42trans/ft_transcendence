@@ -32,6 +32,9 @@ networks:
   elastic_transcendence:
     driver: bridge
     name: elastic_transcendence
+  evm_transcendence:
+    driver: bridge
+    name: evm_transcendence
 
 services:
   nginx:
@@ -58,34 +61,34 @@ services:
     #   - ft_django
     init: true
 
-  prometheus:
-    container_name: prometheus
-    build: ./prometheus
-    image: prometheus
-    env_file:
-      - .env
-    ports:
-      - "9090:9090"
-    networks:
-      - web_transcendence
-      # - db_transcendence
-    #   - elastic_transcendence
-    volumes:
-      - ${VOLUME_PATH}/prometheus:/prometheus
+  # prometheus:
+  #   container_name: prometheus
+  #   build: ./prometheus
+  #   image: prometheus
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "9090:9090"
+  #   networks:
+  #     - web_transcendence
+  #     # - db_transcendence
+  #   #   - elastic_transcendence
+  #   volumes:
+  #     - ${VOLUME_PATH}/prometheus:/prometheus
 
-  grafana:
-    image: grafana/grafana-enterprise
-    container_name: grafana
-    # restart: unless-stopped
-    ports:
-     - '3000:3000'
-    volumes:
-      - ${VOLUME_PATH}/grafana:/var/lib/grafana
-    env_file:
-      - .env
-    environment:
-     - GF_SERVER_ROOT_URL=http://my.grafana.server/
-     - GF_INSTALL_PLUGINS=grafana-clock-panel
-     - GF_LOG_LEVEL=debug
-    networks:
-      - web_transcendence
+  # grafana:
+  #   image: grafana/grafana-enterprise
+  #   container_name: grafana
+  #   # restart: unless-stopped
+  #   ports:
+  #    - '3000:3000'
+  #   volumes:
+  #     - ${VOLUME_PATH}/grafana:/var/lib/grafana
+  #   env_file:
+  #     - .env
+  #   environment:
+  #    - GF_SERVER_ROOT_URL=http://my.grafana.server/
+  #    - GF_INSTALL_PLUGINS=grafana-clock-panel
+  #    - GF_LOG_LEVEL=debug
+  #   networks:
+  #     - web_transcendence

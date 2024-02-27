@@ -15,6 +15,7 @@ services:
     networks:
       - db_transcendence
       - web_transcendence
+      - evm_transcendence
     ports:
       - "${DJANGO_PORT}:8080"
     depends_on:
@@ -63,3 +64,17 @@ services:
       - web_transcendence
     restart: unless-stopped
     init: true
+
+  hardhat:
+    container_name: hardhat
+    build: ./hardhat
+    image: hardhat
+    env_file:
+      - .env
+    ports:
+      - 3005:3000
+    # volumes:
+      # - ${VOLUME_PATH}/hardhat:/hardhat
+    networks:
+      - evm_transcendence
+    
