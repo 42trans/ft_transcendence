@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # pgAdminのURL
-URL="http://localhost:80"
+URL="http://localhost:${PGADMIN_PORT}"
 
 # curlコマンドを使用してHTTPヘッダーを取得
 response=$(curl -I -s $URL)

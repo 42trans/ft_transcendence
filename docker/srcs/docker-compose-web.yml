@@ -10,7 +10,7 @@ services:
     networks:
       - web_transcendence
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT}:3000"
     init: true
 
   ft_django:
@@ -68,7 +68,7 @@ services:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     ports:
-      - "80:80"
+      - "${PGADMIN_PORT}:80"
     volumes:
       - ${VOLUME_PATH}/pgadmin:/var/lib/pgadmin
     networks:
@@ -84,7 +84,7 @@ services:
     env_file:
       - .env
     ports:
-      - 3005:3000
+      - ${HARDHAT_PORT}:3000
     # volumes:
     # # コンパイルされたアーティファクトを保管するディレクトリ
     # - ./your-hardhat-project/artifacts:/app/artifacts

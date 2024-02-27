@@ -11,7 +11,6 @@
       Events
         ✔ Should emit an event on withdrawals
       Transfers
-        ✔ Should transfer the funds to the owner
 
 
 

@@ -6,7 +6,7 @@
 
 # Logstashのホストとポート
 LOGSTASH_HOST="localhost"
-LOGSTASH_PORT=5044
+# LOGSTASH_PORT=${LOGSTASH_PORT}
 ELASTIC_PASSWORD=changemeelastic
 
 # Elasticsearchからサンプルデータを取得するクエリ
@@ -20,7 +20,7 @@ QUERY='{
 first_iteration=true
 
 # Elasticsearchのサンプルデータインデックスからデータを取得
-curl -k -XGET "https://elastic:${ELASTIC_PASSWORD}@localhost:9200/kibana_sample_data_flights/_search" -H 'Content-Type: application/json' -d"$QUERY" | \
+curl -k -XGET "https://elastic:${ELASTIC_PASSWORD}@localhost:${ELASTIC_SEARCH_PORT}/kibana_sample_data_flights/_search" -H 'Content-Type: application/json' -d"$QUERY" | \
 jq -c '.hits.hits[]._source' | \
 while read -r line; do
   # 初回のみ

@@ -12,6 +12,9 @@ COMPOSE_FILES_ARGS=$(subst :, -f ,$(COMPOSE_FILES))
 # -----------------------------------------------
 all: build up
 
+monitor_build:
+	$(call set_env) && docker-compose -f docker/srcs/docker-compose.yml -f docker/srcs/docker-compose-prometheus.yml up -d
+
 build:
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
@@ -34,6 +37,7 @@ stop:
 	docker-compose -f $(COMPOSE_FILES_ARGS) stop
 s:
 	make stop
+
 
 start:
 	$(call set_env) && \
@@ -134,7 +138,7 @@ ELK_certs:
 #  test
 # -----------------------------------------------
 test_main:
-	bash ./test/main_test.sh
+	$(call set_env) && bash ./test/main_test.sh
 t:
 	make test_main
 	

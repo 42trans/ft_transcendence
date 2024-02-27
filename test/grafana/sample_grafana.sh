@@ -1,4 +1,4 @@
 #!/bin/sh
 # test/grafana/sample_grafana.sh
 
-curl http://localhost:3000/api/health
+curl http://localhost:${GRAFANA_PORT}/api/health

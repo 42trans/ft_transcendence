@@ -1,21 +1,50 @@
 # make make_envを実行して .make_envを作成してから開始ください
+# 毎回 make のたびに /etc/hosts 127.0.0.1 します
 SERVER_NAME=hioikawa.42.fr
 
+# ポート番号のリスト other/team_docs/port.md
+# Linuxの方はこちらを編集してください
 LINUX_VOLUME_PATH=/home/user42/trans_volume
-LINUX_PGADMIN_PORT=80
-LINUX_DJANGO_PORT=8080
-LINUX_POSTGRES_PORT=5433
-LINUX_NGINX_PORT=8085
 LINUX_NGINX_SSL_PORT=443
+LINUX_NGINX_PORT=8085
+LINUX_FRONTEND_PORT=3030
+LINUX_DJANGO_PORT=8086
+LINUX_POSTGRES_PORT=5433
+LINUX_PGADMIN_PORT=8087
+LINUX_HARDHAT_PORT=3031
+LINUX_ELASTIC_SEARCH_PORT=9201
+LINUX_KIBANA_PORT=5602
+LINUX_LOGSTASH_PORT=5045
+LINUX_PROMETHEUS_PORT=9091
+LINUX_GRAFANA_PORT=3032
 
+# Macの方はこちらを編集してください
 MAC_VOLUME_PATH=../../mount_volume
-MAC_PGADMIN_PORT=80
-MAC_DJANGO_PORT=8080
-MAC_POSTGRES_PORT=5433
-MAC_NGINX_PORT=8085
 MAC_NGINX_SSL_PORT=443
+MAC_NGINX_PORT=8085
+MAC_FRONTEND_PORT=3030
+MAC_DJANGO_PORT=8086
+MAC_POSTGRES_PORT=5433
+MAC_PGADMIN_PORT=8087
+MAC_HARDHAT_PORT=3031
+MAC_ELASTIC_SEARCH_PORT=9201
+MAC_KIBANA_PORT=5602
+MAC_LOGSTASH_PORT=5045
+MAC_PROMETHEUS_PORT=9091
+MAC_GRAFANA_PORT=3032
 
 COMPOSE_FILES=\
 	./docker/srcs/docker-compose.yml:\
+	./docker/srcs/docker-compose-web.yml:\
 	./docker/srcs/docker-compose-elk.yml:\
-	./docker/srcs/docker-compose-web.yml
+	./docker/srcs/docker-compose-prometheus.yml:\
+	./docker/srcs/docker-yml/docker-compose-exporter.yml
+
+# COMPOSE_FILES=\
+# 	./docker/srcs/docker-compose.yml:\
+# 	./docker/srcs/docker-compose-elk.yml:\
+# 	./docker/srcs/docker-compose-web.yml
+
+# COMPOSE_FILES=\
+# 	./docker/srcs/docker-compose.yml:\
+# 	./docker/srcs/docker-compose-web.yml
