@@ -22,7 +22,9 @@
   - Node.js 20で TypeScript で　init (公式の推奨)
     - 参考:【Getting started with Hardhat | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/hardhat-runner/docs/getting-started#installation
     - 参考:【TypeScript（タイプスクリプト）とは？JavaScriptとの違いやできること、メリットなど初心者にわかりやすく解説！】 https://jitera.com/ja/insights/4795
-
+- test
+  - 参考:【Getting started with Hardhat | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/hardhat-runner/docs/getting-started#testing-your-contracts
+  
 ## 参考資料
 
 - 開発環境
