@@ -7,7 +7,6 @@
     Withdrawals
       Validations
         ✔ Should revert with the right error if called too soon
-        ✔ Should revert with the right error if called from another account
         ✔ Shouldn't fail if the unlockTime has arrived and the owner calls it
       Events
         ✔ Should emit an event on withdrawals

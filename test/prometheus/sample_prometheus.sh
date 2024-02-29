@@ -46,16 +46,70 @@ else
     echo "ng:"
 fi
 
-# Django も同様のテスト有り
-echo -e "\ncurl -k https://localhost/metrics | head -1" 
+# --------------------------------------------
+# each metrics
+# --------------------------------------------
+echo -e "\n nginx metrics test: curl http://loclshost:9113/metrics"
+FL=$(curl -s http://localhost:9113/metrics | head -1)
+# 1行目が期待通りかどうか確認
+if [[ "$FL" == "# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles." ]]; then  
+    echo "${ESC}${GREEN}"
+    echo "ok: $FL"
+    echo "${ESC}${COLOR183}"
+else
+    echo "${ESC}${RED}"
+    echo "ng: $FL"
+    echo "${ESC}${COLOR183}"
+fi
+
+echo -e "\n frontend metrics test: curl -k http://localhost:3030/metrics | head -1" 
+FL=$(curl -ks http://localhost:3030/metrics | head -1)
+# 1行目が期待通りかどうか確認
+if [[ "$FL" == "# HELP process_cpu_user_seconds_total Total user CPU time spent in seconds." ]]; then  
+    echo "${ESC}${GREEN}"
+    echo "ok: $FL"
+    echo "${ESC}${COLOR183}"
+else
+    echo "${ESC}${RED}"
+    echo "ng: $FL"
+    echo "${ESC}${COLOR183}"
+fi
+
+echo -e "\n Django metrics: curl -k https://localhost/metrics | head -1" 
 FL=$(curl -ks https://localhost/metrics | head -1)
 # 1行目が期待通りかどうか確認
 if [[ "$FL" == "# HELP python_gc_objects_collected_total Objects collected during gc" ]]; then  
     echo "${ESC}${GREEN}"
-    echo "ok"
-    echo "${ESC}${COLOR180}"
+    echo "ok: $FL"
+    echo "${ESC}${COLOR183}"
 else
     echo "${ESC}${RED}"
     echo "ng: $FL"
-    echo "${ESC}${COLOR180}"
+    echo "${ESC}${COLOR183}"
+fi
+
+echo -e "\n docker container: cadvisor metrics: curl http://localhost:8080/metrics | head -1" 
+FL=$(curl -s http://localhost:8080/metrics | head -1)
+# 1行目が期待通りかどうか確認
+if [[ "$FL" == "# HELP cadvisor_version_info A metric with a constant '1' value labeled by kernel version, OS version, docker version, cadvisor version & cadvisor revision." ]]; then  
+    echo "${ESC}${GREEN}"
+    echo "ok: $FL"
+    echo "${ESC}${COLOR183}"
+else
+    echo "${ESC}${RED}"
+    echo "ng: $FL"
+    echo "${ESC}${COLOR183}"
+fi
+
+echo -e "\n host: node-exporter metrics: curl http://localhost:9100/metrics | head -1" 
+FL=$(curl -s http://localhost:9100/metrics | head -1)
+# 1行目が期待通りかどうか確認
+if [[ "$FL" == "# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles." ]]; then  
+    echo "${ESC}${GREEN}"
+    echo "ok: $FL"
+    echo "${ESC}${COLOR183}"
+else
+    echo "${ESC}${RED}"
+    echo "ng: $FL"
+    echo "${ESC}${COLOR183}"
 fi

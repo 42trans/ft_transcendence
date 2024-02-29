@@ -19,5 +19,11 @@ scrape_configs:
     scheme: 'http'
     static_configs:
       - targets: ['frontend:3000']
-
+  - job_name: 'node-exporter'
+    static_configs:
+    - targets: ['node-exporter:9100']
+  # cAdvisorの設定をここに挿入
+  - job_name: 'cadvisor'
+    static_configs:
+    - targets: ['cadvisor:8080']
 # docker exec uwsgi-django sh -c 'curl http://localhost:8000/metrics'

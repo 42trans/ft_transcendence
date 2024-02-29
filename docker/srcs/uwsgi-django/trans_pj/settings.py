@@ -11,6 +11,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -82,15 +83,28 @@ WSGI_APPLICATION = 'trans_pj.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+# 		# -------------------------
+# 		# Prometheus
+# 		# -------------------------
+# 		'ENGINE': 'django_prometheus.db.backends.sqlite3',
+#         # 'ENGINE': 'django.db.backends.sqlite3',
+# 		# -------------------------
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
+
 DATABASES = {
     'default': {
-		# -------------------------
-		# Prometheus
-		# -------------------------
-		'ENGINE': 'django_prometheus.db.backends.sqlite3',
-        # 'ENGINE': 'django.db.backends.sqlite3',
-		# -------------------------
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'postgres',  # Docker内のPostgreSQLサービス名
+        'PORT': '5432',
     }
 }
 

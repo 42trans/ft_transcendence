@@ -13,4 +13,35 @@ services:
       - ${VOLUME_PATH}/exporters:/exporters
     profiles:
       - monitor
-      
+
+  node-exporter:
+    image: prom/node-exporter:v1.0.1
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points'
+      - '^/(sys|proc|dev|host|etc)($|/)'
+    ports:
+      - 9100:9100
+    networks:
+      - monitor_transcendence
+    profiles:
+      - monitor
+
+  cadvisor:
+    image: gcr.io/google-containers/cadvisor:v0.36.0
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - 8080:8080
+    networks:
+      - monitor_transcendence
+    profiles:
+      - monitor
