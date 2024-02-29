@@ -6,9 +6,6 @@
 ## 方針
 
 - Docker hub公式イメージをそのまま使ってみるところから開始。
-- node-exporterを監視したいコンテナに入れる
-  - Node Exporter: Linuxホストの様々なシステムメトリクスを収集するためのツール
-  - 独立したコンテナで運用
 
 ## 作業: Prometheus  
 
@@ -18,11 +15,6 @@
 
 ### exporter
 
-- linux用（各コンテナ共通）　node-exporter
-  - 参考:【今日から始めるPrometheusによるシステム監視(3) 〜Prometheusを使ってみよう〜 | さくらのナレッジ】 https://knowledge.sakura.ad.jp/27566/
-  - dl
-    - 参考:【prom/node-exporter - Docker Image | Docker Hub】 https://hub.docker.com/r/prom/node-exporter
-    
 - Django
   - 設定はここの通りに
     - 参考:【korfuri/django-prometheus: Export Django monitoring metrics for Prometheus.io】 https://github.com/korfuri/django-prometheus

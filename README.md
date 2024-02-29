@@ -3,6 +3,10 @@
 
 - `⌘ + Shift + v`でプレビュー表示
 
+## test page
+
+- [testpageURL.md](other/team_docs/testpageURL.md)
+
 ## チーム内のドキュメント `other/team_docs/`
 
 - [subject.pdf](other/subject/en.subject.pdf)  

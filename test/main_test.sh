@@ -12,6 +12,11 @@ fi
 echo "${ESC}${BG_PINK}"
 echo "start test"
 echo "${ESC}[m"
+echo "${ESC}${COLOR201}"
+echo "========================================================="
+echo "nginx test"
+echo "========================================================="
+bash ./test/nginx/sample_nginx.sh
 echo "${ESC}${COLOR198}"
 echo "========================================================="
 echo "postgres test"
