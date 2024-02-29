@@ -8,6 +8,10 @@ if [ -z "$COLOR_SH" ]; then
   source "${TEST_DIR}color.sh"
   COLOR_SH=true
 fi
+souce docker/srcs/.env
+#=======================================================
+# インストールが必要です
+# brew install postgresql
 #=======================================================
 # # uwsgi-django コンテナに入る
 # docker exec -it uwsgi-django bash 
@@ -97,8 +101,6 @@ echo -e "\ntest Docker to http: GET http://uwsgi-django:8001/api/status/"
 RESPONSE_CODE=0
 RESPONSE_CODE=$(docker exec -it nginx bash -c "curl -o /dev/null -s -w %{http_code} -k -H "Host:localhost" http://uwsgi-django:8001/api/status/")
 # ----------------
-#  DEBUG
-# ----------------
 # -v で出力　※RESPONSE_CODEの値に余計な出力が入るので 200 でもOKは出力されない
 # RESPONSE_CODE=$(docker exec -it nginx bash -c "curl -v -o /dev/null -s -w %{http_code} -k -H "Host:localhost" http://uwsgi-django:8001/api/status/")
 # echo "res  $RESPONSE_CODE"
@@ -115,11 +117,11 @@ fi
 
 
 # ----------------
-#  Prometheus
+#  metrics for prometheus
 # ----------------
 # docker exec uwsgi-django sh -c 'curl http://localhost:8000/metrics'
 # ----------------
-echo -e "curl -k https://localhost/metrics | head -1" 
+echo -e "test metrics: curl -k https://localhost/metrics | head -1" 
 FL=$(curl -ks https://localhost/metrics | head -1)
 # 1行目が期待通りかどうか確認
 if [[ "$FL" == "# HELP python_gc_objects_collected_total Objects collected during gc" ]]; then  
@@ -131,3 +133,9 @@ else
     echo "ng: $FL"
     echo "${ESC}${COLOR180}"
 fi
+
+# ----------------
+#  db 
+# ----------------
+echo -e "DB test: test/django/sample_db.sh" 
+sh test/django/sample_db.sh docker/srcs/.env

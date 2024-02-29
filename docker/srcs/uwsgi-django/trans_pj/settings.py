@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'trans_pj', 
 	'django_prometheus',
 ]
 
@@ -99,7 +100,12 @@ WSGI_APPLICATION = 'trans_pj.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+		# -------------------------
+# 		# Prometheus
+# 		# -------------------------
+		"ENGINE": "django_prometheus.db.backends.postgresql",
+        # 'ENGINE': 'django.db.backends.postgresql',
+# 		# -------------------------
         'NAME': os.environ.get('POSTGRES_DB'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),

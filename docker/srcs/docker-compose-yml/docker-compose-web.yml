@@ -42,30 +42,6 @@ services:
     restart: unless-stopped
     init: true
 
-  # ft_django:
-  #   container_name: ft_django
-  #   build: ./ft_django
-  #   image: ft_django
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ${VOLUME_PATH}/ft_django/code:/code
-  #     - ${VOLUME_PATH}/ft_django/static:/static/
-  #     - ${VOLUME_PATH}/ft_django/uwsgi:/etc/uwsgi
-  #     - ${VOLUME_PATH}:/container_output
-  #   networks:
-  #     - db_transcendence
-  #     - web_transcendence
-  #     - blockchain_transcendence
-  #     - elastic_transcendence
-  #     - monitor_transcendence
-  #   ports:
-  #     - "${DJANGO_PORT}:8000"
-  #   depends_on:
-  #     - postgres
-  #   restart: unless-stopped
-  #   init: true
-
   uwsgi-django:
     container_name: uwsgi-django
     build: ./uwsgi-django
@@ -86,6 +62,11 @@ services:
       - postgres
     restart: unless-stopped
     init: true
+  #   volumes:
+  #     - ${VOLUME_PATH}/ft_django/code:/code
+  #     - ${VOLUME_PATH}/ft_django/static:/static/
+  #     - ${VOLUME_PATH}/ft_django/uwsgi:/etc/uwsgi
+  #     - ${VOLUME_PATH}:/container_output
 
   postgres:
     container_name: postgres
