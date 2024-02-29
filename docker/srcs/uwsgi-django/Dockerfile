@@ -1,4 +1,4 @@
-# docker/srcs/uwsgi_django/Dockerfile
+# docker/srcs/uwsgi-django/Dockerfile
 FROM python:3.12-bullseye
 RUN apt-get update && apt-get install -y \
 	tzdata \
@@ -21,5 +21,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /code/
 
 # uWSGIを設定
-# CMD ["uwsgi", "--http", "0.0.0.0:8000", "--module", "uwsgi_django.wsgi:application", "--processes", "4", "--threads", "2"]
+# CMD ["uwsgi", "--http", "0.0.0.0:8000", "--module", "uwsgi-django.wsgi:application", "--processes", "4", "--threads", "2"]
 CMD ["uwsgi", "--ini", "/code/uwsgi.ini"]

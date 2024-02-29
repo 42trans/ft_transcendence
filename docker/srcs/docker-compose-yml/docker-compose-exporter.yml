@@ -13,5 +13,4 @@ services:
       - ${VOLUME_PATH}/exporters:/exporters
     profiles:
       - monitor
-
-
+      

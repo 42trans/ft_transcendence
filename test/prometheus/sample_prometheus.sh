@@ -1,6 +1,13 @@
 #!/bin/bash
 # test/prometheus/sample_prometheus.sh
-
+TEST_DIR="test/"
+#=======================================================
+# include
+#=======================================================
+if [ -z "$COLOR_SH" ]; then
+  source "${TEST_DIR}color.sh"
+  COLOR_SH=true
+fi
 
 PROMETHEUS_URL="http://localhost:${PROMETHEUS_PORT}"
 NGINX_URL="http://localhost:${NGINX_PORT}"
@@ -37,4 +44,18 @@ if [ "$value" == "1" ]; then
     echo "ok: nginx up=1"
 else
     echo "ng:"
+fi
+
+# Django も同様のテスト有り
+echo -e "\ncurl -k https://localhost/metrics | head -1" 
+FL=$(curl -ks https://localhost/metrics | head -1)
+# 1行目が期待通りかどうか確認
+if [[ "$FL" == "# HELP python_gc_objects_collected_total Objects collected during gc" ]]; then  
+    echo "${ESC}${GREEN}"
+    echo "ok"
+    echo "${ESC}${COLOR180}"
+else
+    echo "${ESC}${RED}"
+    echo "ng: $FL"
+    echo "${ESC}${COLOR180}"
 fi

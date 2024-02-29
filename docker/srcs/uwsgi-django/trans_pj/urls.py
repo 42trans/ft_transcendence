@@ -1,3 +1,4 @@
+# docker/srcs/uwsgi-django/trans_pj/urls.py
 """
 URL configuration for trans_pj project.
 
@@ -15,10 +16,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from . import views  # views.pyからビューをインポート
 
 urlpatterns = [
+    path('', include('django_prometheus.urls')),
     path('admin/', admin.site.urls),
     path('api/status/', views.api_status, name='api_status'),
     path('', views.index, name='index'),

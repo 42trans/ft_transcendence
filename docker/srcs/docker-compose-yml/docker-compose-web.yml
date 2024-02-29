@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
     depends_on:
       - pgadmin
-      - uwsgi_django
+      - uwsgi-django
       # - ft_django
     init: true
 
@@ -38,6 +38,7 @@ services:
       - monitor_transcendence
     ports:
       - "${FRONTEND_PORT}:3000"
+      - "3090:3001"
     restart: unless-stopped
     init: true
 
@@ -65,10 +66,10 @@ services:
   #   restart: unless-stopped
   #   init: true
 
-  uwsgi_django:
-    container_name: uwsgi_django
-    build: ./uwsgi_django
-    image: uwsgi_django
+  uwsgi-django:
+    container_name: uwsgi-django
+    build: ./uwsgi-django
+    image: uwsgi-django
     env_file:
       - .env
     networks:

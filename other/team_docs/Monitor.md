@@ -6,6 +6,9 @@
 ## 方針
 
 - Docker hub公式イメージをそのまま使ってみるところから開始。
+- node-exporterを監視したいコンテナに入れる
+  - Node Exporter: Linuxホストの様々なシステムメトリクスを収集するためのツール
+  - 独立したコンテナで運用
 
 ## 作業: Prometheus  
 
@@ -15,8 +18,17 @@
 
 ### exporter
 
+- linux用（各コンテナ共通）　node-exporter
+  - 参考:【今日から始めるPrometheusによるシステム監視(3) 〜Prometheusを使ってみよう〜 | さくらのナレッジ】 https://knowledge.sakura.ad.jp/27566/
+  - dl
+    - 参考:【prom/node-exporter - Docker Image | Docker Hub】 https://hub.docker.com/r/prom/node-exporter
+    
 - Django
-  - 参考:【korfuri/django-prometheus: Prometheus.io の Django モニタリング メトリクスをエクスポートする】 https://github.com/korfuri/django-prometheus
+  - 設定はここの通りに
+    - 参考:【korfuri/django-prometheus: Export Django monitoring metrics for Prometheus.io】 https://github.com/korfuri/django-prometheus
+  - 参考にしたもの
+    - 参考:【korfuri/django-prometheus: Prometheus.io の Django モニタリング メトリクスをエクスポートする】 https://github.com/korfuri/django-prometheus
+    - 参考:【uwsgi を使用して Django で実行する · 問題 #35 · korfuri/django-prometheus】 https://github.com/korfuri/django-prometheus/issues/35
 - nginx
   - 参考:【Ubuntu 18.04にPrometheusを導入してWebサーバー(nginx)の死活監視をしてみる #Ubuntu - Qiita】 <https://qiita.com/naga3/items/4dc7929521c859078e9f>
     - nginx.conf
@@ -31,6 +43,9 @@
     - 参考:【Ubuntu 18.04にPrometheusを導入してWebサーバー(nginx)の死活監視をしてみる #Ubuntu - Qiita】 <https://qiita.com/naga3/items/4dc7929521c859078e9f>
     - 参考:【nginxinc/nginx-prometheus-exporter: NGINX および NGINX Plus 用の NGINX Prometheus エクスポーター】 <https://github.com/nginxinc/nginx-prometheus-exporter>
     - 参考:【nginxinc/nginx-prometheus-exporter: NGINX Prometheus Exporter for NGINX and NGINX Plus】 <https://github.com/nginxinc/nginx-prometheus-exporter>
+    - 参考:【Configuration | Prometheus】 https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
+    - 参考:【リリース 2.50 の prometheus/config/testdata/conf.good.yml · prometheus/prometheus】 https://github.com/prometheus/prometheus/blob/release-2.50/config/testdata/conf.good.yml
+    - 参考:【Prometheus.ymlの記述内容を解説する #初心者向け - Qiita】 https://qiita.com/mtsiga/items/f456721149f863ac0346
   - Grafana
     - 参考:【Configure a Grafana Docker image | Grafana documentation】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/>
 

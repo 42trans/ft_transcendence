@@ -6,6 +6,10 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 # npmの依存関係をインストール
 RUN npm install
+
+# prom-clientのインストール
+RUN npm install prom-client
+
 # Hardhatプロジェクトの残りの部分を/appにコピーします
 COPY srcs/ ./
 

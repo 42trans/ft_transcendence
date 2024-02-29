@@ -1,6 +1,5 @@
 # docker/srcs/prometheus/prometheus.yml
 global:
-  # デフォルトのスクレイプ間隔
   scrape_interval: 15s 
 
 scrape_configs:
@@ -9,7 +8,11 @@ scrape_configs:
     static_configs:
       - targets: ['nginx_exporter:9113']
   - job_name: 'django'
+    metrics_path: '/metrics'
+    scheme: 'https'
     static_configs:
-      # - targets: ['http://ft_django:8086']
-      - targets: ['ft_django:8000']
-      # - targets: ['127.0.0.1:8086']
+      - targets: ['nginx:443']
+    tls_config:
+      insecure_skip_verify: true
+
+# docker exec uwsgi-django sh -c 'curl http://localhost:8000/metrics'

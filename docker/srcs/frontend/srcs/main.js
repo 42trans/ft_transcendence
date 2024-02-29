@@ -2,7 +2,14 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const server = http.createServer((req, res) => {
+
+const prom_client = require('prom-client')
+const collectDefaultMetrics = prom_client.collectDefaultMetrics;
+// メトリクス収集を開始
+collectDefaultMetrics({ timeout: 5000 }); // メトリクスを5秒ごとに収集
+
+
+const server = http.createServer(async (req, res) => {
   if (req.url === '/') {
     // ルートパスへのリクエストでindex.htmlを提供
     fs.readFile(path.join(__dirname, 'index.html'), (err, content) => {
@@ -10,6 +17,9 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(content);
     });
+  } else if (req.url === '/metrics'){
+    res.setHeader('Content-Type', prom_client.register.contentType);
+    res.end(await prom_client.register.metrics());
   } else if (req.url.match('\.css$')) {
     // CSSファイルのリクエストに対する応答
     const cssPath = path.join(__dirname, 'public', req.url);

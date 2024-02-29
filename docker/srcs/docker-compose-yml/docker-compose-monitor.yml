@@ -16,7 +16,7 @@ services:
       - monitor_transcendence
     volumes:
       - ${VOLUME_PATH}/prometheus:/prometheus
-      # - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     # command:
     #   - '--config.file=/etc/prometheus/prometheus.yml'
     profiles:
