@@ -1,8 +1,12 @@
 FROM python:3.12-bullseye
 RUN apt-get update && apt-get install -y \
 	tzdata \
+	curl \
+	net-tools \
 	postgresql-client \
 	&& rm -rf /var/lib/apt/lists/*
+# 環境変数を設定（Pythonのバッファリングを無効化）
+ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED=1
 RUN mkdir /code
 WORKDIR /code
@@ -18,3 +22,4 @@ COPY django_entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["uwsgi","--ini","/etc/uwsgi/uwsgi.ini"]
+

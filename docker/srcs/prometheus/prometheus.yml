@@ -8,3 +8,8 @@ scrape_configs:
     scheme: 'http'
     static_configs:
       - targets: ['nginx_exporter:9113']
+  - job_name: 'django'
+    static_configs:
+      # - targets: ['http://ft_django:8086']
+      - targets: ['ft_django:8000']
+      # - targets: ['127.0.0.1:8086']

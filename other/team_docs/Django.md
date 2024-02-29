@@ -3,15 +3,21 @@
 ## 方針
 
 - Docker hub公式イメージのソースをカスタマイズして使う
-- uWSGIを選択
+- uWSGIサーバー上で Django
   - 多機能
   - CのOSS
+- 静的ページ作成(html,css), 3Dは別コンテナに
+
+## 作業ログ
+
+- inception基準でプロトタイプ作成
+- 2/29 コンテナ間でcurlが通らなくて一日ハマり。
+  - 1から別コンテナ作ってシンプルな構成でチェックした
+  - socket,httpの両方を.initに記載することで解決
 
 ## memo
 
 - pythonのコンテナを立てる。django単体のimageはない。
-- bootstrapはdjangoのテンプレートとして入れた
-- uWSGIは別コンテナにするのか後で考える
 
 ## 参考資料
 

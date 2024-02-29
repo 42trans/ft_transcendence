@@ -1,3 +1,4 @@
+.DS_Store
 .gitignore
 # .dockerignore
 .env
@@ -37,3 +38,4 @@ memo/
 
 # git rm -r --cached dirname
 # git rm -r --cached sample
+node_modules

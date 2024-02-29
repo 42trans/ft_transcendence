@@ -11,7 +11,8 @@
 |        | nginx             |  443 |  443 |  443 |             |
 |        | nginx stub_status |      |      | 8095 |             |
 | Web,3D | frontend          | 3030 | 3030 | 3000 |             |
-| Web    | ft_django         | 8086 | 8086 | 8080 |             |
+| Web    | uwsgi_django/uWSGI| 8086 | 8086 | 8000 |             |
+| 未 Web  | uwsgi_django/http| 8096 | 8096 | 8001 |             |
 | Web    | postgres          | 5433 | 5433 | 5432 |             |
 | Web    | pgadmin           | 8087 | 8087 |   80 |             |
 | Web    | hardhat           | 3031 | 3031 | 3000 | Blockchain  |

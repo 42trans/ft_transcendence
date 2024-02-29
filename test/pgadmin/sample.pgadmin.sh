@@ -1,4 +1,13 @@
 #!/bin/sh
+TEST_DIR="test/"
+#=======================================================
+# include
+#=======================================================
+if [ -z "$COLOR_SH" ]; then
+source "${TEST_DIR}color.sh"
+COLOR_SH=true
+fi
+#=======================================================
 
 # pgAdminのURL
 URL="http://localhost:${PGADMIN_PORT}"
@@ -16,11 +25,23 @@ location=$(echo "$response" | grep Location | awk '{print $2}')
 if [ "$status_code" = "302" ]; then
     # リダイレクト先が/loginであることを確認
     if echo "$location" | grep -q "/login"; then
-        echo "ok: Redirect先: 期待"/login?next=%2F": 結果:$location"
+        echo "${ESC}${GREEN}"
+
+        echo "ok: Redirect先"
+        echo "期待"/login?next=%2F""
+        echo "結果:$location"
         echo "Status code: 期待"302": 結果:$status_code"
+        echo "${ESC}${COLOR180}"
+
     else
+        echo "${ESC}${RED}"
+
         echo "ng location: $location"
+        echo "${ESC}${COLOR180}"
+        echo "${ESC}${COLOR180}"
     fi
 else
+        echo "${ESC}${RED}"
     echo "ng status code: $status_code"
+        echo "${ESC}${COLOR180}"
 fi

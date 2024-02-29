@@ -10,11 +10,15 @@ services:
     ports:
       - "${PROMETHEUS_PORT}:9090"
     networks:
-      - web_transcendence
+      # - web_transcendence
       - db_transcendence
-      - elastic_transcendence
+      # - elastic_transcendence
+      - monitor_transcendence
     volumes:
       - ${VOLUME_PATH}/prometheus:/prometheus
+      # - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    # command:
+    #   - '--config.file=/etc/prometheus/prometheus.yml'
     profiles:
       - monitor
 
@@ -34,5 +38,6 @@ services:
      - GF_LOG_LEVEL=debug
     networks:
       - web_transcendence
+      - monitor_transcendence
     profiles:
       - monitor

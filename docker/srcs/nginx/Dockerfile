@@ -4,6 +4,9 @@ RUN apt-get update && \
 	nginx \
 	gettext-base \
 	curl \
+	uwsgi \
+	telnet \
+	inetutils-ping \
 	&& \
 	rm -rf /var/lib/apt/lists/*
 # SSL用ディレクトリ

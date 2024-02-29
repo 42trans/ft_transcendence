@@ -6,19 +6,25 @@
 ## 方針
 
 - Docker hub公式イメージをそのまま使ってみるところから開始。
-- 　
 
-## 作業
+## 作業: Prometheus  
 
-- exporter
-  - nginx
-    - 参考:【Ubuntu 18.04にPrometheusを導入してWebサーバー(nginx)の死活監視をしてみる #Ubuntu - Qiita】 <https://qiita.com/naga3/items/4dc7929521c859078e9f>
-      - nginx.conf
-        - stub_status on;のロケーションを追加
-        - 参考:【nginx-prometheus-exporterをインストールする - kk_AtakaのScrapbox】 <https://scrapbox.io/gosyujin/nginx-prometheus-exporter%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B>
-        - 参考:【Module ngx_http_stub_status_module】 <https://nginx.org/en/docs/http/ngx_http_stub_status_module.html#stub_status>
+- install
+  - imageをインストールしただけ
+- exporter関連(下記参照)
 
-## 参考資料
+### exporter
+
+- Django
+  - 参考:【korfuri/django-prometheus: Prometheus.io の Django モニタリング メトリクスをエクスポートする】 https://github.com/korfuri/django-prometheus
+- nginx
+  - 参考:【Ubuntu 18.04にPrometheusを導入してWebサーバー(nginx)の死活監視をしてみる #Ubuntu - Qiita】 <https://qiita.com/naga3/items/4dc7929521c859078e9f>
+    - nginx.conf
+      - stub_status on;のロケーションを追加
+      - 参考:【nginx-prometheus-exporterをインストールする - kk_AtakaのScrapbox】 <https://scrapbox.io/gosyujin/nginx-prometheus-exporter%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B>
+      - 参考:【Module ngx_http_stub_status_module】 <https://nginx.org/en/docs/http/ngx_http_stub_status_module.html#stub_status>
+
+### 参考資料:install, setup
 
 - install, setup
   - Prometheus
@@ -30,5 +36,3 @@
 
 - PromQL
   - 参考:【Querying basics | Prometheus】 <https://prometheus.io/docs/prometheus/latest/querying/basics/>
-
-## カスタマイズ内容

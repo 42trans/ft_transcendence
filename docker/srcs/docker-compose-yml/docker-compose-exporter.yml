@@ -8,7 +8,7 @@ services:
       - "9113:9113"
     command: ["-nginx.scrape-uri=http://localhost:${NGINX_PORT}/stub_status"]
     networks:
-      - web_transcendence
+      - monitor_transcendence
     volumes:
       - ${VOLUME_PATH}/exporters:/exporters
     profiles:

@@ -6,8 +6,6 @@ from django.http import JsonResponse
 def index(request):
     return HttpResponse("<h1>[Django]</h1> <p>index pageです</p>")
 
-# def bootstrap_test(request):
-#     return render(request, 'bootstrap_test.html')
 def api_status(request):
     # 必要なロジックを実装し、適切なレスポンスを返します
     data = {'api/status/': 'OK'}

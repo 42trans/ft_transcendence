@@ -1,3 +1,4 @@
+#!/bin/bash
 TEST_DIR="test/"
 #=======================================================
 # include
@@ -6,8 +7,8 @@ if [ -z "$COLOR_SH" ]; then
   source "${TEST_DIR}color.sh"
   COLOR_SH=true
 fi
-source "../.make_env"
 #=======================================================
+
 echo "${ESC}${BG_PINK}"
 echo "start test"
 echo "${ESC}[m"
@@ -16,9 +17,9 @@ echo "========================================================="
 echo "postgres test"
 echo "========================================================="
 bash ./test/postgres/sample.sh
-echo "${ESC}${COLOR180}"
+echo "${ESC}${COLOR183}"
 echo "========================================================="
-echo "bootstrap test"
+echo "frontend: bootstrap test"
 echo "========================================================="
 bash ./test/frontend/bootstrap/sample_bootstrap.sh
 echo "${ESC}${COLOR180}"
