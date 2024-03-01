@@ -31,12 +31,15 @@ up:
 u:
 	make up
 
-build_up_elk:
+up_elk:
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
-	COMPOSE_PROFILES=elk docker-compose -f $(COMPOSE_FILES_ARGS) build
+	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up
+
+setup_elk:
+	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
-	COMPOSE_PROFILES=elk docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up setup
 
 build_up_blockchain:
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts

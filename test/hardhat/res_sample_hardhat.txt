@@ -1,3 +1,6 @@
+Downloading compiler 0.8.24
+Downloading compiler 0.8.24
+Compiled 1 Solidity file successfully (evm target: paris).
 
 
   Lock

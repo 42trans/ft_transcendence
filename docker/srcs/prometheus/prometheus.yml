@@ -26,4 +26,7 @@ scrape_configs:
   - job_name: 'cadvisor'
     static_configs:
     - targets: ['cadvisor:8080']
-# docker exec uwsgi-django sh -c 'curl http://localhost:8000/metrics'
+  - job_name: 'elasticsearch-exporter'
+    static_configs:
+      - targets: ['elasticsearch-exporter:9114']
+

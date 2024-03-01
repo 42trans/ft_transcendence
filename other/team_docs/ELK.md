@@ -2,15 +2,27 @@
 
 ## 方針
 
+### 新
+- 公式のものを試した結果、マウントでバグるので下記に変更
+  - 参考:【deviantony/docker-elk: The Elastic stack (ELK) powered by Docker and Compose.】 https://github.com/deviantony/docker-elk?tab=readme-ov-file
+
+### 旧（公式イメージベース）
 - Docker hub公式イメージをそのまま使ってみるところから開始。少しずつカスタムしていきたい。
   - currentを使う。
     - Elasticsearch 8.12
       - kibana 上記に付属
     - Logstash 8.12.1
-- 公式のものがマウントでバグるので下記で試したい
-  - 参考:【DockerでElastic Stack 8.2環境の構築 #Docker - Qiita】 https://qiita.com/ohhara_shiojiri/items/0b45fd000103b7345073
+
+## カスタマイズ内容
+
+### 旧
+- 公式の.ymlからサーバー数を1に減
+- kibana, logsteash
+  - サーバー起動の完了を(logを見なくても一目で)ホストに伝えるためにファイルを出力
 
 ## elasticsearch, kibana
+
+### 旧コンテナ
 
 - マウントボリュームを使うとエラー出るバグあり。
 - .envでSTACK_VERSION=8.12.1を指定
@@ -24,6 +36,8 @@
 
 ## Logstash
 
+#### 旧コンテナ
+
 - install
   - 参考:【Running Logstash on Docker | Logstash Reference [8.12] | Elastic】 https://www.elastic.co/guide/en/logstash/current/docker.html
 - config  
@@ -31,6 +45,8 @@
   - 参考:【logstash.yml | Logstash Reference [8.12] | Elastic】 https://www.elastic.co/guide/en/logstash/8.12/logstash-settings-file.html 
 
 ## 参考資料
+
+### 旧コンテナ時参考資料
 
 - 初歩: ELK Stackとは
   - 参考:【【初心者向け】Elastic Stackについて知ろう | DevelopersIO】 <https://dev.classmethod.jp/articles/elastic-stack-for-beginners/>
@@ -47,8 +63,3 @@
 - tutorial
   - 参考:【エラスティックサーチとは何ですか? | Elasticsearch ガイド [8.12] | 弾性のある】 <https://www.elastic.co/guide/en/elasticsearch/reference/8.12/elasticsearch-intro.html>  
 - その他
-
-## カスタマイズ内容
-- 公式の.ymlからサーバー数を1に減
-- kibana, logsteash
-  - サーバー起動の完了を(logを見なくても一目で)ホストに伝えるためにファイルを出力

@@ -45,3 +45,13 @@ services:
       - monitor_transcendence
     profiles:
       - monitor
+  
+  elasticsearch-exporter:
+    image: quay.io/prometheuscommunity/elasticsearch-exporter:latest
+    command:
+     - '--es.uri=http://elasticsearch:9200'
+    restart: always
+    networks:
+      - monitor_transcendence
+    ports:
+    - "9114:9114"

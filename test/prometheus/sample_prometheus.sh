@@ -113,3 +113,18 @@ else
     echo "ng: $FL"
     echo "${ESC}${COLOR183}"
 fi
+
+echo -e "\n ELK metrics: curl http://localhost:9114/metrics | head -1" 
+FL=$(curl -s http://localhost:9114/metrics | head -1)
+# 1行目が期待通りかどうか確認
+if [[ "$FL" == "# HELP elasticsearch_clusterinfo_last_retrieval_failure_ts Timestamp of the last failed cluster info retrieval" ]]; then  
+    echo "${ESC}${GREEN}"
+    echo "ok: $FL"
+    echo "${ESC}${COLOR183}"
+else
+    echo "${ESC}${RED}"
+    echo "ng: $FL"
+    echo "${ESC}${COLOR183}"
+fi
+
+# http://localhost:9114/metrics

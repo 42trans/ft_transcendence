@@ -22,7 +22,12 @@
 | Devops   | kibana                | 5602 | 5602 | 5601 | ELK         |
 | Devops   | logstash              | 5045 | 5045 | 5044 | ELK         |
 |          |                       |      |      |      |             |
-| Devops   | prometheus            | 9091 | 9091 | 9091 | Monitor     |
+| Devops   | elasticsearch         | 9201 | 9201 | 9200 | ELK         |
+| Devops   | kibana                | 5602 | 5602 | 5601 | ELK         |
+| Devops   | logstash              | 5045 | 5045 | 5044 | ELK         |
+|          |                       |      |      |      |             |
+| Devops   | prometheus            | 9091 | 9091 | 9090 | Monitor     |
 | Devops   | grafana               | 3032 | 3032 | 3000 | Monitor     |
 |          |                       |      |      |      |             |
 |Exporter  | nginx_exporter        | 9113 | 9113 | 9113 | Monitor     |
+|Exporter  | elasticsearch-exporter| 9114 | 9114 | 9114 | Monitor     |
