@@ -8,3 +8,8 @@ class Sample(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class TestTable(models.Model):
+    # ここにtest_tableのフィールドを定義します。例えば:
+    name = models.CharField(max_length=100)

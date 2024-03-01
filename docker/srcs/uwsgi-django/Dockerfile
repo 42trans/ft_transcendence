@@ -20,6 +20,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # プロジェクトファイルをコピー
 COPY . /code/
 
-# uWSGIを設定
-# CMD ["uwsgi", "--http", "0.0.0.0:8000", "--module", "uwsgi-django.wsgi:application", "--processes", "4", "--threads", "2"]
+COPY django-entrypoint.sh /code/entrypoint.sh
+ENTRYPOINT [ "/code/entrypoint.sh" ]
 CMD ["uwsgi", "--ini", "/code/uwsgi.ini"]

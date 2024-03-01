@@ -35,16 +35,6 @@ docker exec -i -w /code uwsgi-django python manage.py migrate > /dev/null 2>&1
 # from django.db import connections: Django のデータベース接続をインポート
 # connections['default'].cursor(): デフォルトのデータベース接続を取得し、カーソルを開く
 
-# TEST_RESULT=$(docker exec -i -w /code uwsgi-django /bin/bash -c \
-# "export DJANGO_SETTINGS_MODULE=trans_pj.settings \
-# && python manage.py shell -c \
-# \"from django.db import connections; \
-# connections['default'].cursor(); \
-# from trans_pj.models import Sample; \
-# Sample.objects.create(name='Test Sample', description='This is a test sample.'); \
-# print('success')\"" 2>&1)
-
-
 # if [[ $TEST_RESULT == *"success"* ]]; then
 TEST_RESULT=$(docker exec -i -w /code uwsgi-django /bin/bash -c \
 "export DJANGO_SETTINGS_MODULE=trans_pj.settings && \
@@ -75,3 +65,9 @@ else
     echo "${ESC}${COLOR180}"
 fi
 
+
+for i in {1..2}
+do
+    docker exec -i -w /code uwsgi-django python /code/trans_pj/scripts/add_users.py
+    sleep 1
+done

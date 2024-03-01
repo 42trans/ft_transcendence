@@ -139,3 +139,4 @@ fi
 # ----------------
 echo -e "DB test: test/django/sample_db.sh" 
 sh test/django/sample_db.sh docker/srcs/.env
+sh test/django/add_10user.sh docker/srcs/.env
