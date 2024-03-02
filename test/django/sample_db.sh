@@ -66,8 +66,8 @@ else
 fi
 
 
-for i in {1..2}
-do
-    docker exec -i -w /code uwsgi-django python /code/trans_pj/scripts/add_users.py
-    sleep 1
-done
+# for i in {1..2}
+# do
+#     docker exec -i -w /code uwsgi-django python /code/trans_pj/scripts/add_users.py
+#     sleep 1
+# done

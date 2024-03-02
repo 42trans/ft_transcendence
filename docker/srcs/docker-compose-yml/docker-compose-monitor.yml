@@ -1,6 +1,22 @@
 version: "3.7"
 # docker/srcs/docker-compose-prometheus.yml
 services:
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ${VOLUME_PATH}/log_vol:/var/log/nginx:ro
+      - ./filebeat/filebeat-entrypoint.sh:/usr/local/bin/entrypoint.sh
+    depends_on:
+      - nginx
+    networks:
+      - web_transcendence
+      - monitor_transcendence
+      - elk
+    entrypoint: ["/usr/local/bin/entrypoint.sh"]
+    # profiles:
+    #   - monitor
+
   prometheus:
     container_name: prometheus
     build: ./prometheus

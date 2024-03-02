@@ -18,4 +18,6 @@ networks:
     driver: bridge
     name: monitor_transcendence
   elk:
+    # external: true
     driver: bridge
+    name: elk

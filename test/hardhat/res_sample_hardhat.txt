@@ -7,7 +7,6 @@
     Withdrawals
       Validations
         ✔ Should revert with the right error if called too soon
-        ✔ Should revert with the right error if called from another account
       Events
         ✔ Should emit an event on withdrawals
       Transfers

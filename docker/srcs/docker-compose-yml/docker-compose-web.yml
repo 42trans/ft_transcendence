@@ -17,6 +17,7 @@ services:
       - ${SSL_CERT_PATH}:/etc/nginx/ssl/nginx.crt
       - ${SSL_KEY_PATH}:/etc/nginx/ssl/nginx.key
       - ${VOLUME_PATH}:/container_output
+      - ${VOLUME_PATH}/log_vol:/var/log/nginx
     networks:
       - web_transcendence
       # - monitor_transcendence

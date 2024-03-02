@@ -1,0 +1,15 @@
+# filebeat.inputs:
+# - type: log
+#   enabled: true
+#   paths:
+#     - /var/log/nginx/*.log
+#   fields:
+#     type: nginx-access
+#   fields_under_root: true
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+  
+output.logstash:
+  hosts: ["logstash:5044"]
