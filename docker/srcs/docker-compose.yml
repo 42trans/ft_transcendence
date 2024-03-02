@@ -24,6 +24,11 @@ volumes:
     driver_opts:
       type: 'bind'
       device: '${VOLUME_PATH}/log_vol'
+  log_django_vol:
+    driver: local
+    driver_opts:
+      type: 'bind'
+      device: '${VOLUME_PATH}/log_django_vol'
 
 
 # 参考:【Compose ファイル version 3 リファレンス — Docker-docs-ja 24.0 ドキュメント】 https://docs.docker.jp/compose/compose-file/compose-file-v3.html#compose-file-v3-volume-configuration-reference

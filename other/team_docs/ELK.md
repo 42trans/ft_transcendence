@@ -22,6 +22,10 @@
 
 ## elasticsearch, kibana
 
+- kibana
+  - index 登録画面
+    - 参考:【Data Views - Elastic】 http://localhost:5601/app/management/kibana/dataViews
+    
 ### 旧コンテナ
 
 - マウントボリュームを使うとエラー出るバグあり。
@@ -45,6 +49,11 @@
   - 参考:【logstash.yml | Logstash Reference [8.12] | Elastic】 https://www.elastic.co/guide/en/logstash/8.12/logstash-settings-file.html 
 
 ## 参考資料
+
+### 新
+
+- ELK + Django
+  - 参考:【Prometheus と Elasticsearch を使用した Grafana と Kibana による Django アプリケーションのモニタリング – Gonzalo Ayuso – Web Architect】 https://gonzalo123.com/2020/08/10/monitoring-django-applications-with-grafana-and-kibana-using-prometheus-and-elasticsearch/
 
 ### 旧コンテナ時参考資料
 

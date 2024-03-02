@@ -61,7 +61,9 @@ services:
       - postgres
     restart: unless-stopped
     init: true
-  #   volumes:
+    volumes:
+      # - logs_volume:/src/logs
+      - '${VOLUME_PATH}/log_django_vol:/src/logs'
   #     - ${VOLUME_PATH}/ft_django/code:/code
   #     - ${VOLUME_PATH}/ft_django/static:/static/
   #     - ${VOLUME_PATH}/ft_django/uwsgi:/etc/uwsgi

@@ -1,3 +1,29 @@
+# docker/srcs/filebeat/filebeat.yml
+
+filebeat.modules:
+  enabled:
+    - nginx
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+# output.elasticsearch:
+#   hosts: ["http://elasticsearch:9200"] 
+#   username: "elastic" 
+#   password: "changeme" 
+  # ... 必要に応じてSSL設定
+
+# setup.kibana:
+#   host: "kibana:5601" 
+
+# ダッシュボードのテンプレ利用
+# setup.dashboards.enabled: true
+
+# カスタムモジュール作成
 # filebeat.inputs:
 # - type: log
 #   enabled: true
@@ -6,10 +32,3 @@
 #   fields:
 #     type: nginx-access
 #   fields_under_root: true
-
-filebeat.config.modules:
-  path: ${path.config}/modules.d/*.yml
-  reload.enabled: false
-  
-output.logstash:
-  hosts: ["logstash:5044"]

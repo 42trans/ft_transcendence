@@ -7,6 +7,8 @@ services:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - ${VOLUME_PATH}/log_vol:/var/log/nginx:ro
       - ./filebeat/filebeat-entrypoint.sh:/usr/local/bin/entrypoint.sh
+    env_file:
+      - .env
     depends_on:
       - nginx
     networks:

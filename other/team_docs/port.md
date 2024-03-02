@@ -18,13 +18,10 @@
 | Web      | pgadmin               | 8087 | 8087 |   80 |             |
 | Web      | hardhat               | 3031 | 3031 | 3000 | Blockchain  |
 |          |                       |      |      |      |             |
-| Devops   | elasticsearch         | 9201 | 9201 | 9200 | ELK         |
-| Devops   | kibana                | 5602 | 5602 | 5601 | ELK         |
-| Devops   | logstash              | 5045 | 5045 | 5044 | ELK         |
 |          |                       |      |      |      |             |
-| Devops   | elasticsearch         | 9201 | 9201 | 9200 | ELK         |
-| Devops   | kibana                | 5602 | 5602 | 5601 | ELK         |
-| Devops   | logstash              | 5045 | 5045 | 5044 | ELK         |
+| Devops   | elasticsearch         | 未9201 | 未9201 | 9200 | ELK         |
+| Devops   | kibana                | 未5602 | 未5602 | 5601 | ELK         |
+| Devops   | logstash              | 未5045 | 未5045 | 5044 | ELK         |
 |          |                       |      |      |      |             |
 | Devops   | prometheus            | 9091 | 9091 | 9090 | Monitor     |
 | Devops   | grafana               | 3032 | 3032 | 3000 | Monitor     |
