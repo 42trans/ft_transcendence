@@ -53,7 +53,7 @@
 # ---------------------------
 # DEBUG: logstash -> elasticserch
 # ---------------------------
-echo "LOGSTASH_PORT: $LOGSTASH_PORT"
+# echo "LOGSTASH_PORT: $LOGSTASH_PORT"
 # echo "$LOGSTASH_INTERNAL_PASSWORD"
 # # ---------------------------
 USER="logstash_internal"
@@ -62,3 +62,13 @@ ELASTICSEARCH_URL="http://elasticsearch:9200"
 docker exec elk-logstash-1 bash -c "curl -u $USER:$LOGSTASH_INTERNAL_PASSWORD $ELASTICSEARCH_URL/_cluster/health?pretty"
 
 
+# curl -X POST "http://localhost:5044" -H 'Content-Type: application/json' -d '{
+#   "message": "This is a test message from nginx",
+#   "type": "nginx",
+#   "@timestamp": "2024-03-03T00:00:00.000Z"
+# }'
+
+
+# 接続チェック
+# docker exec -it elk-logstash-1 bash
+# ping elasticsearch

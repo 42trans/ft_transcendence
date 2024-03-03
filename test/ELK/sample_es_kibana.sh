@@ -45,3 +45,14 @@ echo "$OUTPUT"
 #     echo "ng: $OUTPUT"
 #     echo "${ESC}${COLOR198}"
 # fi
+# "filebeat-"があるならOK
+if echo "$OUTPUT" | grep -q "nginx"; then
+    echo "${ESC}${GREEN}"
+    RES=$(echo "$OUTPUT" | grep "nginx")
+    echo "ok"
+    echo "${ESC}${COLOR198}"
+else
+    echo "${ESC}${RED}"
+    echo "ng"
+    echo "${ESC}${COLOR198}"
+fi

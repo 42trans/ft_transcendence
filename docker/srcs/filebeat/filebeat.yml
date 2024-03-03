@@ -11,6 +11,8 @@ filebeat.config.modules:
 output.logstash:
   hosts: ["logstash:5044"]
 
+logging.level: debug
+
 # output.elasticsearch:
 #   hosts: ["http://elasticsearch:9200"] 
 #   username: "elastic" 

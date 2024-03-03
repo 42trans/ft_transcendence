@@ -1,0 +1,1 @@
+docker exec srcs-filebeat-1 nc -vz logstash 5044

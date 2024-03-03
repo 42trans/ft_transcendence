@@ -66,6 +66,7 @@ services:
     networks:
       - elk
     restart: unless-stopped
+    init: true
 
   logstash:
     build:
@@ -88,7 +89,8 @@ services:
       - elk
     depends_on:
       - elasticsearch
-    restart: unless-stopped
+    # restart: unless-stopped
+    init: true
 
   kibana:
     build:
@@ -106,6 +108,7 @@ services:
     depends_on:
       - elasticsearch
     restart: unless-stopped
+    init: true
 
 networks:
   elk:

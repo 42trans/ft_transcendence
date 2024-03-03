@@ -3,6 +3,8 @@
 # Nginxモジュール
 # --------------------------------
 filebeat modules enable nginx
+# apt-get update && apt-get install -y netcat
+
 NGINX_MODULE_CONFIG_PATH="/usr/share/filebeat/modules.d/nginx.yml"
 # Nginxのアクセスログとエラーログの収集を有効にし、カスタムパスsedで書き換え
 sed -i 's/enabled: false/enabled: true/g' $NGINX_MODULE_CONFIG_PATH

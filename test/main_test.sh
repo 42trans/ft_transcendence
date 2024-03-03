@@ -76,4 +76,10 @@ echo "ELK: logstash test"
 echo "========================================================="
 bash ./test/ELK/logstash_main.sh
 
+echo "${ESC}${COLOR183}"
+echo "========================================================="
+echo "filebeat test"
+echo "========================================================="
+bash ./test/filebeat/filebeat_main.sh
+
 echo "${ESC}[m"

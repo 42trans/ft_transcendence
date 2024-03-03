@@ -31,6 +31,10 @@ up:
 u:
 	make up
 
+build_elk:
+	$(call set_env) && \
+	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml build
+
 up_elk:
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
