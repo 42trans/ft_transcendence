@@ -1,13 +1,17 @@
 #!/bin/bash
 # test/prometheus/sample_prometheus.sh
-TEST_DIR="test/"
 #=======================================================
 # include
 #=======================================================
+TEST_DIR="test/"
 if [ -z "$COLOR_SH" ]; then
   source "${TEST_DIR}color.sh"
   COLOR_SH=true
 fi
+#=======================================================
+echo -e 'cmd: docker ps | grep " prometheus "\n'
+docker ps | grep " prometheus "
+#=======================================================
 
 PROMETHEUS_URL="http://localhost:${PROMETHEUS_PORT}"
 NGINX_URL="http://localhost:${NGINX_PORT}"
@@ -44,6 +48,22 @@ if [ "$value" == "1" ]; then
     echo "ok: nginx up=1"
 else
     echo "ng:"
+fi
+
+# ----------------
+#  nginx exporter
+# ----------------
+echo -e "\nPrometheus test: curl http://loclshost:9113/metrics"
+FL=$(curl -s http://localhost:9113/metrics | head -1)
+# 1行目が期待通りかどうか確認
+if [[ "$FL" == "# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles." ]]; then  
+    echo "${ESC}${GREEN}"
+    echo "ok: $FL"
+    echo "${ESC}${COLOR201}"
+else
+    echo "${ESC}${RED}"
+    echo "ng: $FL"
+    echo "${ESC}${COLOR201}"
 fi
 
 # --------------------------------------------

@@ -1,14 +1,13 @@
 #!/bin/bash
 # test/django/sample_django.sh
-TEST_DIR="test/"
 #=======================================================
 # include
 #=======================================================
+TEST_DIR="test/"
 if [ -z "$COLOR_SH" ]; then
   source "${TEST_DIR}color.sh"
   COLOR_SH=true
 fi
-souce docker/srcs/.env
 #=======================================================
 # インストールが必要です
 # brew install postgresql

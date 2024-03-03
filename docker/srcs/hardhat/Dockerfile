@@ -5,8 +5,8 @@ WORKDIR /app
 COPY hardhat_pj/package*.json ./
 # npmの依存関係をインストール
 RUN npm install
-# Hardhatプロジェクトの残りの部分を/appにコピーします
+# Hardhatプロジェクトの残りの部分を/appにコピー
 COPY hardhat_pj/ .
-# 開発依存関係としてHardhatをインストール
+# 開発依存関係でHardhatをインストール
 RUN npm install --save-dev hardhat
 CMD ["npx", "hardhat", "node"]

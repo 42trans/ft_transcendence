@@ -1,5 +1,17 @@
 #!/bin/sh
 # test/hardhat/sample_hardhat.sh
+#=======================================================
+# include
+#=======================================================
+TEST_DIR="test/"
+if [ -z "$COLOR_SH" ]; then
+  source "${TEST_DIR}color.sh"
+  COLOR_SH=true
+fi
+#=======================================================
+echo -e 'cmd: docker ps | grep " hardhat "\n'
+docker ps | grep " hardhat "
+#=======================================================
 
 # ---------------------
 # 参考:【Getting started with Hardhat | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/hardhat-runner/docs/getting-started#installation
@@ -14,5 +26,5 @@ fi
 # ---------------------
 echo "TODO: head -1で判断するよう修正予定"
 echo "※注意: 雑なテストなので出力は多少（数行程度）違う場合があります。diffがngでも正常な場合があります。下記ファイルを確認ください"
-echo "期待: test/hardhat/expected_sample_hardhat.txt"
-echo "結果: $outfile "
+echo "期待=> test/hardhat/expected_sample_hardhat.txt"
+echo "結果=> $outfile "
