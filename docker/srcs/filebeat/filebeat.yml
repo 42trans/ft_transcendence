@@ -19,11 +19,11 @@ logging.level: debug
 #   password: "changeme" 
   # ... 必要に応じてSSL設定
 
-# setup.kibana:
-#   host: "kibana:5601" 
-
-# ダッシュボードのテンプレ利用
+setup.kibana:
+  host: "kibana:5601" 
+# # ダッシュボードのテンプレ利用
 # setup.dashboards.enabled: true
+
 
 # カスタムモジュール作成
 # filebeat.inputs:

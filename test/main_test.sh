@@ -65,9 +65,15 @@ echo "${ESC}[m"
 # bash ./test/hardhat/sample_hardhat.sh
 
 
+echo "${ESC}${COLOR183}"
+echo "========================================================="
+echo "filebeat test"
+echo "========================================================="
+bash ./test/filebeat/filebeat_main.sh
+
 echo "${ESC}${COLOR198}"
 echo "========================================================="
-echo "ELK: es & kibana test"
+echo "ELK: elasticsearch & kibana test"
 echo "========================================================="
 bash ./test/ELK/sample_es_kibana.sh
 echo "${ESC}${COLOR180}"
@@ -75,11 +81,5 @@ echo "========================================================="
 echo "ELK: logstash test"
 echo "========================================================="
 bash ./test/ELK/logstash_main.sh
-
-echo "${ESC}${COLOR183}"
-echo "========================================================="
-echo "filebeat test"
-echo "========================================================="
-bash ./test/filebeat/filebeat_main.sh
 
 echo "${ESC}[m"

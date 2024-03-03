@@ -59,7 +59,7 @@
 USER="logstash_internal"
 LOGSTASH_INTERNAL_PASSWORD="changeme"
 ELASTICSEARCH_URL="http://elasticsearch:9200"
-docker exec elk-logstash-1 bash -c "curl -u $USER:$LOGSTASH_INTERNAL_PASSWORD $ELASTICSEARCH_URL/_cluster/health?pretty"
+docker exec logstash bash -c "curl -u $USER:$LOGSTASH_INTERNAL_PASSWORD $ELASTICSEARCH_URL/_cluster/health?pretty"
 
 
 # curl -X POST "http://localhost:5044" -H 'Content-Type: application/json' -d '{

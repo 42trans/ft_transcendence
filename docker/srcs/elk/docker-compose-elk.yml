@@ -43,6 +43,7 @@ services:
       - elasticsearch
 
   elasticsearch:
+    container_name: elasticsearch
     build:
       context: elasticsearch/
       args:
@@ -69,6 +70,7 @@ services:
     init: true
 
   logstash:
+    container_name: logstash
     build:
       context: logstash/
       args:
@@ -93,6 +95,7 @@ services:
     init: true
 
   kibana:
+    container_name: kibana
     build:
       context: kibana/
       args:
