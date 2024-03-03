@@ -3,6 +3,7 @@ version: "3.7"
 
 services:
   nginx_exporter:
+    container_name: nginx_exporter
     image: nginx/nginx-prometheus-exporter
     ports:
       - "9113:9113"
@@ -15,6 +16,7 @@ services:
       - monitor
 
   node-exporter:
+    container_name: node-exporter
     image: prom/node-exporter:v1.0.1
     volumes:
       - /proc:/host/proc:ro
@@ -33,6 +35,7 @@ services:
       - monitor
 
   cadvisor:
+    container_name: cadvisor
     image: gcr.io/google-containers/cadvisor:v0.36.0
     volumes:
       - /:/rootfs:ro
@@ -47,6 +50,7 @@ services:
       - monitor
   
   elasticsearch-exporter:
+    container_name: elasticsearch-exporter
     image: quay.io/prometheuscommunity/elasticsearch-exporter:latest
     command:
      - '--es.uri=http://elasticsearch:9200'

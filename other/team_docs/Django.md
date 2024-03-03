@@ -15,6 +15,10 @@
   - 1から別コンテナ作ってシンプルな構成でチェックした
   - socket,httpの両方を.initに記載することで解決
   - prometheusは別の.mdで
+- python-logstash install
+  - 'version': 1,　1行目にないと500出る
+    - 参考:【django log を elasticsearch に入れる python-logstash 使い方 #Django - Qiita】 https://qiita.com/uturned0/items/87982e34b0de9cc9a774
+  - 参考:【python-logstash · PyPI】 https://pypi.org/project/python-logstash/
 
 ## memo
 

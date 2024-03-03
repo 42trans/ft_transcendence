@@ -4,6 +4,10 @@ RUN apt-get update && apt-get install -y \
 	tzdata \
 	curl \
 	net-tools \
+	iputils-ping \
+	telnet \
+	netcat \
+	lsof \
 	postgresql-client \
 	&& rm -rf /var/lib/apt/lists/*
 # 環境変数を設定

@@ -3,7 +3,6 @@ version: "3.7"
 services:
   filebeat:
     container_name: filebeat
-    # image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
     build: 
       context: ./filebeat
       args:
@@ -21,7 +20,6 @@ services:
       - web_transcendence
       - monitor_transcendence
       - elk
-    # entrypoint: ["/usr/local/bin/entrypoint.sh"]
     # profiles:
     #   - monitor
 
@@ -36,14 +34,11 @@ services:
     networks:
       - web_transcendence
       - db_transcendence
-      # - elastic_transcendence
       - monitor_transcendence
       - elk
     volumes:
       - ${VOLUME_PATH}/prometheus:/prometheus
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    # command:
-    #   - '--config.file=/etc/prometheus/prometheus.yml'
     profiles:
       - monitor
 

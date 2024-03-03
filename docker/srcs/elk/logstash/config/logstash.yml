@@ -8,3 +8,4 @@ http.host: 0.0.0.0
 node.name: logstash
 
 # log.level: debug
+# path.logs: /src/logs

@@ -49,12 +49,26 @@ fi
 # index登録 nginx test 
 # ------------------------------------
 # Elasticsearchからインデックスリストを取得
-echo -e "\nErasticSeachのインデックスリスト localhost:9200/_cat/indices?v "
+echo -e "\nErasticSeachのインデックス登録 localhost:9200/_cat/indices?v "
 OUTPUT=$(docker exec elasticsearch curl -s -X GET "http://$USERNAME:$PASSWORD@localhost:9200/_cat/indices?v")
 if echo "$OUTPUT" | grep -q "nginx"; then
     echo "${ESC}${GREEN}"
     RES=$(echo "$OUTPUT" | grep "nginx")
     echo -e "ok: nginx index"
+    echo $RES | awk '{print $3}'
+    echo "${ESC}${COLOR198}"
+else
+    echo "${ESC}${RED}"
+    echo "ng"
+    echo "${ESC}${COLOR198}"
+fi
+
+OUTPUT=$(docker exec elasticsearch curl -s -X GET "http://$USERNAME:$PASSWORD@localhost:9200/_cat/indices?v")
+# echo $OUTPUT
+if echo "$OUTPUT" | grep -q "django"; then
+    echo "${ESC}${GREEN}"
+    RES=$(echo "$OUTPUT" | grep "django")
+    echo -e "ok: django index"
     echo $RES | awk '{print $3}'
     echo "${ESC}${COLOR198}"
 else
