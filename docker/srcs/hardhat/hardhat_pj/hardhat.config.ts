@@ -1,3 +1,4 @@
+// docker/srcs/hardhat/hardhat_pj/hardhat.config.ts
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 
@@ -6,3 +7,5 @@ const config: HardhatUserConfig = {
 };
 
 export default config;
+
+

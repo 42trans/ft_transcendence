@@ -1,3 +1,4 @@
+// docker/srcs/hardhat/hardhat_pj/scripts/deploy.ts
 import { ethers } from "hardhat";
 
 async function main() {
