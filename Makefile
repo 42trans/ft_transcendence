@@ -2,9 +2,9 @@
 # まずは最初に ターミナルで`make init`で .make_env を作成ください ※詳細はREADME.md
 # -----------------------------------------------
 # Makefile用の環境変数の読み込み
--include .make_env
+-include init/.make_env
 # OSに応じて環境変数の設定と、ディレクトリの設定をする
--include set_env
+-include init/set_env
 # 複数の.ymlを環境変数から読み込む
 COMPOSE_FILES_ARGS=$(subst :, -f ,$(COMPOSE_FILES))
 # -----------------------------------------------
@@ -16,13 +16,18 @@ all: build up
 # echo $$SERVER_NAME 
 # DEBUG: キャッシュ不使用
 # docker-compose -f docker-compose.yml build --no-cache
-
-# k8setup:
-# 	$(call set_env) && \
-# 	kompose convert -f $(COMPOSE_FILES_ARGS)
-# kompose convert -f ./docker/srcs/docker-compose.yml -f ./docker/srcs/docker-compose-yml/docker-compose-networks.yml -f ./docker/srcs/docker-compose-yml/docker-compose-web.yml -f ./docker/srcs/docker-compose-yml/docker-compose-blockchain.yml -f ./docker/srcs/docker-compose-yml/docker-compose-monitor.yml -f ./docker/srcs/docker-compose-yml/docker-compose-exporter.yml
-
-
+# -----------------------------------------------
+# kind(k8s)
+# -----------------------------------------------
+kindup:
+	chmod +x kind/up.sh
+	kind/up.sh
+kinddown:
+	chmod +x kind/down.sh
+	kind/down.sh
+# -----------------------------------------------
+# Docker
+# -----------------------------------------------
 build:
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
@@ -32,6 +37,7 @@ b:
 	make build
 
 up:
+	make kindup
 	$(call set_env) && \
 	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose -f $(COMPOSE_FILES_ARGS) up -d
 u:
@@ -59,6 +65,7 @@ build_up_blockchain:
 	COMPOSE_PROFILES=blockchain docker-compose -f $(COMPOSE_FILES_ARGS) up -d
 
 build_up_monitor:
+	make kindup
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
 	COMPOSE_PROFILES=monitor docker-compose -f $(COMPOSE_FILES_ARGS) build
@@ -84,6 +91,7 @@ start:
 	docker-compose -f $(COMPOSE_FILES_ARGS) start
 
 down:
+	make kinddown
 	$(call set_env) && \
 	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose -f $(COMPOSE_FILES_ARGS) down; \
 	PATTERN='127.0.0.1 $(SERVER_NAME)'; \
@@ -123,6 +131,8 @@ reset_logstash:
 # rm -rf mount_volume/logstash
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build logstash
 	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up logstash -d
+
+
 # -----------------------------------------------
 #  other docker command
 # -----------------------------------------------
@@ -134,10 +144,10 @@ remove_mount_volume_mac:
 rm:
 	make remove_mount_volume_mac
 
-log_django:
-	docker logs ft_django
-ld:
-	make log_django
+# log_django:
+# 	docker logs ft_django
+# ld:
+# 	make log_django
 
 # -----------------------------------------------
 #  init
@@ -146,7 +156,7 @@ env:
 	cp docker/srcs/.env_example docker/srcs/.env
 
 make_env:
-	cp .make_env_example .make_env
+	cp init/.make_env_example init.make_env
 
 key:
 	openssl req -new -x509 -nodes -sha256 -days 365 \
@@ -175,15 +185,6 @@ ELK_certs:
 	bash srcs/make/generate_certs.sh
 	openssl x509 -in docker/srcs/elasticsearch/cert/elasticsearch.crt -text -noout
 
-# init_kind_hostip:
-# 	sh docker/srcs/kind/host_ip.sh
-
-kindup:
-	chmod +x kind/up.sh
-	kind/up.sh
-kinddown:
-	chmod +x kind/down.sh
-	kind/down.sh
 # -----------------------------------------------
 #  test
 # -----------------------------------------------
