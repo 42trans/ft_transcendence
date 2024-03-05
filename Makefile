@@ -175,8 +175,15 @@ ELK_certs:
 	bash srcs/make/generate_certs.sh
 	openssl x509 -in docker/srcs/elasticsearch/cert/elasticsearch.crt -text -noout
 
-init_kind_hostip:
-	sh docker/srcs/kind/host_ip.sh
+# init_kind_hostip:
+# 	sh docker/srcs/kind/host_ip.sh
+
+kindup:
+	chmod +x kind/up.sh
+	kind/up.sh
+kinddown:
+	chmod +x kind/down.sh
+	kind/down.sh
 # -----------------------------------------------
 #  test
 # -----------------------------------------------

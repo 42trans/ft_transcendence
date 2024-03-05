@@ -1,0 +1,16 @@
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-server  # Prometheusサーバーのサービス名
+      access: proxy
+      isDefault: true
+
+# Grafanaの管理ユーザー名とパスワードを設定
+adminUser: admin
+adminPassword: admin
+
+service:
+  type: LoadBalancer
