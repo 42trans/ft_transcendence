@@ -61,3 +61,29 @@ services:
       - monitor_transcendence
     profiles:
       - monitor
+
+  kind-cluster:
+    container_name: kind-cluster
+    build: ./kind
+    image: kind-cluster
+    tty: true
+    privileged: true
+    volumes:
+      # - ${VOLUME_PATH}/kind:/var/lib/docker
+      # ホストのDockerを制御するため
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./kind/kind-config.yaml:/kind-config.yaml
+      - ./kind/entrypoint.sh:/usr/local/bin/entrypoint.sh
+      - ./kind/host_ip.sh:/host_ip.sh
+    command: >
+      sh -c "
+      tail -f /dev/null
+      "
+    networks:
+      - monitor_transcendence
+    # network_mode: "host"
+    ports:
+      - "10443:10443"
+      - "10444:9090"
+    # profiles:
+    #   - monitor

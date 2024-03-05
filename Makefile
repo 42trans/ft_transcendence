@@ -17,6 +17,12 @@ all: build up
 # DEBUG: キャッシュ不使用
 # docker-compose -f docker-compose.yml build --no-cache
 
+# k8setup:
+# 	$(call set_env) && \
+# 	kompose convert -f $(COMPOSE_FILES_ARGS)
+# kompose convert -f ./docker/srcs/docker-compose.yml -f ./docker/srcs/docker-compose-yml/docker-compose-networks.yml -f ./docker/srcs/docker-compose-yml/docker-compose-web.yml -f ./docker/srcs/docker-compose-yml/docker-compose-blockchain.yml -f ./docker/srcs/docker-compose-yml/docker-compose-monitor.yml -f ./docker/srcs/docker-compose-yml/docker-compose-exporter.yml
+
+
 build:
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
@@ -168,6 +174,9 @@ ELK_certs:
 	chmod +x srcs/make/generate_certs.sh
 	bash srcs/make/generate_certs.sh
 	openssl x509 -in docker/srcs/elasticsearch/cert/elasticsearch.crt -text -noout
+
+init_kind_hostip:
+	sh docker/srcs/kind/host_ip.sh
 # -----------------------------------------------
 #  test
 # -----------------------------------------------
