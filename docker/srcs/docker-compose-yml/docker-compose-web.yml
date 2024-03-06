@@ -61,9 +61,12 @@ services:
     restart: unless-stopped
     init: true
     volumes:
-      # - logs_volume:/src/logs
       - '${VOLUME_PATH}/log_django_vol:/src/logs'
-  #     - ${VOLUME_PATH}/ft_django/code:/code
+      # - ./docker/srcs/uwsgi-django/:/code/
+      # - ./docker/srcs/uwsgi-django/polls:/code/polls
+      # - ./docker/srcs/uwsgi-django/mysite:/code/mysite
+      # - logs_volume:/src/logs
+      # - ${VOLUME_PATH}/django/code:/code
   #     - ${VOLUME_PATH}/ft_django/static:/static/
   #     - ${VOLUME_PATH}/ft_django/uwsgi:/etc/uwsgi
   #     - ${VOLUME_PATH}:/container_output
@@ -109,3 +112,27 @@ services:
       - web_transcendence
     restart: unless-stopped
     init: true
+
+  pythontest:
+    container_name: pythontest
+    build: ./pythontest
+    image: pythontest
+    env_file:
+      - .env
+    networks:
+      - db_transcendence
+      - web_transcendence
+      - blockchain_transcendence
+      - elk
+    ports:
+      - "8097:8001" # http
+      - "8197:8000"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    init: true
+    volumes:
+      # - '${VOLUME_PATH}/log_django_vol:/src/logs'
+      # - ./docker/srcs/pythontest/:/code/
+      - ./docker/srcs/pythontest/mysite/:/code/mysite/
+      - ./docker/srcs/pythontest/polls/:/code/polls/

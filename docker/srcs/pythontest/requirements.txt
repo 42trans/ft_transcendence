@@ -1,0 +1,15 @@
+# docker/srcs/uwsgi-django/requirements.txt
+# このファイルは、プロジェクトに必要なPythonパッケージとそのバージョンを記述します。
+
+# フレームワーク
+Django==5.0.2
+
+# PostgreSQLデータベース用
+psycopg2
+
+# WSGIサーバー
+uwsgi>=2.0
+
+django-prometheus
+python-logstash
+web3
