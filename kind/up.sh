@@ -52,23 +52,22 @@ else
     echo "Kind cluster 'kind' already exists."
 fi
 
-# Install Prometheus using Helm
-if ! helm list -q | grep -q prometheus; then
-    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-    helm repo update
-    helm install prometheus prometheus-community/prometheus
-else
-    echo "Prometheus is already installed."
-fi
 
+# kubectl apply -f kind/templates/grafana-dashboard-configmap.yaml 
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+
+# kubectl apply -f kind/dashboard/grafana-dashboard-configmap.yaml
 helm upgrade --install prometheus prometheus-community/prometheus -f kind/prometheus-values.yaml
+helm upgrade --install grafana grafana/grafana \
+-f kind/grafana-values.yaml
 
-if ! helm list -q | grep -q grafana; then
-    helm repo add grafana https://grafana.github.io/helm-charts
-    helm repo update
-    helm install grafana grafana/grafana -f kind/grafana-values.yaml
-fi
+# kubectl get configmap -n default grafana-dashboards -o yaml
 
+# kubectl port-forward service/grafana 3000:80 &
+# kubectl port-forward service/prometheus-server  9090:80 &
 
 # DEBUG
 

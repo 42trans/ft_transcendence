@@ -47,31 +47,32 @@ fi
 # kubectl get svc | grep grafana
 
 kubectl port-forward service/grafana 3000:80 &
-#=======================================================
-# ブラウザで確認
-#=======================================================
-PORT=9090
-export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=prometheus,app.kubernetes.io/instance=prometheus" -o jsonpath="{.items[0].metadata.name}")
-# 閲覧時間
-TIME=1000
-echo "port-forward 開始"
-echo "${ESC}${GREEN}"
-echo "${TIME}秒間prometheusにアクセス可能"
-# port-forward バックグラウンドで実行
-kubectl --namespace default port-forward $POD_NAME $PORT &
-sleep 2
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    # open: macは自動でブラウズ起動
-    open http://localhost:$PORT
-else
-    echo "ブラウザを起動し、http://localhost:$PORT を開いてください。"
-fi
-sleep $TIME
-echo "${ESC}${RED}"
-echo "終了"
-echo "${ESC}${COLOR198}"
-echo "以降、prometheusにアクセスできなくなります"
-pkill -f "kubectl --namespace default port-forward $POD_NAME $PORT"
+kubectl port-forward service/prometheus-server  9090:80 &
+# #=======================================================
+# # ブラウザで確認
+# #=======================================================
+# PORT=9090
+# export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=prometheus,app.kubernetes.io/instance=prometheus" -o jsonpath="{.items[0].metadata.name}")
+# # 閲覧時間
+# TIME=1000
+# echo "port-forward 開始"
+# echo "${ESC}${GREEN}"
+# echo "${TIME}秒間prometheusにアクセス可能"
+# # port-forward バックグラウンドで実行
+# kubectl --namespace default port-forward $POD_NAME $PORT &
+# sleep 2
+# if [[ "$OSTYPE" == "darwin"* ]]; then
+#     # open: macは自動でブラウズ起動
+#     open http://localhost:$PORT
+# else
+#     echo "ブラウザを起動し、http://localhost:$PORT を開いてください。"
+# fi
+# sleep $TIME
+# echo "${ESC}${RED}"
+# echo "終了"
+# echo "${ESC}${COLOR198}"
+# echo "以降、prometheusにアクセスできなくなります"
+# pkill -f "kubectl --namespace default port-forward $POD_NAME $PORT"
 
 
 # エンドポイントを探す

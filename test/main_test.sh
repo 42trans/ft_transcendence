@@ -85,10 +85,10 @@ bash ./test/hardhat/sample_hardhat.sh
 # echo "========================================================="
 # bash ./test/ELK/logstash_main.sh
 
-# echo "${ESC}${COLOR198}"
-# echo "========================================================="
-# echo "k8s: kind test"
-# echo "========================================================="
-# test/kind/test_kind_setup.sh
+echo "${ESC}${COLOR198}"
+echo "========================================================="
+echo "k8s: kind test"
+echo "========================================================="
+test/kind/test_kind_setup.sh
 
 echo "${ESC}[m"

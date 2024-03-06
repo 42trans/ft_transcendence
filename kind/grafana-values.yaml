@@ -1,16 +1,45 @@
+# kind/grafana-values.yaml
 datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
     - name: Prometheus
       type: prometheus
-      url: http://prometheus-server  # Prometheusサーバーのサービス名
+      url: http://prometheus-server.default.svc.cluster.local 
       access: proxy
       isDefault: true
 
-# Grafanaの管理ユーザー名とパスワードを設定
-adminUser: admin
-adminPassword: admin
+adminUser: grafana_admin
+adminPassword: pw
 
 service:
   type: LoadBalancer
+
+# dashboardProviders:
+#   dashboardproviders.yaml:
+#     apiVersion: 1
+#     providers:
+#     - name: 'default'
+#       orgId: 1
+#       folder: ''
+#       type: file
+#       disableDeletion: false
+#       editable: true
+#       options:
+#         path: /var/lib/grafana/dashboards/default
+
+# dashboards:
+#   default:
+#     k8s:
+#       gnetId: 1860  
+#       revision: 1   
+#       datasource: Prometheus 
+
+# https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+# 今の所、これしか解決の道がなさそう
+# https://github.com/nicolastakashi/gitana
+
+# 追加: Grafanaのログイン方法のカスタマイズ
+auth:
+  disableLoginForm: false
+  disableSignoutMenu: true

@@ -22,6 +22,7 @@ all: build up
 kindup:
 	chmod +x kind/up.sh
 	kind/up.sh
+
 kinddown:
 	chmod +x kind/down.sh
 	kind/down.sh

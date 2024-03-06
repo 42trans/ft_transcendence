@@ -5,6 +5,18 @@
 - まずはコンテナにkindを入れてplay
   - prometheusの状態だけ管理するシンプルなものを想定
 
+## 使い方
+
+- make kindup
+  - 初回も再起動も同じ。クラスター内のサービスの再起動
+- make kinddown
+  - 終了。全てデータを失うので作業終了時に使う。make kindupだけ使う。
+
+## tool
+
+- k9s
+  - ターミナルで `k9s`  
+
 ## DinD
 
 - dind (Docker in Docker) setup
