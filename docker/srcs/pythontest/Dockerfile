@@ -15,7 +15,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # 作業ディレクトリを設定
-WORKDIR /code
+# WORKDIR /code
 
 # 依存関係ファイルをコピーし、パッケージをインストール
 COPY requirements.txt /code/

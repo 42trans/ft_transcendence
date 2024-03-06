@@ -7,7 +7,7 @@
 
 ## test
 
-- `sh test/postgres/sample.sh`  
+- `sh test/postgres/sample-postgres.sh`  
 
 ## 参考資料
 

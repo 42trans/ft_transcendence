@@ -133,6 +133,6 @@ services:
     init: true
     volumes:
       # - '${VOLUME_PATH}/log_django_vol:/src/logs'
-      # - ./docker/srcs/pythontest/:/code/
-      - ./docker/srcs/pythontest/mysite/:/code/mysite/
-      - ./docker/srcs/pythontest/polls/:/code/polls/
+      # - ./pythontest/:/code/
+      - ./pythontest/mysite/:/code/mysite/
+      - ./pythontest/polls/:/code/polls/

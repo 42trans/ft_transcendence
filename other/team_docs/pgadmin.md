@@ -6,6 +6,16 @@
 
 ## memo
 
+- 接続はコンテナ名で
+  - ホスト名
+    - postgres
+  - ポート番号
+    - 5432
+  - 管理用データベース
+    - $POSTGRES_DBの内容を記載 例:ft_trans_db
+  - ユーザー名
+    - POSTGRES_USERの内容を記載
+
 ## 参考資料
 
 - その他

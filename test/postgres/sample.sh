@@ -1,8 +1,9 @@
 #!/bin/bash
+# test/postgres/sample-postgres.sh
 #=======================================================
-TEST_DIR="test/"
 # include
 #=======================================================
+TEST_DIR="test/"
 if [ -z "$COLOR_SH" ]; then
   source "${TEST_DIR}color.sh"
   COLOR_SH=true
@@ -18,6 +19,11 @@ CONTAINER_NAME="postgres"
 USER="postgres_user"
 DB_NAME="sample_test_cures"
 TABLE_NAME="table_cures"
+
+#=======================================================
+# ホストからの接続テスト
+# PGPASSWORD='pw_postgres' psql -h localhost -p 5433 -U postgres_user -d sample_test_cures
+#=======================================================
 
 # データベースの存在確認と削除
 DATABASE_EXISTS=$(docker exec $CONTAINER_NAME psql -U $USER -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'")
@@ -42,24 +48,25 @@ fi
 docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "CREATE TABLE $TABLE_NAME (id SERIAL PRIMARY KEY, username VARCHAR(50) UNIQUE NOT NULL, email VARCHAR(100) UNIQUE NOT NULL);" >/dev/null
 
 # レコード挿入
-# echo "INSERT INTO $TABLE_NAME"
+echo "INSERT INTO $TABLE_NAME"
 docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "INSERT INTO $TABLE_NAME (username, email) VALUES ('キュアブラック', '黒@トランプ王国.com');" >/dev/null
 docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "INSERT INTO $TABLE_NAME (username, email) VALUES ('キュアホワイト', '白@トランプ王国.com');" >/dev/null
 
 # データ表示
-    echo "${ESC}${GREEN}"
-# echo "SELECT * FROM $TABLE_NAME"
+echo "${ESC}${GREEN}"
+echo "SELECT * FROM $TABLE_NAME"
 docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "SELECT * FROM $TABLE_NAME;"
-    echo "${ESC}${COLOR201}"
+echo "${ESC}${COLOR201}"
 
 # レコード削除
 # echo "DELETE FROM $TABLE_NAME"
-docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "DELETE FROM $TABLE_NAME WHERE username = 'キュアブラック';"
-docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "DELETE FROM $TABLE_NAME WHERE username = 'キュアホワイト';"
+# docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "DELETE FROM $TABLE_NAME WHERE username = 'キュアブラック';"
+# docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "DELETE FROM $TABLE_NAME WHERE username = 'キュアホワイト';"
 
 # データ表示（レコードが削除されたことを確認）
-    echo "${ESC}${GREEN}"
-
+# echo "${ESC}${GREEN}"
 # echo "SELECT * FROM $TABLE_NAME"
-docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "SELECT * FROM $TABLE_NAME;"
-    echo "${ESC}${COLOR201}"
+# docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "SELECT * FROM $TABLE_NAME;"
+# echo "${ESC}${COLOR201}"
+
+
