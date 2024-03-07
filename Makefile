@@ -157,7 +157,7 @@ env:
 	cp docker/srcs/.env_example docker/srcs/.env
 
 make_env:
-	cp init/.make_env_example init.make_env
+	cp init/.make_env_example init/.make_env
 
 key:
 	openssl req -new -x509 -nodes -sha256 -days 365 \

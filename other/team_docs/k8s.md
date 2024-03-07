@@ -28,5 +28,8 @@
   - 参考:【Linux での kubectl のインストールとセットアップ | Kubernetes】 https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 - prometheus
   - 参考:【kind 環境に Prometheus をデプロイする - yokaze.github.io】 https://yokaze.github.io/2021/03/07/
-  - 
-  - 
+
+## 起動時自動セットアップ
+
+- dashboard
+  - 参考:【Provision Grafana | Grafana documentation】 https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards

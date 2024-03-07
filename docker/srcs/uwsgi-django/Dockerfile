@@ -19,11 +19,12 @@ WORKDIR /code
 
 # 依存関係ファイルをコピーし、パッケージをインストール
 COPY requirements.txt /code/
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r /code/requirements.txt
+# RUN pip install --no-cache-dir -r requirements.txt
 
 # プロジェクトファイルをコピー
 COPY . /code/
 
-COPY django-entrypoint.sh /code/entrypoint.sh
-ENTRYPOINT [ "/code/entrypoint.sh" ]
+COPY django-entrypoint.sh /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]
 CMD ["uwsgi", "--ini", "/code/uwsgi.ini"]

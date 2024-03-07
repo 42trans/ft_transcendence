@@ -21,5 +21,8 @@
 - その他
   - 参考:【コンテナのデプロイメント — pgAdmin 4 8.3 ドキュメント】 https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
 
+- table 作成
+  - 参考:【テーブルダイアログ — pgAdmin 4 8.3 ドキュメント】 https://www.pgadmin.org/docs/pgadmin4/8.3/table_dialog.html
+  
 ## カスタマイズ内容
 

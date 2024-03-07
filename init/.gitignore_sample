@@ -24,7 +24,11 @@ mount_volume/
 
 backup/
 memo/
-
+docker/srcs/kind/kind-config.yaml
+node_modules
+static/
+init/.make_env
+pythontest
 # srcs/strapi/y-strapi-project/node_modules/*
 # !srcs/strapi/y-strapi-project/node_modules/@strapi/
 # srcs/strapi/y-strapi-project/node_modules/@strapi/*
@@ -38,4 +42,3 @@ memo/
 
 # git rm -r --cached dirname
 # git rm -r --cached sample
-node_modules

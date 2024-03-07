@@ -24,7 +24,12 @@
     - 参考:【TypeScript（タイプスクリプト）とは？JavaScriptとの違いやできること、メリットなど初心者にわかりやすく解説！】 https://jitera.com/ja/insights/4795
 - test
   - 参考:【Getting started with Hardhat | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/hardhat-runner/docs/getting-started#testing-your-contracts
-  
+
+- setup
+  - Django, Python, PostgreSQL,TypeScriptの基礎知識  
+    - 参考:【9. クラス — Python 3.12.2 ドキュメント】 https://docs.python.org/ja/3/tutorial/classes.html
+    - 参考:【テーブルダイアログ — pgAdmin 4 8.3 ドキュメント】 https://www.pgadmin.org/docs/pgadmin4/8.3/table_dialog.html
+
 ## 参考資料
 
 - 開発環境

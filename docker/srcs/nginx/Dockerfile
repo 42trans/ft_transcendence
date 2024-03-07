@@ -11,6 +11,8 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/*
 # SSL用ディレクトリ
 RUN mkdir -p /etc/nginx/ssl
+# 静的ファイル
+RUN mkdir -p /var/trans/static
 # Nginxの設定ファイルを環境変数で設定するためのテンプレート
 COPY ./nginx.conf /
 COPY ./uwsgi_params /
