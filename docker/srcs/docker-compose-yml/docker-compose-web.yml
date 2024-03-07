@@ -18,7 +18,7 @@ services:
       - ${SSL_KEY_PATH}:/etc/nginx/ssl/nginx.key
       - ${VOLUME_PATH}:/container_output
       - ${VOLUME_PATH}/log_vol:/var/log/nginx
-      - ./uwsgi/static/:/var/trans/static/
+      - ./uwsgi-django/static/:/var/trans/static/
     networks:
       - web_transcendence
       # - monitor_transcendence
@@ -69,12 +69,9 @@ services:
     volumes:
       - '${VOLUME_PATH}/log_django_vol:/src/logs'
       - ./uwsgi-django/:/code/
-      - ./uwsgi-django/static/:/var/www/trans/static/
-      # - ./docker/srcs/uwsgi-django/polls:/code/polls
-      # - ./docker/srcs/uwsgi-django/mysite:/code/mysite
+      - ./uwsgi-django/static/:/var/trans/static/
       # - logs_volume:/src/logs
       # - ${VOLUME_PATH}/django/code:/code
-  #     - ${VOLUME_PATH}/ft_django/static:/static/
   #     - ${VOLUME_PATH}/ft_django/uwsgi:/etc/uwsgi
   #     - ${VOLUME_PATH}:/container_output
 

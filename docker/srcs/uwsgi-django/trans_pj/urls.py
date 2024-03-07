@@ -19,6 +19,10 @@ from django.contrib import admin
 from django.urls import include, path
 from . import views  # views.pyからビューをインポート
 
+
+# from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+
 urlpatterns = [
     path('', include('django_prometheus.urls')),
     path('admin/', admin.site.urls),
@@ -27,6 +31,4 @@ urlpatterns = [
 
 ]
 
-# if Settings.DEBUG:
-#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns += staticfiles_urlpatterns()
