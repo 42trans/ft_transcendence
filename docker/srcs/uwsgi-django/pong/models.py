@@ -1,8 +1,10 @@
 from django.db import models
 
-# Create your models here.
-from django.db import models
-
-class MyModel(models.Model):
+class PongGameResult(models.Model):
     # フィールドの定義
-    name = models.CharField(max_length=100)
+    player_1_score = models.IntegerField()
+    player_2_score = models.IntegerField()
+    name_winner = models.CharField(max_length=100)
+    name_loser = models.CharField(max_length=100)
+    date = models.DateTimeField(auto_now_add=True)
+

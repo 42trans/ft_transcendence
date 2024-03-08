@@ -194,6 +194,7 @@ test_main:
 t:
 	make test_main
 	
-
+test_game_result_json:
+	sh test/django/game_result_json.sh
 
 

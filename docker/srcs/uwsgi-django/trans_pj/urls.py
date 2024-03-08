@@ -24,6 +24,7 @@ from . import views  # views.pyからビューをインポート
 
 
 urlpatterns = [
+	path('pong/', include('pong.urls')),
     path('', include('django_prometheus.urls')),
     path('admin/', admin.site.urls),
     path('api/status/', views.api_status, name='api_status'),
