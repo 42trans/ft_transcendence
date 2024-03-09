@@ -1,3 +1,4 @@
+# docker/srcs/uwsgi-django/pong/models.py
 from django.db import models
 
 class PongGameResult(models.Model):

@@ -20,4 +20,13 @@ contract PongGameResult {
     function getGameResult(uint index) public view returns (GameResult memory) {
         return gameResults[index];
     }
+
+    function getGameResultByMatchId(uint _matchId) public view returns (GameResult memory) {
+    for (uint i = 0; i < gameResults.length; i++) {
+        if (gameResults[i].matchId == _matchId) {
+            return gameResults[i];
+        }
+    }
+    revert("Game result not found.");
+}
 }

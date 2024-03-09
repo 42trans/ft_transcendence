@@ -16,7 +16,7 @@
 | 未 Web   | uwsgi-django/http     | 8096 | 8096 | 8001 |             |
 | Web      | postgres              | 5433 | 5433 | 5432 |             |
 | Web      | pgadmin               | 8087 | 8087 |   80 |             |
-| Web      | hardhat               | 3031 | 3031 | 3000 | Blockchain  |
+| Web      | hardhat               | 3031 | 3031 | 8545 | Blockchain  |
 |          |                       |      |      |      |             |
 |          |                       |      |      |      |             |
 | Devops   | elasticsearch         | 未9201 | 未9201 | 9200 | ELK         |

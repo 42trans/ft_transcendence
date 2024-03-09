@@ -1,4 +1,5 @@
 #!/bin/bash
+# docker/srcs/uwsgi-django/django-entrypoint.sh
 
 python manage.py migrate --noinput
 # superuserの作成 データベースに格納される。作成に失敗しても進む。

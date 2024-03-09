@@ -4,6 +4,7 @@
 # =============================================
 API_URL="https://hioikawa.42.fr/pong/api/save_game_result/"
 JSON_DATA='{
+    "match_id": 1,
     "player_1_score": 2,
     "player_2_score": 1,
     "player_1_name": "キュア白",

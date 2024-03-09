@@ -1,3 +1,4 @@
+# docker/srcs/uwsgi-django/pong/views.py
 import json
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -9,7 +10,6 @@ def index(request):
 	return HttpResponse("<h1>[Pong]</h1> <p>index</p>")
 
 def results(request):
-	# results_list = PongGameResult.objects.order_by('-player_1_score')[:5]  # 上位5件の結果を取得
 	results_list = PongGameResult.objects.all().order_by("-date")
 	context = {'results_list': results_list}
 	return render(request, 'pong/results.html', context)
@@ -19,6 +19,7 @@ def save_game_result(request):
 	if request.method == 'POST':
 		try:
 			data = json.loads(request.body.decode('utf-8'))  # 受け取ったJSONデータをPythonの辞書に変換
+			match_id = data.get('match_id')
 			player_1_score = data.get('player_1_score')
 			player_2_score = data.get('player_2_score')
 
@@ -28,6 +29,7 @@ def save_game_result(request):
 
 			# PongGameResult インスタンスを作成して保存
 			game_result = PongGameResult(
+				match_id=match_id,
 				player_1_score=player_1_score,
 				player_2_score=player_2_score,
 				name_winner=winner,
