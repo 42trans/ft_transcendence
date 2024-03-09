@@ -196,5 +196,7 @@ t:
 	
 test_game_result_json:
 	sh test/django/game_result_json.sh
+test_game_result_json_hardhat:
+	sh test/django/game_result_json_hardhat.sh
 
 

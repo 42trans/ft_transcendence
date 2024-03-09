@@ -2,6 +2,7 @@ from django.db import models
 
 class PongGameResult(models.Model):
     # フィールドの定義
+    match_id = models.IntegerField()
     player_1_score = models.IntegerField()
     player_2_score = models.IntegerField()
     name_winner = models.CharField(max_length=100)
