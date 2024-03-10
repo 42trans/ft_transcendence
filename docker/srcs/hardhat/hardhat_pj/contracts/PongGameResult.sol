@@ -8,7 +8,7 @@ contract PongGameResult {
         uint player2Score;
         string winnerName;
         string loserName;
-        uint date; // UNIXタイムスタンプ形式
+        uint date;
     }
 
     GameResult[] public gameResults;
@@ -22,11 +22,17 @@ contract PongGameResult {
     }
 
     function getGameResultByMatchId(uint _matchId) public view returns (GameResult memory) {
-    for (uint i = 0; i < gameResults.length; i++) {
-        if (gameResults[i].matchId == _matchId) {
-            return gameResults[i];
+        for (uint i = 0; i < gameResults.length; i++) {
+            if (gameResults[i].matchId == _matchId) {
+                return gameResults[i];
+            }
         }
+        revert("Game result not found.");
     }
-    revert("Game result not found.");
+
+    function getAllGameResults() public view returns (GameResult[] memory) {
+        return gameResults;
+    }
+    
 }
-}
+

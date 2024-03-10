@@ -1,5 +1,5 @@
 FROM node:20-alpine
-RUN apk update && apk add git bash
+RUN apk update && apk add git bash curl
 WORKDIR /app
 # プロジェクトからpackage.jsonとpackage-lock.jsonファイルをコピー
 COPY hardhat_pj/package*.json /app/
@@ -9,4 +9,6 @@ RUN npm install
 COPY hardhat_pj/ /app/
 # 開発依存関係でHardhatをインストール
 RUN npm install --save-dev hardhat
+# コンパイラを事前にインストール（後でも可）
+RUN npm install -g solc
 CMD ["npx", "hardhat", "node"]
