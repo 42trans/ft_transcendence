@@ -11,6 +11,10 @@
 - ローカル、コンテナともにNode.js 20.11.1
   - Dockerfile内
   - ローカルでのinit作業時
+- テストネットワーク
+  - 参考:【7. Deploying to a live network | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/tutorial/deploying-to-a-live-network
+  - INFURA API
+    - 9301610ed4c24693b985f80eda16eb67
 
 ## memo
 

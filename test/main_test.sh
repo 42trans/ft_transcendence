@@ -48,7 +48,7 @@ echo "${ESC}${COLOR198}"
 echo "========================================================="
 echo "hardhat test"
 echo "========================================================="
-bash ./test/hardhat/sample_hardhat.sh
+bash ./test/hardhat/test_main_hardhat.sh
 
 
 #=======================================================
