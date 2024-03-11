@@ -17,13 +17,16 @@ echo -e "\n------------------------------------------------------"
 echo -e " 内容: apiにcurlでPOST📮 Djangoが🪖Hardhatテストネットワークにデータを保存💾"
 echo -e " cmd: sh test/hardhat/save_game_result_json_hardhat.sh"
 echo -e "------------------------------------------------------"
-sh test/hardhat/save_game_result_json_hardhat.sh
+sh test/hardhat/save_game_result_json_hardhat.sh --verbose
 
 echo -e "\n------------------------------------------------------"
 echo -e " 内容: apiにcurlでGET⬇ Djangoが🪖Hardhatネットワークからデータを取得"
 echo -e " cmd: sh test/hardhat/get_game_result_json_hardhat.sh"
 echo -e "------------------------------------------------------"
 sh test/hardhat/get_game_result_json_hardhat.sh
+
+
+# python3 pong/view_modules/test.py
 
 echo -e "\n------------------------------------------------------"
 echo -e " 内容: 🪖Hardhat内の単体テスト💻 ※docker/srcs/hardhat/hardhat_pj/test/PongGameResult.test.ts"

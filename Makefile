@@ -200,3 +200,11 @@ test_game_result_json_hardhat:
 	sh test/hardhat/save_game_result_json_hardhat.sh
 
 
+# -----------------------------------------------
+# コマンド
+# -----------------------------------------------
+hardhat_snapshot:
+	docker exec hardhat npx hardhat run /app/scripts/snapshot.js --network localhost
+hardhat_snapshot_revert:
+	docker exec hardhat npx hardhat run /app/scripts/revert.js --network localhost
+	docker exec hardhat npx hardhat run /app/scripts/snapshot.js --network localhost

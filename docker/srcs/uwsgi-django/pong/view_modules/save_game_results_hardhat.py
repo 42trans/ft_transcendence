@@ -31,8 +31,8 @@ def save_game_result_hardhat(request):
 			loser = player2Name if player1Score > player2Score else player1Name
 
 			# Hardhatのテストネットワークに接続
-			w3 = Web3(Web3.WebsocketProvider(HARDHAT_NETWORK_URL))
-			# w3 = Web3(Web3.HTTPProvider(HARDHAT_NETWORK_URL))
+			# w3 = Web3(Web3.WebsocketProvider(HARDHAT_NETWORK_URL))
+			w3 = Web3(Web3.HTTPProvider(HARDHAT_NETWORK_URL))
 			w3.eth.defaultAccount = w3.eth.accounts[0]  # Hardhatのデフォルトアカウントを使用
 			contract = w3.eth.contract(address=CONTRACT_ADDRESS, abi=CONTRACT_ABI)
 
@@ -52,6 +52,10 @@ def save_game_result_hardhat(request):
 				loser
 			).transact({'from': w3.eth.defaultAccount})
 			txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+
+			# デバッグ出力
+			print(f"txn_hash: {txn_hash}")
+			print(f"txn_receipt: {txn_receipt}")
 
 			return JsonResponse({'status': 'success', 'txn_receipt': txn_receipt.transactionHash.hex()})
 		except Exception as e:

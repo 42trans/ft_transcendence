@@ -18,6 +18,7 @@ services:
     - ./hardhat/hardhat_pj/scripts:/app/scripts
     - ./hardhat/hardhat_pj/test-results:/app/test-results
     - ./hardhat/hardhat_pj/test:/app/test
+    - ./hardhat/hardhat_pj/data:/app/data
     networks:
       - blockchain_transcendence
     

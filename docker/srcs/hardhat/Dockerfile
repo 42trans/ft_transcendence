@@ -10,6 +10,8 @@ COPY hardhat_pj/ /app/
 # 開発依存関係でHardhatをインストール
 RUN npm install --save-dev hardhat
 # Solidityコンパイラを事前にインストール（後でも可）
-RUN npm install -g solc
+# RUN npm install -g solc
+RUN npm install -g web3
 # Hardhat Networkをローカルで実行
 CMD ["npx", "hardhat", "node"]
+# ※Started HTTP and WebSocket JSON-RPC server at http://127.0.0.1:8545/
