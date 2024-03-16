@@ -1,4 +1,4 @@
-# docker/srcs/uwsgi-django/pong/view_modules/game_results.py
+# docker/srcs/uwsgi-django/pong/view_modules/save_game_results_hardhat.py
 from web3 import Web3
 from django.http import JsonResponse
 import json

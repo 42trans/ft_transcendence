@@ -13,6 +13,8 @@
   - [日本語訳](other/subject/subject.md)
 - [Tips.md](other/team_docs/Tips.md)
 - [port.md](other/team_docs/port.md)
+- [プロジェクトマネジメント](other/team_docs/pm/pm_readme.md)
+
 
 ### module
 
