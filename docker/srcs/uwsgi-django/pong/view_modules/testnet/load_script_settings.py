@@ -1,4 +1,4 @@
-# docker/srcs/uwsgi-django/pong/view_modules/testnet/save_util.py
+# docker/srcs/uwsgi-django/pong/view_modules/testnet/load_script_settings.py
 import json
 import os
 # --------------------------------------
@@ -30,4 +30,4 @@ def load_script_settings():
 	contract_address = contract_info.get('address', '') 
 	ganache_network_url = os.getenv('GANACHE_NETWORK_URL', 'http://ganache:8545')
 
-	return contract_address, ganache_network_url, contract_abi
+	return ganache_network_url, contract_address, contract_abi
