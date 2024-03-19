@@ -208,3 +208,5 @@ hardhat_snapshot:
 hardhat_snapshot_revert:
 	docker exec hardhat npx hardhat run /app/scripts/revert.js --network localhost
 	docker exec hardhat npx hardhat run /app/scripts/snapshot.js --network localhost
+hardhat_deploy_ganache:
+	docker exec hardhat npx hardhat run scripts/deploy.ts --network ganache

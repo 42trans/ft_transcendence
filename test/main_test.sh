@@ -44,11 +44,16 @@ echo "${ESC}[m"
 # echo "========================================================="
 # bash ./test/django/sample_django.sh
 # #=======================================================
-echo "${ESC}${COLOR198}"
+# echo "${ESC}${COLOR198}"
+# echo "========================================================="
+# echo "hardhat test"
+# echo "========================================================="
+# bash ./test/hardhat/test_main_hardhat.sh
+echo "${ESC}${COLOR201}"
 echo "========================================================="
-echo "hardhat test"
+echo "ganache test"
 echo "========================================================="
-bash ./test/hardhat/test_main_hardhat.sh
+bash ./test/ganache/test_main_ganache.sh
 
 
 #=======================================================

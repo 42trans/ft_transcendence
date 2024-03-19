@@ -1,9 +1,11 @@
 // docker/srcs/hardhat/hardhat_pj/hardhat.config.ts
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+require('dotenv').config();
 
 const INFURA_API_KEY = "9301610ed4c24693b985f80eda16eb67";
 const SEPOLIA_PRIVATE_KEY = "894c08080eaa6779d4c084b896b3bc4e42953e0705149cfbc990abee356e14f1";
+const { GANACHE_PRIVATE_KEY } = process.env;
 
 module.exports = {
   solidity: "0.8.24",
@@ -18,9 +20,7 @@ module.exports = {
     },
     ganache: {
       url: "http://ganache:8545", 
-      // Ganacheから取得したプライベートキー
-      accounts: ["0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", 
-                "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d",]
+      accounts: [GANACHE_PRIVATE_KEY]
     }
   }
 };

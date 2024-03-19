@@ -1,21 +1,35 @@
 // docker/srcs/hardhat/hardhat_pj/scripts/deploy.ts
 import { ethers } from "hardhat";
+import * as fs from "fs";
+const path = require('path');
 
 async function main() {
-    const [deployer] = await ethers.getSigners();
+	const [deployer] = await ethers.getSigners();
+	const PongGameResult = await ethers.deployContract("PongGameResult");
+	// debug
+	console.log("deployer.address(account):", deployer.address);
+	console.log("PongGameResult.getAddress:",  await PongGameResult.getAddress());
+	
+	const config = {
+		address: await PongGameResult.getAddress(),
+		deployer: deployer.address,
+	};
+	
+	// Save the contract info to a shared volume
+	fs.writeFileSync(path.join(__dirname, '../share/contractInfo.json'), JSON.stringify(config, null, 2));
+	console.log("config:", config);
+	console.log("config:", path.join(__dirname, '../share/contractInfo.json'));
 
-    console.log("Deploying contracts with the account:", deployer.address);
-
-    const PongGameResult = await ethers.deployContract("PongGameResult");
-    console.log("PongGameResult address:",  await PongGameResult.getAddress());
-
+	
 }
 
 main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+	.then(() => process.exit(0))
+	.catch((error) => {
+		console.error(error);
+		process.exit(1);
+});
 
-  // 参考:【7. Deploying to a live network | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/tutorial/deploying-to-a-live-network#_7-deploying-to-a-live-network
+// 参考:【7. Deploying to a live network | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/tutorial/deploying-to-a-live-network#_7-deploying-to-a-live-network
+// 参考:【Migrating away from hardhat-waffle | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/hardhat-runner/docs/advanced/migrating-from-hardhat-waffle
+// 参考:【Hardhat Ignition を始める | Nomic Foundationによるプロフェッショナル向けイーサリアム開発環境】 https://hardhat.org/ignition/docs/getting-started#overview
