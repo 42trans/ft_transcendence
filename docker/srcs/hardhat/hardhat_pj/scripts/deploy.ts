@@ -5,22 +5,23 @@ const path = require('path');
 
 async function main() {
 	const [deployer] = await ethers.getSigners();
-	const PongGameResult = await ethers.deployContract("PongGameResult");
+	const PongGameResult = await ethers.deployContract("PongGameResult");	
+	// ----------------------------------------------------------
+	// Save shared volume
+	// ----------------------------------------------------------
+	const config = {
+		deployer: deployer.address,
+		address: await PongGameResult.getAddress(),
+	};
+	fs.writeFileSync(path.join(__dirname, '../share/contractInfo.json'), JSON.stringify(config, null, 2));
+	// ----------------------------------------------------------
 	// debug
+	// ----------------------------------------------------------
 	console.log("deployer.address(account):", deployer.address);
 	console.log("PongGameResult.getAddress:",  await PongGameResult.getAddress());
-	
-	const config = {
-		address: await PongGameResult.getAddress(),
-		deployer: deployer.address,
-	};
-	
-	// Save the contract info to a shared volume
-	fs.writeFileSync(path.join(__dirname, '../share/contractInfo.json'), JSON.stringify(config, null, 2));
 	console.log("config:", config);
 	console.log("config:", path.join(__dirname, '../share/contractInfo.json'));
-
-	
+	// ----------------------------------------------------------
 }
 
 main()

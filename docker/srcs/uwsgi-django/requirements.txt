@@ -13,3 +13,4 @@ uwsgi>=2.0
 django-prometheus
 python-logstash
 web3
+python-dotenv

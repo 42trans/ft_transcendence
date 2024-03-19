@@ -203,10 +203,15 @@ test_game_result_json_hardhat:
 # -----------------------------------------------
 # コマンド
 # -----------------------------------------------
-hardhat_snapshot:
-	docker exec hardhat npx hardhat run /app/scripts/snapshot.js --network localhost
-hardhat_snapshot_revert:
-	docker exec hardhat npx hardhat run /app/scripts/revert.js --network localhost
-	docker exec hardhat npx hardhat run /app/scripts/snapshot.js --network localhost
+# hardhat_snapshot:
+# 	docker exec hardhat npx hardhat run /app/scripts/snapshot.js --network localhost
+# hardhat_snapshot_revert:
+# 	docker exec hardhat npx hardhat run /app/scripts/revert.js --network localhost
+# 	docker exec hardhat npx hardhat run /app/scripts/snapshot.js --network localhost
 hardhat_deploy_ganache:
 	docker exec hardhat npx hardhat run scripts/deploy.ts --network ganache
+# -----------------------------------------------
+# Re-setup 再起動時に毎回実行するコマンドを登録してください。
+# -----------------------------------------------
+Re-setup:
+	make hardhat_deploy_ganache

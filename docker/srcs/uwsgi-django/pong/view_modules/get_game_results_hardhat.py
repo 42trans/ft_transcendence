@@ -11,7 +11,7 @@ CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
 
 # スクリプトの現在のディレクトリからパスを作成
 current_dir = os.path.dirname(os.path.abspath(__file__))
-abi_path = os.path.join(current_dir, 'contract_abi.json')
+abi_path = os.path.join(current_dir, './testnet/contract_abi.json')
 # ABIファイルを読み込む
 with open(abi_path, 'r') as abi_definition:
 	CONTRACT_ABI = json.load(abi_definition)

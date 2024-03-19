@@ -70,6 +70,7 @@ services:
       - '${VOLUME_PATH}/log_django_vol:/src/logs'
       - ./uwsgi-django/:/code/
       - ./uwsgi-django/static/:/var/trans/static/
+      - ./hardhat/hardhat_pj/share/:/code/share_hardhat/
       # - logs_volume:/src/logs
       # - ${VOLUME_PATH}/django/code:/code
   #     - ${VOLUME_PATH}/ft_django/uwsgi:/etc/uwsgi

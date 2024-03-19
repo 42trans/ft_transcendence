@@ -1,9 +1,9 @@
 #!/bin/bash
-# test/ganache/save_game_result_ganache.sh
+# test/ganache/save_api_game_result_ganache.sh
 # =============================================
 # Pongゲームの結果をAPIに送信するスクリプト
 # =============================================
-API_URL="https://hioikawa.42.fr/pong/save_game_result_hardhat/"
+API_URL="https://hioikawa.42.fr/pong/api/save_testnet/"
 JSON_DATA='{
 	"match_id": 1,
 	"player_1_score": 1,

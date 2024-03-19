@@ -3,7 +3,7 @@
 # =============================================
 # Pongゲームの結果をAPIに送信するスクリプト
 # =============================================
-API_URL="https://hioikawa.42.fr/pong/save_game_result_hardhat/"
+API_URL="https://hioikawa.42.fr/pong/save_testnet/"
 JSON_DATA='{
 	"match_id": 1,
 	"player_1_score": 1,

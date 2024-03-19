@@ -10,15 +10,11 @@ services:
     ports:
       - ${HARDHAT_PORT}:8545
     volumes:
-    # # コンパイルされたアーティファクトを保管するディレクトリ
     # - ${VOLUME_PATH}/hardhat/artifacts:/app/artifacts
-    # - ${VOLUME_PATH}/hardhat/test-results:/app/test-results
     - ./hardhat/hardhat_pj/artifacts:/app/artifacts
     - ./hardhat/hardhat_pj/contracts:/app/contracts
     - ./hardhat/hardhat_pj/scripts:/app/scripts
-    # - ./hardhat/hardhat_pj/test-results:/app/test-results
     - ./hardhat/hardhat_pj/test:/app/test
-    # - ./hardhat/hardhat_pj/data:/app/data
     - ./hardhat/hardhat_pj/share:/app/share
     - ./hardhat/hardhat_pj/hardhat.config.ts:/app/hardhat.config.ts
     networks:
@@ -31,8 +27,6 @@ services:
     image: ganache
     env_file:
       - .env
-    volumes:
-      - ./ganache/ganache_data:/ganache_data
     ports:
        - "8555:8545"
     stdin_open: true

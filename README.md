@@ -27,6 +27,7 @@
 - [ELK.md(Elastic Stack)](other/team_docs/ELK.md)
 - [Monitor.md(Prometheus,Grafana)](other/team_docs/Monitor.md)
 - [minimal_requirement.md](other/team_docs/minimal_requirement.md)
+- [ganache.md](other/team_docs/ganache.md)
 
 ## TEST CASE
 

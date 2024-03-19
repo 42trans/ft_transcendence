@@ -1,5 +1,5 @@
 #!/bin/sh
-# test/hardhat/sample_hardhat.sh
+# test/ganache/test_main_ganache.sh
 #=======================================================
 # include
 #=======================================================
