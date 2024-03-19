@@ -20,8 +20,8 @@ services:
       - web_transcendence
       - monitor_transcendence
       - elk
-    # profiles:
-    #   - monitor
+    profiles:
+      - monitor
 
   prometheus:
     container_name: prometheus

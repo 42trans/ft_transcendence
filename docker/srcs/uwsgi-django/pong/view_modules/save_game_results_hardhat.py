@@ -6,7 +6,8 @@ import os
 from django.views.decorators.csrf import csrf_exempt
 
 # Hardhatのローカルネットワークの設定
-HARDHAT_NETWORK_URL = 'http://hardhat:8545'
+# HARDHAT_NETWORK_URL = 'http://hardhat:8545'
+GANACHE_NETWORK_URL = 'http://ganache:8545'
 CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
 
 # スクリプトの現在のディレクトリからパスを作成
@@ -32,11 +33,12 @@ def save_game_result_hardhat(request):
 
 			# Hardhatのテストネットワークに接続
 			# w3 = Web3(Web3.WebsocketProvider(HARDHAT_NETWORK_URL))
-			w3 = Web3(Web3.HTTPProvider(HARDHAT_NETWORK_URL))
+			w3 = Web3(Web3.WebsocketProvider(GANACHE_NETWORK_URL))
 			w3.eth.defaultAccount = w3.eth.accounts[0]  # Hardhatのデフォルトアカウントを使用
 			contract = w3.eth.contract(address=CONTRACT_ADDRESS, abi=CONTRACT_ABI)
 
 			# コントラクトへの接続前
+			print(f"GANACHE_NETWORK_URL: {GANACHE_NETWORK_URL}")
 			print(f"CONTRACT_ADDRESS: {CONTRACT_ADDRESS}")
 			# debug
 			chain_id = w3.eth.chain_id
@@ -54,8 +56,28 @@ def save_game_result_hardhat(request):
 			txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
 
 			# デバッグ出力
-			print(f"txn_hash: {txn_hash}")
+			# print(f"txn_hash: {txn_hash}")
 			print(f"txn_receipt: {txn_receipt}")
+
+			# 保存されたゲーム結果の検証
+			try:
+				# 最後に追加したゲーム結果のインデックスを取得
+				game_results = contract.functions.getAllGameResults().call()
+				latest_result_index = len(game_results) - 1
+				if latest_result_index >= 0:  # 結果が1つでも存在するか確認
+					# 最後に追加された結果を取得
+					latest_result = contract.functions.getGameResult(latest_result_index).call()
+					# 取得した結果を確認
+					saved_match_id = latest_result[0]  # または対応するフィールド
+					saved_player1_score = latest_result[1]  # または対応するフィールド
+					# 他のフィールドも同様に確認
+					print(f"Saved game result: Match ID = {saved_match_id}, Player 1 Score = {saved_player1_score}, ...")
+				else:
+					print("No game results found.")
+			except Exception as e:
+				print(f"Error retrieving saved game results: {e}")
+
+
 
 			return JsonResponse({'status': 'success', 'txn_receipt': txn_receipt.transactionHash.hex()})
 		except Exception as e:

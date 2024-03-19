@@ -35,34 +35,21 @@ def get_all_game_results_hardhat(request):
 
 			# スマートコントラクトの関数を呼び出し
 
-			json_data = contract.functions.getGameResult(1).call()
-			# json_data = contract.functions.getAllGameResults().call()
-			# if len(json_data) == 0:
-			# 	return JsonResponse({'status': 'success', 'game_results': []})
+			json_data = contract.functions.getGameResult().call()
 
-			# game_results = contract.functions.getAllGameResults().call([])
-			# print("あいうえお")
-			# for game_result in game_results:
-			# 	print(f"ゲーム結果：{game_result}")
-
-			# # 結果を辞書形式に変換
-			# json_results = []
-			# for game_result in game_results:
-			# 	# json_results[game_result[0]] = {
-			# 	json_results.append({
-			# 		'match_id': game_result[0],
-			# 		'player_1_score': game_result[1],
-			# 		'player_2_score': game_result[2],
-			# 		'winner_name': game_result[3],
-			# 		'loser_name': game_result[4],
-			# 		'date': game_result[5],
-			# 	})
-			# 	# }
-			# # JSON形式に変換
-			# json_data = json.dumps(json_results)
-
-			# return JsonResponse({'status': 'success', 'game_results': json_results})
-			return JsonResponse({'status': 'success', 'game_results': json_data})
+			# ゲーム結果をJSON形式で整形
+			results_list = []
+			for result in json_data:
+				results_list.append({
+					'match_id': result[0],
+					'player_1_score': result[1],
+					'player_2_score': result[2],
+					'winner_name': result[3],
+					'loser_name': result[4],
+					'date': result[5]
+				})
+				
+			return JsonResponse({'status': 'success', 'game_results': results_list})
 		except Exception as e:
 			return JsonResponse({'status': 'error', 'message': str(e)})
 	return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)

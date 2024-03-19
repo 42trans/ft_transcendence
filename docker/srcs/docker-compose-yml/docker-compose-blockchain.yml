@@ -21,4 +21,17 @@ services:
     - ./hardhat/hardhat_pj/data:/app/data
     networks:
       - blockchain_transcendence
-    
+    profiles:
+      - blockchain
+  ganache:
+    container_name: ganache
+    build: ./ganache
+    image: ganache
+    ports:
+       - "8555:8545"
+    stdin_open: true
+    tty: true
+    networks:
+      - blockchain_transcendence
+    profiles:
+      - blockchain
