@@ -33,8 +33,7 @@
 - [nginx.md](other/team_docs/nginx.md)
 - [frontend.md(Bootstrap, three.js)](other/team_docs/frontend.md)
 - [Django.md](other/team_docs/Django.md)
-  - [memo.md](docker/srcs/uwsgi-django/sphinx/sphinx-memo.md)
-  - 
+  - [memo.md](docker/srcs/uwsgi-django/sphinx/sphinx-memo.md) 
 - [PostgreSQL.md](other/team_docs/PostgreSQL.md)
 - [pgadmin.md](other/team_docs/pgadmin.md)
 - [Blockchain.md](other/team_docs/Blockchain.md)

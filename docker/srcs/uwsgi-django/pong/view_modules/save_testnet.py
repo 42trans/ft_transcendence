@@ -6,7 +6,7 @@ from .testnet.read_and_extract_contract_info import read_and_extract_contract_in
 from .testnet.setup_web3_and_contract import setup_web3_and_contract
 from .testnet.process_game_result import process_game_result
 from .testnet.execute_addGameResult import execute_addGameResult
-from .testnet.save_debug import debug_save_testnet
+from .testnet.debug_save_testnet import debug_save_testnet
 # --------------------------------------
 # 指定のAPIにPOSTならば、テストネットワークに保存を実行
 # --------------------------------------

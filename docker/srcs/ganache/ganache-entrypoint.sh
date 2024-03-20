@@ -2,6 +2,7 @@
 # docker/srcs/ganache/ganache-entrypoint.sh
 
 # Ganacheのデータを保存するディレクトリ
+# 設定しているがマウントはしていない
 GANACHE_DATA_DIR="/ganache_data"
 # Ganacheを起動するdefaultのコマンド
 GANACHE_CMD="ganache-cli --host 0.0.0.0 --db $GANACHE_DATA_DIR"
