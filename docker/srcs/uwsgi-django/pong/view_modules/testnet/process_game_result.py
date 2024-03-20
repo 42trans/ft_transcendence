@@ -13,12 +13,12 @@ def determine_winner(player1_score, player2_score, player1_name, player2_name):
 # JSONデータからゲーム結果を処理する
 # ------------------------------------------------------
 def process_game_result(data):
-	# match_id = data['match_id']
 	player1_score = data['player_1_score']
 	player2_score = data['player_2_score']
 	player1_name = data['player_1_name']
 	player2_name = data['player_2_name']
 
+	# 勝者と敗者を判定する
 	winner, loser = determine_winner(player1_score, player2_score, player1_name, player2_name)
 
 	return winner, loser 

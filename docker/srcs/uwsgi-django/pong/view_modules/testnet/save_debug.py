@@ -4,7 +4,7 @@
 # ------------------------------------------------------
 def print_debug_info(contract_address, ganache_network_url, chain_id, contract, txn_hash, txn_receipt):
 	print(f"CONTRACT_ADDRESS: {contract_address}")
-	print(f"GANACHE_NETWORK_URL: {ganache_network_url}")
+	print(f"EVM_TEST_NETWORK_URL: {ganache_network_url}")
 	print(f"chain_id: {chain_id}")
 	print(f"contract: {contract}")
 	print(f"txn_hash: {txn_hash}")

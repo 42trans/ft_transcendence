@@ -14,3 +14,9 @@ django-prometheus
 python-logstash
 web3
 python-dotenv
+
+Sphinx
+sphinx-rtd-theme
+myst-parser
+
+pdoc3

@@ -49,7 +49,7 @@ services:
     image: uwsgi-django
     env_file:
       - .env
-      - ./uwsgi-django/.env
+      # - ./uwsgi-django/.env
     # environment:
     #   - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
     #   - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}

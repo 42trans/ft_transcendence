@@ -7,6 +7,10 @@
   - 多機能
   - CのOSS
 - 静的ページ作成(html,css), 3Dは別コンテナに
+- ドキュメント作成は Gitbookに対応するものを使用する（mdを標準とするツール）
+  - Sphinx
+    - `make sphinx_make_html`でbuild/にhtmlファイルを作成
+    - .gitignoreしてます
 
 ## 作業ログ
 
@@ -20,7 +24,9 @@
     - 参考:【django log を elasticsearch に入れる python-logstash 使い方 #Django - Qiita】 https://qiita.com/uturned0/items/87982e34b0de9cc9a774
   - 参考:【python-logstash · PyPI】 https://pypi.org/project/python-logstash/
 - Hardhat経由でganacheのテストネットに保存
-
+- gitbookに対応させるドキュメントを考慮
+  - 参考:【ふだん Markdown を書く技術者のための reStructuredText 文法まとめ】 https://gotohayato.com/content/464/
+  
 ## memo
 
 - pythonのコンテナを立てる。django単体のimageはない。

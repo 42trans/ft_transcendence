@@ -22,3 +22,15 @@
 - 品質優先:確実にバグなく動いて欲しい作業
   - 必須のゲームシステム（minimalrequirement）:2~5
     - フルコミ&ペアプロの方とかで、もしくはDjangoまでを全員でplay
+
+## ドキュメント
+
+### 期待・希望：Gitbookを使ってみたい  
+
+- そのためには.md形式で素材を作る必要がありそう  
+  - コードのコメントはデフォルトで.mdで出力するものが良いのかも
+    - pythonの場合
+      - Sphinxが面倒だけど、後からの編集が楽そう。
+        - 参考:【ふだん Markdown を書く技術者のための reStructuredText 文法まとめ】 https://gotohayato.com/content/464/
+      - pdoc3はシンプルだがhtmlがデフォで、mdにするには一手間必要かも
+    - JS,TSの場合は？

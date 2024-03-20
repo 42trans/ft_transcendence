@@ -203,13 +203,11 @@ test_game_result_json_hardhat:
 # -----------------------------------------------
 # コマンド
 # -----------------------------------------------
-# hardhat_snapshot:
-# 	docker exec hardhat npx hardhat run /app/scripts/snapshot.js --network localhost
-# hardhat_snapshot_revert:
-# 	docker exec hardhat npx hardhat run /app/scripts/revert.js --network localhost
-# 	docker exec hardhat npx hardhat run /app/scripts/snapshot.js --network localhost
 hardhat_deploy_ganache:
 	docker exec hardhat npx hardhat run scripts/deploy.ts --network ganache
+sphinx_make_html:
+	docker exec uwsgi-django /bin/sh -c "cd sphinx && make html"
+
 # -----------------------------------------------
 # Re-setup 再起動時に毎回実行するコマンドを登録してください。
 # -----------------------------------------------
