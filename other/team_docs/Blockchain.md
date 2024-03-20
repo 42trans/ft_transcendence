@@ -15,7 +15,8 @@
   - 参考:【7. Deploying to a live network | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/tutorial/deploying-to-a-live-network
   - INFURA API
     - 9301610ed4c24693b985f80eda16eb67
-
+  - 参考:【Ethereum Goerli Faucet】 https://www.alchemy.com/faucets/ethereum-goerli
+  
 ## memo
 
 ## 作業

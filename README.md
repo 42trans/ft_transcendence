@@ -11,12 +11,9 @@
   - Blockchainの環境を構築する（データを永続化していないため）
 - `make test_main`
   - 全てのコンテナに対してsampleテストが走ります
-  - 個人用にカスタマイズするには `additional.mk` という名前のファイルを Makefileの階層に作成してください。includeされます。
-    - 内容例
-    ```
-    mytest:
-    $(call set_env) && bash ./test/hioikawa_test.sh
-    ```
+  - Make targetを個人用にカスタマイズするには `additional.mk` という名前のファイルを Makefileの階層に作成してください。Makefileにincludeされる設定済み。.gitignore済み。
+![](<other/team_docs/img/スクリーンショット 2024-03-21 4.08.06.png>)
+
 
 ## test page
 

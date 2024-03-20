@@ -1,11 +1,19 @@
 # Ganache
 
+![alt text](<img/スクリーンショット 2024-03-21 4.05.41.png>)
+
 ## cmd
 
-- ganache にデプロイ時
+- ganache にデプロイ
   - make hardhat_deploy_ganache 
     - docker exec hardhat npx hardhat run scripts/deploy.ts --network ganache
-  - make Re-setup にまとめて行うように設定した
+  - build blockchain時に自動実行
+- 再起動時に試合結果を20件登録
+  - make test_ganache
+  - build blockchain時に自動実行
+
+- test
+  - make test_ganache
 
 ## install
   

@@ -64,6 +64,8 @@ build_up_blockchain:
 	COMPOSE_PROFILES=blockchain docker-compose -f $(COMPOSE_FILES_ARGS) build
 	$(call set_env) && \
 	COMPOSE_PROFILES=blockchain docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+	make hardhat_deploy_ganache
+	make setup_ganache_data
 
 build_up_monitor:
 	make kindup
@@ -198,26 +200,31 @@ test_game_result_json:
 	sh test/django/game_result_json.sh
 test_game_result_json_hardhat:
 	sh test/hardhat/save_game_result_json_hardhat.sh
-
+test_ganache:
+	bash ./test/ganache/test_main_ganache.sh
 
 # -----------------------------------------------
 # コマンド
 # -----------------------------------------------
+# build blockchainでも実行
 hardhat_deploy_ganache:
 	docker exec hardhat npx hardhat run scripts/deploy.ts --network ganache
+setup_ganache_data:
+	sh docker/srcs/ganache/setup_data.sh
+# -----------------------------------------------
 sphinx_make_html:
 	docker exec uwsgi-django /bin/sh -c "cd sphinx && make html"
 
 # -----------------------------------------------
 # Re-setup 再起動時に毎回実行するコマンドを登録してください。
 Re-setup:
-	make hardhat_deploy_ganache
-
 
 
 # -----------------------------------------------
 # インクルードしたいファイルのリスト
 # -----------------------------------------------
+# 個人用のmake targetを作成する際に活用してください。
+# Makefileのある階層にadditional.mkを作成すると、.gitignoreで個人用にカスタマイズすることが可能です
 INCLUDES := additional.mk
 # 実際にインクルードする前に、存在しないファイルに対してのダミールールを定義
 $(INCLUDES):

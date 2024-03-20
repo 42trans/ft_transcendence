@@ -12,8 +12,9 @@ def read_and_extract_contract_info():
 	ABI(Application Binary Interface)は、スマートコントラクトとのインタラクションに必要なメソッド定義やデータ構造を定義したものです。C++の「クラス」の定義に類似
 
 	:JSONファイルについて:
-		- `contractInfo.json`: hardhatの共有volumeにあるデプロイ時に取得するアドレスを自動で保存するファイル
-			- docker/srcs/hardhat/hardhat_pj/scripts/deploy.tsの実行（デプロイ）により自動生成
+		- `contractInfo.json`: デプロイ時に取得するアドレスを自動で保存するファイル
+			- docker/srcs/hardhat/hardhat_pj/share/contractInfo.json (Hardhat, Django共有volume)
+				- docker/srcs/hardhat/hardhat_pj/scripts/deploy.tsの実行（デプロイ）により自動生成
 			- スマートコントラクトのアドレスが含まれる
 		- `contract_abi.json`: deploy時に自動生成される、docker/srcs/hardhat/hardhat_pj/artifacts/内の.jsonから手動で抽出・保存したファイル
 			- docker/srcs/uwsgi-django/pong/view_modules/testnet/contract_abi.json
