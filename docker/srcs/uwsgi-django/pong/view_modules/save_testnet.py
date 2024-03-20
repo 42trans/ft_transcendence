@@ -41,7 +41,7 @@ def save_testnet(request):
 			# --------------------------------------
 			# 設定を読み込む。EVMベースのテストネットワークのコントラクトに関する。
 			network_url, contract_address, contract_abi = read_and_extract_contract_info()
-			# インスタンスを生成する。Web3インスタンスを初期化し、デフォルトアカウントを設定した上で、スマートコントラクトの。
+			# インスタンスを生成する。スマートコントラクトの。Web3インスタンスを初期化し、デフォルトアカウントを設定してから。
 			w3, contract = setup_web3_and_contract(network_url, contract_address, contract_abi)
 			# 勝者を判定する
 			winner, loser = process_game_result(data)

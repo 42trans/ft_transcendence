@@ -29,6 +29,9 @@ node_modules
 static/
 init/.make_env
 pythontest
+docker/srcs/uwsgi-django/sphinx/build
+hioikawa_test.sh
+
 # srcs/strapi/y-strapi-project/node_modules/*
 # !srcs/strapi/y-strapi-project/node_modules/@strapi/
 # srcs/strapi/y-strapi-project/node_modules/@strapi/*

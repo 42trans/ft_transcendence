@@ -11,3 +11,6 @@ if [ -n "$GANACHE_PRIVATE_KEY" ]; then
 fi
 echo "起動時のコマンド: $GANACHE_CMD"
 exec $GANACHE_CMD
+
+# 起動時に毎回下記のコマンドを行う（データが永続化されていないため）
+# docker exec hardhat npx hardhat run scripts/deploy.ts --network ganache

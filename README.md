@@ -1,7 +1,22 @@
 
 # 使い方
 
-- `⌘ + Shift + v`でプレビュー表示
+- mdファイルは`⌘ + Shift + v`でプレビュー表示
+
+## システム起動時に行うこと
+
+- `make`　
+  - 全てのコンテナを起動
+- `make hardhat_deploy_ganache`
+  - Blockchainの環境を構築する（データを永続化していないため）
+- `make test_main`
+  - 全てのコンテナに対してsampleテストが走ります
+  - 個人用にカスタマイズするには `additional.mk` という名前のファイルを Makefileの階層に作成してください。includeされます。
+    - 内容例
+    ```
+    mytest:
+    $(call set_env) && bash ./test/hioikawa_test.sh
+    ```
 
 ## test page
 
@@ -21,6 +36,8 @@
 - [nginx.md](other/team_docs/nginx.md)
 - [frontend.md(Bootstrap, three.js)](other/team_docs/frontend.md)
 - [Django.md](other/team_docs/Django.md)
+  - [memo.md](docker/srcs/uwsgi-django/sphinx/sphinx-memo.md)
+  - 
 - [PostgreSQL.md](other/team_docs/PostgreSQL.md)
 - [pgadmin.md](other/team_docs/pgadmin.md)
 - [Blockchain.md](other/team_docs/Blockchain.md)

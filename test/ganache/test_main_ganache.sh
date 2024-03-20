@@ -16,10 +16,18 @@ fi
 # docker exec -it uwsgi-django ping -c 1 ganache
 #=======================================================
 echo -e "\n------------------------------------------------------"
-echo -e " 内容: apiにcurlで📮POST📮する。🎸🎸🎸Django🎸🎸🎸が、🍫ganache🍫の🌏テストネットワーク🌏に💾データを保存💾し、直近データをdebug用にreturn"
+echo -e " 内容: apiにcurlで📮POST📮: 🎸Django🎸が、🍫ganache🍫の🌏テストネットワーク🌏に💾データを保存💾"
 echo -e " [cmd]: sh test/ganache/save_api_game_result_ganache.sh"
 echo -e "------------------------------------------------------"
 sh test/ganache/save_api_game_result_ganache.sh --verbose
+
+echo -e "\n------------------------------------------------------"
+echo -e " 内容: apiにcurlで 📥GET📥: 🎸Django🎸で、🍫ganache🍫の🌏テストネットワーク🌏から"
+
+echo -e " [cmd]: sh test/ganache/get_api_all_result_ganache.sh"
+echo -e "------------------------------------------------------"
+
+sh test/ganache/get_api_all_result_ganache.sh
 
 # echo -e "\n------------------------------------------------------\n"
 # echo -e 'docker exec hardhat sh -c "npx hardhat run scripts/interact.ts --network ganache"'
