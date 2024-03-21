@@ -2,7 +2,7 @@
 import json
 import os
 
-def read_and_extract_contract_info(test_net_url: str):
+def read_and_extract_contract_info(contract_info_path:str):
 	"""
 	コントラクトに関するEVMベースのテストネットワーク設定を読み込む関数
 
@@ -25,7 +25,6 @@ def read_and_extract_contract_info(test_net_url: str):
 	
 	:Returns:
 		tuple: (test_network_url, contract_address, contract_abi)の形式のタプル。
-			- test_network_url (str): テストネットワークのURL。
 			- contract_address (str): スマートコントラクトのアドレス。
 			- contract_abi (list): スマートコントラクトのABI。
 
@@ -41,11 +40,11 @@ def read_and_extract_contract_info(test_net_url: str):
 	"""
 	# 設定情報ファイルのパスを作成
 	current_dir = os.path.dirname(os.path.abspath(__file__))
-	contract_info_path = os.path.join(current_dir, '../../../share_hardhat/contractInfo-hardhat.json')
+	contract_info_abs_path = os.path.join(current_dir, contract_info_path)
 	abi_path = os.path.join(current_dir, '../contract_abi.json')
 
 	# ファイルを開いて読み取る
-	with open(contract_info_path, 'r') as file:
+	with open(contract_info_abs_path, 'r') as file:
 		contract_info = json.load(file)
 	with open(abi_path, 'r') as file:
 		contract_abi = json.load(file)
@@ -54,9 +53,9 @@ def read_and_extract_contract_info(test_net_url: str):
 	contract_address = contract_info.get('address', '') 
 
 	# debug
-	print(f"debug contract_address: {contract_address}")
-	print(f"debug test_net_url: {test_net_url}")
+	# print(f"debug contract_address: {contract_address}")
+	# print(f"debug test_net_url: {test_net_url}")
 
-	ganache_network_url = os.getenv(test_net_url, 'http://hardhat:8545')
+	# network_url = os.getenv(test_net_url, 'EVM_TEST_NETWORK_URL')
 
-	return ganache_network_url, contract_address, contract_abi
+	return contract_address, contract_abi

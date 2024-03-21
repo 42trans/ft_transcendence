@@ -1,9 +1,9 @@
 #!/bin/bash
-# test/ganache/get_api_all_result_ganache.sh
+# test/django/game_result_json_hardhat.sh
 # =============================================
-# 全ての結果をAPIにリクエストするスクリプト
+# Pongゲームの結果をAPIに送信するスクリプト
 # =============================================
-API_URL="https://hioikawa.42.fr/pong/api/get_all_results_from_testnet/"
+API_URL="https://hioikawa.42.fr/pong/api/fetch_local_testnet/hardhat/"
 # --- exec ----------
 # jq -r '.data[] | @text'
 # 取得したJSONから.data配列を抽出

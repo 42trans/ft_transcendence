@@ -7,9 +7,7 @@
 
 ## 作成の手順
 
-- コンテナのルートに移動
-cd docker/srcs/uwsgi-django
-
+- コンテナのルートで実行
 - 初回のみ　.rstファイルを作成
 sphinx-apidoc -o sphinx/source pong
 

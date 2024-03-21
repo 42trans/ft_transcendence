@@ -15,11 +15,11 @@ module.exports = {
       url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
       accounts: [SEPOLIA_PRIVATE_KEY]
     },
-    hardhat: {
+    // hardhat: {
       // ローカルで実行されているHardhat Networkへの接続設定
-      // dataDir: "./data/chain",
-      // cacheDir: "./data/cache"
-    },
+    //   dataDir: "./data/chain",
+    //   cacheDir: "./data/cache"
+    // },
     localhost: {
       url: "http://hardhat:8545"
     },
