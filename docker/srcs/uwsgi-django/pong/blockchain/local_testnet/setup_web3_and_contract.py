@@ -1,4 +1,4 @@
-# docker/srcs/uwsgi-django/pong/view_modules/testnet/setup_web3_and_contract.py
+# docker/srcs/uwsgi-django/pong/blockchain/local_testnet/setup_web3_and_contract.py
 from web3 import Web3
 
 # ======================================================= 

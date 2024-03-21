@@ -1,5 +1,9 @@
 # team_docs/Blockchain.md
 
+## 要件対応状況
+
+- [subject_Blockchain.md](subject/subject_Blockchain.md)
+
 ## 各コンテナ・サービス特有のことはこちら
 
 - [Hardhat.md](Hardhat.md)

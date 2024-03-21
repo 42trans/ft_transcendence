@@ -1,4 +1,4 @@
-# docker/srcs/uwsgi-django/pong/view_modules/testnet/process_game_result.py
+# docker/srcs/uwsgi-django/pong/blockchain/local_testnet/process_game_result.py
 # ------------------------------------------------------
 # 勝者の判定を行う
 # ------------------------------------------------------

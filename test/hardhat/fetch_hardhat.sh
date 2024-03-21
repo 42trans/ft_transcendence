@@ -1,5 +1,5 @@
 #!/bin/bash
-# test/django/game_result_json_hardhat.sh
+# test/hardhat/fetch_hardhat.sh
 # =============================================
 # Pongゲームの結果をAPIに送信するスクリプト
 # =============================================

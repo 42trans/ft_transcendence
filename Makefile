@@ -64,6 +64,7 @@ build_up_blockchain:
 	COMPOSE_PROFILES=blockchain docker-compose -f $(COMPOSE_FILES_ARGS) build
 	$(call set_env) && \
 	COMPOSE_PROFILES=blockchain docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+	make hardhat_deploy_hardhat
 	make hardhat_deploy_ganache
 	make setup_ganache_data
 
@@ -208,12 +209,9 @@ test_ganache:
 # -----------------------------------------------
 # build blockchainでも実行
 hardhat_deploy_hardhat:
-# docker exec hardhat npx hardhat run scripts/deploy.ts
 	docker exec hardhat /bin/sh -c 'NETWORK_NAME=hardhat npx hardhat run scripts/deploy.ts --network localhost'
-
 hardhat_deploy_ganache:
 	docker exec hardhat /bin/sh -c 'NETWORK_NAME=ganache npx hardhat run scripts/deploy.ts --network ganache'
-# docker exec hardhat npx hardhat run scripts/deploy.ts --network ganache
 setup_ganache_data:
 	sh docker/srcs/ganache/setup_data.sh
 # -----------------------------------------------

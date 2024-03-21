@@ -3,7 +3,7 @@
 # =============================================
 # for文でPongゲームの結果をAPIに送信するスクリプト
 # =============================================
-API_URL="https://hioikawa.42.fr/pong/api/save_testnet/"
+API_URL="https://hioikawa.42.fr/pong/api/save_local_testnet/ganache/"
 # match_idを1から20まで連番で処理
 for MATCH_ID in {1..20}; do
 	# player nameの末尾に1~100のランダムな数字を追加

@@ -19,22 +19,17 @@ docker ps | grep " hardhat "
 # echo -e "------------------------------------------------------"
 # docker exec hardhat npx hardhat test
 
-# echo -e "\n------------------------------------------------------"
-# echo -e " 内容: apiにcurlでPOST📮 Djangoが🪖Hardhatテストネットワークにデータを保存💾"
-# echo -e " cmd: sh test/hardhat/save_hardhat.sh"
-# echo -e "------------------------------------------------------"
+echo -e "\n------------------------------------------------------"
+echo -e " 内容: apiにcurlでPOST📮 Djangoが🪖Hardhatテストネットワークにデータを保存💾"
+echo -e " cmd: sh test/hardhat/save_hardhat.sh"
+echo -e "------------------------------------------------------"
 sh test/hardhat/save_hardhat.sh --verbose
 
-# echo -e "\n------------------------------------------------------"
-# echo -e " 内容: apiにcurlでGET⬇ Djangoが🪖Hardhatネットワークからデータを取得"
-# echo -e " cmd: sh test/hardhat/fetch__hardhat.sh"
-# echo -e "------------------------------------------------------"
-# sh test/hardhat/get_all_result_hardhat.sh
+echo -e "\n------------------------------------------------------"
+echo -e " 内容: apiにcurlでGET⬇ Djangoが🪖Hardhatネットワークからデータを取得"
+echo -e " cmd: sh test/hardhat/fetch__hardhat.sh"
+echo -e "------------------------------------------------------"
 sh test/hardhat/fetch_hardhat.sh --verbose
-
-
-# python3 pong/view_modules/test.py
-
 
 # ---------------------
 # 参考:【Getting started with Hardhat | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/hardhat-runner/docs/getting-started#installation

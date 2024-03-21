@@ -1,4 +1,4 @@
-# docker/srcs/uwsgi-django/pong/view_modules/save_testnet.py
+# docker/srcs/uwsgi-django/pong/blockchain/local_testnet/save_local_testnet.py
 from django.http import JsonResponse
 import json
 import os
@@ -37,9 +37,9 @@ def save_local_testnet(request, local_testnet_name):
 		# 変数宣言（default値）
 		response_data = {'status': 'error', 'message': 'Initial error'}
 		try:
-
-			print (f"name: {local_testnet_name}")
-
+			# --------------------------------------
+			# API URLによる分岐
+			# --------------------------------------
 			if local_testnet_name == 'ganache':
 				local_network_url = 'http://ganache:8545'
 				contract_info_path = '../../../share_hardhat/contractInfo-ganache.json'

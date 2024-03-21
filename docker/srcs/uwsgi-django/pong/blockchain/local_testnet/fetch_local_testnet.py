@@ -1,3 +1,4 @@
+# docker/srcs/uwsgi-django/pong/blockchain/local_testnet/fetch_local_testnet.py
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .read_and_extract_contract_info import read_and_extract_contract_info
@@ -23,9 +24,9 @@ def fetch_local_testnet(request, local_testnet_name):
 	if request.method == 'GET':
 		response_data = {'status': 'error', 'message': 'Initial error'}
 		try:
-
-			print (f"name: {local_testnet_name}")
-
+			# --------------------------------------
+			# API URLによる分岐
+			# --------------------------------------
 			if local_testnet_name == 'ganache':
 				local_network_url = 'http://ganache:8545'
 				contract_info_path = '../../../share_hardhat/contractInfo-ganache.json'

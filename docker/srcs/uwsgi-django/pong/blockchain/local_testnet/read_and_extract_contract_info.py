@@ -1,4 +1,4 @@
-# docker/srcs/uwsgi-django/pong/view_modules/testnet/read_and_extract_contract_info.py
+# docker/srcs/uwsgi-django/pong/blockchain/local_testnet/read_and_extract_contract_info.py
 import json
 import os
 
@@ -55,7 +55,5 @@ def read_and_extract_contract_info(contract_info_path:str):
 	# debug
 	# print(f"debug contract_address: {contract_address}")
 	# print(f"debug test_net_url: {test_net_url}")
-
-	# network_url = os.getenv(test_net_url, 'EVM_TEST_NETWORK_URL')
 
 	return contract_address, contract_abi

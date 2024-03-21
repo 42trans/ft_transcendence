@@ -1,4 +1,4 @@
-# docker/srcs/uwsgi-django/pong/view_modules/testnet/debug_save_testnet.py
+# docker/srcs/uwsgi-django/pong/blockchain/local_testnet/debug_save_testnet.py
 # ------------------------------------------------------
 # debug用 変数の出力
 # ------------------------------------------------------
