@@ -212,9 +212,12 @@ hardhat_deploy_ganache:
 setup_ganache_data:
 	sh docker/srcs/ganache/setup_data.sh
 # -----------------------------------------------
+# docment 自動作成
+# -----------------------------------------------
 sphinx_make_html:
 	docker exec uwsgi-django /bin/sh -c "cd sphinx && make html"
-
+hardhat_docgen:
+	docker exec hardhat npx hardhat docgen
 # -----------------------------------------------
 # Re-setup 再起動時に毎回実行するコマンドを登録してください。
 Re-setup:

@@ -16,6 +16,8 @@ services:
     - ./hardhat/hardhat_pj/scripts:/app/scripts
     - ./hardhat/hardhat_pj/test:/app/test
     - ./hardhat/hardhat_pj/share:/app/share
+    - ./hardhat/hardhat_pj/docs:/app/docs
+    - ./hardhat/hardhat_pj/cache:/app/cache
     - ./hardhat/hardhat_pj/hardhat.config.ts:/app/hardhat.config.ts
     networks:
       - blockchain_transcendence

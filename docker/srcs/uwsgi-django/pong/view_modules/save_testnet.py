@@ -48,6 +48,7 @@ def save_testnet(request):
 			# 記録する。Ethereumブロックチェーン(テストネット)に。
 			txn_receipt = execute_addGameResult(w3, contract, data, winner, loser)
 			# --------------------------------------
+			# print(f"winner: {winner}")
 			# コンテナのコンソールにlog出力
 			response_data = debug_save_testnet(contract_address, network_url, w3.eth.chain_id, contract, txn_receipt['transactionHash'], txn_receipt)
 			# --------------------------------------

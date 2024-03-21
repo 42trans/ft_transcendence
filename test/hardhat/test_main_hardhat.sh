@@ -13,11 +13,11 @@ echo -e 'cmd: docker ps | grep " hardhat "\n'
 docker ps | grep " hardhat "
 #=======================================================
 
-echo -e "\n------------------------------------------------------"
-echo -e " 内容: apiにcurlでPOST📮 Djangoが🪖Hardhatテストネットワークにデータを保存💾"
-echo -e " cmd: sh test/hardhat/save_game_result_json_hardhat.sh"
-echo -e "------------------------------------------------------"
-sh test/hardhat/save_game_result_json_hardhat.sh --verbose
+# echo -e "\n------------------------------------------------------"
+# echo -e " 内容: apiにcurlでPOST📮 Djangoが🪖Hardhatテストネットワークにデータを保存💾"
+# echo -e " cmd: sh test/hardhat/save_game_result_json_hardhat.sh"
+# echo -e "------------------------------------------------------"
+# sh test/hardhat/save_game_result_json_hardhat.sh --verbose
 
 # echo -e "\n------------------------------------------------------"
 # echo -e " 内容: apiにcurlでGET⬇ Djangoが🪖Hardhatネットワークからデータを取得"
@@ -26,7 +26,7 @@ sh test/hardhat/save_game_result_json_hardhat.sh --verbose
 # sh test/hardhat/get_game_result_json_hardhat.sh
 
 
-# # python3 pong/view_modules/test.py
+# python3 pong/view_modules/test.py
 
 # echo -e "\n------------------------------------------------------"
 # echo -e " 内容: 🪖Hardhat内の単体テスト💻 ※docker/srcs/hardhat/hardhat_pj/test/PongGameResult.test.ts"
@@ -37,6 +37,6 @@ sh test/hardhat/save_game_result_json_hardhat.sh --verbose
 # ---------------------
 # 参考:【Getting started with Hardhat | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/hardhat-runner/docs/getting-started#installation
 
-echo -e "\n------------------------------------------------------\n"
-echo -e 'docker exec hardhat sh -c "npx hardhat run scripts/interact.ts --network ganache"'
-docker exec hardhat sh -c "npx hardhat run scripts/interact.ts --network ganache"
+# echo -e "\n------------------------------------------------------\n"
+# echo -e 'docker exec hardhat sh -c "npx hardhat run scripts/interact.ts --network ganache"'
+# docker exec hardhat sh -c "npx hardhat run scripts/interact.ts --network ganache"

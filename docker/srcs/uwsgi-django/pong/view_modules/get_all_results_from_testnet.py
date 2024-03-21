@@ -1,5 +1,4 @@
 from django.http import JsonResponse
-import json
 from django.views.decorators.csrf import csrf_exempt
 from .testnet.read_and_extract_contract_info import read_and_extract_contract_info
 from .testnet.setup_web3_and_contract import setup_web3_and_contract

@@ -2,6 +2,7 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 require('dotenv').config();
+require('hardhat-docgen');
 
 const INFURA_API_KEY = "9301610ed4c24693b985f80eda16eb67";
 const SEPOLIA_PRIVATE_KEY = "894c08080eaa6779d4c084b896b3bc4e42953e0705149cfbc990abee356e14f1";
@@ -22,6 +23,12 @@ module.exports = {
       url: "http://ganache:8545", 
       accounts: [GANACHE_PRIVATE_KEY]
     }
+  },
+  docgen: {
+    // 自動的にドキュメントが./docsディレクトリに生成される
+    path: './docs',
+    clear: false,
+    runOnCompile: true,
   }
 };
 
