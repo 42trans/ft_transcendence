@@ -204,9 +204,13 @@ test_ganache:
 	bash ./test/ganache/test_main_ganache.sh
 
 # -----------------------------------------------
-# コマンド
+# Blockcharin コマンド
 # -----------------------------------------------
 # build blockchainでも実行
+hardhat_deploy_hardhat:
+# docker exec hardhat npx hardhat run scripts/deploy.ts
+	docker exec hardhat /bin/sh -c 'NETWORK_NAME=hardhat npx hardhat run scripts/deploy.ts --network localhost'
+
 hardhat_deploy_ganache:
 	docker exec hardhat npx hardhat run scripts/deploy.ts --network ganache
 setup_ganache_data:

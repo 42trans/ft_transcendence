@@ -1,0 +1,226 @@
+[
+	{
+	"inputs": [
+		{
+		"internalType": "uint256",
+		"name": "_matchId",
+		"type": "uint256"
+		},
+		{
+		"internalType": "uint256",
+		"name": "_player1Score",
+		"type": "uint256"
+		},
+		{
+		"internalType": "uint256",
+		"name": "_player2Score",
+		"type": "uint256"
+		},
+		{
+		"internalType": "string",
+		"name": "_winnerName",
+		"type": "string"
+		},
+		{
+		"internalType": "string",
+		"name": "_loserName",
+		"type": "string"
+		}
+	],
+	"name": "addGameResult",
+	"outputs": [],
+	"stateMutability": "nonpayable",
+	"type": "function"
+	},
+	{
+	"inputs": [
+		{
+		"internalType": "uint256",
+		"name": "",
+		"type": "uint256"
+		}
+	],
+	"name": "gameResults",
+	"outputs": [
+		{
+		"internalType": "uint256",
+		"name": "matchId",
+		"type": "uint256"
+		},
+		{
+		"internalType": "uint256",
+		"name": "player1Score",
+		"type": "uint256"
+		},
+		{
+		"internalType": "uint256",
+		"name": "player2Score",
+		"type": "uint256"
+		},
+		{
+		"internalType": "string",
+		"name": "winnerName",
+		"type": "string"
+		},
+		{
+		"internalType": "string",
+		"name": "loserName",
+		"type": "string"
+		},
+		{
+		"internalType": "uint256",
+		"name": "date",
+		"type": "uint256"
+		}
+	],
+	"stateMutability": "view",
+	"type": "function"
+	},
+	{
+	"inputs": [],
+	"name": "getAllGameResults",
+	"outputs": [
+		{
+		"components": [
+			{
+			"internalType": "uint256",
+			"name": "matchId",
+			"type": "uint256"
+			},
+			{
+			"internalType": "uint256",
+			"name": "player1Score",
+			"type": "uint256"
+			},
+			{
+			"internalType": "uint256",
+			"name": "player2Score",
+			"type": "uint256"
+			},
+			{
+			"internalType": "string",
+			"name": "winnerName",
+			"type": "string"
+			},
+			{
+			"internalType": "string",
+			"name": "loserName",
+			"type": "string"
+			},
+			{
+			"internalType": "uint256",
+			"name": "date",
+			"type": "uint256"
+			}
+		],
+		"internalType": "struct PongGameResult.GameResult[]",
+		"name": "",
+		"type": "tuple[]"
+		}
+	],
+	"stateMutability": "view",
+	"type": "function"
+	},
+	{
+	"inputs": [
+		{
+		"internalType": "uint256",
+		"name": "index",
+		"type": "uint256"
+		}
+	],
+	"name": "getGameResult",
+	"outputs": [
+		{
+		"components": [
+			{
+			"internalType": "uint256",
+			"name": "matchId",
+			"type": "uint256"
+			},
+			{
+			"internalType": "uint256",
+			"name": "player1Score",
+			"type": "uint256"
+			},
+			{
+			"internalType": "uint256",
+			"name": "player2Score",
+			"type": "uint256"
+			},
+			{
+			"internalType": "string",
+			"name": "winnerName",
+			"type": "string"
+			},
+			{
+			"internalType": "string",
+			"name": "loserName",
+			"type": "string"
+			},
+			{
+			"internalType": "uint256",
+			"name": "date",
+			"type": "uint256"
+			}
+		],
+		"internalType": "struct PongGameResult.GameResult",
+		"name": "",
+		"type": "tuple"
+		}
+	],
+	"stateMutability": "view",
+	"type": "function"
+	},
+	{
+	"inputs": [
+		{
+		"internalType": "uint256",
+		"name": "_matchId",
+		"type": "uint256"
+		}
+	],
+	"name": "getGameResultByMatchId",
+	"outputs": [
+		{
+		"components": [
+			{
+			"internalType": "uint256",
+			"name": "matchId",
+			"type": "uint256"
+			},
+			{
+			"internalType": "uint256",
+			"name": "player1Score",
+			"type": "uint256"
+			},
+			{
+			"internalType": "uint256",
+			"name": "player2Score",
+			"type": "uint256"
+			},
+			{
+			"internalType": "string",
+			"name": "winnerName",
+			"type": "string"
+			},
+			{
+			"internalType": "string",
+			"name": "loserName",
+			"type": "string"
+			},
+			{
+			"internalType": "uint256",
+			"name": "date",
+			"type": "uint256"
+			}
+		],
+		"internalType": "struct PongGameResult.GameResult",
+		"name": "",
+		"type": "tuple"
+		}
+	],
+	"stateMutability": "view",
+	"type": "function"
+	}
+]

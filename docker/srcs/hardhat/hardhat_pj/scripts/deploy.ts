@@ -5,7 +5,9 @@ const path = require('path');
 
 async function main() {
 	const [deployer] = await ethers.getSigners();
-	const PongGameResult = await ethers.deployContract("PongGameResult");	
+	const PongGameResult = await ethers.deployContract("PongGameResult");
+	// 環境変数からネットワーク名を取得、未設定の場合は'hardhat'を使用
+	const networkName = process.env.NETWORK_NAME || 'hardhat';
 	// ----------------------------------------------------------
 	// Save shared volume
 	// ----------------------------------------------------------
@@ -13,14 +15,17 @@ async function main() {
 		deployer: deployer.address,
 		address: await PongGameResult.getAddress(),
 	};
-	fs.writeFileSync(path.join(__dirname, '../share/contractInfo.json'), JSON.stringify(config, null, 2));
+	// ファイル名をネットワーク名に基づいて動的に設定
+	// ex. ../share/contractInfo-hardhat.json
+	const fileName = `contractInfo-${networkName}.json`; 
+	fs.writeFileSync(path.join(__dirname, `../share/${fileName}`), JSON.stringify(config, null, 2));
 	// ----------------------------------------------------------
 	// debug
 	// ----------------------------------------------------------
 	console.log("deployer.address(account):", deployer.address);
 	console.log("PongGameResult.getAddress:",  await PongGameResult.getAddress());
 	console.log("config:", config);
-	console.log("config:", path.join(__dirname, '../share/contractInfo.json'));
+	console.log("config:", path.join(__dirname, `../share/${fileName}`));
 	// ----------------------------------------------------------
 }
 

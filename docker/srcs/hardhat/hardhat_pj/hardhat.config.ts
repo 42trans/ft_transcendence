@@ -16,20 +16,24 @@ module.exports = {
       accounts: [SEPOLIA_PRIVATE_KEY]
     },
     hardhat: {
-      dataDir: "./data/chain",
-      cacheDir: "./data/cache"
+      // ローカルで実行されているHardhat Networkへの接続設定
+      // dataDir: "./data/chain",
+      // cacheDir: "./data/cache"
+    },
+    localhost: {
+      url: "http://hardhat:8545"
     },
     ganache: {
       url: "http://ganache:8545", 
       accounts: [GANACHE_PRIVATE_KEY]
     }
   },
-  docgen: {
-    // 自動的にドキュメントが./docsディレクトリに生成される
-    path: './docs',
-    clear: false,
-    runOnCompile: true,
-  }
+  // docgen: {
+  //   // 自動的にドキュメントが./docsディレクトリに生成される。ホストで `docker exec hardhat npx hardhat docgen`
+  //   path: './docs',
+  //   clear: false,
+  //   runOnCompile: true,
+  // }
 };
 
 const config: HardhatUserConfig = {
