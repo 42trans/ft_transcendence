@@ -7,8 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   pong.migrations
-   pong.view_modules
+   pong.blockchain
 
 Submodules
 ----------

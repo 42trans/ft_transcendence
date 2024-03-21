@@ -8,12 +8,8 @@
 ## 作成の手順
 
 - コンテナのルートで実行
-- 初回のみ　.rstファイルを作成
-sphinx-apidoc -o sphinx/source pong
+- 初回のみ　.rstファイルを作成 pongを指定すれば再帰的にディレクトリを認識するが、__init__.pyが必要
+sphinx-apidoc -o sphinx/source pong -f
 
-- sphinxのルートに移動
-cd sphinx/
-
-- 全て削除してから作成
-make clean
-make html
+-  make sphinx_make_html　で下記が実行され、build/にhtmlファイルが生成される
+docker exec uwsgi-django /bin/sh -c "cd sphinx && make html"
