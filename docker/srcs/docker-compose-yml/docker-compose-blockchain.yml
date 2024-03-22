@@ -30,21 +30,7 @@ services:
     env_file:
       - .env
     ports:
-       - "8555:8545"
-    stdin_open: true
-    tty: true
-    networks:
-      - blockchain_transcendence
-    profiles:
-      - blockchain
-  ganache-test:
-    container_name: ganache-test
-    build: ./ganache
-    image: ganache-test
-    env_file:
-      - .env
-    ports:
-       - "8556:8545"
+       - ${GANACHE_PORT}:8545
     stdin_open: true
     tty: true
     networks:

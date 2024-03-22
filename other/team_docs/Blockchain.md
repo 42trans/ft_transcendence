@@ -1,9 +1,19 @@
 # team_docs/Blockchain.md
 
+## 説明資料
+
+- 【Blockchain説明 - Google スライド】 https://docs.google.com/presentation/d/e/2PACX-1vSgkqQfrCOV6_ktcMhGp51ziYKG60jQ8xh7o0xawXPBStN7YwQbaWxjA0P7y9qvBl72nLcrEat1-HKj/pub?start=true&loop=true&delayms=3000&slide=id.g2c513157d5a_1_17
+
+<img src="img/スクリーンショット 2024-03-22 11.09.55.png" width="300" alt="alt">  
+
 ## 要件対応状況
 
 - [subject_Blockchain.md](subject/subject_Blockchain.md)
-- [test_Django_Blockchain.md](../../docker/srcs/uwsgi-django/pong/blockchain/local_testnet/test/test_Django_Blockchain.md)
+
+## test
+
+- [test_Django_Blockchain.md](../../docker/srcs/uwsgi-django/pong/blockchain/local_testnet/test/test_Django_Blockchain.md)  
+  - from django.test import TestCase でDjangoの機能を使用する
 
 ## 各コンテナ・サービス特有のことはこちら
 
@@ -39,8 +49,9 @@
       - 9301610ed4c24693b985f80eda16eb67
     - 参考:【Ethereum Goerli Faucet】 https://www.alchemy.com/faucets/ethereum-goerli
   
+## 開始〜前半のメモ
 
-## インストール＋α作業時MEMO
+### インストール＋α作業時MEMO
 
 - haradhatのプロジェクトをローカルであらかじめ作成
   - ローカルにインストール
@@ -56,7 +67,7 @@
     - 参考:【9. クラス — Python 3.12.2 ドキュメント】 https://docs.python.org/ja/3/tutorial/classes.html
     - 参考:【テーブルダイアログ — pgAdmin 4 8.3 ドキュメント】 https://www.pgadmin.org/docs/pgadmin4/8.3/table_dialog.html
 
-## 参考資料
+### 参考資料
 
 - 開発環境
   - ローカルの開発環境はFoundry VSCODE がRUSTで高速
@@ -64,9 +75,3 @@
   - Foundry
     - 参考:【インストール - ファウンドリブック】 https://book.getfoundry.sh/getting-started/installation
     - 参考:【EthereumのDapp開発環境のFoundryを使ってみる】 https://zenn.dev/razokulover/articles/574eb471e6db1c
-- Docker
-- tutorial
-- その他
-
-## カスタマイズ内容
-

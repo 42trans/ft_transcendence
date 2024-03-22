@@ -3,7 +3,7 @@
 ## rule
 
 - test/にまとめる
-  - from django.test import TestCase の機能を使用する
+  - from django.test import TestCase でDjangoの機能を使用する
     - Djangoに対して自動で行われる
     - `make test_django_test_py` or `docker exec uwsgi-django /bin/sh -c "python manage.py test" > test/result/test_py_results.txt`  
 
@@ -12,6 +12,8 @@
 - 単体テスト
   - save  
     - docker/srcs/uwsgi-django/pong/blockchain/local_testnet/test/test_unit_save_validate_request.py
+  - fetch  
+    - none  
 - 統合テスト
   - Ganache
     - save
