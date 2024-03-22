@@ -1,6 +1,5 @@
 # docker/srcs/uwsgi-django/pong/blockchain/local_testnet/save_local_testnet.py
 from django.http import JsonResponse
-import json
 from django.views.decorators.csrf import csrf_exempt
 from .read_and_extract_contract_info import read_and_extract_contract_info
 from .setup_web3_and_contract import setup_web3_and_contract
@@ -8,6 +7,7 @@ from .process_game_result import process_game_result
 from .execute_addGameResult import execute_addGameResult
 from .debug_save_testnet import debug_save_testnet
 from .validate_request_data import validate_request_data
+from .get_network_settings import get_network_settings
 
 # --------------------------------------
 # 指定のAPIにPOSTならば、テストネットワークに保存を実行
@@ -18,6 +18,7 @@ def save_local_testnet(request, local_testnet_name):
 	POSTリクエストを受け取り、Ethereumテストネットワークにゲームの結果を記録します。
 
 	:機能・処理:
+		- Hardhat, Ganacheなどのテストネットワークに記録する共通の関数です。
 		- APIのURLによって、使用するテストネットワークを判別します。
 			- api/save_local_testnet/<str:local_testnet_name>
 		- テストネットワークの設定を読み込み、Web3インスタンスとスマートコントラクトのインスタンスを初期化します。  
@@ -35,29 +36,17 @@ def save_local_testnet(request, local_testnet_name):
 		- デバッグ情報はコンテナ内のコンソールに出力されます。
 	"""
 	if request.method == 'POST':
-		# --------------------------------------
 		# データの読み込み・検証
-		# --------------------------------------
 		data, error_response = validate_request_data(request.body)
 		if error_response:
 			return error_response
 		try:
-			# 変数宣言（default値）
+			# 変数宣言（default値の設定）
 			response_data = {'status': 'error', 'message': 'Initial error'}
-			# --------------------------------------
-			# API URLによる分岐
-			# --------------------------------------
-			if local_testnet_name == 'ganache':
-				local_network_url = 'http://ganache:8545'
-				contract_info_path = '../../../share_hardhat/contractInfo-ganache.json'
-			elif local_testnet_name == 'hardhat':
-				local_network_url = 'http://hardhat:8545'
-				contract_info_path = '../../../share_hardhat/contractInfo-hardhat.json'
-			else:
-				return JsonResponse({'status': 'error', 'message': 'Unknown network'}, status=400)
-			# --------------------------------------
-			# サブ関数による処理 
-			# --------------------------------------
+			# テストネットワークURLとコントラクト情報のパスを取得 API URLによって判別
+			local_network_url, contract_info_path = get_network_settings(local_testnet_name)
+			if local_network_url is None:
+				return contract_info_path
 			# 設定を読み込む。EVMベースのテストネットワークのコントラクトに関する。
 			contract_address, contract_abi = read_and_extract_contract_info(contract_info_path)
 			# インスタンスを生成する。スマートコントラクトの。Web3インスタンスを初期化し、デフォルトアカウントを設定してから。

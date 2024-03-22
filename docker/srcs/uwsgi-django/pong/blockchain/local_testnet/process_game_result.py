@@ -2,7 +2,7 @@
 # ------------------------------------------------------
 # 勝者の判定を行う
 # ------------------------------------------------------
-def determine_winner(player1_score, player2_score, player1_name, player2_name):
+def _determine_winner(player1_score, player2_score, player1_name, player2_name):
 	if player1_score > player2_score:
 		# 勝者:player1
 		return player1_name, player2_name
@@ -19,6 +19,6 @@ def process_game_result(data):
 	player2_name = data['player_2_name']
 
 	# 勝者と敗者を判定する
-	winner, loser = determine_winner(player1_score, player2_score, player1_name, player2_name)
+	winner, loser = _determine_winner(player1_score, player2_score, player1_name, player2_name)
 
 	return winner, loser 

@@ -1,7 +1,7 @@
 from django.test import TestCase
 import requests
 
-class check_ganache(TestCase):
+class CheckGanache(TestCase):
 	@classmethod
 	def setUpClass(cls):
 		super().setUpClass()

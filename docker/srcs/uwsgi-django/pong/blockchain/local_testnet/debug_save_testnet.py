@@ -2,7 +2,7 @@
 # ------------------------------------------------------
 # debug用 変数の出力
 # ------------------------------------------------------
-def print_debug_info(contract_address, network_url, chain_id, contract, txn_hash, txn_receipt):
+def _print_debug_info(contract_address, network_url, chain_id, contract, txn_hash, txn_receipt):
 	print(f"CONTRACT_ADDRESS: {contract_address}")
 	print(f"EVM_TEST_NETWORK_URL: {network_url}")
 	print(f"chain_id: {chain_id}")
@@ -13,7 +13,7 @@ def print_debug_info(contract_address, network_url, chain_id, contract, txn_hash
 # ------------------------------------------------------
 # debug用 直前に登録したデータをテストネットワークから取得
 # ------------------------------------------------------
-def retrieve_and_format_game_results(contract):
+def _retrieve_and_format_game_results(contract):
 	# debug
 	print(f"debug contract1: {contract}")
 
@@ -44,7 +44,7 @@ def retrieve_and_format_game_results(contract):
 # ------------------------------------------------------
 # レスポンスデータをログ(コンテナ内)に出力
 # ------------------------------------------------------
-def print_response_data(response_data):
+def _print_response_data(response_data):
 	print("レスポンスデータ:")
 	for key, value in response_data.items():
 		if isinstance(value, dict):  # 値が辞書の場合、さらにその内容を出力
@@ -57,16 +57,16 @@ def print_response_data(response_data):
 # 上記debug用関数を呼び出す
 # ------------------------------------------------------
 def debug_save_testnet(ganache_url, contract_address, chain_id, contract,txn_hash, txn_receipt):
-	print_debug_info(ganache_url, contract_address, chain_id, contract,txn_hash, txn_receipt)
+	_print_debug_info(ganache_url, contract_address, chain_id, contract,txn_hash, txn_receipt)
 	
 	# debug
 	print(f"debug chain_id: {chain_id}")
 
 	# 最後に追加したゲーム結果の取得
-	response_data = retrieve_and_format_game_results(contract)
+	response_data = _retrieve_and_format_game_results(contract)
 	
 	# debug
 	print(f"debug chain_id: {chain_id}")
 
-	print_response_data(response_data)
+	_print_response_data(response_data)
 	return response_data
