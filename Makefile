@@ -194,6 +194,7 @@ ELK_certs:
 # -----------------------------------------------
 test_main:
 	$(call set_env) && bash ./test/main_test.sh
+	make test_django_test_py
 t:
 	make test_main
 	
@@ -203,6 +204,9 @@ test_game_result_json_hardhat:
 	sh test/hardhat/save_game_result_json_hardhat.sh
 test_ganache:
 	bash ./test/ganache/test_main_ganache.sh
+test_django_test_py:
+	docker exec uwsgi-django /bin/sh -c "python manage.py test" > test/result/test_py_results.txt 
+
 
 # -----------------------------------------------
 # Blockcharin コマンド

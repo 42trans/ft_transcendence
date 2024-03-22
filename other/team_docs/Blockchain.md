@@ -3,6 +3,7 @@
 ## 要件対応状況
 
 - [subject_Blockchain.md](subject/subject_Blockchain.md)
+- [test_Django_Blockchain.md](../../docker/srcs/uwsgi-django/pong/blockchain/local_testnet/test/test_Django_Blockchain.md)
 
 ## 各コンテナ・サービス特有のことはこちら
 

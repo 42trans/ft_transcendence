@@ -19,4 +19,4 @@ Sphinx
 sphinx-rtd-theme
 myst-parser
 
-pdoc3
+requests

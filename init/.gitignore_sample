@@ -31,6 +31,16 @@ init/.make_env
 pythontest
 docker/srcs/uwsgi-django/sphinx/build
 hioikawa_test.sh
+additional.mk
+
+docker/srcs/hardhat/hardhat_pj/artifacts
+docker/srcs/hardhat/hardhat_pj/share/contractInfo.json
+docker/srcs/hardhat/hardhat_pj/share/contractInfo-hardhat.json
+docker/srcs/hardhat/hardhat_pj/share/contractInfo-ganache.json
+docker/srcs/hardhat/hardhat_pj/cache
+docker/srcs/hardhat/hardhat_pj/docs
+
+test/result
 
 # srcs/strapi/y-strapi-project/node_modules/*
 # !srcs/strapi/y-strapi-project/node_modules/@strapi/

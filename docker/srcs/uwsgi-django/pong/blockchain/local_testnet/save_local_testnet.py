@@ -1,13 +1,14 @@
 # docker/srcs/uwsgi-django/pong/blockchain/local_testnet/save_local_testnet.py
 from django.http import JsonResponse
 import json
-import os
 from django.views.decorators.csrf import csrf_exempt
 from .read_and_extract_contract_info import read_and_extract_contract_info
 from .setup_web3_and_contract import setup_web3_and_contract
 from .process_game_result import process_game_result
 from .execute_addGameResult import execute_addGameResult
 from .debug_save_testnet import debug_save_testnet
+from .validate_request_data import validate_request_data
+
 # --------------------------------------
 # 指定のAPIにPOSTならば、テストネットワークに保存を実行
 # --------------------------------------
@@ -34,9 +35,15 @@ def save_local_testnet(request, local_testnet_name):
 		- デバッグ情報はコンテナ内のコンソールに出力されます。
 	"""
 	if request.method == 'POST':
-		# 変数宣言（default値）
-		response_data = {'status': 'error', 'message': 'Initial error'}
+		# --------------------------------------
+		# データの読み込み・検証
+		# --------------------------------------
+		data, error_response = validate_request_data(request.body)
+		if error_response:
+			return error_response
 		try:
+			# 変数宣言（default値）
+			response_data = {'status': 'error', 'message': 'Initial error'}
 			# --------------------------------------
 			# API URLによる分岐
 			# --------------------------------------
@@ -48,9 +55,6 @@ def save_local_testnet(request, local_testnet_name):
 				contract_info_path = '../../../share_hardhat/contractInfo-hardhat.json'
 			else:
 				return JsonResponse({'status': 'error', 'message': 'Unknown network'}, status=400)
-
-			# APIに渡されたJSONを変数に格納
-			data = json.loads(request.body.decode('utf-8'))
 			# --------------------------------------
 			# サブ関数による処理 
 			# --------------------------------------
