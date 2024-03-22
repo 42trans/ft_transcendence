@@ -2,6 +2,9 @@ from django.test import TestCase
 import requests
 
 class CheckGanache(TestCase):
+	"""
+	Ganache コンテナの起動を確認するクラス
+	"""
 	@classmethod
 	def setUpClass(cls):
 		super().setUpClass()

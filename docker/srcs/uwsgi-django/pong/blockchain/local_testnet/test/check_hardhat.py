@@ -2,6 +2,9 @@ from django.test import TestCase
 import requests
 
 class CheckHardhat(TestCase):
+	"""
+	Hardhat コンテナの起動を確認するクラス
+	"""
 	@classmethod
 	def setUpClass(cls):
 		super().setUpClass()

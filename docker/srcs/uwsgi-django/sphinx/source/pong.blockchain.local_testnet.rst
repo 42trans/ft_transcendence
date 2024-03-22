@@ -1,6 +1,14 @@
 pong.blockchain.local\_testnet package
 ======================================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pong.blockchain.local_testnet.test
+
 Submodules
 ----------
 
@@ -24,6 +32,14 @@ pong.blockchain.local\_testnet.fetch\_local\_testnet module
 -----------------------------------------------------------
 
 .. automodule:: pong.blockchain.local_testnet.fetch_local_testnet
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pong.blockchain.local\_testnet.get\_network\_settings module
+------------------------------------------------------------
+
+.. automodule:: pong.blockchain.local_testnet.get_network_settings
    :members:
    :undoc-members:
    :show-inheritance:
@@ -56,6 +72,14 @@ pong.blockchain.local\_testnet.setup\_web3\_and\_contract module
 ----------------------------------------------------------------
 
 .. automodule:: pong.blockchain.local_testnet.setup_web3_and_contract
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pong.blockchain.local\_testnet.validate\_request\_data module
+-------------------------------------------------------------
+
+.. automodule:: pong.blockchain.local_testnet.validate_request_data
    :members:
    :undoc-members:
    :show-inheritance:

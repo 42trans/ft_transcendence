@@ -7,7 +7,9 @@ from django.urls import reverse
 from .check_ganache import CheckGanache
 
 class TestGanacheFetch(CheckGanache):
-
+	"""
+	Django のAPIで Ganache のテストネットからのデータ取得をテストするクラス
+	"""
 	# 各テストメソッドが実行される前に毎回自動的に呼び出される。テスト環境を初期化。各テストが独立して実行される。
 	def setUp(self):
 		# DjangoのテストClientインスタンスを作成

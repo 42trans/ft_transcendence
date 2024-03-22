@@ -2,6 +2,11 @@
 
 主要モジュール：トーナメントのスコアをブロックチェーンに保存する。
 
+## TODO 残作業
+
+- データベース間でデータ同期するか？
+
+
 ## This Major module focuses on implementing a feature within the Pong website to store tournament scores securely on a blockchain. It is essential to clarify that for development and testing purposes, we will utilize a testing blockchain environment.  
 
 この主要モジュールは、Pongウェブサイト内にトーナメントスコアをブロックチェーン上に安全に保存する機能を実装することに焦点を当てています。開発およびテスト目的のために、テストブロックチェーン環境を利用することが重要です。

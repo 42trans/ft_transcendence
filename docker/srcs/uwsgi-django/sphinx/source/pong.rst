@@ -8,6 +8,8 @@ Subpackages
    :maxdepth: 4
 
    pong.blockchain
+   pong.migrations
+   pong.view_modules
 
 Submodules
 ----------

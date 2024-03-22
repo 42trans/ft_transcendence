@@ -14,7 +14,9 @@ from pong.blockchain.local_testnet.validate_request_data import validate_request
 """
 
 class ValidateRequestDataTest(TestCase):
-	
+	"""
+	validate_request_data()の正常な動作と例外処理の動作をテストするクラス
+	"""
 	def test_valid_request(self):
 		"""有効なリクエスト"""
 		# JSON文字列を作成

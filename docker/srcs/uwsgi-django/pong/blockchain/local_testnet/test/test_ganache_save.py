@@ -5,7 +5,9 @@ import json
 from .check_ganache import CheckGanache
 
 class TestGanacheSave(CheckGanache):
-	
+	"""
+	Django のAPIで Ganache のテストネットへの登録をテストするクラス
+	"""
 	def setUp(self):
 		# テスト用のクライアントインスタンスをセットアップ
 		# HTTPリクエストを模倣するためのクライアントをインスタンス化
