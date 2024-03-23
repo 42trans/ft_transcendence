@@ -9,8 +9,8 @@ JSON_DATA="{
 	\"match_id\": $MATCH_ID,
 	\"player_1_score\": 15,
 	\"player_2_score\": 2,
-	\"player_1_name\": \"キュア赤\",
-	\"player_2_name\": \"キュア青\"
+	\"player_1_name\": \"キュアガナッシュ\",
+	\"player_2_name\": \"キュア茶\"
 }"
 # --- exec ----------
 # -k: SSL証明書の検証をスキップ
