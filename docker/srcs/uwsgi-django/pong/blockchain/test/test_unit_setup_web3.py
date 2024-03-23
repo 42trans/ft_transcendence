@@ -3,7 +3,7 @@ from django.test import TestCase
 # mockするため
 from unittest.mock import patch
 # テスト対象のimport: setup_web3_and_contract関数
-from ...local_testnet.setup_web3_and_contract import setup_web3_and_contract
+from ..contract_helpers.setup_web3_and_contract import setup_web3_and_contract
 
 # Pythonのクラスはキャメルケース、ファイル名はスネークケース
 # TestCaseクラスを継承
@@ -14,9 +14,9 @@ class TestSetupWeb3AndContract(TestCase):
 	# @patch = モック:テスト中に特定の関数を置き換え
 	# 絶対パスでなければ認識しない ※import は相対パス(...locale_testnet.~)の記述が可能
 	# unittest.mock.patchデコレータ: setup_web3_and_contract関数が依存する３つの内部関数をモック化
-	@patch('pong.blockchain.local_testnet.setup_web3_and_contract._create_contract_instance')
-	@patch('pong.blockchain.local_testnet.setup_web3_and_contract._configure_default_account')
-	@patch('pong.blockchain.local_testnet.setup_web3_and_contract._initialize_web3_instance')
+	@patch('pong.blockchain.contract_helpers.setup_web3_and_contract._create_contract_instance')
+	@patch('pong.blockchain.contract_helpers.setup_web3_and_contract._configure_default_account')
+	@patch('pong.blockchain.contract_helpers.setup_web3_and_contract._initialize_web3_instance')
 	def test_setup_web3_and_contract_success(self, mock_initialize, mock_configure, mock_create):
 		"""成功するケース"""
 		# モック化された関数の戻り値を設定 モックなので自由に指定できる
@@ -36,7 +36,7 @@ class TestSetupWeb3AndContract(TestCase):
 		mock_configure.assert_called_once_with('mock_web3_instance')
 		mock_create.assert_called_once_with('mock_web3_instance', 'dummy_address', 'dummy_abi')
 
-	@patch('pong.blockchain.local_testnet.setup_web3_and_contract._initialize_web3_instance')
+	@patch('pong.blockchain.contract_helpers.setup_web3_and_contract._initialize_web3_instance')
 	def test_initialize_web3_instance_failure(self, mock_initialize):
 		"""内部で使用する_initialize_web3_instance()が失敗するケース"""
 		# unittest.mock モジュールの side_effect 属性: 特定の動作（例外の発生や異なる値の返却など）をシミュレートする

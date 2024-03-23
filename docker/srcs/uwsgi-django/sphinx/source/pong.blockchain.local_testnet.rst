@@ -31,7 +31,7 @@ pong.blockchain.local\_testnet.execute\_addGameResult module
 pong.blockchain.local\_testnet.fetch\_local\_testnet module
 -----------------------------------------------------------
 
-.. automodule:: pong.blockchain.local_testnet.fetch_local_testnet
+.. automodule:: pong.blockchain.local_testnet.fetch_testnet
    :members:
    :undoc-members:
    :show-inheritance:
@@ -63,7 +63,7 @@ pong.blockchain.local\_testnet.read\_and\_extract\_contract\_info module
 pong.blockchain.local\_testnet.save\_local\_testnet module
 ----------------------------------------------------------
 
-.. automodule:: pong.blockchain.local_testnet.save_local_testnet
+.. automodule:: pong.blockchain.local_testnet.save_testnet
    :members:
    :undoc-members:
    :show-inheritance:

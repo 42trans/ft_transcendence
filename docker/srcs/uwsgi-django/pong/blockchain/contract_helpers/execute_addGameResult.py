@@ -16,8 +16,8 @@ def execute_addGameResult(w3, contract, data, winner, loser):
 		- w3 (Web3): Web3インスタンス。Ethereumネットワークへの接続に使用。
 		- contract (Contract): 実行対象のスマートコントラクトのインスタンス。
 		- data (dict): ゲーム結果に関するデータ。'match_id', 'player_1_score', 'player_2_score'のキーを含む。
-		- winner (str): 勝者のアドレス。
-		- loser (str): 敗者のアドレス。
+		- winner (str): 勝者の名前。
+		- loser (str): 敗者の名前。
 
 	:Returns:
 		- txn_receipt (dict): トランザクションのレシート。トランザクションの実行結果に関する情報を含む。

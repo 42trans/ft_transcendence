@@ -3,7 +3,7 @@
 # =============================================
 # Pongゲームの結果をAPIに送信するスクリプト
 # =============================================
-API_URL="https://hioikawa.42.fr/pong/api/save_local_testnet/ganache/"
+API_URL="https://hioikawa.42.fr/pong/api/save_testnet/ganache/"
 MATCH_ID=$((RANDOM % 1000))
 JSON_DATA="{
 	\"match_id\": $MATCH_ID,

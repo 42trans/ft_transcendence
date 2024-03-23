@@ -37,4 +37,3 @@
 - assertIn(a, b): a が b の中に存在することを確認します（b はリストや辞書のキーなど、メンバシップをテストできるオブジェクト）。
 - assertIsInstance(a, TYPE): a が TYPE 型であることを確認します。
 - assertRaises(Error, func, *args, **kwargs): func を呼び出した際に特定のエラーが発生することを確認します。
-

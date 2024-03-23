@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.http import JsonResponse
 import json
 # from unittest.mock import patch
-from pong.blockchain.local_testnet.validate_request_data import validate_request_data
+from ..contract_helpers.validate_request_data import validate_request_data
 
 """
 .. Note::
