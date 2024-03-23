@@ -1,10 +1,11 @@
-from django.test import TestCase, Client, override_settings
+from django.test import TestCase, Client
 # ビューの名前や URL パターン名をもとに URLを生成
 from django.urls import reverse
 import json
-from .check_ganache import CheckGanache
+from .check_network import CheckNetwork
 
-class TestGanacheSave(CheckGanache):
+
+class TestGanacheSave(TestCase):
 	"""
 	Django のAPIで Ganache のテストネットへの登録をテストするクラス
 	"""
@@ -19,6 +20,7 @@ class TestGanacheSave(CheckGanache):
 			"player_1_name": "キュア赤",
 			"player_2_name": "キュア青"
 		}
+		CheckNetwork.post_check_network('ganache')
 
 	# test_で始まるメソッド: テストランナーによってテストメソッドとして扱われる
 	def test_save_game_result_success(self):

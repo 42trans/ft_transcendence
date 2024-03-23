@@ -1,12 +1,12 @@
 
 # HTTPリクエストを模倣
-from django.test import Client
+from django.test import Client, TestCase
 # URLパターン名からURLを生成
 from django.urls import reverse
 # hardhatコンテナの起動チェック
-from .check_hardhat import CheckHardhat
+from .check_network import CheckNetwork
 
-class TestHardhatFetch(CheckHardhat):
+class TestHardhatFetch(TestCase):
 	"""
 	Django のAPIで Hardhat のテストネットからのデータ取得をテストするクラス
 	"""
@@ -14,6 +14,8 @@ class TestHardhatFetch(CheckHardhat):
 	def setUp(self):
 		# DjangoのテストClientインスタンスを作成
 		self.client = Client()
+		CheckNetwork.post_check_network('hardhat')
+
 
 	def test_fetch_game_result_unknown_network(self):
 		"""存在しないネットワーク名"""

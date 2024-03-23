@@ -1,5 +1,7 @@
 # team_docs/Blockchain.md
 
+![alt text](<img/スクリーンショット 2024-03-23 11.45.13.png>)
+
 ## 説明資料
 
 - 【Blockchain説明 - Google スライド】 https://docs.google.com/presentation/d/e/2PACX-1vSgkqQfrCOV6_ktcMhGp51ziYKG60jQ8xh7o0xawXPBStN7YwQbaWxjA0P7y9qvBl72nLcrEat1-HKj/pub?start=true&loop=true&delayms=3000&slide=id.g2c513157d5a_1_17

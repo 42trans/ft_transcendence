@@ -19,25 +19,14 @@ class TestGanashSave(TestCase):
 			"player_2_name": "キュア青"
 		}
 		# テスト対象のURL
-		self.url = reverse('save_local_testnet', args=['hardhat'])
-		CheckNetwork.post_check_network('hardhat')
+		self.url = reverse('save_local_testnet', args=['sepolia'])
+		CheckNetwork.post_check_network('sepolia')
 
 
-	# test_で始まるメソッド: テストランナーによってテストメソッドとして扱われる
-	def test_save_game_result_success(self):
-		"""有効なデータでゲーム結果を保存する"""
-		# self.client.post: HTTP POSTリクエスト
-		# reverse関数: URLパターン名からURLを逆引き
-		# json.dumps: Python辞書をJSON文字列に変換
-		response = self.client.post(reverse('save_local_testnet', args=['hardhat']), json.dumps(self.data), content_type='application/json')
-		self.assertEqual(response.status_code, 200)
+	# ーーーーーーーーーーーーーーーーー
+	# Eth節約のため、Djangoの自動テストでは登録テストは行わず、不正の場合のみ行う。
+	# ーーーーーーーーーーーーーーーーー
 
-
-	def test_save_game_result_success_hardhat(self):
-		"""有効なデータでゲーム結果を保存する"""
-		response = self.client.post(reverse('save_local_testnet', args=['hardhat']), json.dumps(self.data), content_type='application/json')
-		self.assertEqual(response.status_code, 200)
-		self.assertIn('date', response.json().get('saved_game_result', {}))
 
 	def test_save_game_result_unknown_network(self):
 		"""不明なテストネットワークを指定"""
@@ -47,23 +36,23 @@ class TestGanashSave(TestCase):
 
 	def test_save_game_result_bad_request(self):
 		"""不正なデータでリクエストを送る"""
-		response = self.client.post(reverse('save_local_testnet', args=['hardhat']), '{}', content_type='application/json')
+		response = self.client.post(reverse('save_local_testnet', args=['sepolia']), '{}', content_type='application/json')
 		self.assertEqual(response.status_code, 400)  
 		
 	def test_save_game_result_invalid_method(self):
 		"""不正なHTTPメソッド(GET)でリクエストを送る"""
-		response = self.client.put(reverse('save_local_testnet', args=['hardhat']))
+		response = self.client.put(reverse('save_local_testnet', args=['sepolia']))
 		self.assertEqual(response.status_code, 400) 
 
 	def test_save_game_result_invalid_json(self):
 		"""不正なJSON形式でリクエストを送る"""
-		response = self.client.post(reverse('save_local_testnet', args=['hardhat']), '{bad json', content_type='application/json')
+		response = self.client.post(reverse('save_local_testnet', args=['sepolia']), '{bad json', content_type='application/json')
 		self.assertEqual(response.status_code, 400)
 
 	def test_save_game_result_missing_field(self):
 		"""必須フィールド（match_id）が欠けているデータでリクエストを送る"""
 		self.data = {"player_1_score": 10, "player_2_score": 5} 
-		response = self.client.post(reverse('save_local_testnet', args=['hardhat']), json.dumps(self.data), content_type='application/json')
+		response = self.client.post(reverse('save_local_testnet', args=['sepolia']), json.dumps(self.data), content_type='application/json')
 		self.assertEqual(response.status_code, 400)
 
 	def test_save_game_result_negative_score(self):
@@ -75,5 +64,5 @@ class TestGanashSave(TestCase):
 			"player_1_name": "キュア赤",
 			"player_2_name": "キュア青"
 		}
-		response = self.client.post(reverse('save_local_testnet', args=['hardhat']), json.dumps(self.data), content_type='application/json')
+		response = self.client.post(reverse('save_local_testnet', args=['sepolia']), json.dumps(self.data), content_type='application/json')
 		self.assertEqual(response.status_code, 400)

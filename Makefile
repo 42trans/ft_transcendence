@@ -216,6 +216,9 @@ hardhat_deploy_hardhat:
 	docker exec hardhat /bin/sh -c 'NETWORK_NAME=hardhat npx hardhat run scripts/deploy.ts --network localhost'
 hardhat_deploy_ganache:
 	docker exec hardhat /bin/sh -c 'NETWORK_NAME=ganache npx hardhat run scripts/deploy.ts --network ganache'
+hardhat_deploy_sepolia:
+	docker exec hardhat /bin/sh -c 'NETWORK_NAME=sepolia npx hardhat run scripts/deploy.ts --network sepolia'
+
 setup_ganache_data:
 	sh docker/srcs/ganache/setup_data.sh
 # -----------------------------------------------

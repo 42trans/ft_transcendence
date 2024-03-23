@@ -12,7 +12,10 @@
 - 単体テスト
   - save request  
     - docker/srcs/uwsgi-django/pong/blockchain/local_testnet/test/test_unit_save_validate_request.py
-- 統合テスト
+  - setup contract
+    - docker/srcs/uwsgi-django/pong/blockchain/local_testnet/test/test_unit_setup_web3.py
+
+- 統合テスト(local testnet)
   - Ganache
     - save
       - docker/srcs/uwsgi-django/pong/blockchain/local_testnet/test/test_ganash_save.py
