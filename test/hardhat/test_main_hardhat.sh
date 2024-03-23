@@ -36,7 +36,7 @@ echo "$POST_OUTPUT"
 
 echo -e "\n------------------------------------------------------"
 echo -e " 内容: apiにcurlで📥GET📥 🎸Django🎸が🪖Hardhat🪖テストネットワークから最新の数件のデータを取得"
-echo -e " [cmd]: sh test/hardhat/fetch__hardhat.sh"
+echo -e " [cmd]: sh test/hardhat/fetch_hardhat.sh"
 echo -e "------------------------------------------------------"
 # sh test/hardhat/fetch_hardhat.sh --verbose
 GET_OUTPUT=$(sh test/hardhat/fetch_hardhat.sh)

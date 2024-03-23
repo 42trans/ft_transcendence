@@ -32,6 +32,7 @@ echo -e " [cmd]: sh test/ganache/fetch_ganache.sh"
 echo -e "------------------------------------------------------"
 GET_OUTPUT=$(sh test/ganache/fetch_ganache.sh)
 echo "$GET_OUTPUT"
+
 echo -e "------------------------------------------------------"
 echo -e "直前のPOSTのIDとGETのIDが同一ならばOK"
 echo -e "------------------------------------------------------"

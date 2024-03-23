@@ -16,6 +16,15 @@ class TestSepoliaFetch(TestCase):
 		self.client = Client()
 		CheckNetwork.post_check_network('sepolia')
 
+	def test_fetch_game_result_success(self):
+		"""成功する場合をテスト"""
+		# API(ビュー)に対応するURLを生成
+		url = reverse('fetch_testnet', args=['sepolia'])
+		# APIにGETリクエスト
+		response = self.client.get(url)
+		# レスポンスの検証。assertEqual: 値が等しいかを確認。 
+		self.assertEqual(response.status_code, 200)
+
 	def test_fetch_game_result_unknown_network(self):
 		"""存在しないネットワーク名"""
 		# API(ビュー)に対応するURLを生成

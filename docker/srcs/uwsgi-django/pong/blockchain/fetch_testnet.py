@@ -4,6 +4,10 @@ from django.views.decorators.csrf import csrf_exempt
 from .contract_helpers.read_and_extract_contract_info import read_and_extract_contract_info
 from .contract_helpers.setup_web3_and_contract import setup_web3_and_contract
 from .contract_helpers.get_network_settings import get_network_settings
+import logging
+
+# ロガーの設定
+logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def fetch_testnet(request, testnet_name):
@@ -30,16 +34,28 @@ def fetch_testnet(request, testnet_name):
 		# 変数宣言（default値の設定）
 		response_data = {'status': 'error', 'message': 'Initial error'}
 		try:
+			print(f"Request to fetch_testnet with testnet_name: {testnet_name}")
+
 			# テストネットワークURLとコントラクト情報のパスを取得 API URLによって判別
 			local_network_url, contract_info_path = get_network_settings(testnet_name)
 			if local_network_url is None:
 				return contract_info_path
+
+			print(f"Network URL: {local_network_url}, Contract Info Path: {contract_info_path}")
+
 			# 設定を読み込む
 			contract_address, contract_abi = read_and_extract_contract_info(contract_info_path)
 			# インスタンスを生成
+			print(f"Contract Address: {contract_address}")
 			w3, contract = setup_web3_and_contract(local_network_url, contract_address, contract_abi)
+
+			print(f"２　Contract Address: {contract_address}")
+
 			# すべてのゲーム結果を取得
 			game_results = contract.functions.getAllGameResults().call()
+
+			print(f"Game Results: {game_results}")
+
 			# 結果をフォーマットする
 			formatted_results = [
 				{
@@ -53,6 +69,8 @@ def fetch_testnet(request, testnet_name):
 			]
 			response_data = {'status': 'success', 'data': formatted_results}
 		except Exception as e:
+			print(f"DEBUG: {str(e)}")
+			logger.error(f"Error: {str(e)}")
 			response_data = {'status': 'error', 'message': str(e)}
 
 		return JsonResponse(response_data, json_dumps_params={'ensure_ascii': False})
