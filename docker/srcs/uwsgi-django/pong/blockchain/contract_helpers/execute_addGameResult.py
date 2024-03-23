@@ -1,5 +1,7 @@
 # docker/srcs/uwsgi-django/pong/blockchain/local_testnet/execute_addGameResult.py
-def execute_addGameResult(w3, contract, data, winner, loser):
+from web3 import Web3, Account
+
+def execute_addGameResult(w3, contract, data, winner, loser, private_key):
 	"""
 	Ethereumブロックチェーンにゲームの結果を記録するために、Hardhatでdeployしたスマートコントラクトの`addGameResult`関数を呼び出します。
 
@@ -26,10 +28,27 @@ def execute_addGameResult(w3, contract, data, winner, loser):
 	player1_score = data['player_1_score']
 	player2_score = data['player_2_score']
 
-	txn_hash = contract.functions.addGameResult(match_id, player1_score, player2_score, winner, loser).transact({'from': w3.eth.defaultAccount})
-	txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
-
-	# debug
-	# print(f"debug txn_receipt: {txn_receipt}")
-
-	return txn_receipt 
+	if private_key:
+		# ----------------------------
+		# Public Testnet
+		# ----------------------------
+		nonce = w3.eth.get_transaction_count(w3.eth.default_account)
+		transaction = contract.functions.addGameResult(match_id, player1_score, player2_score, winner, loser).build_transaction({
+			'chainId': 11155111,
+			'gas': 2000000,
+			'gasPrice': w3.to_wei('10', 'gwei'),
+			'nonce': nonce,
+		})
+		# トランザクションをローカルで署名
+		signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
+		# 署名されたトランザクションを送信
+		txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+		txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+		return txn_receipt
+	else:
+		# ----------------------------
+		# Local Testnet
+		# ----------------------------
+		txn_hash = contract.functions.addGameResult(match_id, player1_score, player2_score, winner, loser).transact({'from': w3.eth.default_account})
+		txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+		return txn_receipt 

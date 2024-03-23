@@ -25,7 +25,7 @@ class TestSetupWeb3AndContract(TestCase):
 		mock_create.return_value = 'mock_contract_instance'
 
 		# テスト対象関数を呼び出し。モック化された関数を内部で使用
-		w3, contract = setup_web3_and_contract('dummy_url', 'dummy_address', 'dummy_abi')
+		w3, contract = setup_web3_and_contract('dummy_url', 'dummy_address', 'dummy_abi', 'dummy_private_key')
 
 		# 関数の戻り値（モックを使用した場合の結果）が期待通りかどうかを検証　
 		self.assertEqual(w3, 'mock_web3_instance')
@@ -33,17 +33,19 @@ class TestSetupWeb3AndContract(TestCase):
 
 		# モック化された関数が期待通りの引数で正確に一回呼び出されたか念の為検証
 		mock_initialize.assert_called_once_with('dummy_url')
-		mock_configure.assert_called_once_with('mock_web3_instance')
+		mock_configure.assert_called_once_with('mock_web3_instance', 'dummy_private_key')
 		mock_create.assert_called_once_with('mock_web3_instance', 'dummy_address', 'dummy_abi')
 
 	@patch('pong.blockchain.contract_helpers.setup_web3_and_contract._initialize_web3_instance')
 	def test_initialize_web3_instance_failure(self, mock_initialize):
 		"""内部で使用する_initialize_web3_instance()が失敗するケース"""
 		# unittest.mock モジュールの side_effect 属性: 特定の動作（例外の発生や異なる値の返却など）をシミュレートする
+		# _initialize_web3_instanceが例外を発生させるように設定
 		mock_initialize.side_effect = Exception('Initialization failed')
 
 		try:
-			setup_web3_and_contract('dummy_url', 'dummy_address', 'dummy_abi')
+			# 呼び出し時に例外が発生することを期待
+			setup_web3_and_contract('dummy_url', 'dummy_address', 'dummy_abi', 'dummy_private_key')
 			# 期待と違う場合（例外が発生しなかった場合)
 			self.fail("Exception was not raised")  
 		except Exception as e:

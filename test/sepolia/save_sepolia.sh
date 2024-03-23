@@ -8,11 +8,12 @@ JSON_DATA="{
 	\"match_id\": $MATCH_ID,
 	\"player_1_score\": 15,
 	\"player_2_score\": 2,
-	\"player_1_name\": \"キュアハードハット\",
-	\"player_2_name\": \"キュア黄\"
+	\"player_1_name\": \"キュアセポリア\",
+	\"player_2_name\": \"キュア水\"
 }"
 # --- exec ----------
 # -k: SSL証明書の検証をスキップ
 curl -X POST -k $API_URL \
+	-s -S \
 	-H "Content-Type: application/json" \
 	-d "$JSON_DATA"

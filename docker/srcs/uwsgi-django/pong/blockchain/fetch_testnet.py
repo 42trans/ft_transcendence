@@ -34,22 +34,22 @@ def fetch_testnet(request, testnet_name):
 		# 変数宣言（default値の設定）
 		response_data = {'status': 'error', 'message': 'Initial error'}
 		try:
-			print(f"Request to fetch_testnet with testnet_name: {testnet_name}")
+			# print(f"Request to fetch_testnet with testnet_name: {testnet_name}")
 
 			# テストネットワークURLとコントラクト情報のパスを取得 API URLによって判別
-			local_network_url, contract_info_path = get_network_settings(testnet_name)
-			if local_network_url is None:
+			network_url, contract_info_path, private_key = get_network_settings(testnet_name)
+			if network_url is None:
 				return contract_info_path
 
-			print(f"Network URL: {local_network_url}, Contract Info Path: {contract_info_path}")
+			# print(f"Network URL: {network_url}, Contract Info Path: {contract_info_path}")
 
 			# 設定を読み込む
 			contract_address, contract_abi = read_and_extract_contract_info(contract_info_path)
 			# インスタンスを生成
 			print(f"Contract Address: {contract_address}")
-			w3, contract = setup_web3_and_contract(local_network_url, contract_address, contract_abi)
-
-			print(f"２　Contract Address: {contract_address}")
+			w3, contract = setup_web3_and_contract(network_url, contract_address, contract_abi, private_key)
+			if w3 is None or contract is None:
+				return JsonResponse({'status': 'error', 'message': 'Failed to set up web3 or contract'}, status=500)
 
 			# すべてのゲーム結果を取得
 			game_results = contract.functions.getAllGameResults().call()

@@ -44,20 +44,20 @@ def save_testnet(request, testnet_name):
 			# 変数宣言（default値の設定）
 			response_data = {'status': 'error', 'message': 'Initial error'}
 			# テストネットワークURLとコントラクト情報のパスを取得 API URLによって判別
-			local_network_url, contract_info_path = get_network_settings(testnet_name)
-			if local_network_url is None:
+			network_url, contract_info_path, private_key = get_network_settings(testnet_name)
+			if network_url is None:
 				return contract_info_path
 			# 設定を読み込む。EVMベースのテストネットワークのコントラクトに関する。
 			contract_address, contract_abi = read_and_extract_contract_info(contract_info_path)
 			# インスタンスを生成する。スマートコントラクトの。Web3インスタンスを初期化し、デフォルトアカウントを設定してから。
-			w3, contract = setup_web3_and_contract(local_network_url, contract_address, contract_abi)
+			w3, contract = setup_web3_and_contract(network_url, contract_address, contract_abi, private_key)
 			# 勝者を判定する
 			winner, loser = process_game_result(data)
 			# 記録する。Ethereumブロックチェーン(テストネット)に。
-			txn_receipt = execute_addGameResult(w3, contract, data, winner, loser)
+			txn_receipt = execute_addGameResult(w3, contract, data, winner, loser, private_key)
 			# --------------------------------------
 			# コンテナのコンソールにlog出力
-			response_data = debug_save_testnet(contract_address, local_network_url, w3.eth.chain_id, contract, txn_receipt['transactionHash'], txn_receipt)
+			response_data = debug_save_testnet(contract_address, network_url, w3.eth.chain_id, contract, txn_receipt['transactionHash'], txn_receipt)
 			# --------------------------------------
 			# debug
 			# print(f"winner: {winner}")

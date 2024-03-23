@@ -15,5 +15,6 @@ JSON_DATA="{
 # --- exec ----------
 # -k: SSL証明書の検証をスキップ
 curl -X POST -k $API_URL \
+	-s -S \
 	-H "Content-Type: application/json" \
 	-d "$JSON_DATA"

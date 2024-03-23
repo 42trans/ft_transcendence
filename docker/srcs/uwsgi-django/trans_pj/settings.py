@@ -165,7 +165,7 @@ LOGGING = {
 'version': 1,
 'handlers': {
     'console': {
-        'level': 'DEBUG',
+        'level': 'ERROR',
         'class': 'logging.StreamHandler',
     },
     'file': {

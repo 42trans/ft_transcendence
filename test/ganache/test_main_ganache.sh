@@ -17,8 +17,6 @@ echo -e " [cmd]:uwsgi-django ping -c 1 ganache"
 docker exec -it uwsgi-django ping -c 1 ganache
 #=======================================================
 echo -e "\n------------------------------------------------------"
-echo -e "Django API へリクエスト"
-echo -e "\n------------------------------------------------------"
 echo -e " 内容: apiにcurlで📮POST📮: 🎸Django🎸が、🍫ganache🍫の🌏テストネットワーク🌏に💾データを保存💾"
 echo -e " [cmd]: sh test/ganache/save_ganache.sh"
 echo -e "------------------------------------------------------"
@@ -35,7 +33,6 @@ echo "$GET_OUTPUT"
 
 echo -e "------------------------------------------------------"
 echo -e "直前のPOSTのIDとGETのIDが同一ならばOK"
-echo -e "------------------------------------------------------"
 # 結果から matchId を抽出し、変数に格納。
 POST_MATCH_ID=$(echo "$POST_OUTPUT" | jq -r '.saved_game_result.match_id')
 GET_MATCH_ID=$(echo "$GET_OUTPUT" | jq -s '.[-1].matchId')
@@ -43,7 +40,7 @@ echo "post match_id: $POST_MATCH_ID"
 echo "get matchId: $GET_MATCH_ID"
 # matchIdが一致するかどうかを確認し、結果を表示
 if [ "$POST_MATCH_ID" == "$GET_MATCH_ID" ]; then
-    echo -e "\033[1;32m Ganache: 起動、Djangoからping接続、保存、取得 全てOK \033[0m"
+    echo -e "\033[1;32m 🍫🍫🍫🍫🍫🍫🍫🍫🍫Ganache🍫🍫🍫🍫🍫🍫🍫🍫🍫: 起動、Djangoからping接続、保存、取得 全てOK \033[0m"
 else
     echo -e "\033[1;31mNG\033[0m"
 fi
