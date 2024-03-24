@@ -58,11 +58,6 @@ def save_testnet(request, testnet_name):
 			# --------------------------------------
 			# コンテナのコンソールにlog出力
 			response_data = debug_save_testnet(contract_address, network_url, w3.eth.chain_id, contract, txn_receipt['transactionHash'], txn_receipt)
-			# --------------------------------------
-			# debug
-			# print(f"winner: {winner}")
-			# print(f"loser: {loser}")
-			# --------------------------------------
 		except Exception as e:
 			response_data = {'status': 'error', 'message': str(e)}
 

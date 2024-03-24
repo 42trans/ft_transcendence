@@ -34,49 +34,49 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'pong',
-    'django_prometheus',
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'pong',
+	'django_prometheus',
 ]
 
 MIDDLEWARE = [
-    # Prometheus----------
-    'django_prometheus.middleware.PrometheusBeforeMiddleware',
-    # --------------------
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # Prometheus----------
-    'django_prometheus.middleware.PrometheusAfterMiddleware',
-    # --------------------
+	# Prometheus----------
+	'django_prometheus.middleware.PrometheusBeforeMiddleware',
+	# --------------------
+	'django.middleware.security.SecurityMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	# Prometheus----------
+	'django_prometheus.middleware.PrometheusAfterMiddleware',
+	# --------------------
 
 ]
 
 ROOT_URLCONF = 'trans_pj.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
+	{
+		'BACKEND': 'django.template.backends.django.DjangoTemplates',
+		'DIRS': [],
+		'APP_DIRS': True,
+		'OPTIONS': {
+			'context_processors': [
+				'django.template.context_processors.debug',
+				'django.template.context_processors.request',
+				'django.contrib.auth.context_processors.auth',
+				'django.contrib.messages.context_processors.messages',
+			],
+		},
+	},
 ]
 
 WSGI_APPLICATION = 'trans_pj.wsgi.application'
@@ -100,19 +100,19 @@ WSGI_APPLICATION = 'trans_pj.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        # -------------------------
+	'default': {
+		# -------------------------
 # 		# Prometheus
 # 		# -------------------------
-        "ENGINE": "django_prometheus.db.backends.postgresql",
-        # 'ENGINE': 'django.db.backends.postgresql',
+		"ENGINE": "django_prometheus.db.backends.postgresql",
+		# 'ENGINE': 'django.db.backends.postgresql',
 # 		# -------------------------
-        'NAME': os.environ.get('POSTGRES_DB'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'postgres',  # Docker内のPostgreSQLサービス名
-        'PORT': '5432',
-    }
+		'NAME': os.environ.get('POSTGRES_DB'),
+		'USER': os.environ.get('POSTGRES_USER'),
+		'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+		'HOST': 'postgres',  # Docker内のPostgreSQLサービス名
+		'PORT': '5432',
+	}
 }
 
 
@@ -120,18 +120,18 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+	{
+		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+	},
 ]
 
 
@@ -164,37 +164,47 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGGING = {
 'version': 1,
 'handlers': {
-    'console': {
-        'level': 'ERROR',
-        'class': 'logging.StreamHandler',
-    },
-    'file': {
-        'level': 'DEBUG',
-        'class': 'logging.FileHandler',
-        'filename': 'django_debug.log',
-    },
-    'logstash': {
-        'level': 'DEBUG',
-        'class': 'logstash.TCPLogstashHandler', # TCP
-    #   'class': 'logstash.LogstashHandler',
-        'host': 'logstash',
-        'port': 50000, # TCP is 50000, Default value: 5959
-        'version': 1, # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
-        'message_type': 'logstash',  # 'type' field in logstash message. Default value: 'logstash'.
-        'fqdn': False, # Fully qualified domain name. Default value: false.
-        'tags': ['django.request'],# list of tags. Default: None.
-    },
+	'console': {
+		'level': 'ERROR',  # 基礎的な全般設定 ※WARNINGにするとテスト時の意図的な操作も拾ってしまう
+		'class': 'logging.StreamHandler',
+	},
+	'file': {
+		'level': 'WARNING',
+		'class': 'logging.FileHandler',
+		'filename': 'django_debug.log',
+	},
+	'logstash': {
+		'level': 'DEBUG',
+		'class': 'logstash.TCPLogstashHandler', # TCP
+	#   'class': 'logstash.LogstashHandler',
+		'host': 'logstash',
+		'port': 50000, # TCP is 50000, Default value: 5959
+		'version': 1, # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
+		'message_type': 'logstash',  # 'type' field in logstash message. Default value: 'logstash'.
+		'fqdn': False, # Fully qualified domain name. Default value: false.
+		'tags': ['django.request'],# list of tags. Default: None.
+	},
 },
 'loggers': {
-    'django.request': {
-        'handlers': ['logstash'],
-        'level': 'DEBUG',
-        'propagate': True,
-    },
 	'': {  # 'root' ロガー
-        'handlers': ['console', 'file'],
-        'level': 'DEBUG',
-        'propagate': True,
-    },
+		'handlers': ['file'],
+		'level': 'WARNING',
+		'propagate': True,
+	},
+	'django.request': {
+		'handlers': ['logstash'],
+		'level': 'DEBUG',
+		'propagate': True,
+	},
+	'django': { # Django's default logger
+			'handlers': ['console', 'file'],
+			'level': 'WARNING',
+			'propagate': True,
+	},
+	'pong': {  # 'pong' はアプリケーション固有のロガーの名前 filterとして特定の場所のdebugに使用する
+		'handlers': ['console'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
 },
 }
