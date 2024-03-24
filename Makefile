@@ -147,12 +147,6 @@ remove_mount_volume_mac:
 	rm -rf mount_volume
 rm:
 	make remove_mount_volume_mac
-
-# log_django:
-# 	docker logs ft_django
-# ld:
-# 	make log_django
-
 # -----------------------------------------------
 #  init
 # -----------------------------------------------
@@ -192,33 +186,36 @@ ELK_certs:
 # -----------------------------------------------
 #  test
 # -----------------------------------------------
+test_django_test_py:
+	docker exec uwsgi-django /bin/sh -c "python manage.py test --keepdb" > test/result/test_py_results.txt 
+
 test_main:
 	$(call set_env) && bash ./test/main_test.sh
 	make test_django_test_py
 t:
 	make test_main
-	
+
+# そのうち削除予定
 test_game_result_json:
 	sh test/django/game_result_json.sh
 test_game_result_json_hardhat:
 	sh test/hardhat/save_game_result_json_hardhat.sh
 test_ganache:
 	bash ./test/ganache/test_main_ganache.sh
-test_django_test_py:
-	docker exec uwsgi-django /bin/sh -c "python manage.py test --keepdb" > test/result/test_py_results.txt 
-
-
 # -----------------------------------------------
 # Blockcharin コマンド
 # -----------------------------------------------
 # build blockchainでも実行
 hardhat_deploy_hardhat:
 	docker exec hardhat /bin/sh -c 'NETWORK_NAME=hardhat npx hardhat run scripts/deploy.ts --network localhost'
+# build blockchainでも実行
 hardhat_deploy_ganache:
 	docker exec hardhat /bin/sh -c 'NETWORK_NAME=ganache npx hardhat run scripts/deploy.ts --network ganache'
+# 公開ネットなので、コントラクトは一度だけデプロイ
 hardhat_deploy_sepolia:
 	docker exec hardhat /bin/sh -c 'NETWORK_NAME=sepolia npx hardhat run scripts/deploy.ts --network sepolia'
-
+# ganacheにサンプルデータを20件登録する
+# build blockchainでも実行
 setup_ganache_data:
 	sh docker/srcs/ganache/setup_data.sh
 # -----------------------------------------------
