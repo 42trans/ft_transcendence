@@ -3,9 +3,12 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 
+# def index(request):
+#     return HttpResponse("<h1>[Django]</h1> <p>index pageです</p>")
+
 def index(request):
-    return HttpResponse("<h1>[Django]</h1> <p>index pageです</p>")
+	return render(request, 'index.html')
 
 def api_status(request):
-    data = {'api/status/': 'OK'}
-    return JsonResponse(data)
+	data = {'api/status/': 'OK'}
+	return JsonResponse(data)

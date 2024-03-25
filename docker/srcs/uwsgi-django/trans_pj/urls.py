@@ -19,10 +19,12 @@ from django.contrib import admin
 from django.urls import include, path
 # views.pyからビューをインポート
 from . import views  
+from .views.display_urls import display_urls
 
 # from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
+	path('display-urls/', display_urls, name='display_urls'),
 	path('pong/', include('pong.urls')),
 	path('', include('django_prometheus.urls')),
 	path('admin/', admin.site.urls),
