@@ -1,5 +1,10 @@
 # team_docs/Django
 
+## 説明資料
+
+- Googleスライド:Django初歩
+  - https://docs.google.com/presentation/d/e/2PACX-1vQicOCfxAZ9d5FI6SdU_kPce0Y01g-6mbSCDabH1JAGthWAqo-YYqXXto0hyfAa4o1d8YyeDvijYMTt/pub?start=true&loop=false&delayms=3000&slide=id.p
+
 ## Blockchain
 
 - [Blockchain.md](Blockchain.md)

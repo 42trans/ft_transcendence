@@ -5,6 +5,9 @@
 
 ## 初回環境設定 （cloneして最初に行うこと）
 
+- Googleスライド:開発環境構築（更新中）
+  - https://docs.google.com/presentation/d/e/2PACX-1vR86i3_uPIhWcLQcEFGm5JJnqzDdYup139H0RDXCs5nosYX5talaHEqJKdTlpRRPwi7SZn6Je5fat37/pub?start=true&loop=false&delayms=3000&slide=id.g2c611bd27b0_0_0
+
 - `make init` をしてください。下記がまとめて実行されます。
   - `make key`
     - nginx sslに必要な .crt,keyを発行します
