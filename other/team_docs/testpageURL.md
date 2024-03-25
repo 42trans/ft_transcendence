@@ -1,6 +1,7 @@
 # team_docs/testpageURL.md
 
-- [port.md](port.md)
+- ポート番号
+  - [port.md](port.md)
 
 ## frontend: 3030:3000
 
@@ -10,8 +11,16 @@
 
 ## Django: <https://localhost/>
 
-- <https://localhost/>  
-  <img src="img/スクリーンショット 2024-03-03 23.51.07.png" width="200" alt="alt">　　
+| localhost/ | pong/results |  
+| :--------- | :----------- |   
+| <https://localhost/>  | <https://localhost/pong/results/>  | 
+| <img src="img/スクリーンショット 2024-03-03 23.51.07.png" width="200" alt="alt"> | <img src="img/スクリーンショット 2024-03-26 4.40.13.png" width="200" alt="alt"> | 
+
+## Blockchain
+| pong/api/fetch_testnet/ganache/ | pong/api/fetch_testnet/hardhat/ | pong/api/fetch_testnet/sepolia/ |  
+| :------------------------------ | :------------------------------ | :------------------------------ |  
+| <https://localhost/pong/api/fetch_testnet/ganache/>| <https://localhost/pong/api/fetch_testnet/hardhat/> | <https://localhost/pong/api/fetch_testnet/sepolia/> |
+| <img src="img/スクリーンショット 2024-03-26 5.14.49.png" width="200" alt="alt"> | <img src="img/スクリーンショット 2024-03-26 5.24.06.png" width="200" alt="alt"> | <img src="img/スクリーンショット 2024-03-26 5.25.13.png" width="200" alt="alt"> |
 
 ## pgadmin: 8087:80
 
