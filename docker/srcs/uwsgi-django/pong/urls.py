@@ -17,7 +17,7 @@ urlpatterns = [
 	path('api/fetch_testnet/<str:testnet_name>/', fetch_testnet.fetch_testnet, name='fetch_testnet'),
 
 	# DBとtestnetの同時記録
-	path('api/record_game_result/<str:testnet_name>/', record_game_result.record_game_result, name='record_game_result'),
+	# path('api/record_game_result/<str:testnet_name>/', record_game_result.record_game_result, name='record_game_result'),
 	
 	# 過去に作成した使っていないもの play用
 	path('api/save_game_result/', views.save_game_result, name='save_game_result'),
