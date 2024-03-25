@@ -1,12 +1,10 @@
 # team_docs/Blockchain.md
 
-![alt text](<img/スクリーンショット 2024-03-23 11.45.13.png>)
+![alt text](<img/スクリーンショット 2024-03-24 12.27.24.png>)
 
 ## 説明資料
 
 - 【Blockchain説明 - Google スライド】 https://docs.google.com/presentation/d/e/2PACX-1vSgkqQfrCOV6_ktcMhGp51ziYKG60jQ8xh7o0xawXPBStN7YwQbaWxjA0P7y9qvBl72nLcrEat1-HKj/pub?start=true&loop=true&delayms=3000&slide=id.g2c513157d5a_1_17
-
-<img src="img/スクリーンショット 2024-03-22 11.09.55.png" width="300" alt="alt">  
 
 ## 要件対応状況
 
@@ -29,11 +27,11 @@
   - Node.jsはJavascriptの実行環境であり、フレームワークに該当しない。（Express.jsがフレームワーク）
     - 例えばharadhatコンテナはウェブアプリケーションではない。Linux + Node.js上で動く。Express.jsなどのフレームワークは使用していない
 - スマートコントラクトはローカルでコードを書く
-- Dockerでは、EVMのテスト環境だけコンテナに用意する
+- EVMのテスト環境ごとにコンテナを用意する
 - ローカル、コンテナともにNode.js 20.11.1
   - Dockerfile内
   - ローカルでのinit作業時
-- テストネットワークは Ganache をメインに。それだけでも課題要件はクリアしていると判断している。
+- テストネットワークは Ganache, Hardhat, Sepolia
 
 ## テストネットワーク
 
@@ -43,15 +41,15 @@
   - Ganache
     - 簡単に機能したので採用
 - 公開
-  - Wallet登録が理解できない、面倒に感じる、怖い
-  - Ethが無料でもらえる方法までたどり着いていない
-  - alchemyが良さそう、INFURAは理解できず。
-    - 参考:【7. Deploying to a live network | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/tutorial/deploying-to-a-live-network
-    - INFURA API
+  - APIはINFRAを利用
+    - INFURA API key
       - 9301610ed4c24693b985f80eda16eb67
-    - 参考:【Ethereum Goerli Faucet】 https://www.alchemy.com/faucets/ethereum-goerli
+  - alchemyの蛇口で Sepolia eth をもらう
+    - 参考:【Ethereum Sepolia Faucet】 https://www.alchemy.com/faucets/ethereum-sepolia
+  - 参考:【7. Deploying to a live network | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/tutorial/deploying-to-a-live-network
   
-## 開始〜前半のメモ
+
+## 古い: 開始〜前半のメモ
 
 ### インストール＋α作業時MEMO
 

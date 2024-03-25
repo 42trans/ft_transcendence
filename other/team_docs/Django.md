@@ -4,23 +4,13 @@
 
 - [Blockchain.md](Blockchain.md)
 
-- 表示が小さい場合は、文字を拡大する時と同じ方法で、`⌘ or Ctrl` + `+` で拡大してご覧ください。
-  - もしくは編集画面で ⌘+クリック で画像ファイルを表示して　虫眼鏡で拡大
-
-- 最新  
-  - ローカルテストネットワークの関数を共通化したので、ディレクトリを変えて１箇所にまとめました。
-![alt text](<img/スクリーンショット 2024-03-21 22.42.28.png>)
-
-- 変更前  
-![alt text](<img/スクリーンショット 2024-03-21 11.52.21.png>)
-
 ## 方針
 
 - Docker hub公式イメージのソースをカスタマイズして使う
 - uWSGIサーバー上で Django
   - 多機能
   - CのOSS
-- 静的ページ作成(html,css), 3Dは別コンテナに
+- 静的ページ作成(html,css), 3Dは別コンテナをたてる
 - ドキュメント作成は Gitbookに対応するものを使用する（mdを標準とするツール）
   - Sphinx
     - `make sphinx_make_html`でbuild/にhtmlファイルを作成
@@ -37,10 +27,13 @@
   - 'version': 1,　1行目にないと500出る
     - 参考:【django log を elasticsearch に入れる python-logstash 使い方 #Django - Qiita】 https://qiita.com/uturned0/items/87982e34b0de9cc9a774
   - 参考:【python-logstash · PyPI】 https://pypi.org/project/python-logstash/
-- Hardhat経由でganacheのテストネットに保存
+- テストネットに保存
 - gitbookに対応させるドキュメントを考慮
   - 参考:【ふだん Markdown を書く技術者のための reStructuredText 文法まとめ】 https://gotohayato.com/content/464/
-  
+- Blockchain用
+  - API関数作成
+  - DB関連
+
 ## memo
 
 - pythonのコンテナを立てる。django単体のimageはない。

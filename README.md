@@ -32,16 +32,19 @@
 ## チーム内のドキュメント `other/team_docs/`
 
 - [subject.pdf](other/subject/en.subject.pdf)  
+  - PDF拡張でVSCODE上で読めます
   - [日本語訳](other/subject/subject.md)
 - [Tips.md](other/team_docs/Tips.md)
 - [port.md](other/team_docs/port.md)
 - [プロジェクトマネジメント](other/team_docs/pm/pm_readme.md)
+  - [Design](other/team_docs/pm/design.md)
 
 ### module
 
 - [Blockchain.md](other/team_docs/Blockchain.md)
   - [ganache.md](other/team_docs/ganache.md)
   - [Hardhat.md](other/team_docs/Hardhat.md) 
+  - sepolia 追加予定
 - [Django.md](other/team_docs/Django.md)
   - [memo.md](docker/srcs/uwsgi-django/sphinx/sphinx-memo.md) 
 - [PostgreSQL.md](other/team_docs/PostgreSQL.md)
