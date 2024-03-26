@@ -11,18 +11,19 @@
 
 ## Django: <https://localhost/>
 
-- admin 
+- admin
   - <https://localhost/admin/>  
     - DJANGO_SUPERUSER_USERNAME=admin
-    - DJANGO_SUPERUSER_EMAIL=admin@example.com
+    - DJANGO_SUPERUSER_EMAIL=<admin@example.com>
     - DJANGO_SUPERUSER_PASSWORD=adminpassword
 
 | localhost/ | pong/results |  
-| :--------- | :----------- |   
-| <https://localhost/>  | <https://localhost/pong/results/>  | 
-| <img src="img/スクリーンショット 2024-03-03 23.51.07.png" width="200" alt="alt"> | <img src="img/スクリーンショット 2024-03-26 4.40.13.png" width="200" alt="alt"> | 
+| :--------- | :----------- |
+| <https://localhost/>  | <https://localhost/pong/results/>  |
+| <img src="img/スクリーンショット 2024-03-03 23.51.07.png" width="200" alt="alt"> | <img src="img/スクリーンショット 2024-03-26 4.40.13.png" width="200" alt="alt"> |
 
 ## Blockchain
+
 | pong/api/fetch_testnet/ganache/ | pong/api/fetch_testnet/hardhat/ | pong/api/fetch_testnet/sepolia/ |  
 | :------------------------------ | :------------------------------ | :------------------------------ |  
 | <https://localhost/pong/api/fetch_testnet/ganache/>| <https://localhost/pong/api/fetch_testnet/hardhat/> | <https://localhost/pong/api/fetch_testnet/sepolia/> |
@@ -31,25 +32,19 @@
 ## pgadmin(PostgreSQL): 8087:80
 
 - <http://localhost:8087/>  
-  - PGADMIN_DEFAULT_EMAIL=a@a.jp  
+  - PGADMIN_DEFAULT_EMAIL=<a@a.jp>  
   - PGADMIN_DEFAULT_PASSWORD=pw  
   <img src="img/スクリーンショット 2024-03-07 0.38.26.png" width="200" alt="alt">　　
 
-## kind Grafana: 3000
-- 開発時: ポートフォーワードで一時的に接続( Ingressに変更予定)
-  - 下記をホストマシンで実行してから、リンクをクリックしてください
-```
-kubectl port-forward service/grafana 3000:80 &
-kubectl port-forward service/prometheus-server  9090:80 &
-```
-- <http://localhost:3000/d/rYdddlPWk/node-exporter-full-and-k8s-containers?orgId=1>  
-  <img src="img/スクリーンショット 2024-03-07 1.02.19.png" width="200" alt="alt">　　
+## Docker Grafana: 3032:3000
 
-## kind Prometheus: 9090
+- <http://localhost:3032/d/eb4247a4-92b0-49a0-ae9e-4c61257d88ad/new-dashboard?orgId=1>  
+  <img src="img/スクリーンショット 2024-03-01 3.06.16.png" width="200" alt="alt">　　
 
-- <http://localhost:9090/targets?search=>  
-  <img src="img/スクリーンショット 2024-03-07 0.58.36.png" width="200" alt="alt">　　
+## Docker Prometheus 9091:9090
 
+- <http://localhost:9091/targets?search=#pool-node_exporter>  
+  <img src="img/スクリーンショット 2024-03-01 3.43.25.png" width="170" alt="alt text" >
 
 ## kibana 5602(or 5601):5601  
 
@@ -63,16 +58,22 @@ kubectl port-forward service/prometheus-server  9090:80 &
 - elk
   - <http://localhost:9114/metrics>
 
+## 削除予定
 
-## kind以降後に削除予定
+#### kind Grafana: 3000
 
-## Docker Grafana: 3032:3000
+- 開発時: ポートフォーワードで一時的に接続( Ingressに変更予定)
+  - 下記をホストマシンで実行してから、リンクをクリックしてください
 
-- <http://localhost:3032/d/eb4247a4-92b0-49a0-ae9e-4c61257d88ad/new-dashboard?orgId=1>  
-  <img src="img/スクリーンショット 2024-03-01 3.06.16.png" width="200" alt="alt">　　
+```
+kubectl port-forward service/grafana 3000:80 &
+kubectl port-forward service/prometheus-server  9090:80 &
+```
 
-## Docker Prometheus 9091:9090
+- <http://localhost:3000/d/rYdddlPWk/node-exporter-full-and-k8s-containers?orgId=1>  
+  <img src="img/スクリーンショット 2024-03-07 1.02.19.png" width="200" alt="alt">　　
 
-- <http://localhost:9091/targets?search=#pool-node_exporter>  
-  <img src="img/スクリーンショット 2024-03-01 3.43.25.png" width="170" alt="alt text" >
+#### kind Prometheus: 9090
 
+- <http://localhost:9090/targets?search=>  
+  <img src="img/スクリーンショット 2024-03-07 0.58.36.png" width="200" alt="alt">　　

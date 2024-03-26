@@ -19,13 +19,13 @@ all: build up
 # -----------------------------------------------
 # kind(k8s)
 # -----------------------------------------------
-kindup:
-	chmod +x kind/up.sh
-	kind/up.sh
+# kindup:
+# 	chmod +x kind/up.sh
+# 	kind/up.sh
 
-kinddown:
-	chmod +x kind/down.sh
-	kind/down.sh
+# kinddown:
+# 	chmod +x kind/down.sh
+# 	kind/down.sh
 # -----------------------------------------------
 # Docker
 # -----------------------------------------------
@@ -38,7 +38,7 @@ b:
 	make build
 
 up:
-	make kindup
+# make kindup
 	$(call set_env) && \
 	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose -f $(COMPOSE_FILES_ARGS) up -d
 u:
