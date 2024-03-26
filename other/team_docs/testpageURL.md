@@ -11,6 +11,10 @@
 
 ## Django: <https://localhost/>
 
+- DJANGO_SUPERUSER_USERNAME=admin
+- DJANGO_SUPERUSER_EMAIL=admin@example.com
+- DJANGO_SUPERUSER_PASSWORD=adminpassword
+
 | localhost/ | pong/results |  
 | :--------- | :----------- |   
 | <https://localhost/>  | <https://localhost/pong/results/>  | 
@@ -25,6 +29,8 @@
 ## pgadmin: 8087:80
 
 - <http://localhost:8087/>  
+  - PGADMIN_DEFAULT_EMAIL=a@a.jp  
+  - PGADMIN_DEFAULT_PASSWORD=pw  
   <img src="img/スクリーンショット 2024-03-07 0.38.26.png" width="200" alt="alt">　　
 
 ## kibana 5602(or 5601):5601  

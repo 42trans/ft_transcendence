@@ -17,19 +17,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-# views.pyからビューをインポート
-from . import views  
-from .views.display_urls import display_urls
+from trans_pj.views import main_views  
 
 # from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
-	path('display-urls/', display_urls, name='display_urls'),
 	path('pong/', include('pong.urls')),
 	path('', include('django_prometheus.urls')),
 	path('admin/', admin.site.urls),
-	path('api/status/', views.api_status, name='api_status'),
-	path('', views.index, name='index'),
+	path('api/status/', main_views.api_status, name='api_status'),
+	path('', main_views.index, name='index'),
 ]
 
 # urlpatterns += staticfiles_urlpatterns()

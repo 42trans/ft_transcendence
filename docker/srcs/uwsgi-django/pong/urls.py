@@ -1,10 +1,10 @@
 # docker/srcs/uwsgi-django/pong/urls.py
 from django.urls import path
-from . import views
-from .blockchain import save_testnet
-from .blockchain import fetch_testnet
-from .blockchain import fetch_testnet
-from .blockchain import record_game_result
+from pong import views
+from pong.blockchain import save_testnet
+from pong.blockchain import fetch_testnet
+from pong.blockchain import fetch_testnet
+from pong.blockchain import record_game_result
 
 urlpatterns = [
 	# path() 引数:

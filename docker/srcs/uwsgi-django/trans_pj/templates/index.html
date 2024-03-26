@@ -2,11 +2,42 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Django Index Page</title>
+	<title>https://localhost/ | Django Index Page</title>
 </head>
 <body>
-	<h1>Djangoのルート</h1>
-	<p>index pageです</p>
-	<a href="/display-urls/">Display URLs</a>
-</body>
+	<h1>Djangoのルート | https://localhost/</h1>
+	<p>index.html | docker/srcs/uwsgi-django/trans_pj/templates</p>
+	<h2>admin</h2>
+	<p>- DJANGO_SUPERUSER_USERNAME=admin<br>
+		- DJANGO_SUPERUSER_EMAIL=admin@example.com<br>
+		- DJANGO_SUPERUSER_PASSWORD=adminpassword</p>
+	<ul>
+		<li><a href="/admin/">admin/</a></li>
+		<li><a href="/api/status/">api/status/</a></li>
+	</ul>
+	<h2>pong</h2>
+	<ul>
+		<h3>PsotgreSQL</h3>
+		<p>PGADMIN_DEFAULT_EMAIL=a@a.jp<br>
+			PGADMIN_DEFAULT_PASSWORD=pw</p>
+		<ul>
+			<li><a href="/pong/results/">pong/results/</a></li>
+		</ul>
+		<h3>Blockchain</h3>
+		<ul>
+			<li><a href="/pong/api/fetch_testnet/ganache/">pong/api/fetch_testnet/ganache</a></li>
+			<li><a href="/pong/api/fetch_testnet/hardhat/">pong/api/fetch_testnet/hardhat</a></li>
+			<li><a href="/pong/api/fetch_testnet/sepolia/">pong/api/fetch_testnet/sepolia</a></li>
+		</ul>
+
+	</ul>
+	<h2>コンテナ・サービス</h2>
+	<ul>
+		<li><a href="http://localhost:3030/three.html">frontend: 3030:3000 | http://localhost:3030/three.html</a></li>
+		<li><a href="http://localhost:8087/">pgadmin: 8087:80 |  http://localhost:8087/</a></li>
+		<li><a href="http://localhost:9090/targets?search=">kind Prometheus: 9090 | http://localhost:9090/targets?search=</a></li>
+		<li><a href="http://localhost:3000/d/rYdddlPWk/node-exporter-full-and-k8s-containers?orgId=1">kind Grafana: 3000 | http://localhost:3000/d/rYdddlPWk/node-exporter-full-and-k8s-containers?orgId=1</a></li>
+		<li><a href=""></a></li>
+	</ul>
+</body>w
 </html>

@@ -39,10 +39,10 @@ class PongGameResult(models.Model):
 	# 🧱⛓️blockchain🧱⛓️関連
 	# 初期状態ではトランザクションがまだ存在しない（登録に時間がかかる）ため、空またはNULLを許容。後から追加する項目
 	# -------------------------------------------------------------------
-	blockchain_tx_id = models.CharField(max_length=255, blank=True, null=True)
-	blockchain_block_number = models.IntegerField(blank=True, null=True)
-	blockchain_timestamp = models.DateTimeField(blank=True, null=True)
-	transaction_status = models.CharField(max_length=100, default='pending')
+	# blockchain_tx_id = models.CharField(max_length=255, blank=True, null=True)
+	# blockchain_block_number = models.IntegerField(blank=True, null=True)
+	# blockchain_timestamp = models.DateTimeField(blank=True, null=True)
+	# transaction_status = models.CharField(max_length=100, default='pending')
 	# -------------------------------------------------------------------
 	# ## 関連:
 	# - .urls.py: API URL設定 
