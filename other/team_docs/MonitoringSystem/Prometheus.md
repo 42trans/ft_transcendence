@@ -1,19 +1,6 @@
-# team_docs/Monitor.md (Prometheus,Grafana)
+# other/team_docs/MonitoringSystem/Prometheus.md
 
-- Prometheus
-- Grafana
-
-## 方針
-
-- Docker hub公式イメージをそのまま使ってみるところから開始。
-
-## 作業: Prometheus  
-
-- install
-  - imageをインストールしただけ
-- exporter関連(下記参照)
-
-### exporter
+## exporter
 
 - Django
   - 設定はここの通りに
@@ -38,8 +25,6 @@
     - 参考:【Configuration | Prometheus】 https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
     - 参考:【リリース 2.50 の prometheus/config/testdata/conf.good.yml · prometheus/prometheus】 https://github.com/prometheus/prometheus/blob/release-2.50/config/testdata/conf.good.yml
     - 参考:【Prometheus.ymlの記述内容を解説する #初心者向け - Qiita】 https://qiita.com/mtsiga/items/f456721149f863ac0346
-  - Grafana
-    - 参考:【Configure a Grafana Docker image | Grafana documentation】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/>
 
 - PromQL
   - 参考:【Querying basics | Prometheus】 <https://prometheus.io/docs/prometheus/latest/querying/basics/>

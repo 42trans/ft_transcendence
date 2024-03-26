@@ -1,4 +1,4 @@
-# other/team_docs/Hardhat.md
+# other/team_docs/Blockchain/Hardhat.md
 
 - [詳細Hardhat.md](../../docker/srcs/hardhat/hardhat_pj/memo.md)
 

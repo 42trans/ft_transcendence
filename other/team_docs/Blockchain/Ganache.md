@@ -5,7 +5,7 @@
 ## cmd
 
 - ganache にデプロイ
-  - make hardhat_deploy_ganache 
+  - make hardhat_deploy_ganache  
     - docker exec hardhat npx hardhat run scripts/deploy.ts --network ganache
   - build blockchain時に自動実行
 - 再起動時に試合結果を20件登録
@@ -22,4 +22,4 @@
 
 ## 参考
 
-  - 参考:【Ethereum のローカル開発環境 Ganache を使ってみる #Blockchain - Qiita】 https://qiita.com/kyrieleison/items/8ef926faa4defa8fe930
+- 参考:【Ethereum のローカル開発環境 Ganache を使ってみる #Blockchain - Qiita】 <https://qiita.com/kyrieleison/items/8ef926faa4defa8fe930>  

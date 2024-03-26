@@ -4,7 +4,7 @@
 
 ## 説明資料
 
-- 【Blockchain説明 - Google スライド】 https://docs.google.com/presentation/d/e/2PACX-1vSgkqQfrCOV6_ktcMhGp51ziYKG60jQ8xh7o0xawXPBStN7YwQbaWxjA0P7y9qvBl72nLcrEat1-HKj/pub?start=true&loop=true&delayms=3000&slide=id.g2c513157d5a_1_17
+- 【Blockchain説明 - Google スライド】 <https://docs.google.com/presentation/d/e/2PACX-1vSgkqQfrCOV6_ktcMhGp51ziYKG60jQ8xh7o0xawXPBStN7YwQbaWxjA0P7y9qvBl72nLcrEat1-HKj/pub?start=true&loop=true&delayms=3000&slide=id.g2c513157d5a_1_17>
 
 ## 要件対応状況
 
@@ -17,8 +17,8 @@
 
 ## 各コンテナ・サービス特有のことはこちら
 
-- [Hardhat.md](Hardhat.md)
-- [Ganache.md](Ganache.md)
+- [Blockchain/Hardhat.md](Blockchain/Hardhat.md)
+- [Blockchain/Ganache.md](Blockchain/Ganache.md)
 
 ## 方針
 
@@ -45,9 +45,8 @@
     - INFURA API key
       - 9301610ed4c24693b985f80eda16eb67
   - alchemyの蛇口で Sepolia eth をもらう
-    - 参考:【Ethereum Sepolia Faucet】 https://www.alchemy.com/faucets/ethereum-sepolia
-  - 参考:【7. Deploying to a live network | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/tutorial/deploying-to-a-live-network
-  
+    - 参考:【Ethereum Sepolia Faucet】 <https://www.alchemy.com/faucets/ethereum-sepolia>
+  - 参考:【7. Deploying to a live network | Ethereum development environment for professionals by Nomic Foundation】 <https://hardhat.org/tutorial/deploying-to-a-live-network>
 
 ## 古い: 開始〜前半のメモ
 
@@ -57,21 +56,21 @@
   - ローカルにインストール
     - npm install --save-dev hardhat
   - Node.js 20で TypeScript で　init (公式の推奨)
-    - 参考:【Getting started with Hardhat | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/hardhat-runner/docs/getting-started#installation
-    - 参考:【TypeScript（タイプスクリプト）とは？JavaScriptとの違いやできること、メリットなど初心者にわかりやすく解説！】 https://jitera.com/ja/insights/4795
+    - 参考:【Getting started with Hardhat | Ethereum development environment for professionals by Nomic Foundation】 <https://hardhat.org/hardhat-runner/docs/getting-started#installation>
+    - 参考:【TypeScript（タイプスクリプト）とは？JavaScriptとの違いやできること、メリットなど初心者にわかりやすく解説！】 <https://jitera.com/ja/insights/4795>
 - test
-  - 参考:【Getting started with Hardhat | Ethereum development environment for professionals by Nomic Foundation】 https://hardhat.org/hardhat-runner/docs/getting-started#testing-your-contracts
+  - 参考:【Getting started with Hardhat | Ethereum development environment for professionals by Nomic Foundation】 <https://hardhat.org/hardhat-runner/docs/getting-started#testing-your-contracts>
 
 - setup
   - Django, Python, PostgreSQL,TypeScriptの基礎知識  
-    - 参考:【9. クラス — Python 3.12.2 ドキュメント】 https://docs.python.org/ja/3/tutorial/classes.html
-    - 参考:【テーブルダイアログ — pgAdmin 4 8.3 ドキュメント】 https://www.pgadmin.org/docs/pgadmin4/8.3/table_dialog.html
+    - 参考:【9. クラス — Python 3.12.2 ドキュメント】 <https://docs.python.org/ja/3/tutorial/classes.html>
+    - 参考:【テーブルダイアログ — pgAdmin 4 8.3 ドキュメント】 <https://www.pgadmin.org/docs/pgadmin4/8.3/table_dialog.html>
 
 ### 参考資料
 
 - 開発環境
   - ローカルの開発環境はFoundry VSCODE がRUSTで高速
-    - 参考:【スマートコントラクト開発ツールの Hardhat と Foundry を実際に使って比較してみた - テコテック開発者ブログ】 https://tec.tecotec.co.jp/entry/2023/11/22/090000
+    - 参考:【スマートコントラクト開発ツールの Hardhat と Foundry を実際に使って比較してみた - テコテック開発者ブログ】 <https://tec.tecotec.co.jp/entry/2023/11/22/090000>
   - Foundry
-    - 参考:【インストール - ファウンドリブック】 https://book.getfoundry.sh/getting-started/installation
-    - 参考:【EthereumのDapp開発環境のFoundryを使ってみる】 https://zenn.dev/razokulover/articles/574eb471e6db1c
+    - 参考:【インストール - ファウンドリブック】 <https://book.getfoundry.sh/getting-started/installation>
+    - 参考:【EthereumのDapp開発環境のFoundryを使ってみる】 <https://zenn.dev/razokulover/articles/574eb471e6db1c>
