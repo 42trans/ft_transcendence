@@ -175,6 +175,7 @@ rm:
 # -----------------------------------------------
 .PHONY: init
 init: cert_key docker_env
+	chmod +x init/make_dir.sh && ./init/make_dir.sh init/.os_env_example
 	chmod +x init/add_host.sh && ./init/add_host.sh init/.os_env_example
 
 .PHONY: docker_env
