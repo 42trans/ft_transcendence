@@ -4,7 +4,8 @@ SERVER_NAME=hioikawa.42.fr
 
 # ポート番号のリスト other/team_docs/port.md
 # Linuxの方はこちらを編集してください
-LINUX_VOLUME_PATH=/home/user42/trans_volume
+# LINUX_VOLUME_PATH=/home/user42/trans_volume
+LINUX_MOUNT_PATH_FROM_PR_ROOT=mount_volume
 LINUX_NGINX_SSL_PORT=443
 LINUX_NGINX_PORT=8085
 LINUX_FRONTEND_PORT=3030
@@ -20,7 +21,7 @@ LINUX_PROMETHEUS_PORT=9091
 LINUX_GRAFANA_PORT=3032
 
 # Macの方はこちらを編集してください
-MAC_VOLUME_PATH=../../mount_volume
+MAC_MOUNT_PATH_FROM_PR_ROOT=mount_volume  # origin from Makefile
 MAC_NGINX_SSL_PORT=443
 MAC_NGINX_PORT=8085
 MAC_FRONTEND_PORT=3030
