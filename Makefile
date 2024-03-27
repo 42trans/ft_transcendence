@@ -15,7 +15,7 @@ all: build up
 # DEBUG: 環境変数チェック
 # echo $$SERVER_NAME 
 # DEBUG: キャッシュ不使用
-# docker-compose -f docker-compose.yml build --no-cache
+# docker-compose -f compose.yaml build --no-cache
 # -----------------------------------------------
 # kind(k8s)
 # -----------------------------------------------
@@ -54,19 +54,19 @@ u:
 .PHONY: build_elk
 build_elk:
 	$(call set_env) && \
-	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml build
+	docker-compose -f ./docker/srcs/elk/compose-elk.yaml build
 
 .PHONY: up_elk
 up_elk:
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
-	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up
+	docker-compose -f ./docker/srcs/elk/compose-elk.yaml up
 
 .PHONY: setup_elk
 setup_elk:
 	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
 	$(call set_env) && \
-	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up setup
+	docker-compose -f ./docker/srcs/elk/compose-elk.yaml up setup
 
 .PHONY: build_up_blockchain
 build_up_blockchain:

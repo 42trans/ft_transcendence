@@ -1,0 +1,34 @@
+version: "3.7"
+# docker/srcs/compose.yaml
+# ----------------------------------------------------------
+# 他のcompose-*.yamlの場所は下記
+# 
+# compose-yaml/
+# ├── compose-blockchain.yaml
+# ├── compose-elk.yaml
+# ├── compose-exporter.yaml
+# ├── compose-monitor.yaml
+# ├── compose-networks.yaml
+# └── compose-web.yaml
+# 
+# ----------------------------------------------------------
+
+volumes:
+  ft_transcendence_vol:
+    driver: local
+    driver_opts:
+      type: 'bind'
+      device: '${VOLUME_PATH:?}/ft_transcendence'
+  log_vol:
+    driver: local
+    driver_opts:
+      type: 'bind'
+      device: '${VOLUME_PATH:?}/log_vol'
+  log_django_vol:
+    driver: local
+    driver_opts:
+      type: 'bind'
+      device: '${VOLUME_PATH:?}/log_django_vol'
+
+
+# 参考:【Compose ファイル version 3 リファレンス — Docker-docs-ja 24.0 ドキュメント】 https://docs.docker.jp/compose/compose-file/compose-file-v3.html#compose-file-v3-volume-configuration-reference

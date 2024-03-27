@@ -1,16 +1,16 @@
 version: "3.7"
-# docker/srcs/docker-compose-prometheus.yml
+# docker/srcs/compose-prometheus.yaml
 services:
   filebeat:
     container_name: filebeat
     build: 
       context: ./filebeat
       args:
-        ELASTIC_VERSION: ${ELASTIC_VERSION}
+        ELASTIC_VERSION: ${ELASTIC_VERSION:?}
     image: filebeat
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - ${VOLUME_PATH}/log_vol:/var/log/nginx:ro
+      - ${VOLUME_PATH:?}/log_vol:/var/log/nginx:ro
       - ./filebeat/filebeat-entrypoint.sh:/usr/local/bin/entrypoint.sh
     env_file:
       - .env
@@ -30,14 +30,14 @@ services:
     env_file:
       - .env
     ports:
-      - "${PROMETHEUS_PORT}:9090"
+      - "${PROMETHEUS_PORT:?}:9090"
     networks:
       - web_transcendence
       - db_transcendence
       - monitor_transcendence
       - elk
     volumes:
-      - ${VOLUME_PATH}/prometheus:/prometheus
+      - ${VOLUME_PATH:?}/prometheus:/prometheus
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     profiles:
       - monitor
@@ -47,9 +47,9 @@ services:
     container_name: grafana
     # restart: unless-stopped
     ports:
-     - "${GRAFANA_PORT}:3000"
+     - "${GRAFANA_PORT:?}:3000"
     volumes:
-      - ${VOLUME_PATH}/grafana:/var/lib/grafana
+      - ${VOLUME_PATH:?}/grafana:/var/lib/grafana
     env_file:
       - .env
     environment:
@@ -61,4 +61,3 @@ services:
       - monitor_transcendence
     profiles:
       - monitor
-
