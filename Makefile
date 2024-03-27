@@ -161,7 +161,12 @@ reset_logstash:
 # -----------------------------------------------
 .PHONY: docker_rm
 docker_rm:
-	docker stop $(docker ps -qa); docker rm $(docker ps -qa); docker rmi -f $(docker image -qa); docker volume rm $( docker volume ls -q); docker network rm $(docker network ls -q) 2>/dev/null
+	@if [ -n "$$(docker ps -qa)" ]; then docker stop $$(docker ps -qa); fi
+	@if [ -n "$$(docker ps -qa)" ]; then docker rm -f $$(docker ps -qa); fi
+	@if [ -n "$$(docker images -qa)" ]; then docker rmi -f $$(docker images -qa); fi
+	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
+	@docker network rm $$(docker network ls -q) 2>/dev/null || true
+	@docker volume prune -f
 
 .PHONY: remove_mount_volume_mac
 remove_mount_volume_mac:
@@ -170,6 +175,21 @@ remove_mount_volume_mac:
 .PHONY: rm
 rm:
 	make remove_mount_volume_mac
+
+.PYHONY: ps
+ps:
+	docker-compose $(COMPOSE_FILES_ARGS) ps
+
+.PYHONY: ps_a
+ps_a:
+	docker-compose $(COMPOSE_FILES_ARGS) ps -a
+
+
+.PYHONY: logs
+logs:
+	docker-compose $(COMPOSE_FILES_ARGS) logs
+
+
 # -----------------------------------------------
 #  init
 # -----------------------------------------------
