@@ -5,8 +5,15 @@
 -include init/.make_env
 # OSに応じて環境変数の設定と、ディレクトリの設定をする
 -include init/set_env
-# 複数の.ymlを環境変数から読み込む
-COMPOSE_FILES_ARGS=$(subst :, -f ,$(COMPOSE_FILES))
+# 各compose.ymlを定義
+COMPOSE_FILES = ./docker/srcs/docker-compose.yml \
+				./docker/srcs/docker-compose-yml/docker-compose-networks.yml \
+				./docker/srcs/docker-compose-yml/docker-compose-web.yml \
+				./docker/srcs/docker-compose-yml/docker-compose-blockchain.yml \
+				./docker/srcs/docker-compose-yml/docker-compose-monitor.yml \
+				./docker/srcs/docker-compose-yml/docker-compose-exporter.yml
+COMPOSE_FILES_ARGS = $(addprefix -f , $(COMPOSE_FILES))
+
 # -----------------------------------------------
 #  docker-compose
 # -----------------------------------------------

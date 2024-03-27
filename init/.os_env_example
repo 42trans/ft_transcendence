@@ -34,11 +34,3 @@ MAC_KIBANA_PORT=5602
 MAC_LOGSTASH_PORT=5045
 MAC_PROMETHEUS_PORT=9091
 MAC_GRAFANA_PORT=3032
-
-COMPOSE_FILES=\
-	./docker/srcs/docker-compose.yml:\
-	./docker/srcs/docker-compose-yml/docker-compose-networks.yml:\
-	./docker/srcs/docker-compose-yml/docker-compose-web.yml:\
-	./docker/srcs/docker-compose-yml/docker-compose-blockchain.yml:\
-	./docker/srcs/docker-compose-yml/docker-compose-monitor.yml:\
-	./docker/srcs/docker-compose-yml/docker-compose-exporter.yml
