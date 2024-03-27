@@ -1,5 +1,9 @@
-FROM node:20-alpine
-RUN apk update && apk add git bash curl
+FROM node:20-buster
+RUN apt-get update && apt-get install -y \
+	git \
+	bash \
+	curl \
+	&& rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 # プロジェクトからpackage.jsonとpackage-lock.jsonファイルをコピー
 COPY hardhat_pj/package*.json /app/
