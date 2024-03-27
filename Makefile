@@ -19,7 +19,6 @@ all: build up
 # -----------------------------------------------
 # kind(k8s)
 # -----------------------------------------------
-<<<<<<< HEAD
 # kindup:
 # 	chmod +x kind/up.sh
 # 	kind/up.sh
@@ -27,17 +26,6 @@ all: build up
 # kinddown:
 # 	chmod +x kind/down.sh
 # 	kind/down.sh
-=======
-.PHONY: kindup
-kindup:
-	chmod +x kind/up.sh
-	kind/up.sh
-
-.PHONY: kinddown
-kinddown:
-	chmod +x kind/down.sh
-	kind/down.sh
->>>>>>> main
 # -----------------------------------------------
 # Docker
 # -----------------------------------------------
