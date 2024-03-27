@@ -6,12 +6,12 @@
 # OSに応じて環境変数の設定と、ディレクトリの設定をする
 -include init/set_env
 # 各compose.ymlを定義
-COMPOSE_FILES = ./docker/srcs/docker-compose.yml \
-				./docker/srcs/docker-compose-yml/docker-compose-networks.yml \
-				./docker/srcs/docker-compose-yml/docker-compose-web.yml \
-				./docker/srcs/docker-compose-yml/docker-compose-blockchain.yml \
-				./docker/srcs/docker-compose-yml/docker-compose-monitor.yml \
-				./docker/srcs/docker-compose-yml/docker-compose-exporter.yml
+COMPOSE_FILES = ./docker/srcs/compose.yaml \
+				./docker/srcs/compose-yaml/compose-networks.yaml \
+				./docker/srcs/compose-yaml/compose-web.yaml \
+				./docker/srcs/compose-yaml/compose-blockchain.yaml \
+				./docker/srcs/compose-yaml/compose-monitor.yaml \
+				./docker/srcs/compose-yaml/compose-exporter.yaml
 COMPOSE_FILES_ARGS = $(addprefix -f , $(COMPOSE_FILES))
 
 # -----------------------------------------------

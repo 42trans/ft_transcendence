@@ -77,7 +77,7 @@ main() {
   if [ ! -f "$output_env_file" ]; then
     echo -e "${RED}[Error] ${output_env_file} not found${RESET}"
     exit EXIT_FAILURE
-  fiq
+  fi
 
   echo "exec set_env"
   source "$os_env_file"
