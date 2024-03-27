@@ -54,7 +54,9 @@
 - [nginx.md](other/team_docs/nginx.md)
 - [frontend.md(Bootstrap, three.js)](other/team_docs/frontend.md)
 - [pgadmin.md](other/team_docs/pgadmin.md)
-- [ELK.md(Elastic Stack)](other/team_docs/ELK.md)
+- LogManagement
+  - [LogManagement/ELK.md(Elastic Stack)](other/team_docs/LogManagement/ELK.md)
+  - [LogManagement/filebeat.md](other/team_docs/LogManagement/filebeat.md)
 - [MonitoringSystem.md](other/team_docs/MonitoringSystem.md)
   - [MonitoringSystem/Grafana.md](other/team_docs/MonitoringSystem/Grafana.md)
   - [MonitoringSystem/Prometheus.md](other/team_docs/MonitoringSystem/Prometheus.md)
