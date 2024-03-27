@@ -1,5 +1,5 @@
 version: "3.7"
-# docker/srcs/docker-compose-web.yml
+# docker/srcs/compose-web.yaml
 services:
   hardhat:
     container_name: hardhat

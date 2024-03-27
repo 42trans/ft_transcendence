@@ -1,5 +1,5 @@
 version: "3.7"
-# docker/srcs/docker-compose-yml/docker-compose-exporter.yml
+# docker/srcs/compose-yaml/compose-exporter.yaml
 
 services:
   nginx_exporter:

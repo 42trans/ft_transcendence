@@ -1,15 +1,15 @@
 version: "3.7"
-# docker/srcs/docker-compose.yml
+# docker/srcs/compose.yaml
 # ----------------------------------------------------------
-# 他のdocker-compose-*.ymlの場所は下記
+# 他のcompose-*.yamlの場所は下記
 # 
-# docker-compose-yml/
-# ├── docker-compose-blockchain.yml
-# ├── docker-compose-elk.yml
-# ├── docker-compose-exporter.yml
-# ├── docker-compose-monitor.yml
-# ├── docker-compose-networks.yml
-# └── docker-compose-web.yml
+# compose-yaml/
+# ├── compose-blockchain.yaml
+# ├── compose-elk.yaml
+# ├── compose-exporter.yaml
+# ├── compose-monitor.yaml
+# ├── compose-networks.yaml
+# └── compose-web.yaml
 # 
 # ----------------------------------------------------------
 

@@ -1,5 +1,5 @@
 version: "3.7"
-# docker/srcs/docker-compose-prometheus.yml
+# docker/srcs/compose-prometheus.yaml
 services:
   filebeat:
     container_name: filebeat
