@@ -7,11 +7,11 @@ services:
     image: nginx/nginx-prometheus-exporter
     ports:
       - "9113:9113"
-    command: ["-nginx.scrape-uri=http://localhost:${NGINX_PORT}/stub_status"]
+    command: ["-nginx.scrape-uri=http://localhost:${NGINX_PORT:?}/stub_status"]
     networks:
       - monitor_transcendence
     volumes:
-      - ${VOLUME_PATH}/exporters:/exporters
+      - ${VOLUME_PATH:?}/exporters:/exporters
     profiles:
       - monitor
 

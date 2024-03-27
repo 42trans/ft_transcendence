@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${HARDHAT_PORT}:8545
+      - ${HARDHAT_PORT:?}:8545
     volumes:
     # - ${VOLUME_PATH}/hardhat/artifacts:/app/artifacts
     - ./hardhat/hardhat_pj/artifacts:/app/artifacts
@@ -30,7 +30,7 @@ services:
     env_file:
       - .env
     ports:
-       - ${GANACHE_PORT}:8545
+       - ${GANACHE_PORT:?}:8545
     stdin_open: true
     tty: true
     networks:
