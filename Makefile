@@ -24,18 +24,6 @@ all: init build up
 # DEBUG: キャッシュ不使用
 # docker-compose -f docker-compose.yml build --no-cache
 # -----------------------------------------------
-# kind(k8s)
-# -----------------------------------------------
-.PHONY: kindup
-kindup:
-	chmod +x kind/up.sh
-	kind/up.sh
-
-.PHONY: kinddown
-kinddown:
-	chmod +x kind/down.sh
-	kind/down.sh
-# -----------------------------------------------
 # Docker
 # -----------------------------------------------
 .PHONY: build
@@ -49,7 +37,6 @@ b:
 
 .PHONY: up
 up: init
-	make kindup
 	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
 
 .PHONY: u
@@ -57,25 +44,19 @@ u:
 	make up
 
 .PHONY: build_elk
-build_elk:
-	$(call set_env) && \
+build_elk: init
 	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml build
 
 .PHONY: up_elk
-up_elk:
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
-	$(call set_env) && \
+up_elk: init
 	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up
 
 .PHONY: setup_elk
-setup_elk:
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
-	$(call set_env) && \
+setup_elk: init
 	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up setup
 
 .PHONY: build_up_blockchain
-build_up_blockchain:
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
+build_up_blockchain: init
 	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) build
 	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) up -d
 	make hardhat_deploy_hardhat
@@ -83,15 +64,12 @@ build_up_blockchain:
 	make setup_ganache_data
 
 .PHONY: build_up_monitor
-build_up_monitor:
-	make kindup
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
+build_up_monitor: init
 	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) build
 	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
 
 .PHONY: build_up_default
-build_up_default:
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
+build_up_default: init
 	docker-compose $(COMPOSE_FILES_ARGS) build
 	docker-compose $(COMPOSE_FILES_ARGS) up -d
 
@@ -110,7 +88,6 @@ start:
 
 .PHONY: down
 down:
-	make kinddown
 	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) down; \
 	PATTERN='127.0.0.1 $(SERVER_NAME)'; \
 	OSTYPE=`uname -s`; \
@@ -198,7 +175,7 @@ logs:
 # -----------------------------------------------
 .PHONY: init
 init: cert_key docker_env
-	chmod +x init/make_dir.sh && ./init/make_dir.sh init/.os_env_example
+	#chmod +x init/make_dir.sh && ./init/make_dir.sh init/.os_env_example
 	chmod +x init/add_host.sh && ./init/add_host.sh init/.os_env_example
 
 .PHONY: docker_env
