@@ -312,11 +312,11 @@ _main() {
 
 		# ⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️
 		# notify.txtファイルが存在する場合、削除する
-		NOTIFY_FILE="/container_output/postgres_entrypoint_sh_finished.txt"
-		if [ -f "$NOTIFY_FILE" ]; then
-			echo "Removing existing $NOTIFY_FILE"
-			rm -f "$NOTIFY_FILE"
-		fi
+		# NOTIFY_FILE="/container_output/postgres_entrypoint_sh_finished.txt"
+		# if [ -f "$NOTIFY_FILE" ]; then
+		# 	echo "Removing existing $NOTIFY_FILE"
+		# 	rm -f "$NOTIFY_FILE"
+		# fi
 		# ⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️
 
 	if [ "$1" = 'postgres' ] && ! _pg_want_help "$@"; then
@@ -370,7 +370,7 @@ _main() {
 
 	# ⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️
 	# サーバー起動の確認用 ※entrypopint.sh呼び出し時に毎回削除済み
-	echo "$NOTIFY_FILE 処理完了" > /container_output/postgres_entrypoint_sh_finished.txt
+	# echo "$NOTIFY_FILE 処理完了" > /container_output/postgres_entrypoint_sh_finished.txt
 	# ⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️
 
 	exec "$@"

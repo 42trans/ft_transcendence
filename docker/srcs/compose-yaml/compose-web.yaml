@@ -16,7 +16,7 @@ services:
       # - ${VOLUME_PATH:?}/nginx/static:/static
       - ${SSL_CERT_PATH:?}:/etc/nginx/ssl/nginx.crt
       - ${SSL_KEY_PATH:?}:/etc/nginx/ssl/nginx.key
-      - ${VOLUME_PATH:?}:/container_output
+      # - ${VOLUME_PATH:?}:/container_output
       - ${VOLUME_PATH:?}/log_vol:/var/log/nginx
       - ./uwsgi-django/static/:/var/trans/static/
     networks:
@@ -91,7 +91,7 @@ services:
       - POSTGRES_LOCAL_AUTH_METHOD=${POSTGRES_LOCAL_AUTH_METHOD:?}
     volumes:
       - ${VOLUME_PATH:?}/postgres:/var/lib/postgresql/data
-      - ${VOLUME_PATH:?}:/container_output
+      # - ${VOLUME_PATH:?}:/container_output
     networks:
       - db_transcendence
     ports:
