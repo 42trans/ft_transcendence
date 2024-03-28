@@ -7,7 +7,7 @@
 <body>
 	<h1>Djangoのルート | https://localhost/</h1>
 	<p>index.html | docker/srcs/uwsgi-django/trans_pj/templates</p>
-	<h2>admin</h2>
+	<h2>Django admin</h2>
 	<p>- DJANGO_SUPERUSER_USERNAME=admin<br>
 		- DJANGO_SUPERUSER_EMAIL=admin@example.com<br>
 		- DJANGO_SUPERUSER_PASSWORD=adminpassword</p>
@@ -15,7 +15,7 @@
 		<li><a href="/admin/">admin/</a></li>
 		<li><a href="/api/status/">api/status/</a></li>
 	</ul>
-	<h2>pong</h2>
+	<h2>Django経由 pong</h2>
 	<ul>
 		<h3>PsotgreSQL</h3>
 		<p>PGADMIN_DEFAULT_EMAIL=a@a.jp<br>
@@ -33,20 +33,33 @@
 	<h2>Devops</h2>
 	<ul>
 		<h3>Monitoring system</h3>
-		<p>USER=admin<br>
+		<p>Grafana:<br>
+			USER=admin<br>
 			PASSWORD=admin</p>
 		<ul>
-			<li><a href="http://localhost:3032/d/eb4247a4-92b0-49a0-ae9e-4c61257d88ad/new-dashboard?orgId=1"> Grafana | http://localhost:3032/d/eb4247a4-92b0-49a0-ae9e-4c61257d88ad/new-dashboard?orgId=1</a></li>
-			<li><a href="http://localhost:9091/targets?search=#pool-node_exporter"> Prometheus | http://localhost:9091/targets?search=#pool-node_exporter</a></li>
+			<li><a href="http://localhost:{{ grafana_port}}/d/eb4247a4-92b0-49a0-ae9e-4c61257d88ad/new-dashboard?orgId=1"> Grafana {{ grafana_port }}:3000 | http://localhost:{{ grafana_port}}/d/eb4247a4-92b0-49a0-ae9e-4c61257d88ad/new-dashboard?orgId=1</a></li>
+			<li><a href="http://localhost:{{ ptometheus_port }}/targets?search=#pool-node_exporter"> Prometheus {{ ptometheus_port }}:9090 | http://localhost:{{ ptometheus_port }}/targets?search=#pool-node_exporter</a></li>
 		</ul>
 		<h3>ELK</h3>
-		<p><br>
-			</p>
+		<p>
+			# login: elastic pass: ELASTIC_PASSWORD<br>
+			login: elastic<br>
+			ELASTICSEARCH_USERNAME=kibana_system<br>
+			ELASTICSEARCH_PASSWORD=changemeelastic<br>
+			ELASTIC_PASSWORD=changemeelastic<br>
+			KIBANA_PASSWORD=changemekibana<br>
+			KIBANA_SYSTEM_PASSWORD='changeme'<br>
+			LOGSTASH_INTERNAL_PASSWORD='changeme'<br>
+		</p>
+		<ul>
+			<li><a href="http://localhost:{{ kibana_port }}"> kibana {{ kibana_port }}:5601 | http://localhost:{{ kibana_port }}/</a></li>
+		</ul>
 	</ul>
 	<h2>コンテナ・サービス</h2>
 	<ul>
-		<li><a href="http://localhost:3030/three.html">frontend: 3030:3000 | http://localhost:3030/three.html</a></li>
-		<li><a href="http://localhost:8087/">pgadmin: 8087:80 |  http://localhost:8087/</a></li>
+		<li><a href="http://localhost:{{ frontend_port }}/three.html">frontend {{ frontend_port }}:3000 | http://localhost:{{ frontend_port }}/three.html</a></li>
+		<li><a href="http://localhost:{{ pgadmin_port }}/">pgadmin: {{ pgadmin_port }}:80 |  https://localhost:{{ pgadmin_port }}/</a></li>
+		<li><a href="https://localhost:{{ nginx_ssl_port }}/">nginx_ssl: {{ nginx_ssl_port }}:443 |  https://localhost:{{ nginx_ssl_port }}/</a></li>
 	</ul>
 </body>
 </html>
