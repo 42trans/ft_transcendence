@@ -1,5 +1,7 @@
-# make make_envを実行して .make_envを作成してから開始ください
-# 毎回 make のたびに /etc/hosts 127.0.0.1 します
+# make init -> make env で以下を実行
+#  1) /etc/hostsに127.0.0.1 SERVER_NAMEを登録
+#  2) docker/srcs/.envに環境変数を登録
+
 SERVER_NAME=hioikawa.42.fr
 
 # ポート番号のリスト other/team_docs/port.md

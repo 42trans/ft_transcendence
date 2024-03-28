@@ -173,25 +173,20 @@ logs:
 # -----------------------------------------------
 #  init
 # -----------------------------------------------
+## build初期設定: .envの作成 & /etc/hostsにserver_nameを登録
 .PHONY: init
-init: cert_key docker_env
-	#chmod +x init/make_dir.sh && ./init/make_dir.sh init/.os_env_example
-	chmod +x init/add_host.sh && ./init/add_host.sh init/.os_env_example
+init: env cert_key
+	@chmod +x init/add_host.sh && ./init/add_host.sh init/.os_env
 
-.PHONY: docker_env
-docker_env:
+.PHONY: env
+env:
 	cp docker/srcs/.env_example docker/srcs/.env
-	chmod +x init/os_env.sh
-	./init/os_env.sh init/.os_env_example docker/srcs/.env
+	@chmod +x init/os_env.sh && ./init/os_env.sh init/.os_env docker/srcs/.env
 
+## Certificate生成（初回のみ実行）
 .PHONY: cert_key
 cert_key:
-	mkdir -p ./docker/srcs/nginx/ssl
-	openssl req -new -x509 -nodes -sha256 -days 365 \
-	-keyout ./docker/srcs/nginx/ssl/nginx.key \
-	-out ./docker/srcs/nginx/ssl/nginx.crt \
-	-config ./docker/srcs/nginx/ssl/openssl.cnf \
-	-extensions req_ext > /dev/null 2>&1
+	@chmod +x init/cert_key.sh && ./init/cert_key.sh
 
 .PHONY: check_key
 check_key:
