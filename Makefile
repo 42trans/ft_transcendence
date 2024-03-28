@@ -4,7 +4,7 @@
 # Makefile用の環境変数の読み込み
 -include init/.make_env
 # OSに応じて環境変数の設定と、ディレクトリの設定をする
--include init/set_env
+# -include init/set_env
 # 各compose.ymlを定義
 COMPOSE_FILES = ./docker/srcs/compose.yaml \
 				./docker/srcs/compose-yaml/compose-networks.yaml \

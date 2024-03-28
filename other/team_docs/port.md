@@ -1,9 +1,10 @@
-# ポート番号  
+# ポート番号:  other/team_docs/port.md  
 
 - 割り当て予定のリストです  
   - 未使用の場合もあります
-- 最終的に `.make_env` に設定し、 `set_env` で使用します
-  - .make_envを環境に合わせて編集してください。
+- 設定ファイル
+  - `init/.os_env_example` で編集してください
+  - 最終的に `.env` に設定します。
 - Docker側はデフォルトの値を採用してます
 
 | type     | container_name        | mac  |Linux |Docker|   profile   |
@@ -31,4 +32,4 @@
 
 ## link
 
-- [testpageURL.md](testpageURL.md)
+- [testpageURL.md](testpageURL.md)  
