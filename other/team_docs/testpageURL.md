@@ -1,7 +1,11 @@
 # team_docs/testpageURL.md
 
-- ポート番号
+- ポート番号一覧はこちら
   - [port.md](port.md)
+
+- localhostに（環境変数認識する）リンク集あります。
+  - <https://localhost>  
+  <img src="img/スクリーンショット 2024-03-28 10.27.27.png" width="350" alt="alt">　　
 
 ## frontend: 3030:3000
 
