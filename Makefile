@@ -184,14 +184,19 @@ env:
 	chmod +x init/os_env.sh
 	./init/os_env.sh init/.os_env docker/srcs/.env
 
+
+## Certificate生成（初回のみ実行）
 .PHONY: cert_key
 cert_key:
-	mkdir -p ./docker/srcs/nginx/ssl
-	openssl req -new -x509 -nodes -sha256 -days 365 \
-	-keyout ./docker/srcs/nginx/ssl/nginx.key \
-	-out ./docker/srcs/nginx/ssl/nginx.crt \
-	-config ./docker/srcs/nginx/ssl/openssl.cnf \
-	-extensions req_ext > /dev/null 2>&1
+	@if [ ! -f docker/srcs/nginx/ssl/nginx.key ] || \
+		[ ! -f docker/srcs/nginx/ssl/nginx.crt ]; then \
+		echo "generate cert_key"; \
+		mkdir -p ./docker/srcs/nginx/ssl; \
+		openssl req -new -x509 -nodes -sha256 -days 365 -extensions req_ext \
+		-config ./docker/srcs/nginx/ssl/openssl.cnf \
+		-keyout ./docker/srcs/nginx/ssl/nginx.key \
+		-out ./docker/srcs/nginx/ssl/nginx.crt > /dev/null 2>&1; \
+	fi
 
 .PHONY: check_key
 check_key:

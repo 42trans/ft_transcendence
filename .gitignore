@@ -3,9 +3,6 @@
 # .dockerignore
 .env
 old/
-*.crt
-*.key
-ssl/*
 
 .vscode
 play/
