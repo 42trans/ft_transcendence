@@ -176,13 +176,12 @@ logs:
 ## build初期設定: .envの作成 & /etc/hostsにserver_nameを登録
 .PHONY: init
 init: env cert_key
-	chmod +x init/add_host.sh && ./init/add_host.sh init/.os_env
+	@chmod +x init/add_host.sh && ./init/add_host.sh init/.os_env
 
 .PHONY: env
 env:
 	cp docker/srcs/.env_example docker/srcs/.env
-	chmod +x init/os_env.sh
-	./init/os_env.sh init/.os_env docker/srcs/.env
+	@chmod +x init/os_env.sh && ./init/os_env.sh init/.os_env docker/srcs/.env
 
 ## Certificate生成（初回のみ実行）
 .PHONY: cert_key
