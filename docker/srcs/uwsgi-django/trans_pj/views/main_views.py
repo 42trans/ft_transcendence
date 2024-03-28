@@ -1,5 +1,6 @@
 # docker/srcs/ft_django/ft_django_pj/views.py
 from django.shortcuts import render
+import os
 from django.http import HttpResponse
 from django.http import JsonResponse
 
@@ -7,7 +8,24 @@ from django.http import JsonResponse
 #     return HttpResponse("<h1>[Django]</h1> <p>index pageです</p>")
 
 def index(request):
-	return render(request, 'index.html')
+	# 環境変数を読み込み
+	nginx_ssl_port = os.getenv('NGINX_SSL_PORT', '443')
+	frontend_port = os.getenv('FRONTEND_PORT', '3030')
+	pgadmin_port = os.getenv('PGADMIN_PORT', '8087')
+	ptometheus_port = os.getenv('PROMETHEUS_PORT', '9091')
+	grafana_port = os.getenv('GRAFANA_PORT', '3032')
+	kibana_port = os.getenv('KIBANA_PORT', '5601')
+
+	# コンテキストとして渡す
+	context = {
+		'nginx_ssl_port': nginx_ssl_port,
+		'frontend_port': frontend_port,
+		'pgadmin_port': pgadmin_port,
+		'ptometheus_port': ptometheus_port,
+		'grafana_port': grafana_port,
+		'kibana_port': kibana_port,
+	}
+	return render(request, 'index.html', context)
 
 def api_status(request):
 	data = {'api/status/': 'OK'}

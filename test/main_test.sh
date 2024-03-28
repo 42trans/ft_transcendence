@@ -20,7 +20,7 @@ echo "${ESC}${COLOR201}"
 echo "========================================================="
 echo "postgres test"
 echo "========================================================="
-bash ./test/postgres/sample-postgres.sh
+bash ./test/postgres/sample.sh
 echo "${ESC}${COLOR198}"
 echo "========================================================="
 echo "pgadmin test"

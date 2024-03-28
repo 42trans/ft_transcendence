@@ -5,8 +5,8 @@
 #=======================================================
 TEST_DIR="test/"
 if [ -z "$COLOR_SH" ]; then
-  source "${TEST_DIR}color.sh"
-  COLOR_SH=true
+	source "${TEST_DIR}color.sh"
+	COLOR_SH=true
 fi
 #=======================================================
 echo -e 'cmd: docker ps | grep " postgres "\n'
@@ -28,8 +28,8 @@ TABLE_NAME="table_cures"
 # データベースの存在確認と削除
 DATABASE_EXISTS=$(docker exec $CONTAINER_NAME psql -U $USER -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'")
 if [ "$DATABASE_EXISTS" = "1" ]; then
-    # echo "DROP DATABASE $DB_NAME"
-    docker exec $CONTAINER_NAME psql -U $USER -d postgres -c "DROP DATABASE $DB_NAME;" >/dev/null
+	# echo "DROP DATABASE $DB_NAME"
+	docker exec $CONTAINER_NAME psql -U $USER -d postgres -c "DROP DATABASE $DB_NAME;" >/dev/null
 fi
 
 # データベース作成
@@ -39,8 +39,8 @@ docker exec $CONTAINER_NAME psql -U $USER -d postgres -c "CREATE DATABASE $DB_NA
 # テーブルの存在確認と削除
 TABLE_EXISTS=$(docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -tAc "SELECT 1 FROM information_schema.tables WHERE table_name='users'" >/dev/null)
 if [ "$TABLE_EXISTS" = "1" ]; then
-    # echo "DROP TABLE $TABLE_NAME"
-    docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "DROP TABLE $TABLE_NAME;" >/dev/null
+	# echo "DROP TABLE $TABLE_NAME"
+	docker exec $CONTAINER_NAME psql -U $USER -d $DB_NAME -c "DROP TABLE $TABLE_NAME;" >/dev/null
 fi
 
 # テーブル作成

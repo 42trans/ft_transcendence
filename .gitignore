@@ -1,5 +1,5 @@
 .DS_Store
-.gitignore
+# .gitignore
 # .dockerignore
 .env
 .make_env
@@ -33,6 +33,8 @@ docker/srcs/uwsgi-django/sphinx/build
 hioikawa_test.sh
 additional.mk
 
+PRIVATE
+
 docker/srcs/hardhat/hardhat_pj/artifacts
 docker/srcs/hardhat/hardhat_pj/share/contractInfo.json
 docker/srcs/hardhat/hardhat_pj/share/contractInfo-hardhat.json
@@ -55,3 +57,5 @@ test/result
 
 # git rm -r --cached dirname
 # git rm -r --cached sample
+docker/srcs/uwsgi-django/django_debug.log
+docker/srcs/hardhat/hardhat_pj/share/contractInfo-sepolia.json

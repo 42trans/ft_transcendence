@@ -4,102 +4,78 @@
 # Makefile用の環境変数の読み込み
 -include init/.make_env
 # OSに応じて環境変数の設定と、ディレクトリの設定をする
--include init/set_env
-# 複数の.ymlを環境変数から読み込む
-COMPOSE_FILES_ARGS=$(subst :, -f ,$(COMPOSE_FILES))
+# -include init/set_env
+# 各compose.ymlを定義
+COMPOSE_FILES = ./docker/srcs/compose.yaml \
+				./docker/srcs/compose-yaml/compose-networks.yaml \
+				./docker/srcs/compose-yaml/compose-web.yaml \
+				./docker/srcs/compose-yaml/compose-blockchain.yaml \
+				./docker/srcs/compose-yaml/compose-monitor.yaml \
+				./docker/srcs/compose-yaml/compose-exporter.yaml
+COMPOSE_FILES_ARGS = $(addprefix -f , $(COMPOSE_FILES))
+
 # -----------------------------------------------
 #  docker-compose
 # -----------------------------------------------
-all: build up
+all: init build up
 
 # DEBUG: 環境変数チェック
 # echo $$SERVER_NAME 
 # DEBUG: キャッシュ不使用
-# docker-compose -f compose.yaml build --no-cache
-# -----------------------------------------------
-# kind(k8s)
-# -----------------------------------------------
-.PHONY: kindup
-kindup:
-	chmod +x kind/up.sh
-	kind/up.sh
-
-.PHONY: kinddown
-kinddown:
-	chmod +x kind/down.sh
-	kind/down.sh
+# docker-compose -f docker-compose.yml build --no-cache
 # -----------------------------------------------
 # Docker
 # -----------------------------------------------
 .PHONY: build
-build:
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
-	$(call set_env) && \
-	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose -f $(COMPOSE_FILES_ARGS) build
+build: init
+	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) build
+
 
 .PHONY: b
 b:
 	make build
 
 .PHONY: up
-up:
-	make kindup
-	$(call set_env) && \
-	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+up: init
+	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
 
 .PHONY: u
 u:
 	make up
 
 .PHONY: build_elk
-build_elk:
-	$(call set_env) && \
-	docker-compose -f ./docker/srcs/elk/compose-elk.yaml build
+build_elk: init
+	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml build
 
 .PHONY: up_elk
-up_elk:
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
-	$(call set_env) && \
-	docker-compose -f ./docker/srcs/elk/compose-elk.yaml up
+up_elk: init
+	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up
 
 .PHONY: setup_elk
-setup_elk:
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
-	$(call set_env) && \
-	docker-compose -f ./docker/srcs/elk/compose-elk.yaml up setup
+setup_elk: init
+	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up setup
 
 .PHONY: build_up_blockchain
-build_up_blockchain:
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
-	$(call set_env) && \
-	COMPOSE_PROFILES=blockchain docker-compose -f $(COMPOSE_FILES_ARGS) build
-	$(call set_env) && \
-	COMPOSE_PROFILES=blockchain docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+build_up_blockchain: init
+	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) build
+	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) up -d
 	make hardhat_deploy_hardhat
 	make hardhat_deploy_ganache
 	make setup_ganache_data
 
 .PHONY: build_up_monitor
-build_up_monitor:
-	make kindup
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
-	$(call set_env) && \
-	COMPOSE_PROFILES=monitor docker-compose -f $(COMPOSE_FILES_ARGS) build
-	$(call set_env) && \
-	COMPOSE_PROFILES=monitor docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+build_up_monitor: init
+	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) build
+	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
 
 .PHONY: build_up_default
-build_up_default:
-	grep -q $(SERVER_NAME) /etc/hosts || echo "127.0.0.1 $(SERVER_NAME)" | sudo tee -a /etc/hosts
-	$(call set_env) && \
-	docker-compose -f $(COMPOSE_FILES_ARGS) build
-	$(call set_env) && \
-	docker-compose -f $(COMPOSE_FILES_ARGS) up -d
+build_up_default: init
+	docker-compose $(COMPOSE_FILES_ARGS) build
+	docker-compose $(COMPOSE_FILES_ARGS) up -d
 
 .PHONY: stop
 stop:
-	$(call set_env) && \
-	docker-compose -f $(COMPOSE_FILES_ARGS) stop
+	docker-compose $(COMPOSE_FILES_ARGS) stop
 
 .PHONY: s
 s:
@@ -108,14 +84,11 @@ s:
 
 .PHONY: start
 start:
-	$(call set_env) && \
-	docker-compose -f $(COMPOSE_FILES_ARGS) start
+	docker-compose $(COMPOSE_FILES_ARGS) start
 
 .PHONY: down
 down:
-	make kinddown
-	$(call set_env) && \
-	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose -f $(COMPOSE_FILES_ARGS) down; \
+	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) down; \
 	PATTERN='127.0.0.1 $(SERVER_NAME)'; \
 	OSTYPE=`uname -s`; \
 	if [ "$$OSTYPE" = "Darwin" ]; then \
@@ -130,37 +103,37 @@ d:
 
 .PHONY: reset_nginx
 reset_nginx:
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down nginx 
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build nginx
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up nginx -d
+	docker-compose $(COMPOSE_FILES_ARGS) down nginx
+	docker-compose $(COMPOSE_FILES_ARGS) build nginx
+	docker-compose $(COMPOSE_FILES_ARGS) up nginx -d
 
 .PHONY: reset_ft_django
 reset_ft_django:
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down ft_django 
+	docker-compose $(COMPOSE_FILES_ARGS) down ft_django
 	rm -rf mount_volume/ft_django
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build ft_django
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up ft_django -d
+	docker-compose $(COMPOSE_FILES_ARGS) build ft_django
+	docker-compose $(COMPOSE_FILES_ARGS) up ft_django -d
 
 .PHONY: reset_kibana
 reset_kibana:
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down kibana
+	docker-compose $(COMPOSE_FILES_ARGS) down kibana
 # rm -rf mount_volume/kibana
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build kibana
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up kibana -d
+	docker-compose $(COMPOSE_FILES_ARGS) build kibana
+	docker-compose $(COMPOSE_FILES_ARGS) up kibana -d
 
 .PHONY: reset_es
 reset_es:
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down elasticsearch
+	docker-compose $(COMPOSE_FILES_ARGS) down elasticsearch
 # rm -rf mount_volume/elasticsearch
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build elasticsearch
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up elasticsearch -d
+	docker-compose $(COMPOSE_FILES_ARGS) build elasticsearch
+	docker-compose $(COMPOSE_FILES_ARGS) up elasticsearch -d
 
 .PHONY: reset_logstash
 reset_logstash:
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) down logstash
+	docker-compose $(COMPOSE_FILES_ARGS) down logstash
 # rm -rf mount_volume/logstash
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) build logstash
-	$(call set_env) && docker-compose -f $(COMPOSE_FILES_ARGS) up logstash -d
+	docker-compose $(COMPOSE_FILES_ARGS) build logstash
+	docker-compose $(COMPOSE_FILES_ARGS) up logstash -d
 
 
 # -----------------------------------------------
@@ -168,7 +141,12 @@ reset_logstash:
 # -----------------------------------------------
 .PHONY: docker_rm
 docker_rm:
-	docker stop $(docker ps -qa); docker rm $(docker ps -qa); docker rmi -f $(docker image -qa); docker volume rm $( docker volume ls -q); docker network rm $(docker network ls -q) 2>/dev/null
+	@if [ -n "$$(docker ps -qa)" ]; then docker stop $$(docker ps -qa); fi
+	@if [ -n "$$(docker ps -qa)" ]; then docker rm -f $$(docker ps -qa); fi
+	@if [ -n "$$(docker images -qa)" ]; then docker rmi -f $$(docker images -qa); fi
+	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
+	@docker network rm $$(docker network ls -q) 2>/dev/null || true
+	@docker volume prune -f
 
 .PHONY: remove_mount_volume_mac
 remove_mount_volume_mac:
@@ -177,24 +155,43 @@ remove_mount_volume_mac:
 .PHONY: rm
 rm:
 	make remove_mount_volume_mac
+
+.PYHONY: ps
+ps:
+	docker-compose $(COMPOSE_FILES_ARGS) ps
+
+.PYHONY: ps_a
+ps_a:
+	docker-compose $(COMPOSE_FILES_ARGS) ps -a
+
+
+.PYHONY: logs
+logs:
+	docker-compose $(COMPOSE_FILES_ARGS) logs
+
+
 # -----------------------------------------------
 #  init
 # -----------------------------------------------
-.PHONY: env
-env:
+.PHONY: init
+init: cert_key docker_env
+	#chmod +x init/make_dir.sh && ./init/make_dir.sh init/.os_env_example
+	chmod +x init/add_host.sh && ./init/add_host.sh init/.os_env_example
+
+.PHONY: docker_env
+docker_env:
 	cp docker/srcs/.env_example docker/srcs/.env
+	chmod +x init/os_env.sh
+	./init/os_env.sh init/.os_env_example docker/srcs/.env
 
-.PHONY: make_env
-make_env:
-	cp init/.make_env_example init/.make_env
-
-.PHONY: key
-key:
+.PHONY: cert_key
+cert_key:
+	mkdir -p ./docker/srcs/nginx/ssl
 	openssl req -new -x509 -nodes -sha256 -days 365 \
 	-keyout ./docker/srcs/nginx/ssl/nginx.key \
 	-out ./docker/srcs/nginx/ssl/nginx.crt \
 	-config ./docker/srcs/nginx/ssl/openssl.cnf \
-	-extensions req_ext
+	-extensions req_ext > /dev/null 2>&1
 
 .PHONY: check_key
 check_key:
@@ -206,13 +203,6 @@ ntp_linux:
 	sudo apt install ntp
 	sudo systemctl restart ntp
 	sudo systemctl enable ntp
-
-.PHONY: init
-init:
-	make make_env
-	mkdir -p ./docker/srcs/nginx/ssl
-	make key
-	make env
 
 .PHONY: ELK_certs
 ELK_certs:
@@ -229,7 +219,7 @@ test_django_test_py:
 
 .PHONY: test_main
 test_main:
-	$(call set_env) && bash ./test/main_test.sh
+	bash ./test/main_test.sh
 	make test_django_test_py
 
 .PHONY: t
