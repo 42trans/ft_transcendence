@@ -34,10 +34,10 @@
 	<ul>
 		<h3>Monitoring system</h3>
 		<p>Grafana:<br>
-			USER=admin<br>
-			PASSWORD=admin</p>
+			USER=adm<br>
+			PASSWORD=adm</p>
 		<ul>
-			<li><a href="http://localhost:{{ grafana_port}}/d/eb4247a4-92b0-49a0-ae9e-4c61257d88ad/new-dashboard?orgId=1"> Grafana {{ grafana_port }}:3000 | http://localhost:{{ grafana_port}}/d/eb4247a4-92b0-49a0-ae9e-4c61257d88ad/new-dashboard?orgId=1</a></li>
+			<li><a href="http://localhost:{{ grafana_port}}/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m"> Grafana {{ grafana_port }}:3000 | http://localhost:{{ grafana_port}}/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m</a></li>
 			<li><a href="http://localhost:{{ ptometheus_port }}/targets?search=#pool-node_exporter"> Prometheus {{ ptometheus_port }}:9090 | http://localhost:{{ ptometheus_port }}/targets?search=#pool-node_exporter</a></li>
 		</ul>
 		<h3>ELK</h3>

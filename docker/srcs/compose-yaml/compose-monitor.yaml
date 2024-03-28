@@ -1,5 +1,5 @@
 version: "3.7"
-# docker/srcs/compose-prometheus.yaml
+# docker/srcs/compose-yaml/compose-monitor.yaml
 services:
   filebeat:
     container_name: filebeat
@@ -43,19 +43,23 @@ services:
       - monitor
 
   grafana:
-    image: grafana/grafana-enterprise
     container_name: grafana
-    # restart: unless-stopped
+    build: ./grafana
+    image: grafana
+    restart: unless-stopped
     ports:
-     - "${GRAFANA_PORT:?}:3000"
+      - "${GRAFANA_PORT:?}:3000"
     volumes:
-      - ${VOLUME_PATH:?}/grafana:/var/lib/grafana
+      - ${VOLUME_PATH:?}/grafana/:/var/lib/grafana
+      # 上記/var/lib/grafanaの中でもdashboradの設定ファイルは、別枠でコンテナイメージに入れたい。方法がわからないのでマウントで対応
+      - ./grafana/1860-node-exporter-full.json:/var/lib/grafana/dashboards/1860-node-exporter-full.json
     env_file:
       - .env
     environment:
-     - GF_SERVER_ROOT_URL=http://my.grafana.server/
-     - GF_INSTALL_PLUGINS=grafana-clock-panel
-     - GF_LOG_LEVEL=debug
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+      - GF_LOG_LEVEL=debug
+      # TODO:自己証明書を無視する。本番環境で削除する。
+      - GF_PLUGIN_GRAFANA_IMAGE_RENDERER_RENDERING_IGNORE_HTTPS_ERRORS=true
     networks:
       - web_transcendence
       - monitor_transcendence
