@@ -2,7 +2,6 @@
 # .gitignore
 # .dockerignore
 .env
-.make_env
 old/
 *.crt
 *.key
