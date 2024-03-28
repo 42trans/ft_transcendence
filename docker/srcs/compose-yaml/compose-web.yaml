@@ -98,8 +98,6 @@ services:
       - "${POSTGRES_PORT:?}:5432"
     restart: unless-stopped
     init: true
-    profiles:
-      - db
 
   pgadmin:
     container_name: pgadmin
