@@ -25,9 +25,7 @@ if [ ! -f $SSL_DIR/nginx.key ] || [ ! -f $SSL_DIR/nginx.crt ]; then
           -new \
           -x509 \
           -nodes \
-          -sha256 \
           -days 365 \
-          -extensions req_ext \
           -config $SSL_DIR/openssl.cnf \
           -keyout $SSL_DIR/nginx.key \
           -out $SSL_DIR/nginx.crt > /dev/null 2>&1
