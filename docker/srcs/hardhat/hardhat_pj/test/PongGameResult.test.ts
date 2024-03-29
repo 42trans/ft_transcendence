@@ -4,52 +4,60 @@ import { ethers } from "hardhat";
 // import { Contract } from "ethers";
 // import { BigNumber } from "ethers";
 
-describe("PongGameResult", function () {
-	it("新しいゲーム結果を追加し、getGameResultByMatchId()で同一であることを確認", async function () {
+describe("HardhatUnitTestForPongGameResult", function () {
+	it("test1: 新しいゲーム結果を追加し、getGameResultByMatchId()で同一であることを確認", async function () {
 		const Game = await ethers.getContractFactory("PongGameResult");
 		const game = await Game.deploy();
-		const addGameTx = await game.addGameResult(1, 10, 5, "キュア緑", "キュア黄");
+
+		const matchId = 1;
+		const player1Score = 10;
+		const player2Score = 5;
+
+		const addGame = await game.addGameResult(matchId, player1Score, player2Score);
 		
 		// wait until the transaction is mined
-		await addGameTx.wait();
+		await addGame.wait();
 
-		const gameResult = await game.getGameResultByMatchId(1);
-		expect(gameResult.matchId).to.equal(1);
-		expect(gameResult.player1Score).to.equal(10);
-		expect(gameResult.player2Score).to.equal(5);
-		expect(gameResult.winnerName).to.equal("キュア緑");
-		expect(gameResult.loserName).to.equal("キュア黄");
+		const gameResult = await game.getGameResultByMatchId(matchId);
+		expect(gameResult.matchId).to.equal(matchId);
+		expect(gameResult.player1Score).to.equal(player1Score);
+		expect(gameResult.player2Score).to.equal(player2Score);
 	});
 
-	it("登録したすべての結果をgetAllGameResults()で取得して表示し、期待値と同一であることを確認", async function () {
+	it("test2: 登録したすべての結果をgetAllGameResults()で取得して表示し、期待値と同一であることを確認", async function () {
 		const Game = await ethers.getContractFactory("PongGameResult");
 		const game = await Game.deploy();
 
-		await (await game.addGameResult(3, 2, 1, "キュア緑", "キュア黄")).wait();
-		await (await game.addGameResult(2, 7, 3, "キュア紫", "キュア桃")).wait();
+		const testData = [
+			{ matchId: 2, player1Score: 7, player2Score: 3 },
+			{ matchId: 3, player1Score: 2, player2Score: 1 },
+			{ matchId: 4, player1Score: 2, player2Score: 1 },
+			{ matchId: 2147483647, player1Score: 100, player2Score: 1 },
+			{ matchId: Number.MAX_SAFE_INTEGER, player1Score: 0, player2Score: 100 },
+		];
 
-		const results = await game.getAllGameResults(); 
-
-		for (let i = 0; i < results.length; i++) {
-			console.log(`Match ID: ${results[i].matchId}`);
-			console.log(`Player 1 Score: ${results[i].player1Score}`);
-			console.log(`Player 2 Score: ${results[i].player2Score}`);
-			console.log(`Winner Name: ${results[i].winnerName}`);
-			console.log(`Loser Name: ${results[i].loserName}`);
-			console.log(`Date: ${results[i].date}`);
+		for (const data of testData) {
+			await (await game.addGameResult(data.matchId, data.player1Score, data.player2Score)).wait();
 		}
 
-		expect(results.length).to.equal(2);
-		expect(results[0].matchId).to.equal(3);
-		expect(results[0].player1Score).to.equal(2);
-		expect(results[0].player2Score).to.equal(1);
-		expect(results[0].winnerName).to.equal("キュア緑");
-		expect(results[0].loserName).to.equal("キュア黄");
+		const resultList = await game.getGameResultList();
 
-		expect(results[1].matchId).to.equal(2);
-		expect(results[1].player1Score).to.equal(7);
-		expect(results[1].player2Score).to.equal(3);
-		expect(results[1].winnerName).to.equal("キュア紫");
-		expect(results[1].loserName).to.equal("キュア桃");
+		for (let i = 0; i < resultList.length; i++) {
+			console.log(
+				"[Debug] (test2) Match ID: " + resultList[i].matchId +
+				", Player 1 Score: " + resultList[i].player1Score +
+				", Player 2 Score: " + resultList[i].player2Score +
+				", timestamp: " + resultList[i].timestamp
+			);
+		}
+
+		expect(resultList.length).to.equal(testData.length);
+		testData.forEach((data, index) => {
+			expect(resultList[index].matchId).to.equal(data.matchId);
+			expect(resultList[index].player1Score).to.equal(data.player1Score);
+			expect(resultList[index].player2Score).to.equal(data.player2Score);
+		});
+
 	});
+
 });
