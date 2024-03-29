@@ -57,6 +57,38 @@ describe("HardhatUnitTestForPongGameResult", function () {
 			expect(resultList[index].player1Score).to.equal(data.player1Score);
 			expect(resultList[index].player2Score).to.equal(data.player2Score);
 		});
+	});
+
+	it("test3: Error handling for duplicate matchId", async function () {
+		const Game = await ethers.getContractFactory("PongGameResult");
+		const game = await Game.deploy();
+
+		const matchId = 1;
+		const player1Score = 10;
+		const player2Score = 5;
+		const unregister_matchId = 2;
+
+		// duplicated matchId
+		// ok
+		await game.addGameResult(matchId, player1Score, player2Score);
+
+		// ng
+		await expect(game.addGameResult(matchId, player1Score, player2Score))
+			.to.be.revertedWith("[Error] matchId is duplicated");
+
+		// ng
+		await expect(game.addGameResult(matchId, player1Score, 10))
+			.to.be.revertedWith("[Error] matchId is duplicated");
+
+
+		// undefined matchId
+		// ok
+		const gameResult = await game.getGameResultByMatchId(matchId);
+		expect(gameResult.matchId).to.equal(matchId);
+
+		// ng
+		await expect(game.getGameResultByMatchId(unregister_matchId))
+			.to.be.revertedWith("[Error] Game result not found");
 
 	});
 

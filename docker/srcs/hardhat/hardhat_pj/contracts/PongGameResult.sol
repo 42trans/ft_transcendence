@@ -46,6 +46,8 @@ contract PongGameResult {
      * @param player2Score プレイヤー2のスコア
      */
 	function addGameResult(uint64 matchId, uint8 player1Score, uint8 player2Score) public {
+		require(gameResultMap[matchId].matchId == 0, "[Error] matchId is duplicated");
+
 		console.log("[Debug] addGameResult: matchId %s, player1Score %s, player2Score %s", matchId, player1Score, player2Score);
 		GameResult memory newGameResult = GameResult(matchId, player1Score, player2Score, block.timestamp);
 		gameResultList.push(newGameResult);
