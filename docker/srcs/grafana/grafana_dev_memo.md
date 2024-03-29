@@ -11,26 +11,31 @@
   `make build_up_monitor`  
   `http://localhost:3032/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m`  
 
-![alt text](<スクリーンショット 2024-03-28 21.11.28.png>)
+![alt text](<img/スクリーンショット 2024-03-28 21.11.28.png>)
 
 ## TODO
 
 - グラフとメトリクスの設定
   - 現在の出来合いのテンプレートで設定された監視対象で良いのか？
+- アラートの設定
+- 認証の設定
+- バックアップ
+  - 参考:【Grafana をバックアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/back-up-grafana/>
 
 ## 作業完了
 
 - Dockerfile新規作成
 - 初期dashboadの設定
   - docker/srcs/grafana/dashboards.yml
-- 初期データソース
+- 初期 Prometheus データソース
   - docker/srcs/grafana/datasources.yml
-- バージョン確認テスト expected:"10.4.0"
-  - sh docker/srcs/grafana/grafana_dev_test.sh
 - index.htmlにリンク設定
   - https://localhost/
-  
-## Grafanaのダッシュボードプロバイダー設定を定義
+- API sample テスト
+  - sh docker/srcs/grafana/grafana_dev_test.sh
+  - 参考:【HTTP API | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/developers/http_api/>
+
+### Grafanaのダッシュボードプロバイダー設定を定義
 
 - Dashboard設定
   - プロビジョニング: 必要なものを準備する
@@ -51,3 +56,7 @@
     - docker/srcs/grafana/1860-node-exporter-full.json に使用したdashboard
       - 参考:【ノード エクスポータ フル |グラファナ研究所】 <https://grafana.com/grafana/dashboards/1860-node-exporter-full/>
       - id: 1860 を、Grafanaの機能でimport  
+- API
+  - 参考:【HTTP API | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/developers/http_api/>
+- アラート
+  - 参考:【アラート プロビジョニング HTTP API | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/developers/http_api/alerting_provisioning/>

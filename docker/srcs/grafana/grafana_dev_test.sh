@@ -15,11 +15,6 @@ fi
 # http://localhost:3032/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m
 #=======================================================
 
-
-curl http://adm:adm@localhost:3032/api/search
-# expected:
-# [{"id":1,"uid":"rYdddlPWk","title":"Node Exporter Full","uri":"db/node-exporter-full","url":"/d/rYdddlPWk/node-exporter-full","slug":"","type":"dash-db","tags":["linux"],"isStarred":false,"sortMeta":0}]
-
 echo ""
 
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://adm:adm@localhost:3032/api/admin/stats
