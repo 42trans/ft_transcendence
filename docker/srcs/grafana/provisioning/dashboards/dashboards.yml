@@ -13,7 +13,7 @@ providers:
     orgId: 1
     # <string> name of the dashboard folder.
     # ダッシュボードの保存先を指定。空ならルート
-    folder: ''
+    folder: 'ft_trans'
     # <string> provider type. Default to 'file'
     # ダッシュボードをファイルから読み込む
     type: file

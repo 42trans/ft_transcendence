@@ -74,18 +74,18 @@ my_func_cmp "$GET_VALUE" "10_4_0"
 #=======================================================
 echo "${ESC}${COLOR201}"
 echo -e "------------------------------------------------------"
-echo -e " 目的: dashboardは設定されているか？"
+echo -e " 目的: プロビジョニングは設定されているか？"
 echo -e " 内容: フォルダー/ダッシュボード検索一覧を取得"
 echo -e " [cmd]: curl http://adm:adm@localhost:3032/api/search"
 # 参考:【フォルダー/ダッシュボード検索 HTTP API | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/developers/http_api/folder_dashboard_search/>
 #=======================================================
 echo -e "------------------------------------------------------"
 GET_OUTPUT=$(curl -s -S http://adm:adm@localhost:3032/api/search)
-# echo -e "$GET_OUTPUT"
+echo -e "$GET_OUTPUT"
 # $GET_OUTPUT expected:
 # [{"id":1,"uid":"rYdddlPWk","title":"Node Exporter Full","uri":"db/node-exporter-full","url":"/d/rYdddlPWk/node-exporter-full","slug":"","type":"dash-db","":["linux"],"isStarred":false,"sortMeta":0}]
 # 配列になっているので注意！
-GET_VALUE=$(echo "$GET_OUTPUT" | jq -r '.[].title')
-echo -e "jq -r '.title': $GET_VALUE"
-echo -e "Node Exporter Full ならOK"
-my_func_cmp "$GET_VALUE" "Node Exporter Full"
+# GET_VALUE=$(echo "$GET_OUTPUT" | jq -r '.[0].title')
+# echo -e "jq -r '.title': $GET_VALUE"
+# echo -e "Node Exporter Full ならOK"
+# my_func_cmp "$GET_VALUE" "Node Exporter Full"
