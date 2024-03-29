@@ -13,14 +13,28 @@
 
 ![alt text](<img/スクリーンショット 2024-03-28 21.11.28.png>)
 
+- Dashboardの設定.json(手動コピペ)
+  - Home Dashboards ft_trans "name" Settings
+
+![alt text](<スクリーンショット 2024-03-30 8.03.02.png>)
+
+- Alertルールのエクスポート（プロビジョニング用）  
+  - Home Alerting Alert rules
+
+![alt text](<スクリーンショット 2024-03-30 7.45.23.png>)
+
 ## TODO
 
 - グラフとメトリクスの設定
   - 現在の出来合いのテンプレートで設定された監視対象で良いのか？
 - アラートの設定
+  - mail
+    - 参考:【provisioning-alerting-examples/config-files at main · grafana/provisioning-alerting-examples】 <https://github.com/grafana/provisioning-alerting-examples/tree/main/config-files>
 - 認証の設定
 - バックアップ
   - 参考:【Grafana をバックアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/back-up-grafana/>
+- GrafanaをPrometheusでモニタリングする設定
+  - 参考:【Grafana モニタリングをセットアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/set-up-grafana-monitoring/>
 
 ## 作業完了
 
