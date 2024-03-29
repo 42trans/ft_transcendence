@@ -1,0 +1,35 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: ft_trans
+      folder: ft_trans
+      interval: 1m
+      rules:
+        - uid: bdh34dvilwhz4d
+          title: cpu
+          condition: A
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: PBFA97CFB590B2093
+              model:
+                disableTextWrap: false
+                editorMode: builder
+                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.7)
+                fullMetaSearch: false
+                includeNullMetadata: true
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+                useBackend: false
+          noDataState: NoData
+          execErrState: Error
+          for: 5m
+          annotations: {}
+          labels: {}
+          isPaused: false
