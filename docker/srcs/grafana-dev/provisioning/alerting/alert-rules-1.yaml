@@ -1,22 +1,43 @@
+# 参考:【構成ファイルを使用してアラート リソースをプロビジョニングする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/>
+
+# config file version
 apiVersion: 1
+# List of rule groups to import or update
 groups:
+    # <int> organization ID, default = 1
     - orgId: 1
+      # <string, required> name of the rule group
       name: ft_trans
+      # <string, required> name of the folder the rule group will be stored in
       folder: ft_trans
+      # <duration, required> interval that the rule group should evaluated at
       interval: 1m
+      # <list, required> list of rules that are part of the rule group
       rules:
+        # <string, required> unique identifier for the rule. Should not exceed 40 symbols. Only letters, numbers, - (hyphen), and _ (underscore) allowed.
+        # <文字列、必須> ルールの一意の識別子。 シンボルは 40 個を超えてはなりません。 文字、数字、- (ハイフン)、および _ (アンダースコア) のみを使用できます。
         - uid: bdh34dvilwhz4d
-          title: cpu
+          # <string, required> title of the rule that will be displayed in the UI
+          title: node_cpu_seconds_total70%
+          # <string, required> which query should be used for the condition
+          # 条件に使用するクエリ
           condition: A
+          # <list, required> list of query objects that should be executed on each
+          #                  evaluation - should be obtained through the API
+          # data: クエリの実行設定
           data:
+            # クエリのid
             - refId: A
+              # クエリの時間範囲
               relativeTimeRange:
                 from: 600
                 to: 0
+              # データソースのid
               datasourceUid: PBFA97CFB590B2093
               model:
                 disableTextWrap: false
                 editorMode: builder
+                # 1分間の平均CPU使用率が70%を超えるかどうかを評価
                 expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.7)
                 fullMetaSearch: false
                 includeNullMetadata: true
@@ -27,9 +48,14 @@ groups:
                 range: false
                 refId: A
                 useBackend: false
+          # データ不足の際の挙動
           noDataState: NoData
+          # 実行エラー時の挙動
           execErrState: Error
+          # 条件を満たす持続時間
           for: 5m
+          # メタデータを追加する
           annotations: {}
           labels: {}
+          # ルールの一時停止
           isPaused: false

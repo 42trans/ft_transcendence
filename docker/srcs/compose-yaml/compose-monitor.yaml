@@ -76,7 +76,6 @@ services:
     volumes:
       - ${VOLUME_PATH:?}/grafana-dev/:/var/lib/grafana
       # 上記/var/lib/grafanaの中でもdashboradの設定ファイルは、別枠でコンテナイメージに入れたい。方法がわからないのでマウントで対応
-      # - ./grafana-dev/dashboards/1860-node-exporter-full.json:/var/lib/grafana/dashboards/1860-node-exporter-full.json
       - ./grafana/dashboards/1860-node-exporter-full.json:/var/lib/grafana/dashboards/ft_trans/1860-node-exporter-full.json
     env_file:
       - .env
