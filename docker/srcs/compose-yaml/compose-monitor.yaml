@@ -65,3 +65,27 @@ services:
       - monitor_transcendence
     profiles:
       - monitor
+
+  grafana-dev:
+    container_name: grafana-dev
+    build: ./grafana-dev
+    image: grafana-dev
+    restart: unless-stopped
+    ports:
+      - "3309:3000"
+    volumes:
+      - ${VOLUME_PATH:?}/grafana-dev/:/var/lib/grafana
+      # 上記/var/lib/grafanaの中でもdashboradの設定ファイルは、別枠でコンテナイメージに入れたい。方法がわからないのでマウントで対応
+      - ./grafana/1860-node-exporter-full.json:/var/lib/grafana/dashboards/1860-node-exporter-full.json
+    env_file:
+      - .env
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+      - GF_LOG_LEVEL=debug
+      # TODO:自己証明書を無視する。本番環境で削除する。
+      - GF_PLUGIN_GRAFANA_IMAGE_RENDERER_RENDERING_IGNORE_HTTPS_ERRORS=true
+    networks:
+      - web_transcendence
+      - monitor_transcendence
+    profiles:
+      - monitor
