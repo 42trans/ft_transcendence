@@ -19,7 +19,7 @@ contactPoints:
             username: hioikawa-Grafana-Alert
           disableResolveMessage: false
     - orgId: 1
-      name: hioikawa-discord
+      name: hioikawa-Discord
       receivers:
         - uid: ddh6wc6uviqypb
           type: discord

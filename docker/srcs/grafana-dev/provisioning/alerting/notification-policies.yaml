@@ -1,19 +1,35 @@
 # 参考:【通知ポリシー | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/alerting/fundamentals/notification-policies/notifications/>
 # 参考:【構成ファイルを使用してアラート リソースをプロビジョニングする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/>
+# 参考:【構成ファイルを使用してアラート リソースをプロビジョニングする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/#import-notification-policies>
+# 参考:【通知ポリシーを構成する | Grafana クラウドのドキュメント】 <https://grafana.com/docs/grafana-cloud/alerting-and-irm/alerting/configure-notifications/create-notification-policy/>
 
 apiVersion: 1
 
 # List of notification policies
+# 通知ポリシーはツリーで記述する
 policies:
-    - orgId: 1
-      # <string> name of the contact point that should be used for this route
-      receiver: hioikawa-discord
-      # <list> The labels by which incoming alerts are grouped together. For example,
-      #        multiple alerts coming in for cluster=A and alertname=LatencyHigh would be batched into a single group.
-      
-      #        To aggregate by all possible labels use the special value '...' as the sole label name, for example:
-      #        group_by: ['...']
-      #        This effectively disables aggregation entirely, passing through all alerts as-is. This is unlikely to be what you want, unless you have a very low alert volume or your upstream notification system performs its own grouping.
-      group_by:
-        - grafana_folder
-        - alertname
+  - orgId: 1
+    # 親ポリシー: ネストされたポリシーのいずれにも一致しないアラートの動作を制御
+    # <string> name of the contact point that should be used for this route
+    receiver: hioikawa-Discord
+    # <list> The labels by which incoming alerts are grouped together. For example,
+    #        multiple alerts coming in for cluster=A and alertname=LatencyHigh would be batched into a single group.
+    
+    #        To aggregate by all possible labels use the special value '...' as the sole label name, for example:
+    #        group_by: ['...']
+    #        This effectively disables aggregation entirely, passing through all alerts as-is. This is unlikely to be what you want, unless you have a very low alert volume or your upstream notification system performs its own grouping.
+    group_by:
+      - grafana_folder
+      - alertname
+    matchers: []
+    routes:
+      # 各アラートはデフォルト ポリシーによって評価され、その後、ネストされた各ポリシーによって評価
+      - receiver: hioikawa-Slack
+        group_by:
+          - grafana_folder
+          - alertname
+        matchers:
+          - priority = "high"
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 4h

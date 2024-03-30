@@ -19,7 +19,7 @@ groups:
         - uid: ft_trans_prometheus_alert_1
         # - uid: bdh34dvilwhz4d
           # <string, required> title of the rule that will be displayed in the UI
-          title: node_cpu_seconds_total70%over
+          title: Cpu usage 70% over
           # <string, required> which query should be used for the condition
           # 条件に使用するクエリ
           condition: A
@@ -36,7 +36,8 @@ groups:
                 to: 0
               # データソースのid(ここではPrometheusのデータを指定)
               datasourceUid: ft_trans_prometheus
-              # datasourceUid: PBFA97CFB590B2093
+              # アラート条件
+              # PrometheusのQuery Language（PromQL）を用いて、特定のメトリクスに基づいて評価される式を指定
               model:
                 # テキストの折り返しを無効にするかどうか(false=折り返しが有効)
                 disableTextWrap: false
@@ -69,12 +70,19 @@ groups:
           for: 5m
           # メタデータを追加する
           annotations: {}
-          labels: {}
+          # labels: 任意の名前が可能。通知のフィルタリングに使用する。
+          labels:
+            # priority: アラートの処理優先度（例：high, medium, low）。
+            priority: "midium"
+            # チームまたは部門（例：infra, dev, ops）
+            team: "infra"
+            # サービスやアプリケーション（例：frontend, Django, Blockchain）
+            service: "host"
           # ルールの一時停止
           isPaused: false
         # =======================================================
-        - uid: ft_trans_prometheus_alert_1_cpy
-          title: node_cpu_seconds_total70%over_cpy
+        - uid: ft_trans_prometheus_alert_2
+          title: Cpu usage 80% over
           condition: A
           data:
             - refId: A
@@ -85,7 +93,7 @@ groups:
               model:
                 disableTextWrap: false
                 editorMode: builder
-                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.7)
+                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.8)
                 fullMetaSearch: false
                 includeNullMetadata: true
                 instant: true
@@ -99,7 +107,72 @@ groups:
           panelId: 0
           noDataState: NoData
           execErrState: Error
+          for: 7m
+          annotations: {}
+          labels:
+            # priority: アラートの処理優先度（例：high, medium, low）。
+            priority: "high"
+            # チームまたは部門（例：infra, dev, ops）
+            team: "ops"
+            # サービスやアプリケーション（例：frontend, Django, Blockchain）
+            service: "host"
+          isPaused: false
+        # =======================================================
+        # メモリ使用率90%超
+        - uid: memory_usage_high
+          title: Memory Usage 90% Over
+          condition: B
+          data:
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: ft_trans_prometheus
+              model:
+                expr: (1 - (avg(node_memory_MemAvailable_bytes) / avg(node_memory_MemTotal_bytes))) > 0.9
+                legendFormat: "{{instance}}: {{job}}"
+                refId: B
+          for: 5m
+          annotations: {}
+          labels:
+            team: "infra"
+          isPaused: false
+        # =======================================================
+        - uid: disk_usage_high
+          title: Disk Usage 90% Over
+          condition: C
+          data:
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: ft_trans_prometheus
+              model:
+                expr: (avg(node_filesystem_size_bytes) - avg(node_filesystem_free_bytes)) / avg(node_filesystem_size_bytes) > 0.9
+                legendFormat: "{{device}}, {{mountpoint}}"
+                refId: C
           for: 5m
           annotations: {}
           labels: {}
           isPaused: false
+        # =======================================================
+        - uid: network_traffic_high
+          title: Network Traffic High
+          condition: D
+          data:
+            - refId: D
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: ft_trans_prometheus
+              model:
+                expr: 'rate(node_network_receive_bytes_total[5m]) > 100000000 or rate(node_network_transmit_bytes_total[5m]) > 100000000'
+                legendFormat: "{{instance}}: {{device}}"
+                refId: D
+          for: 5m
+          annotations: {}
+          labels:
+            team: "infra"
+          isPaused: false
+
+
