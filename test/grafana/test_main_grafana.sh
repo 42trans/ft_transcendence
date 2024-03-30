@@ -27,7 +27,9 @@ echo -e "------------------------------------------------------"
 echo -e ".env: GRAFANA_PORT=${GRAFANA_PORT} "
 echo -e "3032 ならOK"
 my_func_cmp "$GRAFANA_PORT" "3032"
-
+echo -e "------------------------------------------------------"
+echo -e "stats(統計情報)を表示"
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://adm:adm@localhost:${GRAFANA_PORT}/api/admin/stats
 
 #=======================================================
 echo "${ESC}${COLOR201}"
@@ -85,7 +87,7 @@ echo -e "$GET_OUTPUT"
 # $GET_OUTPUT expected:
 # [{"id":1,"uid":"rYdddlPWk","title":"Node Exporter Full","uri":"db/node-exporter-full","url":"/d/rYdddlPWk/node-exporter-full","slug":"","type":"dash-db","":["linux"],"isStarred":false,"sortMeta":0}]
 # 配列になっているので注意！
-# GET_VALUE=$(echo "$GET_OUTPUT" | jq -r '.[0].title')
-# echo -e "jq -r '.title': $GET_VALUE"
-# echo -e "Node Exporter Full ならOK"
-# my_func_cmp "$GET_VALUE" "Node Exporter Full"
+GET_VALUE=$(echo "$GET_OUTPUT" | jq -r '.[1].title')
+echo -e "jq -r '.title': $GET_VALUE"
+echo -e "Node Exporter Full ならOK"
+my_func_cmp "$GET_VALUE" "Node Exporter Full"

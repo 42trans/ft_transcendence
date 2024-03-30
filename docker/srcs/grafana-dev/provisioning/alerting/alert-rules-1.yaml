@@ -16,9 +16,10 @@ groups:
       rules:
         # <string, required> unique identifier for the rule. Should not exceed 40 symbols. Only letters, numbers, - (hyphen), and _ (underscore) allowed.
         # <文字列、必須> ルールの一意の識別子。 シンボルは 40 個を超えてはなりません。 文字、数字、- (ハイフン)、および _ (アンダースコア) のみを使用できます。
-        - uid: bdh34dvilwhz4d
+        - uid: ft_trans_prometheus_alert_1
+        # - uid: bdh34dvilwhz4d
           # <string, required> title of the rule that will be displayed in the UI
-          title: node_cpu_seconds_total70%
+          title: node_cpu_seconds_total70%over
           # <string, required> which query should be used for the condition
           # 条件に使用するクエリ
           condition: A
@@ -30,23 +31,35 @@ groups:
             - refId: A
               # クエリの時間範囲
               relativeTimeRange:
+                # 600秒(10分)前から現在時刻までのデータを取得
                 from: 600
                 to: 0
-              # データソースのid
-              datasourceUid: PBFA97CFB590B2093
+              # データソースのid(ここではPrometheusのデータを指定)
+              datasourceUid: ft_trans_prometheus
+              # datasourceUid: PBFA97CFB590B2093
               model:
+                # テキストの折り返しを無効にするかどうか(false=折り返しが有効)
                 disableTextWrap: false
+                # クエリエディタのモードを指定(builderはビジュアルクエリビルダーを使用)
                 editorMode: builder
                 # 1分間の平均CPU使用率が70%を超えるかどうかを評価
                 expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.7)
+                # 完全なメタデータ検索を使用するか(false=無効=行わないことでパフォーマンスを向上させる)
                 fullMetaSearch: false
+                # nullのメタデータを結果に含めるか(true=含める=nullも含めてデータの完全性を保つ)
                 includeNullMetadata: true
+                # 即時クエリを実行(最新のデータポイントのみを取得=リアルタイムの監視や最新の状態を迅速に確認)
                 instant: true
+                # クエリの実行間隔(1000=1秒, リアルタイムデータを監視する場合に有用)
                 intervalMs: 1000
+                # レジェンド（凡例）に表示されるテキストのフォーマット(__auto=Grafanaが自動的に決定)
                 legendFormat: __auto
+                # クエリから取得する最大データポイント数
                 maxDataPoints: 43200
+                # 時間範囲クエリを使用するか(false=使用しない, 特定の時間範囲にわたるクエリではなく、特定の時点のデータを対象にクエリを実行, 即時のデータポイントに基づいたアラートや分析が目的)
                 range: false
                 refId: A
+                # バックエンドでクエリを実行する(false=ブラウザサイドで実行される)
                 useBackend: false
           # データ不足の際の挙動
           noDataState: NoData
@@ -58,4 +71,35 @@ groups:
           annotations: {}
           labels: {}
           # ルールの一時停止
+          isPaused: false
+        # =======================================================
+        - uid: ft_trans_prometheus_alert_1_cpy
+          title: node_cpu_seconds_total70%over_cpy
+          condition: A
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: ft_trans_prometheus
+              model:
+                disableTextWrap: false
+                editorMode: builder
+                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.7)
+                fullMetaSearch: false
+                includeNullMetadata: true
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+                useBackend: false
+          dashboardUid: ""
+          panelId: 0
+          noDataState: NoData
+          execErrState: Error
+          for: 5m
+          annotations: {}
+          labels: {}
           isPaused: false

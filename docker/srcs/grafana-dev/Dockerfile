@@ -9,3 +9,5 @@ COPY dashboards/1860-node-exporter-full.json /var/lib/grafana/dashboards/ft_tran
 COPY provisioning/alerting/alert-rules-1.yaml /etc/grafana/provisioning/alerting/alert-rules-1.yaml
 COPY provisioning/dashboards/dashboards.yml /etc/grafana/provisioning/dashboards/dashboards.yml
 COPY provisioning/datasources/datasources.yml /etc/grafana/provisioning/datasources/datasources.yml
+COPY provisioning/alerting/contact-points.yaml /etc/grafana/provisioning/alerting/contact-points.yaml
+COPY provisioning/alerting/notification-policies.yaml /etc/grafana/provisioning/alerting/notification-policies.yaml

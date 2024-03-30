@@ -75,15 +75,21 @@ services:
       - "3309:3000"
     volumes:
       - ${VOLUME_PATH:?}/grafana-dev/:/var/lib/grafana
-      # 上記/var/lib/grafanaの中でもdashboradの設定ファイルは、別枠でコンテナイメージに入れたい。方法がわからないのでマウントで対応
       - ./grafana-dev/dashboards/1860-node-exporter-full.json:/var/lib/grafana/dashboards/ft_trans/1860-node-exporter-full.json
     env_file:
       - .env
     environment:
       - GF_INSTALL_PLUGINS=grafana-clock-panel
       - GF_LOG_LEVEL=debug
-      # TODO:自己証明書を無視する。本番環境で削除する。
       - GF_PLUGIN_GRAFANA_IMAGE_RENDERER_RENDERING_IGNORE_HTTPS_ERRORS=true
+
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=smtp.gmail.com:587
+      - GF_SMTP_USER=pjdhiro@gmail.com
+      - GF_SMTP_PASSWORD=462456mmM@883@
+      - GF_SMTP_FROM_ADDRESS=pjdhiro@gmail.com
+      - GF_SMTP_FROM_NAME=Grafana
+      - GF_SMTP_STARTTLS_POLICY=Always
     networks:
       - web_transcendence
       - monitor_transcendence

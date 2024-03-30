@@ -1,4 +1,4 @@
-# https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
+# 参考:【Grafana のプロビジョニング | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards>
 
 # 設定ファイルのAPIバージョン　公式docmentを参考
 apiVersion: 1
@@ -29,5 +29,6 @@ providers:
       path: /var/lib/grafana/dashboards
       # <bool> use folder names from filesystem to create folders in Grafana
       foldersFromFilesStructure: true
+
 
 

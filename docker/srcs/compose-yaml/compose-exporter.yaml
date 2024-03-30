@@ -15,6 +15,9 @@ services:
     profiles:
       - monitor
 
+  # ホストマシンの監視
+  # Docker Composeで定義されたサービスが実行されるLinux VMのリソース使用状況(Docker Desktopが内部的に提供するもので、ホストOSとは異なる)
+  # CPU使用率、メモリ使用量など、ハードウェアの故障やリソースの枯渇など、ホストマシンレベルでの問題を識別
   node-exporter:
     container_name: node-exporter
     image: prom/node-exporter:v1.0.1
@@ -34,9 +37,12 @@ services:
     profiles:
       - monitor
 
+  # Dockerエンジンのパフォーマンスとリソース使用状況を監視する
+  # 各コンテナのCPU使用率、メモリ使用量など、コンテナレベルでの問題を特定するために使用
   cadvisor:
     container_name: cadvisor
     image: gcr.io/google-containers/cadvisor:v0.36.0
+    # /var/lib/docker/ディレクトリへの読み取り専用アクセス
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
