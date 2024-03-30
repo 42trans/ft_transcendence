@@ -11,6 +11,7 @@ datasources:
     orgId: 1
     # <string> Sets a custom UID to reference this data source in other parts of the configuration.
     # If not specified, Grafana generates one.
+    # アラートルールに使用する
     uid: ft_trans_prometheus
     # <string> Sets the data source's URL, including the port.
     url: http://prometheus:9090
@@ -23,13 +24,23 @@ datasources:
     # <bool> Allows users to edit data sources from the Grafana UI.
     editable: true
     # jsonData:
+        # データの取得方法
     #   httpMethod: POST
+        # GrafanaがPrometheusのアラートを扱うかどうかを決定
+        # GrafanaがPrometheusのアラートを直接管理できるようにするもので、アラートの一元管理が必要な場合に便利
     #   manageAlerts: true
     #   prometheusType: Prometheus
     #   prometheusVersion: 2.44.0
+        # クエリのレスポンスをどの程度キャッシュするか
+        # レスポンスキャッシュを活用してパフォーマンスを向上させたい場合に有効
     #   cacheLevel: 'High'
+        # レコーディングルールの無効化
     #   disableRecordingRules: false
+        # クエリの時間範囲をどのように重ねるか
     #   incrementalQueryOverlapWindow: 10m
+        # トレースデータのリンク先を設定
+        # トレースIDのリンク設定は、メトリクスとトレースデータ間の迅速なナビゲーションを可能にし、問題解析を効率化
+        # Grafanaはトレースデータを直接可視化するために使われ、Prometheusはメトリクスの収集に使われますが、トレースデータへのリンクを提供することで、メトリクスとトレース間の関連付けを容易に。
     #   exemplarTraceIdDestinations:
     #     # Field with internal link pointing to data source in Grafana.
     #     # datasourceUid value can be anything, but it should be unique across all defined data source uids.

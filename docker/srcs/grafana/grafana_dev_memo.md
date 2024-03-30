@@ -1,15 +1,16 @@
 # Grafana dev memo
 
-## 目標: build + up直後に課題要件クリア状況を作る
+## UI状況
 
 - Dockerfile作成
   - dashbord
     - templateをimportし、内容をjsonファイルにコピペ
       - 参考:【Node Exporter Full | Grafana Labs】 <https://grafana.com/grafana/dashboards/1860-node-exporter-full/>
-  - container test  
-  `make docker_rm`  
-  `make build_up_monitor`  
-  `http://localhost:3032/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m`  
+  - マウントボリュームを削除しても機能するか test
+    - マウントボリュームのGrafana/を削除  
+    - `make docker_rm`  
+    - `make build_up_monitor`  
+    - `http://localhost:3032/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m`  
 
 ![alt text](<img/スクリーンショット 2024-03-28 21.11.28.png>)
 
@@ -22,6 +23,19 @@
   - Home Alerting Alert rules
 
 ![alt text](<スクリーンショット 2024-03-30 7.45.23.png>)
+
+## 留意事項
+
+importしたdashboards/の.jsonファイルは、データソースのuidを自動調整してくれるのでそのままでも構わない（修正してももちろん動く）
+```
+  "panels": [
+    {
+    "collapsed": false,
+    "datasource": {
+      "type": "prometheus",
+      "uid": "000000001"
+    },
+```
 
 ## TODO
 
@@ -39,22 +53,26 @@
 ## 作業完了
 
 - Dockerfile新規作成
-- 初期dashboadの設定
-  - docker/srcs/grafana/dashboards.yml
-- 初期 Prometheus データソース
-  - docker/srcs/grafana/datasources.yml
+  - dashbord
+    - template(id 1860)をimportし、内容をjsonファイルにコピペ
+      - docker/srcs/grafana/dashboards/1860-node-exporter-full.json
+      - 参考:【Node Exporter Full | Grafana Labs】 <https://grafana.com/grafana/dashboards/1860-node-exporter-full/>
 - index.htmlにリンク設定
-  - https://localhost/
+  - <https://localhost/>
 - API sample テスト
   - sh docker/srcs/grafana/grafana_dev_test.sh
   - 参考:【HTTP API | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/developers/http_api/>
 - プロビジョニング（起動時の設定）
   - Dashboard
-    - docker/srcs/grafana/dashboards.yml
+    - docker/srcs/grafana/dashboards/dashboards.yml
     - 参考:【Grafana のプロビジョニング | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards>
   - Datasource(Promtheus)
-  - Alert(CPU70%)
-
+    - docker/srcs/grafana/provisioning/datasources/datasources.yml
+    - 参考:【Grafana のプロビジョニング | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources>
+    - 参考:【Prometheus data source | Grafana documentation】 <https://grafana.com/docs/grafana/latest/datasources/prometheus/>
+  - Alert(CPU70%), 一つのファイルに複数アラート設定が可能なので、試みに例としてcpyしたものを記述
+    - docker/srcs/grafana/provisioning/alerting/alert-rules-1.yaml
+    - 参考:【構成ファイルを使用してアラート リソースをプロビジョニングする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/>
 
 ## 参考
 
