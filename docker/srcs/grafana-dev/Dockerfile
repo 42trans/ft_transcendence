@@ -11,3 +11,5 @@ COPY provisioning/dashboards/dashboards.yml /etc/grafana/provisioning/dashboards
 COPY provisioning/datasources/datasources.yml /etc/grafana/provisioning/datasources/datasources.yml
 COPY provisioning/alerting/contact-points.yaml /etc/grafana/provisioning/alerting/contact-points.yaml
 COPY provisioning/alerting/notification-policies.yaml /etc/grafana/provisioning/alerting/notification-policies.yaml
+# TODO-ft: 落ち着いたら　mount とどちらにするか判断する
+COPY grafana.ini /etc/grafana/grafana.ini
