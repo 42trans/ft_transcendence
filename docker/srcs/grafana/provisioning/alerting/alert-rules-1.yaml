@@ -19,7 +19,7 @@ groups:
         - uid: ft_trans_prometheus_alert_1
         # - uid: bdh34dvilwhz4d
           # <string, required> title of the rule that will be displayed in the UI
-          title: Cpu usage 70% over
+          title: Cpu usage 85% over
           # <string, required> which query should be used for the condition
           # 条件に使用するクエリ
           condition: A
@@ -43,8 +43,8 @@ groups:
                 disableTextWrap: false
                 # クエリエディタのモードを指定(builderはビジュアルクエリビルダーを使用)
                 editorMode: builder
-                # 1分間の平均CPU使用率が70%を超えるかどうかを評価
-                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.7)
+                # 1分間の平均CPU使用率が値を超えるかどうかを評価
+                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.85)
                 # 完全なメタデータ検索を使用するか(false=無効=行わないことでパフォーマンスを向上させる)
                 fullMetaSearch: false
                 # nullのメタデータを結果に含めるか(true=含める=nullも含めてデータの完全性を保つ)
@@ -82,7 +82,7 @@ groups:
           isPaused: false
         # =======================================================
         - uid: ft_trans_prometheus_alert_2
-          title: Cpu usage 80% over
+          title: Cpu usage 95% over
           condition: A
           data:
             - refId: A
@@ -93,7 +93,7 @@ groups:
               model:
                 disableTextWrap: false
                 editorMode: builder
-                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.8)
+                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.95)
                 fullMetaSearch: false
                 includeNullMetadata: true
                 instant: true

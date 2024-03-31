@@ -187,6 +187,8 @@ env:
 .PHONY: cert_key
 cert_key:
 	@chmod +x init/cert_key.sh && ./init/cert_key.sh
+# gfarana追加
+	@chmod +x init/cert_key_grafana.sh && init/cert_key_grafana.sh
 
 .PHONY: check_key
 check_key:

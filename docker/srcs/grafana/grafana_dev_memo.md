@@ -2,10 +2,10 @@
 
 ## UI状況
 
-- OAuth2認証 (Auth0)
+- SSL + OAuth2 認証 (Auth0)
   - 現状：Basic認証の下にボタン > Basic認証機能を削除するか検討中
 
-  <img src="img/スクリーンショット 2024-03-31 15.15.38.png" width="450" alt="alt">
+  <img src="img/スクリーンショット 2024-03-31 21.45.44.png" width="450" alt="alt">
   <img src="img/スクリーンショット 2024-03-31 15.15.43.png" width="450" alt="alt">
 
 - Alert (slack)  
@@ -29,21 +29,16 @@
   - ホストマシン以外はPromtheusの設定後に
 - アラートの設定
   - アラートメッセージにあるリンク先が切れているのはどうする？
-- セキュリティ
-  - HTTPS (auth0のcallbackも対応させる)
 - Auth0
-  - TODO
-    - https対応後 Auth0 callback URLs 修正 <https://manage.auth0.com/>
-    - 環境変数を.envに格納
-    - 他モジュールでSSOするなら削除の判断を行う。 GitHub OAuth2 も良さそう  
-    参考:【汎用 OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#set-up-oauth2-with-auth0>
+  - 環境変数を.envに格納
+  - 他モジュールでSSOするなら削除の判断を行う。 GitHub OAuth2 も良さそう  
+  参考:【汎用 OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#set-up-oauth2-with-auth0>
 - 要件外
   - バックアップ
     - 参考:【Grafana をバックアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/back-up-grafana/>
   - GrafanaをPrometheusでモニタリングする設定
     - 参考:【Grafana モニタリングをセットアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/set-up-grafana-monitoring/>
   - アラートにパネル画像を入れる
-
 
 ## 作業完了
 
@@ -88,13 +83,16 @@
         - <https://manage.auth0.com/>
         - 参考:【ハウツー: Auth0 を使用して Grafana に認証を追加する - Cyral】 <https://cyral.com/blog/how-to-grafana-auth0/>
       - ベタ書きで設定
-        - callback URLs http://localhost:3032/login/generic_oauth
-      - TODO
-        - https対応後 Auth0 callback URLs 修正 <https://manage.auth0.com/>
-        - 環境変数を.envに格納
-        - 他モジュールでSSOするなら削除の判断を行う
-          - 参考:【Configure generic OAuth2 authentication | Grafana documentation】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#set-up-oauth2-with-auth0>
-          
+        - callback URLs <http://localhost:3032/login/generic_oauth>
+- https
+  - 自己証明書
+    - grafana専用証明書作成 .cnf から init/cert_key_grafana.sh で作成  
+      - docker/srcs/grafana/ssl に関連ファイル
+      - make cert_key　追加（初回設定用）
+      - .gitignoreはずしているので、レビュー前にチェックする  
+      - mountで設定 ※nginxと同様の設定
+      - Auth0修正 
+        - 3032固定なので、ポート番号が変更されたら毎回修正が必要
 
 
 ### 認証機能　作業時memo
@@ -109,7 +107,16 @@
 - HTTPS証明書
   - 方針:自己署名証明書を使用する
     参考:【安全な Web トラフィックのために Grafana HTTPS をセットアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/set-up-https/>
-    - 方針: nginxのものをマウントで共有
+    - コマンドで実行できるようにした。make cert_key に追加 `@chmod +x init/cert_key_grafana.sh && init/cert_key_grafana.sh`
+    - gita対象にした `git add -f docker/srcs/grafana/ssl/grafana.crt` .keyも
+  - mount: nginxと同様に マウントした  
+
+    ```yaml  
+    volumes:
+      ./grafana/ssl/grafana.crt:/etc/grafana/grafana.crt
+      ./grafana/ssl/grafana.key:/etc/grafana/grafana.key
+    ```
+
   - プロビジョニング
     - 参考:【Grafana のプロビジョニング | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/provisioning/>
   - サービスアカウント
@@ -117,7 +124,7 @@
     - sample token
       - glsa_sBXdvnUw033H7IItLD6slELMdey2xXnK_5b9af582
 - 認証
-  - BASE認証では不足？
+  - BASE認証では不足？削除すべき？
   - SAMLはOSS未対応
   - OAuth2（セキュリティモジュールへの拡張も視野にするとこれが良さそう）
     - 参考:【汎用 OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#examples-of-setting-up-generic-oauth2>
@@ -125,7 +132,7 @@
       - 参考:【GitHub OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/github/>
     - 設定
       - 参考:【Database Access Management - Cyral】 <https://cyral.com/solutions/database-access-management/>
-      
+
 - role設定
   - adminとediterとviewerの管理方針決定
 
