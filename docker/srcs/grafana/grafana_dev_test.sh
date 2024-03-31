@@ -12,7 +12,7 @@ if [ -z "$FUNC_SH" ]; then
 fi
 #=======================================================
 # Dashboad ブラウザチェック id:adm pass:adm
-# http://localhost:3032/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m
+# https://localhost:3032/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m
 #=======================================================
 source docker/srcs/.env
 #=======================================================

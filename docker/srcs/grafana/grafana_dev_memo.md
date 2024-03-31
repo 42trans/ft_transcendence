@@ -3,10 +3,9 @@
 ## UI状況
 
 - SSL + OAuth2 認証 (Auth0)
-  - 現状：Basic認証の下にボタン > Basic認証機能を削除するか検討中
-
+  - 現状：Basic認証の下にAuthボタン > Basic認証機能を削除するか検討中
   <img src="img/スクリーンショット 2024-03-31 21.45.44.png" width="450" alt="alt">
-  <img src="img/スクリーンショット 2024-03-31 15.15.43.png" width="450" alt="alt">
+  <img src="img/スクリーンショット 2024-04-01 0.46.31.png" width="450" alt="alt">
 
 - Alert (slack)  
   <img src="img/IMG_0824.png" width="250" alt="alt">
@@ -23,22 +22,30 @@
 
 ![alt text](<img/スクリーンショット 2024-03-30 8.03.02.png>)
 
-## TODO
+## TODO_ft
 
-- グラフとメトリクスの設定
-  - ホストマシン以外はPromtheusの設定後に
-- アラートの設定
-  - アラートメッセージにあるリンク先が切れているのはどうする？
+- 優先
 - Auth0
+  - 初期adminにする設定がわからない
+  - あらかじめ登録したユーザーに限定することはできないのか？誰でも追加できてしまう
+  - basic認証機能を削除するか検討
   - 環境変数を.envに格納
+
+- Auth0
   - 他モジュールでSSOするなら削除の判断を行う。 GitHub OAuth2 も良さそう  
   参考:【汎用 OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#set-up-oauth2-with-auth0>
+- グラフとメトリクスの設定
+  - ホストマシン以外のメトリクスはPromtheusの設定後に
+- アラートの設定
+  - アラートメッセージにあるリンク先が切れているのはどうする？
 - 要件外
   - バックアップ
     - 参考:【Grafana をバックアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/back-up-grafana/>
   - GrafanaをPrometheusでモニタリングする設定
     - 参考:【Grafana モニタリングをセットアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/set-up-grafana-monitoring/>
   - アラートにパネル画像を入れる
+  - リバースプロキシの設定？　終盤のディテール詰めるとこで検討  
+    - nginx以外のアクセスを制限、ポートのバインドを外す？ 
 
 ## 作業完了
 
@@ -47,15 +54,9 @@
     - template(id 1860)をimportし、内容をjsonファイルにコピペ
       - docker/srcs/grafana/dashboards/1860-node-exporter-full.json
       - 参考:【Node Exporter Full | Grafana Labs】 <https://grafana.com/grafana/dashboards/1860-node-exporter-full/>
-  - マウントボリュームを削除しても機能するか test
-    - マウントボリュームのGrafana/を削除  
-    - `make docker_rm`  
-    - `make build_up_monitor`  
-    - `http://localhost:3032/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m`  
 - index.htmlにリンク設定
   - <https://localhost/>
 - API sample テスト
-  - sh docker/srcs/grafana/grafana_dev_test.sh
   - 参考:【HTTP API | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/developers/http_api/>
 - プロビジョニング（entrypoint.sh的な起動時の設定）
   - Dashboard(視覚化パネル)
@@ -77,23 +78,20 @@
       - docker/srcs/grafana/provisioning/alerting/notification-policies.yaml
 - Auth認証
   - 参考:【Configure generic OAuth2 authentication | Grafana documentation】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#set-up-oauth2-with-auth0>
-  - プロトタイプ http
-    - Auth0
-      - 個人アカウントで作成
-        - <https://manage.auth0.com/>
-        - 参考:【ハウツー: Auth0 を使用して Grafana に認証を追加する - Cyral】 <https://cyral.com/blog/how-to-grafana-auth0/>
-      - ベタ書きで設定
-        - callback URLs <http://localhost:3032/login/generic_oauth>
-- https
+  - Auth0
+    - 個人アカウント作成  <https://manage.auth0.com/>
+      - 参考:【ハウツー: Auth0 を使用して Grafana に認証を追加する - Cyral】 <https://cyral.com/blog/how-to-grafana-auth0/>
+      - callback URLs <https://localhost:3032/login/generic_oauth>
+        - 3032固定なので、ポート番号が変更されたら毎回修正が必要
+      - githubアカウントでの認証
+- https  
+  - 参考:【Set up Grafana HTTPS for secure web traffic | Grafana documentation】 <https://grafana.com/docs/grafana/latest/setup-grafana/set-up-https/>
   - 自己証明書
-    - grafana専用証明書作成 .cnf から init/cert_key_grafana.sh で作成  
+    - grafana専用証明書作成 .cnf から init/cert_key_grafana.sh で作成 ※nginxと同様
       - docker/srcs/grafana/ssl に関連ファイル
       - make cert_key　追加（初回設定用）
       - .gitignoreはずしているので、レビュー前にチェックする  
       - mountで設定 ※nginxと同様の設定
-      - Auth0修正 
-        - 3032固定なので、ポート番号が変更されたら毎回修正が必要
-
 
 ### 認証機能　作業時memo
 
@@ -124,7 +122,7 @@
     - sample token
       - glsa_sBXdvnUw033H7IItLD6slELMdey2xXnK_5b9af582
 - 認証
-  - BASE認証では不足？削除すべき？
+  - Basic認証では不足？削除すべき？
   - SAMLはOSS未対応
   - OAuth2（セキュリティモジュールへの拡張も視野にするとこれが良さそう）
     - 参考:【汎用 OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#examples-of-setting-up-generic-oauth2>
@@ -165,7 +163,7 @@
 
 importしたdashboards/の.jsonファイルは、データソースのuidを自動調整してくれるのでそのままでも構わない（修正してももちろん動く）
 
-```
+``` yaml
   "panels": [
     {
     "collapsed": false,
@@ -173,6 +171,7 @@ importしたdashboards/の.jsonファイルは、データソースのuidを自�
       "type": "prometheus",
       "uid": "000000001"
     },
+    ...
 ```
 
 ## 参考

@@ -47,6 +47,7 @@ services:
     build: ./grafana
     image: grafana
     restart: unless-stopped
+    # nginxでリバースプロキシを設定する場合、ここを削除して直接アクセスできないようにする
     ports:
       - "${GRAFANA_PORT:?}:3000"
     volumes:

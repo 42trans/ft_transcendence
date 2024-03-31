@@ -36,10 +36,10 @@ echo "${ESC}${COLOR201}"
 echo -e "------------------------------------------------------"
 echo -e " 目的: サービスは起動しているか？"
 echo -e " 内容: api/healthでバージョンを取得"
-echo -e " [cmd]: curl http://localhost:${GRAFANA_PORT}/api/health"
+echo -e " [cmd]: curl https://localhost:${GRAFANA_PORT}/api/health"
 echo -e "------------------------------------------------------"
 #=======================================================
-GET_OUTPUT=$(curl -s -S http://localhost:${GRAFANA_PORT}/api/health)
+GET_OUTPUT=$(curl -k -s -S https://localhost:${GRAFANA_PORT}/api/health)
 # echo "$GET_OUTPUT"
 # $GET_OUTPUT expected:
 # {
@@ -60,10 +60,10 @@ echo "${ESC}${COLOR201}"
 echo -e "------------------------------------------------------"
 echo -e " 目的: レポートは機能しているか？"
 echo -e " 内容: admアカウントで使用状況レポートのプレビューを取得"
-echo -e " [cmd]: http://adm:adm@localhost:${GRAFANA_PORT}/api/admin/usage-report-preview"
+echo -e " [cmd]: https://adm:adm@localhost:${GRAFANA_PORT}/api/admin/usage-report-preview"
 #=======================================================
 echo -e "------------------------------------------------------"
-GET_OUTPUT=$(curl -s -S -H "Accept: application/json" -H "Content-Type: application/json" http://adm:adm@localhost:${GRAFANA_PORT}/api/admin/usage-report-preview)
+GET_OUTPUT=$(curl -k -s -S -H "Accept: application/json" -H "Content-Type: application/json" https://adm:adm@localhost:${GRAFANA_PORT}/api/admin/usage-report-preview)
 # echo -e "$GET_OUTPUT"
 # $GET_OUTPUT expected:
 # {"version":"10_4_0","metrics":{"stats.active_admins.count":1,...
@@ -78,11 +78,11 @@ echo "${ESC}${COLOR201}"
 echo -e "------------------------------------------------------"
 echo -e " 目的: dashboardは設定されているか？"
 echo -e " 内容: フォルダー/ダッシュボード検索一覧を取得"
-echo -e " [cmd]: curl http://adm:adm@localhost:3032/api/search"
+echo -e " [cmd]: curl https://adm:adm@localhost:3032/api/search"
 # 参考:【フォルダー/ダッシュボード検索 HTTP API | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/developers/http_api/folder_dashboard_search/>
 #=======================================================
 echo -e "------------------------------------------------------"
-GET_OUTPUT=$(curl -s -S http://adm:adm@localhost:3032/api/search)
+GET_OUTPUT=$(curl -k -s -S https://adm:adm@localhost:3032/api/search)
 # echo -e "$GET_OUTPUT"
 # $GET_OUTPUT expected:
 # [{"id":1,"uid":"rYdddlPWk","title":"Node Exporter Full","uri":"db/node-exporter-full","url":"/d/rYdddlPWk/node-exporter-full","slug":"","type":"dash-db","":["linux"],"isStarred":false,"sortMeta":0}]
@@ -98,12 +98,12 @@ echo "${ESC}${COLOR201}"
 echo -e "------------------------------------------------------"
 echo -e " 目的: 通知ポリシーは設定されているか？"
 echo -e " 内容: 通知ポリシーの一覧を取得"
-echo -e " [cmd]: curl -X GET -s -S -u "adm:adm" http://localhost:${GRAFANA_PORT}/api/v1/provisioning/policies"
+echo -e " [cmd]: curl -X GET -k -s -S -u "adm:adm" https://localhost:${GRAFANA_PORT}/api/v1/provisioning/policies"
 # 参考:【HTTP API を使用してアラート リソースを管理する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/http-api-provisioning/>
 #=======================================================
 echo -e "------------------------------------------------------"
-GET_OUTPUT=$(curl -X GET -s -S -u "adm:adm" http://localhost:${GRAFANA_PORT}/api/v1/provisioning/policies)
-# echo -e "$GET_OUTPUT"
+GET_OUTPUT=$(curl -X GET -k -s -S -u "adm:adm" https://localhost:${GRAFANA_PORT}/api/v1/provisioning/policies)
+echo -e "$GET_OUTPUT"
 # $GET_OUTPUT expected:
 # {"receiver":"hioikawa-Discord","group_by":["grafana_folder","alertname"],"routes":[{"receiver":"hioikawa-Slack","group_by":["grafana_folder","alertname"],"matchers":["priority=\"high\""],"group_wait":"30s","group_interval":"5m","repeat_interval":"4h"}],"provenance":"file"}
 GET_VALUE=$(echo "$GET_OUTPUT" | jq -r '.receiver')

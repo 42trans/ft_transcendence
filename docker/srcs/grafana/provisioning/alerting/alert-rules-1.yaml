@@ -52,7 +52,7 @@ groups:
                 # 即時クエリを実行(最新のデータポイントのみを取得=リアルタイムの監視や最新の状態を迅速に確認)
                 instant: true
                 # クエリの実行間隔(1000=1秒, リアルタイムデータを監視する場合に有用)
-                intervalMs: 1000
+                intervalMs: 10000
                 # レジェンド（凡例）に表示されるテキストのフォーマット(__auto=Grafanaが自動的に決定)
                 legendFormat: __auto
                 # クエリから取得する最大データポイント数
@@ -97,7 +97,7 @@ groups:
                 fullMetaSearch: false
                 includeNullMetadata: true
                 instant: true
-                intervalMs: 1000
+                intervalMs: 10000
                 legendFormat: __auto
                 maxDataPoints: 43200
                 range: false
