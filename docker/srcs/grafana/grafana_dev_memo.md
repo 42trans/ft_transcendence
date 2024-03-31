@@ -17,31 +17,22 @@
 
 ![alt text](<img/スクリーンショット 2024-03-30 8.03.02.png>)
 
-## 留意事項
-
-importしたdashboards/の.jsonファイルは、データソースのuidを自動調整してくれるのでそのままでも構わない（修正してももちろん動く）
-
-```
-  "panels": [
-    {
-    "collapsed": false,
-    "datasource": {
-      "type": "prometheus",
-      "uid": "000000001"
-    },
-```
-
 ## TODO
 
 - グラフとメトリクスの設定
-  - 現在の出来合いのテンプレートで設定された監視対象で良いのか？
+  - ホストマシン以外はPromtheusの設定後に
 - アラートの設定
-  - アラートメッセージにあるリンク先が切れている
-- 認証の設定
-- バックアップ
-  - 参考:【Grafana をバックアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/back-up-grafana/>
-- GrafanaをPrometheusでモニタリングする設定
-  - 参考:【Grafana モニタリングをセットアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/set-up-grafana-monitoring/>
+  - アラートメッセージにあるリンク先が切れているのはどうする？
+- セキュリティ
+  - HTTPS
+  - OAuth2
+- 要件外
+  - バックアップ
+    - 参考:【Grafana をバックアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/back-up-grafana/>
+  - GrafanaをPrometheusでモニタリングする設定
+    - 参考:【Grafana モニタリングをセットアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/set-up-grafana-monitoring/>
+  - アラートにパネル画像を入れる
+  - OAuth2をDjangoにも設定してplay > 2FA対応へ（セキュリティメジャーモジュール）
 
 ## 作業完了
 
@@ -68,7 +59,7 @@ importしたdashboards/の.jsonファイルは、データソースのuidを自�
     - docker/srcs/grafana/provisioning/datasources/datasources.yml
     - 参考:【Grafana のプロビジョニング | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources>
     - 参考:【Prometheus data source | Grafana documentation】 <https://grafana.com/docs/grafana/latest/datasources/prometheus/>
-  - Alert(CPU70%以上), 一つのファイルに複数アラート設定が可能なので、試みに例としてcpyしたものを記述
+  - Alert(ホストマシンのみ), 一つのファイルに複数アラート設定が可能
     - docker/srcs/grafana/provisioning/alerting/alert-rules-1.yaml
     - 参考:【構成ファイルを使用してアラート リソースをプロビジョニングする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/>
   - 通知先 contact point
@@ -76,8 +67,39 @@ importしたdashboards/の.jsonファイルは、データソースのuidを自�
       - Slack webhook
       - Discord webhook
   - 通知ポリシー  
-    - Discordをデフォルトに設定
+    - Discordをデフォルトに設定 labelsでSlackに振り分けの設定も
       - docker/srcs/grafana/provisioning/alerting/notification-policies.yaml
+
+### 認証機能　作業時memo
+
+- セキュリティ構成について　全般
+  - データ ソース URL の IP アドレス/ホスト名を制限する
+    - 参考:【Configure security | Grafana documentation】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/>
+  - リクエスト セキュリティ構成オプション
+    -参考:【リクエストのセキュリティを構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-request-security/>
+  - プロキシサーバー
+
+#### 実装すべきこと
+
+- HTTPS証明書
+  - 方針:自己署名証明書を使用する
+    参考:【安全な Web トラフィックのために Grafana HTTPS をセットアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/set-up-https/>
+    - 方針: nginxのものをマウントで共有
+  - プロビジョニング
+    - 参考:【Grafana のプロビジョニング | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/provisioning/>
+  - サービスアカウント
+    - 参考:【サービスアカウント | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/service-accounts/#create-a-service-account-in-grafana>
+    - sample token
+      - glsa_sBXdvnUw033H7IItLD6slELMdey2xXnK_5b9af582
+- 認証
+  - BASE認証では不足？
+  - SAMLはOSS未対応
+  - OAuth2（セキュリティモジュールへの拡張も視野にするとこれが良さそう）
+    - 参考:【汎用 OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#examples-of-setting-up-generic-oauth2>
+    - GitHub OAuth2も検討してみる
+      - 参考:【GitHub OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/github/>
+- role設定
+  - adminとediterとviewerの管理方針決定
 
 ### Alert機能　作業時memo
 
@@ -103,6 +125,20 @@ importしたdashboards/の.jsonファイルは、データソースのuidを自�
   - webhook URL
     - <https://discord.com/api/webhooks/1223496487917584404/tVeUHpZRrW420zHkvnLcXB5R0OuQ_QY3v44jIkEZk5IkpAFYA42T32h3AVdjQCklS64B>  
     - test:  
+
+## 留意事項
+
+importしたdashboards/の.jsonファイルは、データソースのuidを自動調整してくれるのでそのままでも構わない（修正してももちろん動く）
+
+```
+  "panels": [
+    {
+    "collapsed": false,
+    "datasource": {
+      "type": "prometheus",
+      "uid": "000000001"
+    },
+```
 
 ## 参考
 
