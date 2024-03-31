@@ -58,8 +58,22 @@ services:
     environment:
       - GF_INSTALL_PLUGINS=grafana-clock-panel
       - GF_LOG_LEVEL=debug
-      # TODO:自己証明書を無視する。本番環境で削除する。
       - GF_PLUGIN_GRAFANA_IMAGE_RENDERER_RENDERING_IGNORE_HTTPS_ERRORS=true
+      # Aouth0設定
+      #  Grafana インスタンスをホストするために使用するドメイン
+      #  port番号が変わったら、その都度 https://manage.auth0.com/ で callback url を修正する。
+      - GF_SERVER_ROOT_URL=http://localhost:${GRAFANA_PORT:?}/
+      # Auth0 でのサインインを有効
+      - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP=true
+      - GF_AUTH_GENERIC_OAUTH_ENABLED=true
+      - GF_AUTH_GENERIC_OAUTH_NAME=Auth0
+      # GrafanaがOAuthを介して認証プロバイダーから要求する情報の範囲
+      - GF_AUTH_GENERIC_OAUTH_SCOPES=openid profile email offline_access
+      - GF_AUTH_GENERIC_OAUTH_TOKEN_URL=https://dev-jb2wfmp3mth8halz.us.auth0.com/oauth/token
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL=https://dev-jb2wfmp3mth8halz.us.auth0.com/authorize
+      - GF_AUTH_GENERIC_OAUTH_API_URL=https://dev-jb2wfmp3mth8halz.us.auth0.com/userinfo
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=EZxGEXDXUNeZycoVUMQRBfleDL4AwRu4
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=jSGZdUjOxrn4sqqOUmq_EzuzCPOtHV00lqqeEUlUxNBlrW88CDXJNfGWJQnYOvAh
     networks:
       - web_transcendence
       - monitor_transcendence
@@ -76,7 +90,6 @@ services:
     volumes:
       - ${VOLUME_PATH:?}/grafana-dev/:/var/lib/grafana
       - ./grafana-dev/dashboards/1860-node-exporter-full.json:/var/lib/grafana/dashboards/ft_trans/1860-node-exporter-full.json
-      # - ./grafana-dev/provisioning/alerting/notification-policies.yaml:/etc/grafana/provisioning/alerting/notification-policies.yaml
     env_file:
       - .env
     environment:

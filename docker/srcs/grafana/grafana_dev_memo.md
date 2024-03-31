@@ -24,15 +24,20 @@
 - アラートの設定
   - アラートメッセージにあるリンク先が切れているのはどうする？
 - セキュリティ
-  - HTTPS
-  - OAuth2
+  - HTTPS (auth0のcallbackも対応させる)
+- Auth0
+  - TODO
+    - https対応後 Auth0 callback URLs 修正 <https://manage.auth0.com/>
+    - 環境変数を.envに格納
+    - 他モジュールでSSOするなら削除の判断を行う。 GitHub OAuth2 も良さそう  
+    参考:【汎用 OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#set-up-oauth2-with-auth0>
 - 要件外
   - バックアップ
     - 参考:【Grafana をバックアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/back-up-grafana/>
   - GrafanaをPrometheusでモニタリングする設定
     - 参考:【Grafana モニタリングをセットアップする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/set-up-grafana-monitoring/>
   - アラートにパネル画像を入れる
-  - OAuth2をDjangoにも設定してplay > 2FA対応へ（セキュリティメジャーモジュール）
+
 
 ## 作業完了
 
@@ -69,6 +74,22 @@
   - 通知ポリシー  
     - Discordをデフォルトに設定 labelsでSlackに振り分けの設定も
       - docker/srcs/grafana/provisioning/alerting/notification-policies.yaml
+- Auth認証
+  - 参考:【Configure generic OAuth2 authentication | Grafana documentation】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#set-up-oauth2-with-auth0>
+  - プロトタイプ http
+    - Auth0
+      - 個人アカウントで作成
+        - <https://manage.auth0.com/>
+        - 参考:【ハウツー: Auth0 を使用して Grafana に認証を追加する - Cyral】 <https://cyral.com/blog/how-to-grafana-auth0/>
+      - ベタ書きで設定
+        - callback URLs http://localhost:3032/login/generic_oauth
+      - TODO
+        - https対応後 Auth0 callback URLs 修正 <https://manage.auth0.com/>
+        - 環境変数を.envに格納
+        - 他モジュールでSSOするなら削除の判断を行う
+          - 参考:【Configure generic OAuth2 authentication | Grafana documentation】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#set-up-oauth2-with-auth0>
+          
+
 
 ### 認証機能　作業時memo
 
@@ -78,8 +99,6 @@
   - リクエスト セキュリティ構成オプション
     -参考:【リクエストのセキュリティを構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-request-security/>
   - プロキシサーバー
-
-#### 実装すべきこと
 
 - HTTPS証明書
   - 方針:自己署名証明書を使用する
@@ -98,6 +117,9 @@
     - 参考:【汎用 OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#examples-of-setting-up-generic-oauth2>
     - GitHub OAuth2も検討してみる
       - 参考:【GitHub OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/github/>
+    - 設定
+      - 参考:【Database Access Management - Cyral】 <https://cyral.com/solutions/database-access-management/>
+      
 - role設定
   - adminとediterとviewerの管理方針決定
 
