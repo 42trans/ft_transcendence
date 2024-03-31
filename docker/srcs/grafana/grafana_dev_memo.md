@@ -2,6 +2,12 @@
 
 ## UI状況
 
+- OAuth2認証 (Auth0)
+  - 現状：Basic認証の下にボタン > Basic認証機能を削除するか検討中
+
+  <img src="img/スクリーンショット 2024-03-31 15.15.38.png" width="450" alt="alt">
+  <img src="img/スクリーンショット 2024-03-31 15.15.43.png" width="450" alt="alt">
+
 - Alert (slack)  
   <img src="img/IMG_0824.png" width="250" alt="alt">
 
