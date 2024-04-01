@@ -2,7 +2,7 @@
 from django.http import JsonResponse
 import os
 
-def get_network_settings(testnet_name):
+def get_network_settings(testnet_name: str):
 	"""
 	テストネットワークURLとコントラクト情報のパスを返します。
 
