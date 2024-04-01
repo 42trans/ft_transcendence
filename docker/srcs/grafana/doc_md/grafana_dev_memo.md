@@ -1,11 +1,18 @@
 # Grafana dev memo
 
+## OAuth設定時メモはこちら
+
+- [OAuth設定時メモ](grafana_Auth0_memo.md)
+
 ## UI状況
 
 - SSL + OAuth2 認証 (Auth0)
-  - 現状：Basic認証の下にAuthボタン > Basic認証機能を削除するか検討中
+  - 連携: github, discord, spotify
+    - テスト時注意
+      - 同一アドレスで登録できない(githubとdiscordで同じメアドの場合)。連続で挙動テストするときに発生するかも。adm:admで管理者でインして、emailが同一のuserを削除してテストしてください
+  - TODO_ft：Basic認証の下にAuthボタン > Basic認証機能を削除するか検討中
   <img src="img/スクリーンショット 2024-03-31 21.45.44.png" width="450" alt="alt">
-  <img src="img/スクリーンショット 2024-04-01 0.46.31.png" width="450" alt="alt">
+  <img src="img/スクリーンショット 2024-04-01 8.51.45.png" width="450" alt="alt">
 
 - Alert (slack)  
   <img src="img/IMG_0824.png" width="250" alt="alt">
@@ -59,6 +66,8 @@
 - API sample テスト
   - 参考:【HTTP API | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/developers/http_api/>
 - プロビジョニング（entrypoint.sh的な起動時の設定）
+  - 連絡
+    - .iniで設定しても環境変数が優先(オーバーライド)されます。.iniから環境変数変換のルールは一定のルールあり（prefix:GF,カテゴリ_変数名）
   - Dashboard(視覚化パネル)
     - docker/srcs/grafana/dashboards/dashboards.yml
     - 参考:【Grafana のプロビジョニング | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards>
@@ -77,13 +86,17 @@
     - Discordをデフォルトに設定 labelsでSlackに振り分けの設定も
       - docker/srcs/grafana/provisioning/alerting/notification-policies.yaml
 - Auth認証
-  - 参考:【Configure generic OAuth2 authentication | Grafana documentation】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#set-up-oauth2-with-auth0>
+  - 参考:【汎用 OAuth2 認証を構成する | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/>
   - Auth0
     - 個人アカウント作成  <https://manage.auth0.com/>
       - 参考:【ハウツー: Auth0 を使用して Grafana に認証を追加する - Cyral】 <https://cyral.com/blog/how-to-grafana-auth0/>
       - callback URLs <https://localhost:3032/login/generic_oauth>
         - 3032固定なので、ポート番号が変更されたら毎回修正が必要
-      - githubアカウントでの認証
+      - github, discord, spotifyアカウントでの認証
+    - テスト時注意
+      - 同一アドレスで登録できない(githubとdiscordで同じメアドの場合)。連続で挙動テストするときに発生するかも
+        - エラーメッセージ:Login failed:User sync failed の時は、emaiが同一の場合に起きる。adm:admで管理者でインして、emailが同一のuserを削除してテストしてください
+
 - https  
   - 参考:【Set up Grafana HTTPS for secure web traffic | Grafana documentation】 <https://grafana.com/docs/grafana/latest/setup-grafana/set-up-https/>
   - 自己証明書

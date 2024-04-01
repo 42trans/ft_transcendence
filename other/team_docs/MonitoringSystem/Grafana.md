@@ -2,7 +2,7 @@
 
 ## 開発時手元メモ
 
-- [docker/srcs/grafana/grafana_memo.md](../../../docker/srcs/grafana/grafana_memo.md)
+- [docker/srcs/grafana/doc_md/grafana_memo.md](../../../docker/srcs/grafana/doc_md/grafana_dev_memo.md)
 
 ## TODO
 
