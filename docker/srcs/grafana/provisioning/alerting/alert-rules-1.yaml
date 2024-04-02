@@ -19,7 +19,7 @@ groups:
         - uid: ft_trans_prometheus_alert_1
         # - uid: bdh34dvilwhz4d
           # <string, required> title of the rule that will be displayed in the UI
-          title: Cpu usage 85% over
+          title: Cpu usage 95% over 9m
           # <string, required> which query should be used for the condition
           # 条件に使用するクエリ
           condition: A
@@ -44,7 +44,7 @@ groups:
                 # クエリエディタのモードを指定(builderはビジュアルクエリビルダーを使用)
                 editorMode: builder
                 # 1分間の平均CPU使用率が値を超えるかどうかを評価
-                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.85)
+                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.95)
                 # 完全なメタデータ検索を使用するか(false=無効=行わないことでパフォーマンスを向上させる)
                 fullMetaSearch: false
                 # nullのメタデータを結果に含めるか(true=含める=nullも含めてデータの完全性を保つ)
@@ -67,7 +67,7 @@ groups:
           # 実行エラー時の挙動
           execErrState: Error
           # 条件を満たす持続時間
-          for: 5m
+          for: 9m
           # メタデータを追加する
           annotations: {}
           # labels: 任意の名前が可能。通知のフィルタリングに使用する。
@@ -82,7 +82,7 @@ groups:
           isPaused: false
         # =======================================================
         - uid: ft_trans_prometheus_alert_2
-          title: Cpu usage 95% over
+          title: Cpu usage 99% over
           condition: A
           data:
             - refId: A
@@ -93,7 +93,7 @@ groups:
               model:
                 disableTextWrap: false
                 editorMode: builder
-                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.95)
+                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.99)
                 fullMetaSearch: false
                 includeNullMetadata: true
                 instant: true
@@ -107,7 +107,7 @@ groups:
           panelId: 0
           noDataState: NoData
           execErrState: Error
-          for: 7m
+          for: 9m
           annotations: {}
           labels:
             # priority: アラートの処理優先度（例：high, medium, low）。
@@ -118,61 +118,61 @@ groups:
             service: "host"
           isPaused: false
         # =======================================================
-        # メモリ使用率90%超
-        - uid: memory_usage_high
-          title: Memory Usage 90% Over
-          condition: B
-          data:
-            - refId: B
-              relativeTimeRange:
-                from: 600
-                to: 0
-              datasourceUid: ft_trans_prometheus
-              model:
-                expr: (1 - (avg(node_memory_MemAvailable_bytes) / avg(node_memory_MemTotal_bytes))) > 0.9
-                legendFormat: "{{instance}}: {{job}}"
-                refId: B
-          for: 5m
-          annotations: {}
-          labels:
-            team: "infra"
-          isPaused: false
-        # =======================================================
-        - uid: disk_usage_high
-          title: Disk Usage 90% Over
-          condition: C
-          data:
-            - refId: C
-              relativeTimeRange:
-                from: 600
-                to: 0
-              datasourceUid: ft_trans_prometheus
-              model:
-                expr: (avg(node_filesystem_size_bytes) - avg(node_filesystem_free_bytes)) / avg(node_filesystem_size_bytes) > 0.9
-                legendFormat: "{{device}}, {{mountpoint}}"
-                refId: C
-          for: 5m
-          annotations: {}
-          labels: {}
-          isPaused: false
-        # =======================================================
-        - uid: network_traffic_high
-          title: Network Traffic High
-          condition: D
-          data:
-            - refId: D
-              relativeTimeRange:
-                from: 600
-                to: 0
-              datasourceUid: ft_trans_prometheus
-              model:
-                expr: 'rate(node_network_receive_bytes_total[5m]) > 100000000 or rate(node_network_transmit_bytes_total[5m]) > 100000000'
-                legendFormat: "{{instance}}: {{device}}"
-                refId: D
-          for: 5m
-          annotations: {}
-          labels:
-            team: "infra"
-          isPaused: false
+        # # メモリ使用率90%超
+        # - uid: memory_usage_high
+        #   title: Memory Usage 90% Over
+        #   condition: B
+        #   data:
+        #     - refId: B
+        #       relativeTimeRange:
+        #         from: 600
+        #         to: 0
+        #       datasourceUid: ft_trans_prometheus
+        #       model:
+        #         expr: (1 - (avg(node_memory_MemAvailable_bytes) / avg(node_memory_MemTotal_bytes))) > 0.9
+        #         legendFormat: "{{instance}}: {{job}}"
+        #         refId: B
+        #   for: 5m
+        #   annotations: {}
+        #   labels:
+        #     team: "infra"
+        #   isPaused: false
+        # # =======================================================
+        # - uid: disk_usage_high
+        #   title: Disk Usage 90% Over
+        #   condition: C
+        #   data:
+        #     - refId: C
+        #       relativeTimeRange:
+        #         from: 600
+        #         to: 0
+        #       datasourceUid: ft_trans_prometheus
+        #       model:
+        #         expr: (avg(node_filesystem_size_bytes) - avg(node_filesystem_free_bytes)) / avg(node_filesystem_size_bytes) > 0.9
+        #         legendFormat: "{{device}}, {{mountpoint}}"
+        #         refId: C
+        #   for: 5m
+        #   annotations: {}
+        #   labels: {}
+        #   isPaused: false
+        # # =======================================================
+        # - uid: network_traffic_high
+        #   title: Network Traffic High
+        #   condition: D
+        #   data:
+        #     - refId: D
+        #       relativeTimeRange:
+        #         from: 600
+        #         to: 0
+        #       datasourceUid: ft_trans_prometheus
+        #       model:
+        #         expr: 'rate(node_network_receive_bytes_total[5m]) > 100000000 or rate(node_network_transmit_bytes_total[5m]) > 100000000'
+        #         legendFormat: "{{instance}}: {{device}}"
+        #         refId: D
+        #   for: 5m
+        #   annotations: {}
+        #   labels:
+        #     team: "infra"
+        #   isPaused: false
 
 

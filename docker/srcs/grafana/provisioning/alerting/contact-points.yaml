@@ -1,3 +1,4 @@
+# docker/srcs/grafana/provisioning/alerting/contact-points.yaml
 apiVersion: 1
 contactPoints:
     # - orgId: 1
@@ -15,8 +16,9 @@ contactPoints:
           type: slack
           settings:
             mentionGroups: uminomae
-            url: https://hooks.slack.com/services/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
+            url: ${GRAFANA_CONTACT_POINT_SLACK}
             username: hioikawa-Grafana-Alert
+            recipient: '#ft_trans_alert'
           disableResolveMessage: false
     - orgId: 1
       name: hioikawa-Discord
@@ -24,6 +26,6 @@ contactPoints:
         - uid: ddh6wc6uviqypb
           type: discord
           settings:
-            url: https://discord.com/api/webhooks/1223496487917584404/tVeUHpZRrW420zHkvnLcXB5R0OuQ_QY3v44jIkEZk5IkpAFYA42T32h3AVdjQCklS64B
+            url: ${GRAFANA_CONTACT_POINT_DISCORD}
             use_discord_username: true
           disableResolveMessage: false

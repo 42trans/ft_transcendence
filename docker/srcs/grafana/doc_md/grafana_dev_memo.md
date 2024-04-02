@@ -162,14 +162,11 @@
   - contact pointをプロビジョニング設定
   - test:起動直後に通知テストを行った  
 - slack webhook
-  - Slack webhook url (Grafanaに設定するwebhook)
-    - <https://hooks.slack.com/services/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>
   - slack Incoming Webhook 設定 url
     - <https://42-hioikawa-ft-trans.slack.com/services/B06S1SC7LQ2?added=1>  
 - Discord webhook
   - 個人用サーバーに設定
   - webhook URL
-    - <https://discord.com/api/webhooks/1223496487917584404/tVeUHpZRrW420zHkvnLcXB5R0OuQ_QY3v44jIkEZk5IkpAFYA42T32h3AVdjQCklS64B>  
     - 参考:【外部サービスからDiscordにメッセージを送る（Webhook)】 <https://zenn.dev/lambta/articles/5edbda4ccb1ec6>
 
 ## 留意事項

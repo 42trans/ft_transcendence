@@ -1,3 +1,4 @@
+# docker/srcs/grafana/Dockerfile
 # Grafanaの公式イメージをベースに使用
 FROM grafana/grafana-oss:10.4.0
 # FROM grafana/grafana-oss:latest
@@ -13,3 +14,6 @@ COPY provisioning/alerting/contact-points.yaml /etc/grafana/provisioning/alertin
 COPY provisioning/alerting/notification-policies.yaml /etc/grafana/provisioning/alerting/notification-policies.yaml
 # TODO-ft: 落ち着いたら　mount とどちらにするか判断する
 COPY grafana.ini /etc/grafana/grafana.ini
+
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

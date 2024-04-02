@@ -2,18 +2,18 @@ version: "3.7"
 # docker/srcs/compose-yaml/compose-exporter.yaml
 
 services:
-  nginx_exporter:
-    container_name: nginx_exporter
-    image: nginx/nginx-prometheus-exporter
-    ports:
-      - "9113:9113"
-    command: ["-nginx.scrape-uri=http://localhost:${NGINX_PORT:?}/stub_status"]
-    networks:
-      - monitor_transcendence
-    volumes:
-      - ${VOLUME_PATH:?}/exporters:/exporters
-    profiles:
-      - monitor
+  # nginx_exporter:
+    # container_name: nginx_exporter
+    # image: nginx/nginx-prometheus-exporter
+    # ports:
+    #   - "9113:9113"
+    # command: ["-nginx.scrape-uri=http://localhost:${NGINX_PORT:?}/stub_status"]
+    # networks:
+    #   - monitor_transcendence
+    # volumes:
+    #   - ${VOLUME_PATH:?}/exporters:/exporters
+    # profiles:
+    #   - monitor
 
   # ホストマシンの監視
   # Docker Composeで定義されたサービスが実行されるLinux VMのリソース使用状況(Docker Desktopが内部的に提供するもので、ホストOSとは異なる)
@@ -39,31 +39,31 @@ services:
 
   # Dockerエンジンのパフォーマンスとリソース使用状況を監視する
   # 各コンテナのCPU使用率、メモリ使用量など、コンテナレベルでの問題を特定するために使用
-  cadvisor:
-    container_name: cadvisor
-    image: gcr.io/google-containers/cadvisor:v0.36.0
-    # /var/lib/docker/ディレクトリへの読み取り専用アクセス
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    ports:
-      - 8080:8080
-    networks:
-      - monitor_transcendence
-    profiles:
-      - monitor
+  # cadvisor:
+  #   container_name: cadvisor
+  #   image: gcr.io/google-containers/cadvisor:v0.36.0
+  #   # /var/lib/docker/ディレクトリへの読み取り専用アクセス
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:rw
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #   ports:
+  #     - 8080:8080
+  #   networks:
+  #     - monitor_transcendence
+  #   profiles:
+  #     - monitor
   
-  elasticsearch-exporter:
-    container_name: elasticsearch-exporter
-    image: quay.io/prometheuscommunity/elasticsearch-exporter:latest
-    command:
-     - '--es.uri=http://elasticsearch:9200'
-    restart: always
-    networks:
-      - monitor_transcendence
-    ports:
-    - "9114:9114"
-    profiles:
-      - monitor
+  # elasticsearch-exporter:
+  #   container_name: elasticsearch-exporter
+  #   image: quay.io/prometheuscommunity/elasticsearch-exporter:latest
+  #   command:
+  #    - '--es.uri=http://elasticsearch:9200'
+  #   restart: always
+  #   networks:
+  #     - monitor_transcendence
+  #   ports:
+  #   - "9114:9114"
+  #   profiles:
+  #     - monitor
