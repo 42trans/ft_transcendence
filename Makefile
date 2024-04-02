@@ -180,7 +180,8 @@ init: env cert_key
 
 .PHONY: env
 env:
-	cp docker/srcs/.env_example docker/srcs/.env
+	cat docker/srcs/.env_src_credentials > docker/srcs/.env
+	cat docker/srcs/.env_src_general >> docker/srcs/.env
 	@chmod +x init/os_env.sh && ./init/os_env.sh init/.os_env docker/srcs/.env
 
 ## Certificate生成（初回のみ実行）
