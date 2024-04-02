@@ -170,7 +170,7 @@
   - 個人用サーバーに設定
   - webhook URL
     - <https://discord.com/api/webhooks/1223496487917584404/tVeUHpZRrW420zHkvnLcXB5R0OuQ_QY3v44jIkEZk5IkpAFYA42T32h3AVdjQCklS64B>  
-    - test:  
+    - 参考:【外部サービスからDiscordにメッセージを送る（Webhook)】 <https://zenn.dev/lambta/articles/5edbda4ccb1ec6>
 
 ## 留意事項
 
