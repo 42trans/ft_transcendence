@@ -2,6 +2,7 @@
 # .gitignore
 # .dockerignore
 .env
+.env_src_credentials
 old/
 
 .vscode
