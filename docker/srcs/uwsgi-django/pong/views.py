@@ -9,8 +9,11 @@ from .models import PongGameResult
 def index(request):
 	return render(request, 'pong/index.html')
 
+def index_bootstrap(request):
+	return render(request, 'pong/bootstrap_index.html')
+
 def sign_in_bootstrap(request):
-	return render(request, 'pong/sign-in/sign-in.html')
+	return render(request, 'pong/bootstrap_sign-in.html')
 
 def sign_in(request):
 	return render(request, 'pong/sign-in.html')
