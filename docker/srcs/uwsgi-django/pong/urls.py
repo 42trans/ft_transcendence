@@ -5,6 +5,7 @@ from pong.blockchain import save_testnet
 from pong.blockchain import fetch_testnet
 from pong.blockchain import fetch_testnet
 from pong.blockchain import record_game_result
+from pong.blockchain.blockchain_data_manager import BlockchainDataManager
 
 urlpatterns = [
 	# path() 引数:
@@ -12,9 +13,19 @@ urlpatterns = [
 	# save_testnet.save_testnet: URLリクエスト時に呼ばれるビュー関数（API関数・エンドポイント）。
 	# name=: URLパターンの名前付け。テンプレート等で使用。reverse関数でURL名から実パスを逆引き可能。
 
+	path('api/save_testnet/<str:testnet_name>/',
+		 BlockchainDataManager.as_view(),
+		 kwargs=None,
+		 name='save_testnet'),
+
+	path('api/fetch_testnet/<str:testnet_name>/',
+		 BlockchainDataManager.as_view(),
+		 kwargs=None,
+		 name='fetch_testnet'),
+
 	# testnetを指定する（DB保存なし）
-	path('api/save_testnet/<str:testnet_name>/', save_testnet.save_testnet, name='save_testnet'),
-	path('api/fetch_testnet/<str:testnet_name>/', fetch_testnet.fetch_testnet, name='fetch_testnet'),
+	# path('api/save_testnet/<str:testnet_name>/', save_testnet.save_testnet, name='save_testnet'),
+	# path('api/fetch_testnet/<str:testnet_name>/', fetch_testnet.fetch_testnet, name='fetch_testnet'),
 
 	# DBとtestnetの同時記録
 	# path('api/record_game_result/<str:testnet_name>/', record_game_result.record_game_result, name='record_game_result'),

@@ -57,8 +57,7 @@ setup_elk: init
 
 .PHONY: build_up_blockchain
 build_up_blockchain: init
-	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) build
-	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) up -d
+	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) up -d --build
 	make hardhat_deploy_hardhat
 	make hardhat_deploy_ganache
 	make setup_ganache_data

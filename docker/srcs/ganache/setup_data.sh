@@ -7,8 +7,8 @@ API_URL="https://hioikawa.42.fr/pong/api/save_testnet/ganache/"
 # match_idを1から20まで連番で処理
 for MATCH_ID in {1..20}; do
 	# player nameの末尾に1~100のランダムな数字を追加
-	PLAYER_1_NAME="キュア$((RANDOM % 100 + 1))"
-	PLAYER_2_NAME="キュア$((RANDOM % 100 + 1))"
+#	PLAYER_1_NAME="キュア$((RANDOM % 100 + 1))"
+#	PLAYER_2_NAME="キュア$((RANDOM % 100 + 1))"
 
 	# どちらかのスコアをランダムに15、もう片方を14以下に設定
 	if [ $((RANDOM % 2)) -eq 0 ]; then
@@ -24,8 +24,8 @@ for MATCH_ID in {1..20}; do
 		\"match_id\": $MATCH_ID,
 		\"player_1_score\": $PLAYER_1_SCORE,
 		\"player_2_score\": $PLAYER_2_SCORE,
-		\"player_1_name\": \"$PLAYER_1_NAME\",
-		\"player_2_name\": \"$PLAYER_2_NAME\"
+#		\"player_1_name\": \"$PLAYER_1_NAME\",
+#		\"player_2_name\": \"$PLAYER_2_NAME\"
 	}"
 
 	# APIへのPOSTリクエスト

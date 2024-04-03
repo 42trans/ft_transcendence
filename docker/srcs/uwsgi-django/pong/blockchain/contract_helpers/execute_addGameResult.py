@@ -1,7 +1,7 @@
 # docker/srcs/uwsgi-django/pong/blockchain/local_testnet/execute_addGameResult.py
 from web3 import Web3, Account
 
-def execute_addGameResult(w3, contract, data, winner, loser, private_key):
+def execute_addGameResult(w3, contract, data, private_key):
 	"""
 	Ethereumブロックチェーンにゲームの結果を記録するために、Hardhatでdeployしたスマートコントラクトの`addGameResult`関数を呼び出します。
 
