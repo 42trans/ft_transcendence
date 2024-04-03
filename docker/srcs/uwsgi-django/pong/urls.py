@@ -26,4 +26,6 @@ urlpatterns = [
 
 	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://example.com/
 	path("", views.index, name="index"),
+	path("sign-up/", views.sign_up, name="sign-up"),
+	path("sign-in/", views.sign_in, name="sign-in"),
 ]

@@ -8,6 +8,13 @@ from .models import PongGameResult
 
 def index(request):
 	return HttpResponse("<h1>[Pong]</h1> <p>index</p>")
+	return render(request, 'pong/index.html')
+
+def sign_in(request):
+	return render(request, 'pong/sign-in.html')
+
+def sign_up(request):
+	return render(request, 'pong/sign-up.html')
 
 def results(request):
 	results_list = PongGameResult.objects.all().order_by("-date")
