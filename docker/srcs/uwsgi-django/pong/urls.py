@@ -28,4 +28,5 @@ urlpatterns = [
 	path("", views.index, name="index"),
 	path("sign-up/", views.sign_up, name="sign-up"),
 	path("sign-in/", views.sign_in, name="sign-in"),
+	path("sign-in/sign-in/", views.sign_in_bootstrap, name="sign-in"),  # test
 ]

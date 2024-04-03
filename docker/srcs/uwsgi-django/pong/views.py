@@ -7,8 +7,10 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import PongGameResult
 
 def index(request):
-	return HttpResponse("<h1>[Pong]</h1> <p>index</p>")
 	return render(request, 'pong/index.html')
+
+def sign_in_bootstrap(request):
+	return render(request, 'pong/sign-in/sign-in.html')
 
 def sign_in(request):
 	return render(request, 'pong/sign-in.html')

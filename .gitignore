@@ -24,6 +24,7 @@ memo/
 docker/srcs/kind/kind-config.yaml
 node_modules
 static/
+!docker/srcs/uwsgi-django/static
 init/.make_env
 pythontest
 docker/srcs/uwsgi-django/sphinx/build
