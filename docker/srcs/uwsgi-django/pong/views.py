@@ -1,10 +1,19 @@
 # docker/srcs/uwsgi-django/pong/views.py
 import json
-from django.shortcuts import render
+import requests
+import secrets
+from django.shortcuts import redirect, render
+from django.conf import settings
+from django.urls import reverse
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import PongGameResult
+import logging
+
+
+logger = logging.getLogger(__name__)
+
 
 def index(request):
 	return render(request, 'pong/index.html')
@@ -15,11 +24,100 @@ def index_bootstrap(request):
 def sign_in_bootstrap(request):
 	return render(request, 'pong/bootstrap_sign-in.html')
 
+# def sign_in(request):
+# 	return render(request, 'pong/sign-in.html')
+
 def sign_in(request):
-	return render(request, 'pong/sign-in.html')
+	logger.error('\nsign in 1')
+
+	# CSRF対策のためのstateを生成
+	state = secrets.token_urlsafe()
+	# stateをセッションに保存
+	request.session['oauth_state'] = state
+
+	# 42authの認証ページへのリダイレクトURLを構築
+	params = {
+		'client_id': settings.FT_CLIENT_ID,
+		'redirect_uri': request.build_absolute_uri(reverse('sign_in_redirect')),
+		'response_type': 'code',
+		'scope': 'public',
+		'state': state,
+	}
+	auth_url = f"https://api.intra.42.fr/oauth/authorize?{requests.compat.urlencode(params)}"
+
+	logger.error(f'sign in 2 client_id:{params['client_id']}')
+	logger.error(f'sign in 3 redirect_uri:{params['redirect_uri']}')
+	logger.error(f'sign in 4 state:{params['state']}')
+	logger.error(f'sign in 5 auth_url:{auth_url}')
+
+	return redirect(auth_url)
+
+
+def sign_in_redirect(request):
+	logger.error('\nsign in redirect 1')
+
+	# セッションからstateを取得
+	saved_state = request.session.get('oauth_state')
+	# リクエストからstateを取得
+	returned_state = request.GET.get('state')
+
+	# stateが一致するか検証
+	if saved_state != returned_state:
+		# stateが一致しない場合はエラー処理
+		return render(request, 'error.html', {'message': 'Invalid state parameter'})
+
+	# 42authから返されたコードを取得
+	code = request.GET.get('code')
+	if code:
+		# アクセストークンを取得
+		token_url = 'https://api.intra.42.fr/oauth/token'
+		token_data = {
+			'grant_type': 'authorization_code',
+			'client_id': settings.FT_CLIENT_ID,
+			'client_secret': settings.FT_SECRET,
+			'code': code,
+			'redirect_uri': request.build_absolute_uri(reverse('sign_in_redirect')),
+		}
+		logger.error(f'sign in redirect 2 url:{token_url}')
+		logger.error(f'sign in redirect 3 client_id:{token_data['client_id']}')
+		logger.error(f'sign in redirect 4 code:{token_data['code']}')
+		logger.error(f'sign in redirect 5 redirect_uri:{token_data['redirect_uri']}')
+
+		try:
+			token_response = requests.post(token_url, data=token_data)
+			token_response.raise_for_status()  # HTTPエラーをチェック
+			token_json = token_response.json()
+			access_token = token_json.get('access_token')
+
+			# アクセストークンを使用してユーザー情報を取得
+			user_info_url = 'https://api.intra.42.fr/v2/me'
+			user_info_response = requests.get(user_info_url, headers={'Authorization': f'Bearer {access_token}'})
+			user_info = user_info_response.json()
+
+			logger.debug(f'sign in redirect 6 user_info_url:{user_info_url}')
+			logger.debug(f'sign in redirect 7 user_info_response:{user_info_response}')
+			logger.debug(f'sign in redirect 8 user_info:{user_info}')
+
+			# ここで、ユーザー情報を基にDjangoのユーザーセッションを作成する処理を行います。
+			# 例えば、ユーザーが存在しなければ作成し、セッションにログイン情報を保存する等。
+			# todo
+
+		except requests.exceptions.RequestException as e:
+			# エラーログ出力やユーザーへのエラーメッセージ表示など
+			messages.error(request, 'ログイン処理中にエラーが発生しました。')
+		return redirect('sign_in')
+
+		return redirect('/pong')  # ログイン後のリダイレクト先
+
+	else:
+		# エラーメッセージをユーザーに表示
+		messages.error(request, '認証コードが取得できませんでした。')
+		return render(request, 'pong/sign_in.html')
+
 
 def sign_up(request):
 	return render(request, 'pong/sign-up.html')
+
 
 def results(request):
 	results_list = PongGameResult.objects.all().order_by("-date")

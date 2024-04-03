@@ -1,5 +1,6 @@
 # docker/srcs/uwsgi-django/pong/urls.py
-from django.urls import path
+from django.urls import include, path
+from django.views.generic import TemplateView
 from pong import views
 from pong.blockchain import save_testnet
 from pong.blockchain import fetch_testnet
@@ -26,9 +27,12 @@ urlpatterns = [
 
 	# pong
 	path("sign-up/", views.sign_up, name="sign-up"),
-	path("sign-in/", views.sign_in, name="sign-in"),
+	path("sign-in/", views.sign_in, name='sign-in'),
+	path('sign-in-redirect/', views.sign_in_redirect, name='sign_in_redirect'),
+
 	path("bootstrap_index/", views.index_bootstrap, name="index"),  # test
 	path("bootstrap_sign-in/", views.sign_in_bootstrap, name="sign_in"),  # test
+
 
 	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://example.com/
 	path("", views.index, name="index"),
