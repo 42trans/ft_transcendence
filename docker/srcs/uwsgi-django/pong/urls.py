@@ -24,10 +24,12 @@ urlpatterns = [
 	path('save_game_result/', views.save_game_result, name='save_game_result'),
 	path('results/', views.results, name='results'),
 
-	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://example.com/
-	path("", views.index, name="index"),
+	# pong
 	path("sign-up/", views.sign_up, name="sign-up"),
 	path("sign-in/", views.sign_in, name="sign-in"),
 	path("bootstrap_index/", views.index_bootstrap, name="index"),  # test
 	path("bootstrap_sign-in/", views.sign_in_bootstrap, name="sign_in"),  # test
+
+	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://example.com/
+	path("", views.index, name="index"),
 ]
