@@ -21,6 +21,9 @@ def index(request):
 def index_bootstrap(request):
 	return render(request, 'pong/bootstrap_index.html')
 
+def index_gw(request):
+	return render(request, 'pong/gw/index.html')
+
 def sign_in_bootstrap(request):
 	return render(request, 'pong/bootstrap_sign-in.html')
 

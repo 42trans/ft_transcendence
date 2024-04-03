@@ -30,6 +30,8 @@ urlpatterns = [
 	path("sign-in/", views.sign_in, name='sign-in'),
 	path('sign-in-redirect/', views.sign_in_redirect, name='sign_in_redirect'),
 
+	path("gw/", views.index_gw, name="index_gw"),  # test
+
 	path("bootstrap_index/", views.index_bootstrap, name="index"),  # test
 	path("bootstrap_sign-in/", views.sign_in_bootstrap, name="sign_in"),  # test
 
