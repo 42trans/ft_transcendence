@@ -205,6 +205,10 @@ LOGGING = {
 		'level': 'ERROR',  # 基礎的な全般設定 ※WARNINGにするとテスト時の意図的な操作も拾ってしまう
 		'class': 'logging.StreamHandler',
 	},
+	'console_debug': {
+		'level': 'DEBUG',
+		'class': 'logging.StreamHandler',
+	},
 	'file': {
 		'level': 'WARNING',
 		'class': 'logging.FileHandler',
@@ -240,6 +244,11 @@ LOGGING = {
 	},
 	'pong': {  # 'pong' はアプリケーション固有のロガーの名前 filterとして特定の場所のdebugに使用する
 		'handlers': ['console'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'pong.views': {
+		'handlers': ['console_debug'],
 		'level': 'DEBUG',
 		'propagate': False,
 	},
