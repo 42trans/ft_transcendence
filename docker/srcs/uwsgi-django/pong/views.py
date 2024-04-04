@@ -10,12 +10,19 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import PongGameResult
 import logging
+from django.contrib.auth.decorators import login_required
 
 
 logger = logging.getLogger(__name__)
 
 
-def index(request):
+def pong_view(request):
+	if request.user.is_authenticated:
+		param = {
+			'nickname': request.user.nickname
+		}
+		return render(request, 'pong/index.html', param)
+
 	return render(request, 'pong/index.html')
 
 

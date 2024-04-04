@@ -2,17 +2,20 @@ from django.shortcuts import render, redirect
 from .forms import SignupForm, LoginForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from .models import CustomUser
 
 
 def signup_view(request):
+    if request.user.is_authenticated:
+        return redirect('/pong/')  # ログイン済みの場合は/pong/にリダイレクト
+
     if request.method == 'POST':
 
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect(to='/accounts/user/')
-
+            return redirect(to='/pong/')
     else:
         form = SignupForm()
 
@@ -24,8 +27,11 @@ def signup_view(request):
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('/pong/')  # ログイン済みの場合は/pong/にリダイレクト
+
     if request.method == 'POST':
-        next = request.POST.get('next')
+        # next = request.POST.get('next')
         form = LoginForm(request, data=request.POST)
 
         if form.is_valid():
@@ -33,8 +39,7 @@ def login_view(request):
 
             if user:
                 login(request, user)
-                return redirect(to='/accounts/user/')
-
+                return redirect(to='/pong/')
     else:
         form = LoginForm()
 

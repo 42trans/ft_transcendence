@@ -35,5 +35,5 @@ urlpatterns = [
 
 
 	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://example.com/
-	path("", views.index, name="index"),
+	path("", views.pong_view, name="index"),
 ]
