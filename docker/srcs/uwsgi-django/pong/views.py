@@ -25,8 +25,10 @@ def index_bootstrap(request):
 def index_gw(request):
 	return render(request, 'pong/gw/index.html')
 
+
 def sign_in_bootstrap(request):
 	return render(request, 'pong/bootstrap_sign-in.html')
+
 
 # def sign_in(request):
 # 	return render(request, 'pong/sign-in.html')
@@ -69,7 +71,7 @@ def sign_in_redirect(request):
 	# stateが一致するか検証
 	if saved_state != returned_state:
 		# stateが一致しない場合はエラー処理
-		return render(request, '/pong/error.html', {'message': 'Invalid state parameter'})
+		return render(request, 'pong/error.html', {'message': 'Invalid state parameter'})
 
 
 	# 42authから返されたコードを取得
@@ -94,6 +96,7 @@ def sign_in_redirect(request):
 		'code': code,
 		'redirect_uri': request.build_absolute_uri(reverse('sign_in_redirect')),
 	}
+
 	logger.debug(f'sign in redirect 2 url:{token_url}')
 	logger.debug(f'sign in redirect 3 client_id:{token_data['client_id']}')
 	logger.debug(f'sign in redirect 4 code:{token_data['code']}')
@@ -111,9 +114,13 @@ def sign_in_redirect(request):
 		user_info = user_info_response.json()
 		formatted_user_info = json.dumps(user_info, indent=4)
 
+
 		logger.debug(f'sign in redirect 6 user_info_url:{user_info_url}')
 		logger.debug(f'sign in redirect 7 user_info_response:{user_info_response}')
 		logger.debug(f'sign in redirect 8 user_info:{formatted_user_info}')
+
+		expires_in = token_json.get('expires_in')  # expires_inの値を取得
+		logger.debug(f'access token expires in: {expires_in} sec ({expires_in // 60} min)')
 
 		# ここで、ユーザー情報を基にDjangoのユーザーセッションを作成する処理を行います。
 		# 例えば、ユーザーが存在しなければ作成し、セッションにログイン情報を保存する等。
