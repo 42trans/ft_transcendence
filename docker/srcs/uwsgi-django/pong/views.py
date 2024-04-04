@@ -22,10 +22,6 @@ def index(request):
 def index_bootstrap(request):
 	return render(request, 'pong/bootstrap_index.html')
 
-def index_gw(request):
-	return render(request, 'pong/gw/index.html')
-
-
 def sign_in_bootstrap(request):
 	return render(request, 'pong/bootstrap_sign-in.html')
 
@@ -170,3 +166,11 @@ def save_game_result(request):
 		except Exception as e:
 			return JsonResponse({'status': 'error', 'message': str(e)})
 	return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+# custom template hth pong
+def gw_index(request):
+	return render(request, 'pong/gw/index.html')
+def gw_game(request):
+	return render(request, 'pong/gw/game.html')
+def gw_tournament(request):
+	return render(request, 'pong/gw/tournament.html')

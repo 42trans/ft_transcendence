@@ -30,11 +30,14 @@ urlpatterns = [
 	path("sign-in/", views.sign_in, name='sign-in'),
 	path('sign-in-redirect/', views.sign_in_redirect, name='sign_in_redirect'),
 
-	path("gw/", views.index_gw, name="index_gw"),  # test
 
 	path("bootstrap_index/", views.index_bootstrap, name="index"),  # test
 	path("bootstrap_sign-in/", views.sign_in_bootstrap, name="sign_in"),  # test
 
+	# custom template hth pong
+	path("gw/", views.gw_index, name="gw_index"),
+	path("gw/game/", views.gw_game, name="gw_game"),
+	path("gw/tournament/", views.gw_tournament, name="gw_tournament"),
 
 	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://example.com/
 	path("", views.index, name="index"),
