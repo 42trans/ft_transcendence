@@ -3,9 +3,12 @@
 # .dockerignore
 .env
 .env_src_credentials
+*.crt
+*.key
 old/
 
 .vscode
+.idea
 play/
 obj/
 backup/
@@ -28,6 +31,7 @@ static/
 init/.make_env
 pythontest
 docker/srcs/uwsgi-django/sphinx/build
+
 hioikawa_test.sh
 additional.mk
 

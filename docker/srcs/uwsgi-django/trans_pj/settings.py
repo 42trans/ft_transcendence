@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'pong',
 	'django_prometheus',
+	'accounts',  # user_accounts
 	# 'django.contrib.sites',  # allauth
 	# 'allauth',  # allauth
 	# 'allauth.account',  # allauth
@@ -273,3 +274,7 @@ LOGGING = {
 # ACCOUNT_EMAIL_VERIFICATION = 'none'
 # ACCOUNT_EMAIL_REQUIRED = True   # ユーザ登録にメルアド必須にする
 # # allauth setting --------------------------------------------------------------
+
+LOGIN_URL = '/accounts/login/'
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
