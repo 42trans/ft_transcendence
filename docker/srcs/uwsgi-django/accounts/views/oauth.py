@@ -1,136 +1,134 @@
+# accounts/views/oauth.py
+
 import secrets
 import requests
 import json
 import logging
+from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import login, logout, update_session_auth_hash, get_user_model
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
+from django.contrib.auth import login, get_user_model
 from django.conf import settings
 from django.urls import reverse
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from accounts.forms import SignupForm, LoginForm, UserEditForm, CustomPasswordChangeForm
-from accounts.models import CustomUser
 
 
 logger = logging.getLogger(__name__)
 
 
-def oauth_ft(request):
-    if request.user.is_authenticated:
-        return redirect(to='/pong/')  # ログイン済みの場合は/pong/にリダイレクトs
+class OAuthWith42(View):
+    pong_top_url = "/pong/"
+    error_page_path = "pong/error.html"
+    callback_name = "accounts:oauth_ft_callback"
+    api_path = "https://api.intra.42.fr/oauth"
+    user_url = "https://api.intra.42.fr/v2/me"
 
-    # logger.debug('\noauth_with_42 1')
-
-    # CSRF対策のためのstateを生成
-    state = secrets.token_urlsafe()
-    # stateをセッションに保存
-    request.session['oauth_state'] = state
-
-    # 42authの認証ページへのリダイレクトURLを構築
-    params = {
-        'client_id': settings.FT_CLIENT_ID,
-        'redirect_uri': request.build_absolute_uri(reverse('accounts:oauth_ft_callback')),
-        'response_type': 'code',
-        'scope': 'public',
-        'state': state,
-    }
-    auth_url = f"https://api.intra.42.fr/oauth/authorize?{requests.compat.urlencode(params)}"
-
-    # logger.debug(f'oauth_with_42 2 client_id:{params['client_id']}')
-    # logger.debug(f'oauth_with_42 3 redirect_uri:{params['redirect_uri']}')
-    # logger.debug(f'oauth_with_42 4 state:{params['state']}')
-    # logger.debug(f'oauth_with_42 5 auth_url:{auth_url}')
-
-    return redirect(to=auth_url)
+    def get(self, request, *args, **kwargs):
+        if 'callback' in request.path:
+            return self.oauth_ft_callback(request)
+        else:
+            return self.oauth_ft(request)
 
 
-def oauth_ft_callback(request):
-    # logger.debug('\noauth_with_42 redirect 1')
+    def oauth_ft(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(to=self.pong_top_url)  # ログイン済みの場合は/pong/にリダイレクトs
 
-    # セッションからstateを取得
-    saved_state = request.session.get('oauth_state')
-    # リクエストからstateを取得
-    returned_state = request.GET.get('state')
+        # logger.debug('\noauth_with_42 1')
 
-    # stateが一致するか検証
-    if saved_state != returned_state:
-        # stateが一致しない場合はエラー処理
-        return render(request, 'pong/error.html', {'message': 'Invalid state parameter'})
+        # CSRF対策のためのstateを生成
+        state = secrets.token_urlsafe()
+        request.session['oauth_state'] = state
+
+        params = {
+            'client_id': settings.FT_CLIENT_ID,
+            'redirect_uri': request.build_absolute_uri(reverse(self.callback_name)),
+            'response_type': 'code',
+            'scope': 'public',
+            'state': state,
+        }
+        auth_url = f"{self.api_path}/authorize?{requests.compat.urlencode(params)}"
+
+        # logger.debug(f'oauth_with_42 2 client_id:{params['client_id']}')
+        # logger.debug(f'oauth_with_42 3 redirect_uri:{params['redirect_uri']}')
+        # logger.debug(f'oauth_with_42 4 state:{params['state']}')
+        # logger.debug(f'oauth_with_42 5 auth_url:{auth_url}')
+        return redirect(to=auth_url)
 
 
-    # 42authから返されたコードを取得
-    code = request.GET.get('code')
-    if not code:
+    def oauth_ft_callback(self, request, *args, **kwargs):
+        # logger.debug('\noauth_with_42 redirect 1')
+
+        if not self._is_valid_state(request):
+            return render(request, self.error_page_path, {'message': 'Invalid state parameter'})
+
+        code = request.GET.get('code')
+        if not code:
+            self._handle_auth_error(request)
+            return render(request, self.error_page_path)
+
+        token_url = f"{self.api_path}/token"
+        token_data = {
+            'grant_type': 'authorization_code',
+            'client_id': settings.FT_CLIENT_ID,
+            'client_secret': settings.FT_SECRET,
+            'code': code,
+            'redirect_uri': request.build_absolute_uri(reverse(self.callback_name)),
+        }
+
+        # logger.debug(f'oauth_with_42 redirect 2 url:{token_url}')
+        # logger.debug(f'oauth_with_42 redirect 3 client_id:{token_data['client_id']}')
+        # logger.debug(f'oauth_with_42 redirect 4 code:{token_data['code']}')
+        # logger.debug(f'oauth_with_42 redirect 5 redirect_uri:{token_data['redirect_uri']}')
+
+        try:
+            token_response = requests.post(token_url, data=token_data)
+            token_response.raise_for_status()
+            access_token = token_response.json().get('access_token')
+
+            user_info_url = self.user_url
+            user_info_response = requests.get(user_info_url, headers={'Authorization': f'Bearer {access_token}'})
+            user_info = user_info_response.json()
+            formatted_user_info = json.dumps(user_info, indent=4)
+
+            # logger.debug(f'oauth_with_42 redirect 6 user_info_url:{user_info_url}')
+            # logger.debug(f'oauth_with_42 redirect 7 user_info_response:{user_info_response}')
+            # logger.debug(f'oauth_with_42 redirect 8 user_info:{formatted_user_info}')
+
+            # expires_in = token_response.json().get('expires_in')  # expires_inの値を取得
+            # logger.debug(f'access token expires in: {expires_in} sec ({expires_in // 60} min)')
+
+            email = user_info.get('email')
+            nickname = user_info.get('login')
+
+            User = get_user_model()
+            user, new_user_created = User.objects.get_or_create(email=email, defaults={'nickname': nickname})
+
+            if new_user_created:
+                user.set_unusable_password()
+                user.save()
+
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+            # ログイン後のリダイレクト先：相対パスだと sign-in-redirect/path/になる
+            # return redirect('/pong/bootstrap_index/')
+            return redirect(to=self.pong_top_url)
+
+        except requests.exceptions.RequestException as e:
+            messages.error(request,
+                           'An error occurred during the authentication process.')
+            return render(request,
+                          self.error_page_path,
+                          {'message': 'An error occurred during the authentication process.'})
+
+
+    def _is_valid_state(self, request):
+        saved_state = request.session.get('oauth_state')
+        returned_state = request.GET.get('state')
+        return saved_state == returned_state
+
+
+    def _handle_auth_error(self, request):
         error = request.GET.get('error', 'Unknown error')
         error_description = request.GET.get('error_description', 'No description provided.')
-
-        # ログにエラーを記録するなどの処理を行う
         logger.error(f'OAuth error: {error}, Description: {error_description}')
-
         messages.error(request, 'Authorization code is missing. Please try again.')
-        return render(request, 'pong/error.html')
-
-
-    # アクセストークンを取得
-    token_url = 'https://api.intra.42.fr/oauth/token'
-    token_data = {
-        'grant_type': 'authorization_code',
-        'client_id': settings.FT_CLIENT_ID,
-        'client_secret': settings.FT_SECRET,
-        'code': code,
-        'redirect_uri': request.build_absolute_uri(reverse('accounts:oauth_ft_callback')),
-    }
-
-    # logger.debug(f'oauth_with_42 redirect 2 url:{token_url}')
-    # logger.debug(f'oauth_with_42 redirect 3 client_id:{token_data['client_id']}')
-    # logger.debug(f'oauth_with_42 redirect 4 code:{token_data['code']}')
-    # logger.debug(f'oauth_with_42 redirect 5 redirect_uri:{token_data['redirect_uri']}')
-
-    try:
-        token_response = requests.post(token_url, data=token_data)
-        token_response.raise_for_status()  # HTTPエラーをチェック
-        token_json = token_response.json()
-        access_token = token_json.get('access_token')
-
-        # アクセストークンを使用してユーザー情報を取得
-        user_info_url = 'https://api.intra.42.fr/v2/me'
-        user_info_response = requests.get(user_info_url, headers={'Authorization': f'Bearer {access_token}'})
-        user_info = user_info_response.json()
-        formatted_user_info = json.dumps(user_info, indent=4)
-
-
-        # logger.debug(f'oauth_with_42 redirect 6 user_info_url:{user_info_url}')
-        # logger.debug(f'oauth_with_42 redirect 7 user_info_response:{user_info_response}')
-        # logger.debug(f'oauth_with_42 redirect 8 user_info:{formatted_user_info}')
-
-        expires_in = token_json.get('expires_in')  # expires_inの値を取得
-        # logger.debug(f'access token expires in: {expires_in} sec ({expires_in // 60} min)')
-
-
-        email = user_info.get('email')
-        nickname = user_info.get('login')
-
-        # ユーザー検索または作成
-        User = get_user_model()
-        user, created = User.objects.get_or_create(email=email, defaults={'nickname': nickname})
-
-        if created:
-            # 新規ユーザーの場合は、追加の初期設定をここで行う
-            user.set_unusable_password()  # パスワードは外部サービスに依存しているため
-            user.save()
-            # 必要に応じて、ユーザーに関連する他のモデルやデータの初期設定を行う
-
-        # ユーザーをログインさせる
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-
-        # ログイン後のリダイレクト先：相対パスだと sign-in-redirect/path/になる
-        # return redirect('/pong/bootstrap_index/')
-        return redirect(to='/pong/')
-
-    except requests.exceptions.RequestException as e:
-        # エラーハンドリング
-        messages.error(request, 'An error occurred during the authentication process.')
-        return render(request, 'pong/error.html', {'message': 'An error occurred during the authentication process.'})

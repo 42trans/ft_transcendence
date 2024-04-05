@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from accounts.forms import SignupForm, LoginForm
 
+
 class SignupView(View):
     signup_url = "accounts/signup.html"
     pong_top_url = "/pong/"
