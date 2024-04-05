@@ -17,7 +17,7 @@
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}
-        <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
         {% endfor %}
     </ul>
     {% endif %}
@@ -27,19 +27,22 @@
         {% csrf_token %}
         <h4>Edit Nickname</h4>
         {{ user_form.as_p }}
-        <button type="submit">Save changes</button>
+        <button type="submit">change nickname</button>
     </form>
 
     <br>
-    <hr>
 
+    {% if password_form %}
+    <hr>
     <!-- パスワード変更フォーム -->
     <form method="post">
         {% csrf_token %}
         <h4>Change Password</h4>
         {{ password_form.as_p }}
-        <button type="submit">Change password</button>
+        <button type="submit">change password</button>
     </form>
+    {% endif %}
+
 </div>
 {% endblock %}
 

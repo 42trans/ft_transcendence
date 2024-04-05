@@ -71,7 +71,13 @@ class UserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    """
+    CustomUser model that extends AbstractBaseUser and PermissionsMixin.
 
+    Fields:
+    - email: Email address of the user. 42 email if OAuth with 42 used.
+    - nickname: A unique nickname for the user. if OAuth with 42 used, 42-login by default.
+    """
     email = models.EmailField(_("email address"), unique=True)
     nickname = models.CharField(_("nickname"), max_length=30, unique=True)
 
