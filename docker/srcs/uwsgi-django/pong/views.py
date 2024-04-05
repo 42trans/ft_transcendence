@@ -276,3 +276,9 @@ def gw_sign_in_redirect42(request):
 
 	# ログイン後のリダイレクト先：/pong/以下を記載する
 	return redirect('/pong/gw/')
+
+
+def gw_results(request):
+	results_list = PongGameResult.objects.all().order_by("-date")
+	context = {'results_list': results_list}
+	return render(request, 'pong/gw/results.html', context)

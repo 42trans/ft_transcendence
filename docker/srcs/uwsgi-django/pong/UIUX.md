@@ -9,3 +9,8 @@
   - `make run_django_server` or
     - docker exec -it uwsgi-django bash -c "python manage.py runserver 0.0.0.0:8002"
   - http://localhost:8002/
+
+## 作業メモ
+
+- テンプレート拾ってきて、どういうものか勉強
+  - それのCSS（色とかレイアウト）はそのまま活用し、jqueryをはずした
