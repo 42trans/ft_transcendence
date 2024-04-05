@@ -14,7 +14,12 @@
     <p><input type="hidden" name="next" value="{{next}}"></p>
     <p><input type="submit" value="ログイン"></p>
 </form>
-<p><a href="{% url 'accounts:signup'%}">ユーザー登録</a></p>
+
+<hr>
+<a href="{% url 'accounts:oauth_ft' %}">login with 42</a>
+<hr>
+<a href="{% url 'accounts:signup'%}">ユーザー登録</a>
+<hr>
 <a href="/pong/">🏓 return to pong</a></li>
 </body>
 </html>
