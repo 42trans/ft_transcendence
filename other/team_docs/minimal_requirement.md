@@ -1,5 +1,9 @@
 # minimal_requirement
 
+## 詳細 .md
+
+- [UIUX.md](../../docker/srcs/uwsgi-django/pong/UIUX.md)
+
 ## Djangoアプリ作成
 
 - 参考:【はじめての Django アプリ作成、その 1 | Django ドキュメント | Django】 <https://docs.djangoproject.com/ja/5.0/intro/tutorial01/>
