@@ -1,8 +1,13 @@
 from django.shortcuts import render, redirect
-from .forms import SignupForm, LoginForm
-from django.contrib.auth import login, logout
+from .forms import SignupForm, LoginForm, UserEditForm, CustomPasswordChangeForm
+from django.contrib import messages
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
 from .models import CustomUser
+
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth import get_user_model
 
 
 def signup_view(request):
@@ -66,3 +71,32 @@ def user_view(request):
     }
 
     return render(request, 'accounts/user.html', params)
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        user_form = UserEditForm(request.POST, instance=request.user)
+        password_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+
+        if user_form.is_valid() and not password_form.is_valid():
+            user_form.save()
+            messages.success(request, 'Your profile was successfully updated!')
+            return redirect(reverse_lazy('edit'))
+
+        elif password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect(reverse_lazy('edit'))
+
+    else:
+        user_form = UserEditForm(instance=request.user)
+        password_form = CustomPasswordChangeForm(user=request.user)
+
+    params = {
+        'user_form': user_form,
+        'password_form': password_form,
+    }
+
+    return render(request, 'accounts/edit_profile.html', params)

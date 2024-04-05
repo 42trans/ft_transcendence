@@ -6,9 +6,18 @@
     <title>user info</title>
 </head>
 <body>
-<h1>user information</h1>
-<h2>email: {{email}}</h2>
-<h2>nickname: {{nickname}}</h2>
+<h1>user page</h1>
+<ul>
+    <li>email: {{email}}</li>
+    <li>nickname: {{nickname}}</li>
+    <li><a href="{% url 'edit' %}">edit profile</a></li>
+    <li><a href="{% url 'logout' %}">logout</a></li>
+</ul>
+
+<hr>
+<br>
+<a href="/pong/">🏓 pong index page</a>
+
 </body>
 
 </html>
