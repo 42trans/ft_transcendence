@@ -7,12 +7,12 @@
 	<meta name="description" content="hth Pong">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="{% static 'gw/img/favicon.ico' %}" rel="shortcut icon"/>
-	<!-- Google Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
 	<!-- Stylesheets -->
 	<link rel="stylesheet" href="{% static 'gw/css/bootstrap.min.css' %}"/>
 	<link rel="stylesheet" href="{% static 'gw/css/custom.css' %}">
 	<link rel="stylesheet" href="{% static 'gw/css/sign-in.css' %}" >
+	<link rel="stylesheet" href="{% static 'gw/css/animation.css' %}" >
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 </head>
 <body>
@@ -41,8 +41,11 @@
 	<!-- Header section end -->
 	
 	<!-- Content section -->
-	{% block content %}{% endblock %}
+	{% block content %}
 	
+	{% endblock %}
+	<!-- Content section end-->
+
 	<!-- Footer section -->
 	<footer class="footer-section">
 		<div class="container">
@@ -59,5 +62,6 @@
 	<!--====== Javascripts & Jquery ======-->
 	<script src="{% static 'gw/js/color-modes.js' %}"></script>
 	<script src="{% static 'gw/js/bootstrap.bundle.min.js' %}"></script>
+	<script src="{% static 'gw/js/top.js' %}"></script>
 </body>
 </html>

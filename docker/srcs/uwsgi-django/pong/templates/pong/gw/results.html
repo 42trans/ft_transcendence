@@ -4,38 +4,27 @@
 
 {% block content %}
 
-<!-- <div class="canvas-container">
-	<div class="hs-text">
-		<div class="container"> -->
-
-		<div class="gw_results-container py-4">
-			<div class="w-50 m-auto">
-				<h2 class="gw_results-title">pongゲーム結果</h2>
-				{% if results_list %}
-					{% for game_result in results_list %}
-					<h3 class="gw_results-title">-----------------------------------------</h3>
-					<!-- <h3 class="gw_results-title"></h3> -->
-						<ul class="gw_results-ul">
-							<li>スコア: 【 {{ game_result.player_1_score }} - {{ game_result.player_2_score }} 】</br></li>
-							<li>勝者: {{ game_result.name_winner }}</br></li>
-							<li>敗者: {{ game_result.name_loser }}</br></li>
-							<li>日時: {{ game_result.date }}</br></li>
-						</ul>
-						{% endfor %}
-					{% else %}
-						<p>No results are available.</p>
-				{% endif %}
-
-				<!-- <h2>Unrivaled <span>hth Pong</span> Experience</h2>
-				<p>This project is about doing something you’ve never done before. Remind yourself the beginning of your journey in computer science. Look at you now. Time to shine!</p> -->
-				<a href="#" class="site-btn mt-4">Read More</a>
+<div class="gw_results-container py-4">
+	<div class="w-50 m-auto">
 		
-			</div>
-		</div>
+		<h2 class="gw_results-title">pongゲーム結果</h2>
+		{% if results_list %}
+			{% for game_result in results_list %}
+			<h3 class="gw_results-title slideup-text">-----------------------------------------</h3>
+				<ul class="gw_results-ul">
+					<li class="slideup-text">スコア: 【 {{ game_result.player_1_score }} - {{ game_result.player_2_score }} 】</br></li>
+					<li class="slideup-text">勝者: {{ game_result.name_winner }}</br></li>
+					<li class="slideup-text">敗者: {{ game_result.name_loser }}</br></li>
+					<li class="slideup-text">日時: {{ game_result.date }}</br></li>
+				</ul>
+				{% endfor %}
+			{% else %}
+				<p>No results are available.</p>
+		{% endif %}
 
-		<!-- </div>
+		<a href="#" class="site-btn mt-4">Read More</a>
+
 	</div>
-</div> -->
-
+</div>
 
 {% endblock %}
