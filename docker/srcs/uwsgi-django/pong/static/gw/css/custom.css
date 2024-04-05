@@ -209,9 +209,38 @@ Header section
 
 .form-signin {
 	margin: auto; /* 中央寄せ */
-	padding: 20px; /* 内側に20pxの余白を設ける */
-	max-width: 500px; /* 最大幅を500pxに設定 */
+	padding: 30px; /* 内側に20pxの余白を設ける */
+	/* max-width: 500px; 最大幅を500pxに設定 */
+	max-width: 330px;
 	background-color: rgba(35, 24, 1, 0.921); 
+	/* color: #999; */
+}
+
+.fw-normal {
+	color: #fff;
+}
+/* .form-signin { */
+	/* padding: 1rem; */
+	/* } */
+.form-check-label {
+	color: #fff;
+}
+
+.form-signin .form-floating:focus-within {
+	z-index: 2;
+}
+
+.form-signin input[type="email"] {
+	margin-bottom: -1px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+	/* color: #000; */
+}
+
+.form-signin input[type="password"] {
+	margin-bottom: 10px;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 }
 
 
@@ -319,6 +348,7 @@ button.gw_btn-primary:hover, a.gw_btn-primary:hover {
 
 .gw_results-ul{
 	list-style-type: none;
+	color: #fff;
 }
 
 /*----------------------
