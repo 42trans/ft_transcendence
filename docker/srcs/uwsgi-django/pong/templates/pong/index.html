@@ -12,8 +12,8 @@
 
         <h1>welcome, [{{ nickname }}]</h1>
         <ul>
-            <li><a href="/accounts/user/">user information</a></li>
-            <li><a href="/accounts/logout/">logout</a></li>
+            <li><a href="{% url 'accounts:user' %}">user information</a></li>
+            <li><a href="{% url 'accounts:logout' %}">logout</a></li>
         </ul>
 
     {% else %}
@@ -21,8 +21,8 @@
         <h1>welcome, Guest</h1>
         <h2>For a happier life, let's play the pong game!</h2>
         <ul>
-            <li><a href="/accounts/signup/">sign-up</a></li>
-            <li><a href="/accounts/login/">login</a></li>
+            <li><a href="{% url 'accounts:signup' %}">sign-up</a></li>
+            <li><a href="{% url 'accounts:login' %}">login</a></li>
         </ul>
 
     {% endif %}
@@ -33,7 +33,8 @@
 
     <h1>incomplete / test</h1>
     <ul>
-        <li><a href="/pong/sign-in/">[incomplete] login with 42</a></li>
+        <li><a href="{% url 'accounts:oauth_ft' %}">[test] sign-up/login with 42</a></li>
+<!--        <li><a href="/accounts/oauth-ft/">[test] sign-up/login with 42</a></li>-->
         <br>
         <li><a href="/pong/bootstrap_index/">[test] index(bootstrap)</a></li>
         <li><a href="/pong/bootstrap_sign-in/">[test] sign-in(bootstrap)</a></li>
