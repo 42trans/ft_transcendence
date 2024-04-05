@@ -1,7 +1,9 @@
-# from . import views
-from accounts.views.basic_auth import SignupView, LoginView, LogoutView
-from accounts.views import oauth, user
+# accounts/urls.py
+
 from django.urls import include, path
+from accounts.views.basic_auth import SignupView, LoginView, LogoutView
+from accounts.views.user import UserPageView, EditUserProfileView
+from accounts.views import oauth
 
 app_name = 'accounts'
 
@@ -14,6 +16,6 @@ urlpatterns = [
 
     path('logout/', LogoutView.as_view(), name='logout'),
 
-    path('user/', user.user_view, name='user'),
-    path('edit/', user.edit_profile, name='edit'),
+    path('user/', UserPageView.as_view(), name='user'),
+    path('edit/', EditUserProfileView.as_view(), name='edit'),
 ]
