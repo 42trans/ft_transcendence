@@ -1,4 +1,5 @@
-# 
+# uwsgi-django/pong/templates/pong/gw/bootstrap_dev_memo.md
+
 ## 参考
 - 公式ドキュメント
   - とりあえず何が書いてあるかだけ一通り。あまり即戦力な感じの内容ではなかった

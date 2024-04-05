@@ -38,6 +38,9 @@ urlpatterns = [
 	path("gw/", views.gw_index, name="gw_index"),
 	path("gw/game/", views.gw_game, name="gw_game"),
 	path("gw/tournament/", views.gw_tournament, name="gw_tournament"),
+	path("gw/sign-in/", views.gw_sign_in, name="gw_sign_in"),  # test
+	path("gw/sign-in42/", views.gw_sign_in42, name="gw_sign_in42"),  # test
+	path('gw/sign-in-redirect42/', views.gw_sign_in_redirect42, name='gw_sign_in_redirect42'),
 
 	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://example.com/
 	path("", views.index, name="index"),

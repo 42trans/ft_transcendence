@@ -76,37 +76,17 @@
 	}
 	</script>
 
-<style>
-	/* Canvasのスタイリング */
-	.canvas-container {
-	width: 100%; /* コンテナの幅 */
-	height: 900px;
-	display: flex; /* Flexboxを使用 */
-	justify-content: center; /* 水平方向中央揃え */
-	align-items: center; /* 垂直方向中央揃え */
-	background: url('{% static "gw/img/background.png" %}') no-repeat center center; /* 背景画像の設定 */
-	background-size: cover; /* 背景画像をカバーとして設定 */
-	position: relative;
-	}
-	.text-overlay {
-		position: absolute;
-		bottom: 20px; /* 下部からの距離を調整 */
-		left: 50%; /* 横方向中央揃え */
-		transform: translateX(-50%); /* 横方向中央揃え */
-	}
-</style>
-<div id="modelPath" data-model-path="{% static 'gw/img/three/scene.gltf' %}"></div>
+	<div id="modelPath" data-model-path="{% static 'gw/img/three/scene.gltf' %}"></div>
+	<div class="canvas-container">
 
-			
-		<div class="canvas-container">
-				<canvas id="myCanvas"></canvas>
-			
-				<div class="text-overlay">
-					<a href="#" class="site-btn">Start</a>
-				</div>
-				
-			</div>
+		<canvas id="myCanvas"></canvas>
+		
+		<div class="text-overlay">
+			<a href="#" class="site-btn">Start</a>
+		</div>
+		
+	</div>
 
-</section>
+
 
 {% endblock %}
