@@ -7,10 +7,13 @@
 </head>
 <body>
 <h1>ユーザー登録</h1>
-<form action="{% url 'signup' %}" method="post">
+<form action="{% url 'accounts:signup' %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <p><input type="submit" value="登録"></p>
 </form>
+
+<a href="/pong/">🏓 return to pong</a></li>
+
 </body>
 </html>
