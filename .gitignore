@@ -1,59 +1,61 @@
+#### system & prject root #####
 .DS_Store
-# .gitignore
-# .dockerignore
-.env
-.env_src_credentials
-old/
-
 .vscode
-play/
-obj/
-backup/
-memo.md
-
-clone*/
-# other/
-sample/
-
-memo*
-docker/README*
-mount_volume/
-
-backup/
-memo/
-docker/srcs/kind/kind-config.yaml
-node_modules
-# static/
-!docker/srcs/uwsgi-django/static
-init/.make_env
-pythontest
-docker/srcs/uwsgi-django/sphinx/build
-hioikawa_test.sh
+.idea
 additional.mk
 
-PRIVATE
+
+#### docker/ #####
+.env
+.env_src_credentials
+*.crt
+*.key
+
+node_modules
+pythontest
+
+docker/srcs/kind/kind-config.yaml
+
+docker/srcs/uwsgi-django/sphinx/build
+docker/srcs/uwsgi-django/django_debug.log
 
 docker/srcs/hardhat/hardhat_pj/artifacts
-docker/srcs/hardhat/hardhat_pj/share/contractInfo.json
-docker/srcs/hardhat/hardhat_pj/share/contractInfo-hardhat.json
-docker/srcs/hardhat/hardhat_pj/share/contractInfo-ganache.json
 docker/srcs/hardhat/hardhat_pj/cache
 docker/srcs/hardhat/hardhat_pj/docs
+docker/srcs/hardhat/hardhat_pj/share/*.json
 
+
+#### init/ #####
+
+
+#### kind/ #####
+
+
+#### mount_volume/ #####
+mount_volume/
+
+
+#### other/ #####
+
+
+#### test/ #####
 test/result
+test/hioikawa_test.sh
 
+
+#### hioikawa #####
+old/
+play/
+backup/
+memo.md
+PRIVATE
+
+
+#### command-memo #####
 # srcs/strapi/y-strapi-project/node_modules/*
 # !srcs/strapi/y-strapi-project/node_modules/@strapi/
 # srcs/strapi/y-strapi-project/node_modules/@strapi/*
 # !srcs/strapi/y-strapi-project/node_modules/@strapi/strapi
 
-
 # git rm --cached falename
-# git rm --cached .env
-# git rm --cached README.md
-# git rm --cached .DS_Store
-
 # git rm -r --cached dirname
-# git rm -r --cached sample
-docker/srcs/uwsgi-django/django_debug.log
-docker/srcs/hardhat/hardhat_pj/share/contractInfo-sepolia.json
