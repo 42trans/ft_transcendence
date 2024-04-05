@@ -1,0 +1,22 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>ユーザー登録</title>
+</head>
+<body>
+<h1>ユーザー登録</h1>
+<form action="{% url 'accounts:signup' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p><input type="submit" value="登録"></p>
+</form>
+
+<hr>
+<a href="{% url 'accounts:oauth_ft' %}">sign-up with 42</a>
+<hr>
+<a href="/pong/">🏓 return to pong</a></li>
+
+</body>
+</html>

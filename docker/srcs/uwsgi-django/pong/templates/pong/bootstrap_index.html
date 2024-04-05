@@ -162,8 +162,9 @@
       <h3 class="float-md-start mb-0">Pong</h3>
       <nav class="nav nav-masthead justify-content-center float-md-end">
         <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="/">Home</a>
-        <a class="nav-link fw-bold py-1 px-0" href="/pong/bootstrap_sign-in/">Sign-in</a>
-        <a class="nav-link fw-bold py-1 px-0" href="/pong/sign-up/">Sign-up</a>
+        <a class="nav-link fw-bold py-1 px-0" href="{% url 'accounts:signup' %}">Sign-Up</a>
+        <a class="nav-link fw-bold py-1 px-0" href="{% url 'accounts:login' %}">Login</a>
+        <a class="nav-link fw-bold py-1 px-0" href="{% url 'accounts:oauth_ft' %}">Login with 42</a>
       </nav>
     </div>
   </header>
