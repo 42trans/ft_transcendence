@@ -26,6 +26,8 @@ docker/srcs/hardhat/hardhat_pj/cache
 docker/srcs/hardhat/hardhat_pj/docs
 docker/srcs/hardhat/hardhat_pj/share/*.json
 
+docker/srcs/pgadmin/
+
 # 再度修正。entrypoint.shで最新ファイルの自動収集を設定したため。
 static/
 
@@ -33,7 +35,7 @@ static/
 
 
 #### kind/ #####
-
+kind/
 
 #### mount_volume/ #####
 mount_volume/
