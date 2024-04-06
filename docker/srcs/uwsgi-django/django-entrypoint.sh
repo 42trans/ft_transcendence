@@ -9,4 +9,5 @@ python manage.py createsuperuser --no-input || true
 # 全部の"static/"から、ルートのstatic/に集める
 python manage.py collectstatic --noinput
 
+
 exec "$@"
