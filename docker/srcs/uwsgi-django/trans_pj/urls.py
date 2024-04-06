@@ -27,6 +27,7 @@ urlpatterns = [
 	path('admin/', admin.site.urls),
 	path('api/status/', main_views.api_status, name='api_status'),
 	path('', main_views.index, name='index'),
+	path('accounts/', include('accounts.urls')),
 ]
 
 # urlpatterns += staticfiles_urlpatterns()

@@ -25,15 +25,24 @@ urlpatterns = [
 	path('save_game_result/', views.save_game_result, name='save_game_result'),
 	path('results/', views.results, name='results'),
 
-	# pong
-	path("sign-up/", views.sign_up, name="sign-up"),
-	path("sign-in/", views.sign_in, name='sign-in'),
-	path('sign-in-redirect/', views.sign_in_redirect, name='sign_in_redirect'),
+	# pong // sign-up, login -> accounts
+	# path("sign-up/", views.sign_up, name="sign-up"),
+	# path("sign-in/", views.sign_in, name='sign-in'),
+	# path('sign-in-redirect/', views.sign_in_redirect, name='sign_in_redirect'),
+
 
 	path("bootstrap_index/", views.index_bootstrap, name="index"),  # test
 	path("bootstrap_sign-in/", views.sign_in_bootstrap, name="sign_in"),  # test
 
+	# custom template hth pong
+	path("gw/", views.gw_index, name="gw_index"),
+	path("gw/game/", views.gw_game, name="gw_game"),
+	path("gw/tournament/", views.gw_tournament, name="gw_tournament"),
+	path("gw/sign-in/", views.gw_sign_in, name="gw_sign_in"),  # test
+	path("gw/sign-in42/", views.gw_sign_in42, name="gw_sign_in42"),  # test
+	path('gw/sign-in-redirect42/', views.gw_sign_in_redirect42, name='gw_sign_in_redirect42'),
+	path('gw/results/', views.gw_results, name='gw_results'),
 
 	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://example.com/
-	path("", views.index, name="index"),
+	path("", views.pong_view, name="index"),
 ]
