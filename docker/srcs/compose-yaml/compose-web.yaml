@@ -24,7 +24,7 @@ services:
       # - monitor_transcendence
     restart: unless-stopped
     depends_on:
-      - pgadmin
+      # - pgadmin
       - uwsgi-django
     init: true
 
@@ -100,24 +100,24 @@ services:
     restart: unless-stopped
     init: true
 
-  pgadmin:
-    container_name: pgadmin
-    build: ./pgadmin
-    image: pgadmin
-    env_file:
-      - .env
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:?}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:?}
-    ports:
-      - "${PGADMIN_PORT:?}:80"
-    volumes:
-      - ${VOLUME_PATH:?}/pgadmin:/var/lib/pgadmin
-    networks:
-      - db_transcendence
-      - web_transcendence
-    restart: unless-stopped
-    init: true
+  # pgadmin:
+  #   container_name: pgadmin
+  #   build: ./pgadmin
+  #   image: pgadmin
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:?}
+  #     - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:?}
+  #   ports:
+  #     - "${PGADMIN_PORT:?}:80"
+  #   volumes:
+  #     - ${VOLUME_PATH:?}/pgadmin:/var/lib/pgadmin
+  #   networks:
+  #     - db_transcendence
+  #     - web_transcendence
+  #   restart: unless-stopped
+  #   init: true
 
   # pythontest:
   #   container_name: pythontest
