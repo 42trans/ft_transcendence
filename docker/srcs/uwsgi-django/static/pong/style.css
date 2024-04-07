@@ -1,0 +1,165 @@
+/* 
+デフォルトフォントサイズは16pxであることが多いらしいので、
+これで1remが10pxとみなすことができる。
+*/
+html {
+  font-size: 62.5%;
+}
+
+/* 600pxまではスマホとみなす*/
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2.8rem;
+  }
+  h2 {
+    font-size: 2rem;
+  }
+  h3 {
+    font-size: 1.6rem;
+  }
+  h4 {
+    font-size: 1.2rem;
+  }
+  h5 {
+    font-size: 1.2rem;
+  }
+  h6 {
+    font-size: 1rem;
+  }
+  body {
+    font-size: 1.1rem;
+  }
+  text {
+    font-size: 1.1rem;
+  }
+  .macro-font-size {
+    font-size: 2rem;
+  }
+  .maxi-font-size {
+    font-size: 1.4rem;
+  }
+  .mini-font-size {
+    font-size: 0.8rem;
+  }
+  .micro-font-size {
+    font-size: 0.4rem;
+  }
+}
+
+/* 600pxから950pxまではタブレットとみなす*/
+@media (min-width: 600px) {
+  h1 {
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 2.2rem;
+  }
+  h3 {
+    font-size: 1.8rem;
+  }
+  h4 {
+    font-size: 1.4rem;
+  }
+  h5 {
+    font-size: 1.4rem;
+  }
+  h6 {
+    font-size: 1rem;
+  }
+  body {
+    font-size: 1.2rem;
+  }
+  text {
+    font-size: 1.2rem;
+  }
+  .macro-font-size {
+    font-size: 2.2rem;
+  }
+  .maxi-font-size {
+    font-size: 1.6rem;
+  }
+  .mini-font-size {
+    font-size: 0.9rem;
+  }
+  .micro-font-size {
+    font-size: 0.5rem;
+  }
+}
+/* 950pxから1280pxまではノートPCとみなす*/
+@media (min-width: 950px) {
+  h1 {
+    font-size: 3.2rem;
+  }
+  h2 {
+    font-size: 2.4rem;
+  }
+  h3 {
+    font-size: 2rem;
+  }
+  h4 {
+    font-size: 1.6rem;
+  }
+  h5 {
+    font-size: 1.6rem;
+  }
+  h6 {
+    font-size: 1.2rem;
+  }
+  body {
+    font-size: 1.4rem;
+  }
+  text {
+    font-size: 1.4rem;
+  }
+  .macro-font-size {
+    font-size: 2.4rem;
+  }
+  .maxi-font-size {
+    font-size: 1.8rem;
+  }
+  .mini-font-size {
+    font-size: 1rem;
+  }
+  .micro-font-size {
+    font-size: 0.6rem;
+  }
+}
+/* 1280px以上はデスクトップとみなす*/
+@media (min-width: 1280px) {
+  h1 {
+    font-size: 3.6rem;
+  }
+  h2 {
+    font-size: 3rem;
+  }
+  h3 {
+    font-size: 2.4rem;
+  }
+  h4 {
+    font-size: 1.8rem;
+  }
+  h5 {
+    font-size: 1.6rem;
+  }
+  h6 {
+    font-size: 1.2rem;
+  }
+  body {
+    font-size: 1.4rem;
+  }
+  text {
+    font-size: 1.4rem;
+  }
+  .macro-font-size {
+    font-size: 3rem;
+  }
+  .maxi-font-size {
+    font-size: 2.4rem;
+  }
+  .mini-font-size {
+    font-size: 1rem;
+  }
+  .micro-font-size {
+    font-size: 0.6rem;
+  }
+}
