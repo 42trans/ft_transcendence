@@ -11,7 +11,7 @@ def index(request):
 	# 環境変数を読み込み
 	nginx_ssl_port = os.getenv('NGINX_SSL_PORT', '443')
 	frontend_port = os.getenv('FRONTEND_PORT', '3030')
-	pgadmin_port = os.getenv('PGADMIN_PORT', '8087')
+	# pgadmin_port = os.getenv('PGADMIN_PORT', '8087')
 	ptometheus_port = os.getenv('PROMETHEUS_PORT', '9091')
 	grafana_port = os.getenv('GRAFANA_PORT', '3032')
 	kibana_port = os.getenv('KIBANA_PORT', '5601')
@@ -20,7 +20,7 @@ def index(request):
 	context = {
 		'nginx_ssl_port': nginx_ssl_port,
 		'frontend_port': frontend_port,
-		'pgadmin_port': pgadmin_port,
+		# 'pgadmin_port': pgadmin_port,
 		'ptometheus_port': ptometheus_port,
 		'grafana_port': grafana_port,
 		'kibana_port': kibana_port,
