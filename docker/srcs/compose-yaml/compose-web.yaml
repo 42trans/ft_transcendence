@@ -140,3 +140,21 @@ services:
   #   volumes:
   #     - ./pythontest/mysite/:/code/mysite/
   #     - ./pythontest/polls/:/code/polls/
+
+  vite:
+    build: ./vite
+    container_name: vite
+    image: vite
+    env_file:
+      - .env
+    networks:
+      - web_transcendence
+    volumes:
+      - ./vite/ft_trans:/app
+      # - /app/node_modules
+    ports:
+      - "5184:5173"
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - three
