@@ -128,7 +128,6 @@ html {
 @media (min-width: 1280px) {
   h1 {
     font-size: 3.6rem;
-    background-color: red;
   }
   h2 {
     font-size: 3rem;
