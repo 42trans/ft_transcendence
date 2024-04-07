@@ -6,8 +6,11 @@ python manage.py migrate --noinput
 # uwsgi-django/.envを参照
 python manage.py createsuperuser --no-input || true 
 
+# register superuser
+python manage.py create_superuser
+
+
 # 全部の"static/"から、ルートのstatic/に集める
 python manage.py collectstatic --noinput
-
 
 exec "$@"
