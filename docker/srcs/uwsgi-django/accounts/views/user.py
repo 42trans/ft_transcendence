@@ -43,7 +43,6 @@ class EditUserProfileView(LoginRequiredMixin, View):
     """
     edit_url = "accounts/edit_profile.html"
     redirect_to = "accounts:edit"
-    pong_top_url = "/pong/"
 
     def get(self, request, *args, **kwargs):
         user_form = UserEditForm(instance=request.user)

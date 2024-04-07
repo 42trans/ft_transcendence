@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 class OAuthWith42(View):
-    pong_top_url = "/pong/"
+    authenticated_redirect_to = "/pong/"
     error_page_path = "pong/error.html"
     callback_name = "accounts:oauth_ft_callback"
     api_path = "https://api.intra.42.fr"
@@ -38,7 +38,7 @@ class OAuthWith42(View):
 
     def oauth_ft(self, request: HttpRequest, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(to=self.pong_top_url)
+            return redirect(to=self.authenticated_redirect_to)
 
         # CSRF対策のためのstateを生成
         state = secrets.token_urlsafe()
@@ -60,7 +60,7 @@ class OAuthWith42(View):
             logger.error(f'error: {err}', exc_info=True)
             return render(request, self.error_page_path, {'message': 'Invalid state parameter'})
 
-        err, email, nickname = self._get_email_and_nickname_from_token(request)
+        err, email, nickname = self._get_email_and_nickname(request)
         if err is not None:
             logger.error(f'error: {err}', exc_info=True)
             return render(request,
@@ -76,7 +76,7 @@ class OAuthWith42(View):
 
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
-        return redirect(to=self.pong_top_url)
+        return redirect(to=self.authenticated_redirect_to)
 
 
     def _is_valid_state(self, request: HttpRequest) -> bool:
@@ -92,9 +92,9 @@ class OAuthWith42(View):
         messages.error(request, 'Authorization code is missing. Please try again.')
 
 
-    def _get_email_and_nickname_from_token(self, request: HttpRequest) -> Tuple[Optional[str],
-                                                                                Optional[str],
-                                                                                Optional[str]]:
+    def _get_email_and_nickname(self, request: HttpRequest) -> Tuple[Optional[str],
+                                                                     Optional[str],
+                                                                     Optional[str]]:
         code = request.GET.get('code')
         if not code:
             return 'Authorization code is missing', None, None
@@ -124,7 +124,7 @@ class OAuthWith42(View):
             email = user_info.get('email')
             nickname = user_info.get('login')
 
-            valid_result, err = self._is_valid_email_and_nickname(email, nickname)
+            valid_result, err = self._validate_email_and_nickname(email, nickname)
             if not valid_result:
                 return err, None, None
             return None, email, nickname
@@ -133,7 +133,8 @@ class OAuthWith42(View):
             return str(e), None, None
 
 
-    def _is_valid_email_and_nickname(self, email: str, nickname: str) -> Tuple[bool, Optional[str]]:
+    def _validate_email_and_nickname(self, email: str, nickname: str) -> Tuple[bool,
+                                                                               Optional[str]]:
         email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
         if not re.match(email_regex, email):
             return False, "Invalid email format"
