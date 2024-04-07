@@ -180,6 +180,8 @@ def gw_index(request):
 	return render(request, 'pong/gw/index.html')
 def gw_game(request):
 	return render(request, 'pong/gw/game.html')
+def gw_game2(request):
+	return render(request, 'pong/gw/game2.html')
 def gw_tournament(request):
 	return render(request, 'pong/gw/tournament.html')
 def gw_sign_in(request):
