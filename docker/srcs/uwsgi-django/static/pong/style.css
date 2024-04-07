@@ -24,25 +24,25 @@ html {
     font-size: 1.2rem;
   }
   h6 {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
   body {
-    font-size: 1.1rem;
-  }
-  text {
-    font-size: 1.1rem;
-  }
-  .macro-font-size {
-    font-size: 2rem;
-  }
-  .maxi-font-size {
     font-size: 1.4rem;
   }
+  text {
+    font-size: 1.4rem;
+  }
+  .macro-font-size {
+    font-size: 2.2rem;
+  }
+  .maxi-font-size {
+    font-size: 1.6rem;
+  }
   .mini-font-size {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
   .micro-font-size {
-    font-size: 0.4rem;
+    font-size: 0.5rem;
   }
 }
 
@@ -67,22 +67,22 @@ html {
     font-size: 1rem;
   }
   body {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
   text {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
   .macro-font-size {
-    font-size: 2.2rem;
+    font-size: 2.3rem;
   }
   .maxi-font-size {
-    font-size: 1.6rem;
+    font-size: 1.7rem;
   }
   .mini-font-size {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
   .micro-font-size {
-    font-size: 0.5rem;
+    font-size: 0.6rem;
   }
 }
 /* 950pxから1280pxまではノートPCとみなす*/
@@ -106,10 +106,10 @@ html {
     font-size: 1.2rem;
   }
   body {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
   }
   text {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
   }
   .macro-font-size {
     font-size: 2.4rem;
@@ -118,10 +118,10 @@ html {
     font-size: 1.8rem;
   }
   .mini-font-size {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
   .micro-font-size {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
   }
 }
 /* 1280px以上はデスクトップとみなす*/
@@ -145,10 +145,10 @@ html {
     font-size: 1.2rem;
   }
   body {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
   }
   text {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
   }
   .macro-font-size {
     font-size: 3rem;
@@ -157,9 +157,9 @@ html {
     font-size: 2.4rem;
   }
   .mini-font-size {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
   .micro-font-size {
-    font-size: 0.6rem;
+    font-size: 0.8rem;
   }
 }
