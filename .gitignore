@@ -26,6 +26,7 @@ docker/srcs/hardhat/hardhat_pj/cache
 docker/srcs/hardhat/hardhat_pj/docs
 docker/srcs/hardhat/hardhat_pj/share/*.json
 
+docker/srcs/pgadmin
 
 #### init/ #####
 

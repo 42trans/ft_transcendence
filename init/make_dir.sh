@@ -6,7 +6,8 @@ set -o pipefail
 
 
 make_dir() {
-  dirs=("pgadmin" "nginx" "django" "postgres")
+  dirs=("nginx" "django" "postgres")
+  # dirs=("pgadmin" "nginx" "django" "postgres")
 #  if [ -z "$VOLUME_PATH" ]; then
 #    VOLUME_PATH="/path/to/default/volume"
 #  fi
