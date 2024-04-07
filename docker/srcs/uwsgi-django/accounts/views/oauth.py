@@ -6,6 +6,7 @@ import secrets
 from typing import Tuple, Optional
 import re
 import requests
+
 from django.contrib import messages
 from django.contrib.auth import login, get_user_model
 from django.conf import settings
@@ -35,7 +36,7 @@ class OAuthWith42(View):
             return self.oauth_ft(request)
 
 
-    def oauth_ft(self, request, *args, **kwargs):
+    def oauth_ft(self, request: HttpRequest, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(to=self.pong_top_url)
 
@@ -54,7 +55,7 @@ class OAuthWith42(View):
         return redirect(to=auth_url)
 
 
-    def oauth_ft_callback(self, request, *args, **kwargs):
+    def oauth_ft_callback(self, request: HttpRequest, *args, **kwargs):
         if not self._is_valid_state(request):
             logger.error(f'error: {err}', exc_info=True)
             return render(request, self.error_page_path, {'message': 'Invalid state parameter'})
@@ -78,13 +79,13 @@ class OAuthWith42(View):
         return redirect(to=self.pong_top_url)
 
 
-    def _is_valid_state(self, request):
+    def _is_valid_state(self, request: HttpRequest) -> bool:
         saved_state = request.session.get('oauth_state')
         returned_state = request.GET.get('state')
         return saved_state == returned_state
 
 
-    def _handle_auth_error(self, request):
+    def _handle_auth_error(self, request: HttpRequest):
         error = request.GET.get('error', 'Unknown error')
         error_description = request.GET.get('error_description', 'No description provided.')
         logger.error(f'error: {error}: {error_description}', exc_info=True)

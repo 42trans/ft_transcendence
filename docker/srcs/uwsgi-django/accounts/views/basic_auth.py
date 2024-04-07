@@ -1,8 +1,9 @@
 # accounts/views/basic_auth.py
 
+from django.contrib.auth import login, logout
 from django.views import View
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
+
 from accounts.forms import SignupForm, LoginForm
 
 

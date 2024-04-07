@@ -1,15 +1,19 @@
 # accounts/views/user.py
 
-import requests
 import logging
-from django.views import View
-from django.shortcuts import render, redirect
+import requests
+
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpRequest
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.views import View
+
 from accounts.forms import UserEditForm, CustomPasswordChangeForm
+
 
 logger = logging.getLogger(__name__)
 
@@ -93,5 +97,5 @@ class EditUserProfileView(LoginRequiredMixin, View):
         return render(request, self.edit_url, params)
 
 
-    def _is_42auth_user(self, request) -> bool:
+    def _is_42auth_user(self, request: HttpRequest) -> bool:
         return not request.user.has_usable_password()
