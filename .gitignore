@@ -19,7 +19,7 @@ docker/srcs/kind/kind-config.yaml
 docker/srcs/uwsgi-django/sphinx/build
 docker/srcs/uwsgi-django/django_debug.log
 # 再度修正。entrypoint.shで最新ファイルの自動収集を設定したため。
-static/
+/static/
 
 docker/srcs/hardhat/hardhat_pj/artifacts
 docker/srcs/hardhat/hardhat_pj/cache
