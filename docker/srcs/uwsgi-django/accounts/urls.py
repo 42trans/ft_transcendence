@@ -1,9 +1,11 @@
 # accounts/urls.py
 
 from django.urls import include, path
+
 from accounts.views.basic_auth import SignupView, LoginView, LogoutView
 from accounts.views.user import UserPageView, EditUserProfileView
 from accounts.views.oauth import OAuthWith42
+
 
 app_name = 'accounts'
 
