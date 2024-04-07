@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib import auth
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
@@ -14,9 +16,22 @@ class UserManager(BaseUserManager):
         """
         Create and save a user with the given email, password, and nickname.
         """
+        email = self.normalize_email(email)
         if not email:
             raise ValueError("The given email must be set")
-        email = self.normalize_email(email)
+        try:
+            validate_email(email)
+        except ValidationError:
+            raise ValueError("Invalid email format")
+
+        nickname = extra_fields.get("nickname")
+        if not nickname:
+            raise ValueError("The given nickname must be set")
+        if CustomUser.kNICKNAME_MAX_LENGTH < len(nickname):
+            raise ValueError(f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less")
+        if not nickname.isalnum():
+            raise ValueError("Invalid nickname format")
+
         # Lookup the real model class from the global app registry so this
         # manager method can be used in migrations. This is fine because
         # managers are by definition working on the real model.
@@ -78,8 +93,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     - email: Email address of the user. 42 email if OAuth with 42 used.
     - nickname: A unique nickname for the user. if OAuth with 42 used, 42-login by default.
     """
+    kNICKNAME_MAX_LENGTH = 30
     email = models.EmailField(_("email address"), unique=True)
-    nickname = models.CharField(_("nickname"), max_length=30, unique=True)
+    nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
 
     is_staff = models.BooleanField(
         _("staff status"),
