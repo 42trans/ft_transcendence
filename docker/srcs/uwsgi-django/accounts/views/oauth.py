@@ -31,7 +31,7 @@ class OAuthWith42(View):
 
     def oauth_ft(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(to=self.pong_top_url)  # ログイン済みの場合は/pong/にリダイレクトs
+            return redirect(to=self.pong_top_url)  # ログイン済みの場合は/pong/にリダイレクト
 
         # logger.debug('\noauth_with_42 1')
 
