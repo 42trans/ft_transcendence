@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib import auth
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.validators import validate_email
@@ -17,29 +18,67 @@ class UserManager(BaseUserManager):
         Create and save a user with the given email, password, and nickname.
         """
         email = self.normalize_email(email)
-        if not email:
-            raise ValueError("The given email must be set")
-        try:
-            validate_email(email)
-        except ValidationError:
-            raise ValueError("Invalid email format")
-
         nickname = extra_fields.get("nickname")
-        if not nickname:
-            raise ValueError("The given nickname must be set")
-        if CustomUser.kNICKNAME_MAX_LENGTH < len(nickname):
-            raise ValueError(f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less")
-        if not nickname.isalnum():
-            raise ValueError("Invalid nickname format")
+        ok, err = self._is_valid_user_field(email, nickname, password)
+        if not ok:
+            raise ValueError(err)
 
-        # Lookup the real model class from the global app registry so this
-        # manager method can be used in migrations. This is fine because
-        # managers are by definition working on the real model.
         user = self.model(email=email, **extra_fields)
-        # user.password = make_password(password)
-        user.set_password(password)  # make_password -> set_password
+        user.set_password(password)
+
         user.save(using=self._db)
         return user
+
+
+    def _is_valid_user_field(self, email, nickname, password):
+        ok, err = self._is_valid_email(email)
+        if not ok:
+            return False, err
+
+        ok, err = self._is_valid_nickname(nickname)
+        if not ok:
+            return False, err
+
+        tmp_user = CustomUser(email=email, nickname=nickname)
+        ok, err = self._is_valid_password(password, tmp_user)
+        if not ok:
+            return False, err
+
+        return True, None
+
+
+    def _is_valid_email(self, email):
+        if not email:
+            return False, "The given email must be set"
+        try:
+            validate_email(email)
+            return True, None
+        except ValidationError as e:
+            return False, ". ".join(e.messages)
+
+
+    def _is_valid_nickname(self, nickname):
+        if not nickname:
+            return False, "The given nickname must be set"
+        if CustomUser.kNICKNAME_MAX_LENGTH < len(nickname):
+            err = f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"
+            return False, err
+        if not nickname.isalnum():
+            return False, "Invalid nickname format"
+        return True, None
+
+
+    def _is_valid_password(self, password, tmp_user):
+        if password is None:
+            return False, "The password cannot be None"
+        if not password:
+            return False, "The password cannot be set"
+        try:
+            validate_password(password, user=tmp_user)
+            return True, None
+        except ValidationError as e:
+            return False, ". ".join(e.messages)
+
 
     def create_user(self, email=None, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", False)
