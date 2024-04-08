@@ -29,7 +29,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
+    @classmethod
     def _is_valid_user_field(self, email, nickname, password):
         ok, err = self._is_valid_email(email)
         if not ok:
@@ -47,6 +47,7 @@ class UserManager(BaseUserManager):
         return True, None
 
 
+    @classmethod
     def _is_valid_email(self, email):
         if not email:
             return False, "The given email must be set"
@@ -57,6 +58,7 @@ class UserManager(BaseUserManager):
             return False, ". ".join(e.messages)
 
 
+    @classmethod
     def _is_valid_nickname(self, nickname):
         if not nickname:
             return False, "The given nickname must be set"
@@ -68,6 +70,7 @@ class UserManager(BaseUserManager):
         return True, None
 
 
+    @classmethod
     def _is_valid_password(self, password, tmp_user):
         if password is None:
             return False, "The password cannot be None"
