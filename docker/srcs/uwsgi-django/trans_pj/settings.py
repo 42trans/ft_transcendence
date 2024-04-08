@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import gettext_lazy as _
 
 def get_env_variable(var_name):
 	try:
@@ -176,7 +177,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -278,3 +279,17 @@ LOGGING = {
 LOGIN_URL = '/accounts/login/'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+
+ #　多言語設定
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
+LANGUAGE_CODE = 'ja'
+LANGUAGES = [
+    ('ja', _('Japanese')),
+    ('en', _('English')),
+    ('fr', _('French')),
+]
