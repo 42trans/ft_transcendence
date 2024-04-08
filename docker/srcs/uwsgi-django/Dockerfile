@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
 	telnet \
 	netcat \
 	lsof \
+	gettext \
 	postgresql-client \
 	&& rm -rf /var/lib/apt/lists/*
 # 環境変数を設定
