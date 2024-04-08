@@ -8,9 +8,9 @@
 	<h1>Djangoのルート | https://localhost/</h1>
 	<p>index.html | docker/srcs/uwsgi-django/trans_pj/templates</p>
 	<h2>Django admin</h2>
-	<p> - DJANGO_SUPERUSER_USERNAME=admin<br>
-		- DJANGO_SUPERUSER_EMAIL=admin@example.com<br>
-		- DJANGO_SUPERUSER_PASSWORD=adminpassword</p>
+	<p> - DJANGO_SUPERUSER_USERNAME = {{ admin_name }}<br>
+		- DJANGO_SUPERUSER_EMAIL = {{ admin_email }}<br>
+		- DJANGO_SUPERUSER_PASSWORD = {{ admin_pass }}</p>
 	<ul>
 		<li><a href="/admin/">admin/</a></li>
 		<li><a href="/api/status/">api/status/</a></li>
