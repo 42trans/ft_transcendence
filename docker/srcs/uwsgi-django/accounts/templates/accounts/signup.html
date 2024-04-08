@@ -10,7 +10,7 @@
 <form action="{% url 'accounts:signup' %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <p><input type="submit" value="登録"></p>
+    <p><button type="submit">登録</button></p>
 </form>
 
 <hr>
