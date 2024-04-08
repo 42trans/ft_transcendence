@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 
 
-class CustomUserTests(TestCase):
+class CustomUserCreateTests(TestCase):
     # test用のDBが作成されるため、super_user, user1, user2を追加する
     kAdminEmail = 'admin@example.com'
     kAdminNickname = 'admin'
@@ -18,13 +18,15 @@ class CustomUserTests(TestCase):
 
 
     def setUp(self):
-        User = get_user_model()
-        self.super_user = User.objects.create_superuser(email=self.kAdminEmail, nickname=self.kAdminNickname, password=self.kAdminPassword)
-        self.user1 = User.objects.create_user(email=self.kUser1Email, nickname=self.kUser1Nickname, password=self.kUserPassword)
-        self.user2 = User.objects.create_user(email=self.kUser2Email, nickname=self.kUser2Nickname, password=self.kUserPassword)
+        user = get_user_model()
+        self.super_user = user.objects.create_superuser(email=self.kAdminEmail, nickname=self.kAdminNickname, password=self.kAdminPassword)
+        self.user1 = user.objects.create_user(email=self.kUser1Email, nickname=self.kUser1Nickname, password=self.kUserPassword)
+        self.user2 = user.objects.create_user(email=self.kUser2Email, nickname=self.kUser2Nickname, password=self.kUserPassword)
+
 
     def test_super_user(self):
         self.assertTrue(self.super_user.is_superuser)
+
 
     def test_general_user(self):
         self.assertFalse(self.user1.is_superuser)
@@ -52,14 +54,36 @@ class CustomUserTests(TestCase):
         self.assertFalse(self.user2.is_superuser)
 
 
-    def test_user_email_unique(self):
-        User = get_user_model()
-        with self.assertRaises(Exception):
-            User.objects.create_user(email=self.kUser1Email, nickname='new', password=self.kUserPassword)
 
+class CustomUserUniqueTests(TestCase):
+    kUserPassword = 'pass012345'
+    kUser1Email = 'user1@example.com'
+    kUser1Nickname = 'user1'
+
+
+    def setUp(self):
+        user = get_user_model()
+        self.user1 = user.objects.create_user(email=self.kUser1Email, nickname=self.kUser1Nickname, password=self.kUserPassword)
+
+
+    def test_user_email_unique(self):
+        user = get_user_model()
+        with self.assertRaises(Exception):
+            user.objects.create_user(email=self.kUser1Email, nickname='new', password=self.kUserPassword)
+
+
+    def test_user_nickname_unique(self):
+        user = get_user_model()
+        with self.assertRaises(Exception):
+            user.objects.create_user(email='unique@example.com', nickname=self.kUser1Nickname, password=self.kUserPassword)
+
+
+
+class CustomUserInvalidTests(TestCase):
+    kUserPassword = 'pass012345'
 
     def test_user_invalid_email(self):
-        User = get_user_model()
+        user = get_user_model()
 
         invalid_emails = [
             '', 'aaa', '@', '.',
@@ -73,11 +97,11 @@ class CustomUserTests(TestCase):
 
         for email in invalid_emails:
             with self.assertRaises(ValueError, msg=f"ValueError was not raised for email: [{email}]"):
-                User.objects.create_user(email=email, nickname='new', password=self.kUserPassword)
+                user.objects.create_user(email=email, nickname='new', password=self.kUserPassword)
 
 
     def test_user_invalid_password(self):
-        User = get_user_model()
+        user = get_user_model()
 
         invalid_password = [
             '', 'a', 'short', 'a'*10, '0123', '0'*10,
@@ -87,17 +111,11 @@ class CustomUserTests(TestCase):
 
         for password in invalid_password:
             with self.assertRaises(ValueError, msg=f"ValueError was not raised for password: [{password}]"):
-                User.objects.create_user(email='unique@example.com', nickname='username', password=password)
-
-
-    def test_user_nickname_unique(self):
-        User = get_user_model()
-        with self.assertRaises(Exception):
-            User.objects.create_user(email='unique@example.com', nickname=self.kUser1Nickname, password=self.kUserPassword)
+                user.objects.create_user(email='unique@example.com', nickname='username', password=password)
 
 
     def test_user_invalid_nickname(self):
-        User = get_user_model()
+        user = get_user_model()
 
         invalid_nicknames = [
             '', 'a'*31, '.', '@', '*', ' ', '$',
@@ -111,4 +129,4 @@ class CustomUserTests(TestCase):
 
         for nickname in invalid_nicknames:
             with self.assertRaises(ValueError, msg=f"ValueError was not raised for nickname: [{nickname}]"):
-                User.objects.create_user(email='unique1@email.jp', nickname=nickname, password=self.kUserPassword)
+                user.objects.create_user(email='unique1@email.jp', nickname=nickname, password=self.kUserPassword)
