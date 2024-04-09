@@ -52,8 +52,8 @@ export class MagmaFlare extends THREE.Object3D {
     this.add(this._sparkEmitter);
     this.add(outGlow);
 
-    const layers = {
-      Magama: true,
+    const layers:  { [key: string]: boolean } = {
+      Magma: true,
       Aura: true,
       Flare: true,
       Spark: false,
