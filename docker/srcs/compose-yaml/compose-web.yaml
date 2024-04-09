@@ -72,6 +72,8 @@ services:
       - ./uwsgi-django/:/code/
       - ./uwsgi-django/static/:/var/trans/static/
       - ./hardhat/hardhat_pj/share/:/code/share_hardhat/
+      - ./webpack/ft_trans/public/:/code/share_webpack/
+      - ./webpack2/ft_trans/public/:/code/share_webpack2/
       # - logs_volume:/src/logs
       # - ${VOLUME_PATH:?}/django/code:/code
   #     - ${VOLUME_PATH:?}/ft_django/uwsgi:/etc/uwsgi
@@ -171,5 +173,20 @@ services:
       - ./webpack/ft_trans:/app
     ports:
       - "8180:8080"
+    profiles:
+      - three
+      
+  webpack2:
+    build: ./webpack2
+    container_name: webpack2
+    image: webpack2
+    env_file:
+      - .env
+    networks:
+      - web_transcendence
+    volumes:
+      - ./webpack2/ft_trans:/app
+    ports:
+      - "8181:8080"
     profiles:
       - three
