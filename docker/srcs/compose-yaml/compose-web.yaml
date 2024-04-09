@@ -158,3 +158,18 @@ services:
       - NODE_ENV=development
     profiles:
       - three
+      
+  webpack:
+    build: ./webpack
+    container_name: webpack
+    image: webpack
+    env_file:
+      - .env
+    networks:
+      - web_transcendence
+    volumes:
+      - ./webpack/ft_trans:/app
+    ports:
+      - "8180:8080"
+    profiles:
+      - three
