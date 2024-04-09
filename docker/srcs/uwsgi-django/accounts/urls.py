@@ -5,7 +5,7 @@ from django.urls import include, path
 from accounts.views.basic_auth import SignupView, LoginView, LogoutView
 from accounts.views.user import UserPageView, EditUserProfileView
 from accounts.views.oauth import OAuthWith42
-from accounts.views.two_factor_auth import enable_2fa, verify_2fa, disable_2fa
+from accounts.views.two_factor_auth import Disable2FaView, Enable2FaView, Verify2FaView
 
 
 app_name = 'accounts'
@@ -22,8 +22,7 @@ urlpatterns = [
     path('user/', UserPageView.as_view(), name='user'),
     path('edit/', EditUserProfileView.as_view(), name='edit'),
 
-
-    path('verify/disable_2fa/', disable_2fa, name='disable_2fa'),
-    path('verify/enable_2fa/', enable_2fa, name='enable_2fa'),
-    path('verify/verify_2fa/', verify_2fa, name='verify_2fa'),
+    path('verify/disable_2fa/', Disable2FaView.as_view(), name='disable_2fa'),
+    path('verify/enable_2fa/', Enable2FaView.as_view(), name='enable_2fa'),
+    path('verify/verify_2fa/', Verify2FaView.as_view(), name='verify_2fa'),
 ]
