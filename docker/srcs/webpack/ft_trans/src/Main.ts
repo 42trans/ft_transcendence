@@ -39,8 +39,8 @@ constructor() {
 	controls.enableDamping = true;
 	controls.dampingFactor = 0.02;
 	// マウスホイールでのズームの範囲を指定
-	controls.minDistance = 8;
-	controls.maxDistance = 15;
+	controls.minDistance = 3;
+	controls.maxDistance = 1000;
 	// パンできる範囲を指定
 	controls.minPolarAngle = Math.PI / 8;
 	controls.maxPolarAngle = Math.PI / 2.1;
@@ -50,10 +50,11 @@ constructor() {
 
 	// レンダラー
 	this._renderer = new THREE.WebGLRenderer({
-	antialias: true,
-	canvas: canvas,
+		antialias: true,
+		canvas: canvas,
+		alpha: true,
 	});
-	this._renderer.setClearColor(0x000000);
+	// this._renderer.setClearColor(0x000000);
 	this._renderer.setPixelRatio(devicePixelRatio);
 	this._resize();
 
@@ -103,10 +104,15 @@ private _tick() {
  * リサイズ処理
  */
 private _resize() {
-	const width = window.innerWidth;
-	const height = window.innerHeight;
-	this._renderer.setSize(width, height);
-	this._camera.aspect = width / height;
+	const container = document.querySelector('.canvas-container');
+	if (container){
+		const width = container.clientWidth;
+		const height = container.clientHeight;
+	// const width = window.innerWidth;
+	// const height = window.innerHeight;
+		this._renderer.setSize(width, height);
+		this._camera.aspect = width / height;
+	}
 	this._camera.updateProjectionMatrix();
 }
 }

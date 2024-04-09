@@ -21,7 +21,8 @@ export class Camera extends THREE.PerspectiveCamera {
    * コンストラクターです。
    */
   constructor() {
-    super(45, window.innerWidth / window.innerHeight, 1, 1000);
+    super(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // super(45, window.innerWidth / window.innerHeight, 1, 1000);
 
     this.update();
 

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import magmaTexture from '../../src/assets/texture/magma.png';
+import magmaTexture from '../../src/assets/texture/logo.png';
 
 /**
  * マグマ球クラスです。
