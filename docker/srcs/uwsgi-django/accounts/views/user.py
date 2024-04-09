@@ -1,26 +1,31 @@
 # accounts/views/user.py
 
-import requests
 import logging
-from django.views import View
-from django.shortcuts import render, redirect
+import requests
+
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpRequest
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.views import View
+
 from accounts.forms import UserEditForm, CustomPasswordChangeForm
 
 
 logger = logging.getLogger(__name__)
 
 
-class UserPageView(View):
+class UserPageView(LoginRequiredMixin, View):
+    """
+    render user page
+    user is not authenticated, redirect to LOGIN_URL written in setting.py
+    """
     user_page_url = "accounts/user.html"
 
     def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect(to=self.pong_top_url)
-
         user = request.user
 
         params = {
@@ -31,15 +36,15 @@ class UserPageView(View):
 
 
 
-class EditUserProfileView(View):
+class EditUserProfileView(LoginRequiredMixin, View):
+    """
+    render edit user profile page
+    user is not authenticated, redirect to LOGIN_URL written in setting.py
+    """
     edit_url = "accounts/edit_profile.html"
     redirect_to = "accounts:edit"
-    pong_top_url = "/pong/"
 
     def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect(to=self.pong_top_url)
-
         user_form = UserEditForm(instance=request.user)
 
         if self._is_42auth_user(request):
@@ -55,9 +60,6 @@ class EditUserProfileView(View):
 
 
     def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect(to=self.pong_top_url)
-
         if self._is_42auth_user(request):
             password_form = None
             password_form_is_valid = False
@@ -94,5 +96,5 @@ class EditUserProfileView(View):
         return render(request, self.edit_url, params)
 
 
-    def _is_42auth_user(self, request) -> bool:
+    def _is_42auth_user(self, request: HttpRequest) -> bool:
         return not request.user.has_usable_password()

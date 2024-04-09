@@ -278,6 +278,9 @@ Re-setup:
 # Django開発サーバー　localhost:8002
 run_django_server:
 	docker exec -it uwsgi-django bash -c "python manage.py runserver 0.0.0.0:8002"
+# DBのフィールド変更時に毎回必要
+migrate_Django_db:
+	docker exec -it uwsgi-django bash -c "python manage.py migrate --noinput"
 
 # -----------------------------------------------
 # インクルードしたいファイルのリスト
