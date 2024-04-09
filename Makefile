@@ -68,6 +68,11 @@ build_up_monitor: init
 	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) build
 	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
 
+.PHONY: build_up_three
+build_up_three: init
+	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) build
+	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) up -d
+	
 .PHONY: build_up_default
 build_up_default: init
 	docker-compose $(COMPOSE_FILES_ARGS) build
