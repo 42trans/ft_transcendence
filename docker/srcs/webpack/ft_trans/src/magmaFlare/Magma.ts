@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import magmaTexture from '../../src/assets/texture/magma.png';
 
 /**
  * マグマ球クラスです。
@@ -15,8 +16,9 @@ export class Magma extends THREE.Object3D {
     super();
 
     // テクスチャーを読み込みます。
-    const loader = new THREE.TextureLoader();
-    const map = loader.load("./assets/texture/magma.png");
+    // const loader = new THREE.TextureLoader();
+    // const map = loader.load("./assets/texture/magma.png");
+    const map = new THREE.TextureLoader().load(magmaTexture);
 
     // テクスチャーをあてた球のMeshを作成します。
     const mesh = new THREE.Mesh(

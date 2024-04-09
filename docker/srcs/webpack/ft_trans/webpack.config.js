@@ -22,27 +22,27 @@ module.exports = {
 		  // TypeScript をコンパイルする
 		  use: 'ts-loader',
 		},
-		// {
-		// 	test: /\.(png|svg|jpg|jpeg|gif)$/i,
-		// 	type: 'asset/resource',
-		// },
 		{
 			test: /\.(png|svg|jpg|jpeg|gif)$/i,
-			use: [
-			  'file-loader', // 画像ファイルを扱う
-			  {
-				loader: 'image-webpack-loader', // 画像を最適化
-				options: {
-				  mozjpeg: { progressive: true },
-				  optipng: { enabled: false },
-				  pngquant: { quality: [0.65, 0.90], speed: 4 },
-				  gifsicle: { interlaced: false },
-				  // WebP形式での画像の提供も有効化（ブラウザのサポートが必要）
-				  webp: { quality: 75 }
-				},
-			  },
-			],
-		  },
+			type: 'asset/resource',
+		},
+		// {
+		// 	test: /\.(png|svg|jpg|jpeg|gif)$/i,
+		// 	use: [
+		// 	  'file-loader', // 画像ファイルを扱う
+		// 	  {
+		// 		loader: 'image-webpack-loader', // 画像を最適化
+		// 		options: {
+		// 		  mozjpeg: { progressive: true },
+		// 		  optipng: { enabled: false },
+		// 		  pngquant: { quality: [0.65, 0.90], speed: 4 },
+		// 		  gifsicle: { interlaced: false },
+		// 		  // WebP形式での画像の提供も有効化（ブラウザのサポートが必要）
+		// 		  webp: { quality: 75 }
+		// 		},
+		// 	  },
+		// 	],
+		//   },
 	  ],
 	},
 	// import 文で .ts ファイルを解決するため

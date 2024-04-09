@@ -1,7 +1,5 @@
-# FROM node:20-alpine
 FROM node:20-buster
 
-# アプリケーションディレクトリを設定
 WORKDIR /app
 
 # package.jsonとpackage-lock.jsonをコピー
@@ -11,7 +9,8 @@ COPY ft_trans/package*.json /app/
 RUN npm install
 
 # プロジェクトのファイルをコピー
+# TODO_ft:マウントしてるので起動時にローカルで上書きされる
 COPY ft_trans/ /app/
 
-CMD ["npm", "run", "dev"]
-# CMD ["npm", "run", "watch"]
+COPY webpack-entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
