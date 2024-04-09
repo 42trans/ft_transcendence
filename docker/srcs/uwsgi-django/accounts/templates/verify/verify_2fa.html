@@ -15,23 +15,25 @@
     {% csrf_token %}
     <label for="token">Verification Code:</label>
     <input type="text" id="token" name="token" required>
+
+    <!-- エラーメッセージの表示 -->
+    {% if form.non_field_errors %}
+    <div class="error" style="color: red;">
+        {% for error in form.non_field_errors %}
+        {{ error }}
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <button type="submit" class="btn btn-primary">Verify</button>
 </form>
 
-
-<h3>Registered 2FA Devices:</h3>
-<ul>
-    {% for device in devices %}
-        <li>{{ device.name }}</li>
-    {% empty %}
-        <li>No 2FA devices registered.</li>
-    {% endfor %}
-</ul>
-
-<a href="{% url 'accounts:enable_2fa' %}">Enable 2FA on another device</a>
+<!--<a href="{% url 'accounts:enable_2fa' %}">Enable 2FA on another device</a>-->
 {% endblock %}
 
 <hr>
-<li><a href="/pong">🏓 return to pong</a></li>
+<a href="{% url 'accounts:user'%}">return to user page</a>
+<br>
+<a href="/pong">🏓 return to pong</a>
 </body>
 </html>

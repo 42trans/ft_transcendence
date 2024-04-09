@@ -9,57 +9,31 @@
 <h2>Enable Two-Factor Authentication (2FA)</h2>
 
 {% if qr_code_data %}
-  <p>以下のQRコードを2FAアプリでスキャンしてください：</p>
+  <p>以下のQRコードを2FAアプリでスキャンしてください</p>
   <img src="data:image/png;base64,{{ qr_code_data }}" alt="2FA QR Code">
-  <p>アプリが生成したトークンを以下に入力してください：</p>
+  <p>アプリが生成したトークンを以下のフォームで認証してください</p>
 {% endif %}
 
 <form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
+  <label for="token">Verification Code:</label>
+  <input type="text" id="token" name="token" required>
+
+  <!-- エラーメッセージの表示 -->
+  {% if form.non_field_errors %}
+  <div class="error" style="color: red;">
+    {% for error in form.non_field_errors %}
+    {{ error }}
+    {% endfor %}
+  </div>
+  {% endif %}
+
   <button type="submit" class="btn btn-primary">Verify and Enable 2FA</button>
 </form>
 
-<!--<form method="post">-->
-<!--  {% csrf_token %}-->
-<!--  {{ form.non_field_errors }}-->
-<!--  {{ form.token.label_tag }} {{ form.token }} {{ form.token.errors }}-->
-<!--  {{ form.device_name.label_tag }} {{ form.device_name }} {{ form.device_name.errors }}-->
-<!--  <button type="submit">Verify and Enable 2FA</button>-->
-<!--</form>-->
-
-<!--<form method="post">-->
-<!--  {% csrf_token %}-->
-<!--  <div>-->
-<!--    <label for="token">2FA Token:</label>-->
-<!--    &lt;!&ndash; 修正: name属性を'formフィールド名'に合わせる &ndash;&gt;-->
-<!--    <input type="text" id="token" name="token" value="{{ form.token.value }}" required>-->
-<!--    {% for error in form.token.errors %}-->
-<!--    <div class="error">{{ error }}</div>-->
-<!--    {% endfor %}-->
-<!--  </div>-->
-
-<!--  <div>-->
-<!--    <label for="device_name">Device Name:</label>-->
-<!--    &lt;!&ndash; 修正: name属性を'formフィールド名'に合わせる &ndash;&gt;-->
-<!--    <input type="text" id="device_name" name="device_name" value="{{ form.device_name.value }}">-->
-<!--    {% for error in form.device_name.errors %}-->
-<!--    <div class="error">{{ error }}</div>-->
-<!--    {% endfor %}-->
-<!--  </div>-->
-
-<!--  {% if form.non_field_errors %}-->
-<!--  <div class="error">-->
-<!--    {% for error in form.non_field_errors %}-->
-<!--    {{ error }}-->
-<!--    {% endfor %}-->
-<!--  </div>-->
-<!--  {% endif %}-->
-
-<!--  <button type="submit" class="btn btn-primary">Verify and Enable 2FA</button>-->
-<!--</form>-->
-
 <hr>
+<a href="{% url 'accounts:user'%}">return to user page</a>
+<br>
 <a href="/pong">🏓 return to pong</a>
 </body>
 </html>
