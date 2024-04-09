@@ -50,25 +50,6 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 
 class Enable2FAForm(forms.Form):
     token = forms.CharField(label='2FA Token', max_length=6, required=True)
-    device_name = forms.CharField(label='Device Name', max_length=16, required=True)
-
-    def __init__(self, user, *args, **kwargs):
-        self.user = user
-        super(Enable2FAForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        # 2FAを有効化するための特定の検証が必要な場合に実装
-        # 例: ユーザーが既に2FAを有効にしていないことを確認する
-        if TOTPDevice.objects.filter(user=self.user, confirmed=True).exists():
-            raise forms.ValidationError("2FA is already enabled for this user.")
-
-        return super(Enable2FAForm, self).clean()
-
-    def save(self):
-        # 2FAデバイスの作成と有効化のロジックを実装します。
-        # 実際には、`enable_2fa`ビューでこの処理を行っているため、
-        # このメソッドはカスタマイズによって異なる処理を含むかもしれません。
-        pass
 
 
 class Verify2FAForm(forms.Form):
