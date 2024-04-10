@@ -24,17 +24,82 @@
         "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163/examples/jsm/"
     }
 }
+
 </script>
 <script type="module">
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import * as dat from 'https://cdn.jsdelivr.net/npm/dat.gui/build/dat.gui.module.js';
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+
 
 const scene = new THREE.Scene();
 const camera = setupCamera();
 const renderer = setupRenderer();
-const light = new THREE.AmbientLight(0xffffff, 10);
+
+const light = new THREE.AmbientLight(0xffffff, 1);
 scene.add(light);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(5, 10, 7.5);
+scene.add(directionalLight);
+
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 100);
+hemiLight.position.set(0, 20, 0);
+scene.add(hemiLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+pointLight.position.set(10, 10, 10);
+scene.add(pointLight);
+
+const spotLight = new THREE.SpotLight(0xffffff);
+spotLight.position.set(10, 10, 10);
+spotLight.angle = Math.PI / 4;
+spotLight.penumbra = 0.05;
+spotLight.decay = 2;
+spotLight.distance = 200;
+scene.add(spotLight);
+
+const gui = new dat.GUI();
+
+// Ambient Light GUI
+const ambientLightFolder = gui.addFolder('Ambient Light');
+ambientLightFolder.add(light, 'intensity', 0, 2, 0.01);
+ambientLightFolder.addColor(light, 'color');
+
+// Directional Light GUI
+const directionalLightFolder = gui.addFolder('Directional Light');
+directionalLightFolder.add(directionalLight, 'intensity', 0, 2, 0.01);
+directionalLightFolder.addColor(directionalLight, 'color');
+// Directional light specific properties
+directionalLightFolder.add(directionalLight.position, 'x', -50, 50, 0.01);
+directionalLightFolder.add(directionalLight.position, 'y', -50, 50, 0.01);
+directionalLightFolder.add(directionalLight.position, 'z', -50, 50, 0.01);
+
+// Hemisphere Light GUI
+const hemiLightFolder = gui.addFolder('Hemisphere Light');
+hemiLightFolder.add(hemiLight, 'intensity', 0, 2, 0.01);
+hemiLightFolder.addColor(hemiLight, 'color');
+hemiLightFolder.addColor(hemiLight, 'groundColor');
+
+// Point Light GUI
+const pointLightFolder = gui.addFolder('Point Light');
+pointLightFolder.add(pointLight, 'intensity', 0, 2, 0.01);
+pointLightFolder.addColor(pointLight, 'color');
+pointLightFolder.add(pointLight, 'distance', 0, 500, 1);
+pointLightFolder.add(pointLight, 'decay', 0, 4, 0.01);
+
+// Spot Light GUI
+const spotLightFolder = gui.addFolder('Spot Light');
+spotLightFolder.add(spotLight, 'intensity', 0, 2, 0.01);
+spotLightFolder.addColor(spotLight, 'color');
+spotLightFolder.add(spotLight, 'distance', 0, 500, 1);
+spotLightFolder.add(spotLight, 'angle', 0, Math.PI, 0.01);
+spotLightFolder.add(spotLight, 'penumbra', 0, 1, 0.01);
+spotLightFolder.add(spotLight, 'decay', 0, 4, 0.01);
+
+
 
 let mixer, model;
 const clock = new THREE.Clock();
@@ -54,6 +119,7 @@ function setupCamera() {
 function setupRenderer() {
     const rend = new THREE.WebGLRenderer();
     rend.setSize(window.innerWidth, window.innerHeight);
+    rend.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(rend.domElement);
     return rend;
 }
@@ -62,9 +128,30 @@ function loadModel() {
     loader.load('assets/vespa_mandarinia/scene.gltf', function (gltf) {
         model = gltf.scene;
         scene.add(model);
-        model.position.set(-10, 8, -1);
-        model.scale.set(1, 1, 1);
+        model.position.set( 0, 0, -1);
+        model.scale.set(10, 10, 10);
         mixer = new THREE.AnimationMixer(model);
+
+        // マテリアルの設定をここで行う
+        const textureLoader = new THREE.TextureLoader();
+        model.traverse((child) => {
+            if (child.isMesh) {
+                const mesh = child;
+                const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+                materials.forEach((material) => {
+                    // 各テクスチャを設定
+                    material.map = textureLoader.load('assets/vespa_mandarinia/textures/material_baseColor.png');
+                    material.normalMap = textureLoader.load('assets/vespa_mandarinia/textures/material_clearcoat_normal.png');
+                    material.roughnessMap = textureLoader.load('assets/vespa_mandarinia/textures/material_metallicRoughness.png');
+                    material.metalnessMap = textureLoader.load('assets/vespa_mandarinia/textures/material_metallicRoughness.png');
+                    material.clearcoatMap = textureLoader.load('assets/vespa_mandarinia/textures/material_clearcoat.png');
+                    material.clearcoatRoughnessMap = textureLoader.load('assets/vespa_mandarinia/textures/material_clearcoat.png');
+                    material.clearcoatNormalMap = textureLoader.load('assets/vespa_mandarinia/textures/material_clearcoat_normal.png');
+                    // material.reflectivityMap = textureLoader.load('path/to/material_specularf0.png'); // THREE.jsでこのプロパティは存在しないため、独自に扱う必要があるかもしれません。
+                });
+            }
+        });
+
         if (gltf.animations && gltf.animations.length) {
             const action = mixer.clipAction(gltf.animations[0]);
             action.play();
@@ -117,5 +204,7 @@ function checkBounds() {
 </script>
 
 <div id="info">スズメバチ dir,pos: random, rotation: y</div>
+
+
 </body>
 </html>
