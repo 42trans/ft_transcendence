@@ -25,7 +25,7 @@ _wait_db_start_up() {
 
 
 _migrate_db() {
-#  python manage.py makemigrations
+  python manage.py makemigrations
   python manage.py migrate --noinput
 }
 
