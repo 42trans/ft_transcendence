@@ -176,14 +176,21 @@
         {% trans "RememberMe" %}
       </label>
       <div id="language-switcher">
-    <a href="?language=ja" class="{% if request.LANGUAGE_CODE == 'ja' %}active{% endif %}">日本語</a>
-    <a href="?language=en" class="{% if request.LANGUAGE_CODE == 'en' %}active{% endif %}">English</a>
-    <!-- 他の言語を追加 -->
 </div>
     </div>
     <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
     <p class="mt-5 mb-3 text-body-secondary">&copy; 2017–2024</p>
   </form>
+      <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ redirect_to }}" />
+        <select name="language">
+            <option value="ja">日本語</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+        </select>
+        <input type="submit" value="Change Language">
+    </form>
 </main>
 <script src="{% static 'assets/js/color-modes.js' %}"></script>
 
