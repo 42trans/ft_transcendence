@@ -131,7 +131,7 @@ class Verify2FaView(View):
         form = Verify2FAForm()
         user, _ = self._get_user_and_devices(request)
 
-        if user.enable_2fa is False:
+        if user is None or user.enable_2fa is False:
             return redirect(to=self.login_page_path)
 
         param = {
@@ -143,7 +143,7 @@ class Verify2FaView(View):
         form = Verify2FAForm(request.POST)
         user, devices = self._get_user_and_devices(request)
 
-        if user.enable_2fa is False:
+        if user is None or user.enable_2fa is False:
             return redirect(to=self.login_page_path)
 
         if form.is_valid():
