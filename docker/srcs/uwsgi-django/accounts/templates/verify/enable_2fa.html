@@ -9,8 +9,13 @@
 <h2>Enable Two-Factor Authentication (2FA)</h2>
 
 {% if qr_code_data %}
-  <p>以下のQRコードを2FAアプリでスキャンしてください</p>
+  <p>以下のQRコード or Setup KeyをAuthenticatorに登録してください</p>
   <img src="data:image/png;base64,{{ qr_code_data }}" alt="2FA QR Code">
+  <br>
+
+  <p>setup key: {{ setup_key }}</p>
+  <p>Setup KeyはQRコードのバックアップにもなります。セキュリティに注意して大切に保管してください。</p>
+  <br>
   <p>アプリが生成したトークンを以下のフォームで認証してください</p>
 {% endif %}
 
@@ -33,7 +38,7 @@
 
 <hr>
 <a href="{% url 'accounts:user'%}">return to user page</a>
-<br>
+<hr>
 <a href="/pong">🏓 return to pong</a>
 </body>
 </html>

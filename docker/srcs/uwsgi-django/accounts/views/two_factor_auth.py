@@ -28,10 +28,11 @@ class Enable2FaView(LoginRequiredMixin, View):
             return redirect(to=self.user_page_path)
 
         form = Enable2FAForm()
-        secret_key = self._get_secret_key(request)
+        secret_key, secret_key_base32 = self._get_secret_key(request)
         qr_code_data, _ = self._generate_qr_code(secret_key, request.user.get_username())
         param = {
             'qr_code_data': qr_code_data,
+            'setup_key': secret_key_base32,
             'form': form
         }
         return render(request, self.template_name, param)
@@ -40,8 +41,8 @@ class Enable2FaView(LoginRequiredMixin, View):
         if request.user.enable_2fa:
             return redirect(to=self.user_page_path)
 
-        secret_key = self._get_secret_key(request)
-        qr_code_data, totp = self._generate_qr_code(secret_key, request.user.get_username())
+        secret_key, secret_key_base32 = self._get_secret_key(request)
+        qr_code_data, totp = self._generate_qr_code(secret_key_base32, request.user.get_username())
         form = Enable2FAForm(request.POST, totp=totp)
         if form.is_valid():
             user = request.user
@@ -74,11 +75,11 @@ class Enable2FaView(LoginRequiredMixin, View):
         secret_key = request.session.get('enable_2fa_temp_secret')
         if secret_key is None:
             secret_key = random_hex(20)
-            request.session['enable_2fa_temp_secret'] = secret_key
-        return secret_key
-
-    def _generate_qr_code(self, secret_key, username):
+            request.session['enable_2fa_temp_secret'] = secret_key  # can access only Enable2FaView
         secret_key_base32 = b32encode(bytes.fromhex(secret_key)).decode('utf-8')
+        return secret_key, secret_key_base32
+
+    def _generate_qr_code(self, secret_key_base32, username):
         totp = pyotp.TOTP(secret_key_base32)
         uri = totp.provisioning_uri(username, issuer_name="pong")
 
