@@ -243,58 +243,49 @@ class DisableUserAccessTests(TestCase):
         self.assertFalse(self.user.enable_2fa)
 
 
-class AccessEnable2FaNotLoginUserTests(TestCase):
-    kEnable2FaName = "accounts:enable_2fa"
-    kUserPageName = "accounts:user"
+class UnLoginedUserAccessTests(TestCase):
+    """
+    un logged in user access to
+     accounts:enable_2fa  -> redirect to "accounts:login"
+     accounts:verify_2fa  -> redirect to "accounts:login"
+     accounts:disable_2fa -> redirect to "accounts:login"
+    """
+    kUserEmail = 'test@example.com'
+    kUserNickname = 'test'
+    kUserPassword = 'pass012345'
+
     kLoginName = "accounts:login"
+
+    kEnable2FaName = "accounts:enable_2fa"
+    kEnable2FaURL = "/accounts/verify/enable_2fa/"
+
+    kVerify2FaName = "accounts:verify_2fa"
+    kVerify2FaURL = "/accounts/verify/verify_2fa/"
+
+    kDisable2FaName = "accounts:disable_2fa"
+    kDisable2FaURL = "/accounts/verify/disable_2fa/"
+
+    kUserPageName = "accounts:user"
+    kHomeURL = "/pong/"
 
     def setUp(self):
         self.enable_2fa_url = reverse(self.kEnable2FaName)
-        self.login_url = reverse(self.kLoginName)
-        self.not_login_user_redirect_to = f"{self.login_url}?next={self.enable_2fa_url}"
-
-        self.response = self.client.get(self.enable_2fa_url)
-
-    def test_status_code(self):
-        self.assertEqual(self.response.status_code, 302)
-
-    def test_redirect(self):
-        self.assertRedirects(self.response, self.not_login_user_redirect_to)
-
-
-class AccessVerify2FaNotLoginUserTests(TestCase):
-    kVerify2FaName = "accounts:verify_2fa"
-    kUserPageName = "accounts:user"
-    kLoginName = "accounts:login"
-
-    def setUp(self):
         self.verify_2fa_url = reverse(self.kVerify2FaName)
-        self.login_url = reverse(self.kLoginName)
-        self.not_login_user_redirect_to = f"{self.login_url}"  # LoginRequiredMixinでないためnextなし
-
-        self.response = self.client.get(self.verify_2fa_url)
-
-    def test_status_code(self):
-        self.assertEqual(self.response.status_code, 302)
-
-    def test_redirect(self):
-        self.assertRedirects(self.response, self.not_login_user_redirect_to)
-
-
-class NotLoginUserAccessDisable2FaTests(TestCase):
-    kDisable2FaName = "accounts:disable_2fa"
-    kUserPageName = "accounts:user"
-    kLoginName = "accounts:login"
-
-    def setUp(self):
         self.disable_2fa_url = reverse(self.kDisable2FaName)
+        self.user_page_url = reverse(self.kUserPageName)
         self.login_url = reverse(self.kLoginName)
-        self.not_login_user_redirect_to = f"{self.login_url}?next={self.disable_2fa_url}"
+        self.not_login_user_redirect_to = f"{self.login_url}?next="
 
-        self.response = self.client.get(self.disable_2fa_url)
+    def test_access_to_enable_2fa(self):
+        self.response = self.client.get(self.enable_2fa_url, follow=True)
+        redirect_to = self.not_login_user_redirect_to + self.enable_2fa_url
+        self.assertRedirects(self.response, redirect_to)
 
-    def test_status_code(self):
-        self.assertEqual(self.response.status_code, 302)
+    def test_access_to_verify_2fa(self):
+        self.response = self.client.get(self.verify_2fa_url, follow=True)
+        self.assertRedirects(self.response, self.login_url)  # LoginRequiredMixinでないためnextなし
 
-    def test_redirect(self):
-        self.assertRedirects(self.response, self.not_login_user_redirect_to)
+    def test_access_to_disable_2fa(self):
+        self.response = self.client.get(self.disable_2fa_url, follow=True)
+        redirect_to = self.not_login_user_redirect_to + self.disable_2fa_url
+        self.assertRedirects(self.response, redirect_to)
