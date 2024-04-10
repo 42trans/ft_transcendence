@@ -24,6 +24,9 @@ class Enable2FaView(LoginRequiredMixin, View):
     user_page_path = 'accounts:user'
 
     def get(self, request, *args, **kwargs):
+        if request.user.enable_2fa:
+            return redirect(to=self.user_page_path)
+
         form = Enable2FAForm()
         secret_key = self._get_secret_key(request)
         qr_code_data, _ = self._generate_qr_code(secret_key, request.user.get_username())
@@ -34,6 +37,9 @@ class Enable2FaView(LoginRequiredMixin, View):
         return render(request, self.template_name, param)
 
     def post(self, request, *args, **kwargs):
+        if request.user.enable_2fa:
+            return redirect(to=self.user_page_path)
+
         form = Enable2FAForm(request.POST)
         secret_key = self._get_secret_key(request)
         qr_code_data, totp = self._generate_qr_code(secret_key, request.user.get_username())
@@ -118,11 +124,16 @@ class Disable2FaView(LoginRequiredMixin, View):
 
 class Verify2FaView(View):
     template_name = 'verify/verify_2fa.html'
+    login_page_path = 'accounts:login'
     authenticated_redirect_to = "/pong/"
 
     def get(self, request, *args, **kwargs):
         form = Verify2FAForm()
         user, _ = self._get_user_and_devices(request)
+
+        if user.enable_2fa is False:
+            return redirect(to=self.login_page_path)
+
         param = {
             'form': form,
         }
@@ -131,6 +142,10 @@ class Verify2FaView(View):
     def post(self, request, *args, **kwargs):
         form = Verify2FAForm(request.POST)
         user, devices = self._get_user_and_devices(request)
+
+        if user.enable_2fa is False:
+            return redirect(to=self.login_page_path)
+
         if form.is_valid():
             token = form.cleaned_data['token']
             for device in devices:
@@ -147,7 +162,10 @@ class Verify2FaView(View):
 
     def _get_user_and_devices(self, request):
         temp_user_id = request.session.get('temp_auth_user_id')
-        if temp_user_id is not None:
+        if temp_user_id is None:
+            user = None
+            devices = []
+        else:
             User = get_user_model()
             try:
                 user = User.objects.get(id=temp_user_id)
@@ -155,7 +173,4 @@ class Verify2FaView(View):
             except User.DoesNotExist:
                 user = None
                 devices = []
-        else:
-            user = None
-            devices = []
         return user, devices
