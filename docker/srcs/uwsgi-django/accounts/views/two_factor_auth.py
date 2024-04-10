@@ -78,9 +78,17 @@ class Enable2FaView(LoginRequiredMixin, View):
         secret_key_base32 = b32encode(bytes.fromhex(secret_key)).decode('utf-8')
         totp = pyotp.TOTP(secret_key_base32)
         uri = totp.provisioning_uri(username, issuer_name="pong")
-        qr = qrcode.make(uri)
+
+        qr = qrcode.QRCode(
+            box_size=6,
+            border=3,
+        )
+        qr.add_data(uri)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+
         io = BytesIO()
-        qr.save(io)
+        img.save(io)
         qr_code_data = b64encode(io.getvalue()).decode('utf-8')
         return qr_code_data, totp
 
