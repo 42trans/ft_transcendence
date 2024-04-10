@@ -51,6 +51,27 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 class Enable2FAForm(forms.Form):
     token = forms.CharField(label='2FA Token', max_length=6, required=True)
 
+    def __init__(self, *args, **kwargs):
+        self.totp = kwargs.pop('totp', None)
+        super(Enable2FAForm, self).__init__(*args, **kwargs)
+
+    def clean_token(self):
+        token = self.cleaned_data['token']
+        if self.totp is None or not self.totp.verify(token):
+            raise ValidationError('Invalid token')
+        return token
+
 
 class Verify2FAForm(forms.Form):
-    token = forms.CharField(label='2FA Token', max_length=6)
+    token = forms.CharField(label='2FA Token', max_length=6, required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.devices = kwargs.pop('devices', [])
+        super().__init__(*args, **kwargs)
+
+    def clean_token(self):
+        token = self.cleaned_data.get('token')
+        valid_token = any(device.verify_token(token) for device in self.devices)
+        if not valid_token:
+            raise ValidationError('Invalid token')
+        return token

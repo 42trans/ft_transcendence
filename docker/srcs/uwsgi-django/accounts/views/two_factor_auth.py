@@ -40,38 +40,35 @@ class Enable2FaView(LoginRequiredMixin, View):
         if request.user.enable_2fa:
             return redirect(to=self.user_page_path)
 
-        form = Enable2FAForm(request.POST)
         secret_key = self._get_secret_key(request)
         qr_code_data, totp = self._generate_qr_code(secret_key, request.user.get_username())
+        form = Enable2FAForm(request.POST, totp=totp)
         if form.is_valid():
-            token = form.cleaned_data['token']
-            if not totp.verify(token):
-                form.add_error(None, 'Invalid token')
-            else:
-                user = request.user
-                device, created = TOTPDevice.objects.get_or_create(
-                    user=user,
-                    defaults={
-                        'key': secret_key,
-                        'step': totp.interval,
-                        'name': 'default',
-                        'confirmed': True
-                    })
-                if not created:
-                    device.key = secret_key
-                    device.step = totp.interval
-                    device.name = 'default'
-                    device.confirmed = True
-                    device.save()
+            user = request.user
+            device, created = TOTPDevice.objects.get_or_create(
+                user=user,
+                defaults={
+                    'key': secret_key,
+                    'step': totp.interval,
+                    'name': 'default',
+                    'confirmed': True
+                })
+            if not created:
+                device.key = secret_key
+                device.step = totp.interval
+                device.name = 'default'
+                device.confirmed = True
+                device.save()
 
-                del request.session['enable_2fa_temp_secret']
-                self._enable_user_2fa(user)
-                return redirect(to=self.user_page_path)
-        param = {
-            'qr_code_data': qr_code_data,
-            'form': form
-        }
-        return render(request, self.template_name, param)
+            del request.session['enable_2fa_temp_secret']
+            self._enable_user_2fa(user)
+            return redirect(to=self.user_page_path)
+        else:
+            param = {
+                'qr_code_data': qr_code_data,
+                'form': form
+            }
+            return render(request, self.template_name, param)
 
     def _get_secret_key(self, request):
         secret_key = request.session.get('enable_2fa_temp_secret')
@@ -140,25 +137,21 @@ class Verify2FaView(View):
         return render(request, self.template_name, param)
 
     def post(self, request, *args, **kwargs):
-        form = Verify2FAForm(request.POST)
         user, devices = self._get_user_and_devices(request)
-
         if user is None or user.enable_2fa is False:
             return redirect(to=self.login_page_path)
 
+        form = Verify2FAForm(request.POST, devices=devices)
         if form.is_valid():
-            token = form.cleaned_data['token']
-            for device in devices:
-                if device.verify_token(token):
-                    login(request, user)
-                    del request.session['temp_auth_user_id']
-                    return redirect(to=self.authenticated_redirect_to)
+            login(request, user)
+            del request.session['temp_auth_user_id']
+            return redirect(to=self.authenticated_redirect_to)
+        else:
             form.add_error(None, 'Invalid token')
-
-        param = {
-            'form': form,
-        }
-        return render(request, self.template_name, param)
+            param = {
+                'form': form,
+            }
+            return render(request, self.template_name, param)
 
     def _get_user_and_devices(self, request):
         temp_user_id = request.session.get('temp_auth_user_id')
