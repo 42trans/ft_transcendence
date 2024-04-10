@@ -7,6 +7,19 @@
 		<style>
 			body { margin: 0; }
 		</style>
+		<style>
+			body { margin: 0; }
+
+			#info {
+				position: absolute;
+				top: 100px;
+				width: 100%;
+				color:blueviolet;
+				text-align: center;
+				z-index: 1;
+				display: block;
+			}
+		</style>
 	</head>
 	<body>
 		<!-- import文を使って外部スクリプトやライブラリを読み込む （CDN経由） -->
@@ -58,5 +71,10 @@
 			animate();
 			camera.position.z = 5;
 		</script>
+
+
+			
+		<div id="info">Description</div>
+
 	</body>
 </html>
