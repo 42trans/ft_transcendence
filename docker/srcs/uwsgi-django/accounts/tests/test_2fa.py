@@ -128,6 +128,54 @@ class Verify2FaFormTests(TestCase):
         self.assertContains(self.response, 'type="text"', 1)    # token
 
 
+class Disable2FaTests(TestCase):
+    kUserEmail = 'test@example.com'
+    kUserNickname = 'test'
+    kUserPassword = 'pass012345'
+
+    kDisable2FaName = "accounts:disable_2fa"
+
+    kUserPageName = "accounts:user"
+
+    def setUp(self):
+        self.disable_2fa_url = reverse(self.kDisable2FaName)
+        self.user_page_url = reverse(self.kUserPageName)
+
+        User = get_user_model()
+        self.user = User.objects.create_user(email=self.kUserEmail,
+                                             nickname=self.kUserNickname,
+                                             password=self.kUserPassword,
+                                             enable_2fa=True)  # enable
+        self.user.save()
+        self.client.force_login(self.user)
+
+    def test_access_to_disable_2fa(self):
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.enable_2fa)  # enable
+
+        self.response = self.client.get(self.disable_2fa_url, follow=True)
+        self.assertRedirects(self.response, self.user_page_url)
+
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.enable_2fa)  # disabled
+
+    def test_re_access_to_disable_2fa(self):
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.enable_2fa)  # enable
+
+        self.response = self.client.get(self.disable_2fa_url, follow=True)
+        self.assertRedirects(self.response, self.user_page_url)
+
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.enable_2fa)  # disabled
+
+        self.response = self.client.get(self.disable_2fa_url, follow=True)
+        self.assertRedirects(self.response, self.user_page_url)
+
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.enable_2fa)  # disable
+
+
 class EnableUserAccessTests(TestCase):
     """
     enable2fa and logged in user access to
