@@ -128,41 +128,61 @@ class Verify2FaFormTests(TestCase):
         self.assertContains(self.response, 'type="text"', 1)    # token
 
 
-class AccessEnable2FaEnableUserTests(TestCase):
+class EnableUserAccessTests(TestCase):
     """
-    login -> enable2fa -> accounts:enable_2fa redirect to "accounts:user"
+    enable2fa and logged in user access to
+     accounts:enable_2fa  -> redirect to "accounts:user"
+     accounts:verify_2fa  -> redirect to "/pong/"
+     accounts:disable_2fa -> 2fa disabled -> redirect to "accounts:user"
     """
     kUserEmail = 'test@example.com'
     kUserNickname = 'test'
     kUserPassword = 'pass012345'
 
     kLoginName = "accounts:login"
-    kEnable2FaName = "accounts:enable_2fa"
-    kUserPageName = "accounts:user"
 
+    kEnable2FaName = "accounts:enable_2fa"
     kEnable2FaURL = "/accounts/verify/enable_2fa/"
 
+    kVerify2FaName = "accounts:verify_2fa"
+    kVerify2FaURL = "/accounts/verify/verify_2fa/"
+
+    kDisable2FaName = "accounts:disable_2fa"
+    kDisable2FaURL = "/accounts/verify/disable_2fa/"
+
+    kUserPageName = "accounts:user"
+    kHomeURL = "/pong/"
+
     def setUp(self):
+        self.enable_2fa_url = reverse(self.kEnable2FaName)
+        self.verify_2fa_url = reverse(self.kVerify2FaName)
+        self.disable_2fa_url = reverse(self.kDisable2FaName)
+        self.user_page_url = reverse(self.kUserPageName)
+
         User = get_user_model()
-        user = User.objects.create_user(email=self.kUserEmail,
+        self.user = User.objects.create_user(email=self.kUserEmail,
                                         nickname=self.kUserNickname,
                                         password=self.kUserPassword,
                                         enable_2fa=True)  # enable
-        user.save()
+        self.user.save()
+        self.client.force_login(self.user)
 
-        # login
-        self.client.force_login(user)
+    def test_access_to_enable_2fa(self):
+        self.response = self.client.get(self.enable_2fa_url, follow=True)
+        self.assertRedirects(self.response, self.user_page_url)
+        self.assertTrue(self.user.enable_2fa)
 
-        # access to accounts:enable_2fa
-        enable_2fa_url = reverse(self.kEnable2FaName)
-        self.response = self.client.get(enable_2fa_url)
+    def test_access_to_verify_2fa(self):
+        self.response = self.client.get(self.verify_2fa_url, follow=True)
+        self.assertRedirects(self.response, self.kHomeURL)
+        self.assertTrue(self.user.enable_2fa)
 
-    def test_status_code(self):
-        self.assertEqual(self.response.status_code, 302)
+    def test_access_to_disable_2fa(self):
+        self.response = self.client.get(self.disable_2fa_url, follow=True)
+        self.assertRedirects(self.response, self.user_page_url)
 
-    def test_redirect(self):
-        user_page_url = reverse(self.kUserPageName)
-        self.assertRedirects(self.response, user_page_url)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.enable_2fa)  # disabled
 
 
 class AccessEnable2FaDisableUserTests(TestCase):
@@ -184,8 +204,6 @@ class AccessEnable2FaDisableUserTests(TestCase):
                                         password=self.kUserPassword,
                                         enable_2fa=False)  # disable
         user.save()
-
-        # login
         self.client.force_login(user)
 
         # access to accounts:enable_2fa
@@ -219,7 +237,7 @@ class AccessEnable2FaNotLoginUserTests(TestCase):
         self.assertRedirects(self.response, self.not_login_user_redirect_to)
 
 
-class NotLoginUserAccessVerify2FaTests(TestCase):
+class AccessVerify2FaNotLoginUserTests(TestCase):
     kVerify2FaName = "accounts:verify_2fa"
     kUserPageName = "accounts:user"
     kLoginName = "accounts:login"
