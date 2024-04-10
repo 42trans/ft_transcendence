@@ -55,23 +55,19 @@ class LoginView(View):
             return redirect(to=self.authenticated_redirect_to)
 
         form = LoginForm(request, data=request.POST)
-        print('login 1')
         if form.is_valid():
             user = form.get_user()
             if user:
                 if user.enable_2fa:
-                    print('login 2')
                     request.session['temp_auth_user_id'] = user.id  # 一時的な認証情報をセッションに保存
                     return redirect(to='accounts:verify_2fa')  # OTP検証ページへリダイレクト
                 else:
-                    print('login 3')
                     login(request, user)  # 2FAが無効ならば、通常通りログイン
                     return redirect(to=self.authenticated_redirect_to)
 
         param = {
             'form': form
         }
-        print('login 4')
         return render(request, self.login_url, param)
 
 
