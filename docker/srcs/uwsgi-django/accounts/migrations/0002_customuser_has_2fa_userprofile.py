@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='customuser',
-            name='has_2fa',
-            field=models.BooleanField(default=False, verbose_name='has 2fa'),
+            name='enable_2fa',
+            field=models.BooleanField(default=False, verbose_name='enable 2fa'),
         ),
         migrations.CreateModel(
             name='UserProfile',

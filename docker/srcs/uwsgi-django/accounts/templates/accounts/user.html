@@ -20,7 +20,7 @@
     <br>
 
     <!-- 2FAの状態に応じた表示 -->
-    {% if user.has_2fa %}
+    {% if user.enable_2fa %}
         <li>2FA: ✅Enabled</li>
         <li><a href="{% url 'accounts:disable_2fa' %}">Disable 2FA</a></li>
     {% else %}

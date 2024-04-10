@@ -59,7 +59,7 @@ class LoginView(View):
         if form.is_valid():
             user = form.get_user()
             if user:
-                if user.has_2fa:
+                if user.enable_2fa:
                     print('login 2')
                     request.session['temp_auth_user_id'] = user.id  # 一時的な認証情報をセッションに保存
                     return redirect(to='accounts:verify_2fa')  # OTP検証ページへリダイレクト

@@ -74,7 +74,7 @@ class OAuthWith42(View):
             user.set_unusable_password()
             user.save()
 
-        if user.has_2fa:
+        if user.enable_2fa:
             request.session['temp_auth_user_id'] = user.id  # 一時的な認証情報をセッションに保存
             return redirect(to='accounts:verify_2fa')  # OTP検証ページへリダイレクト
 

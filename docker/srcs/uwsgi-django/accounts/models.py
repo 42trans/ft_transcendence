@@ -138,7 +138,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     kNICKNAME_MAX_LENGTH = 30
     email = models.EmailField(_("email address"), unique=True)
     nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
-    has_2fa = models.BooleanField(_("has 2fa"), default=False)
+    enable_2fa = models.BooleanField(_("enable 2fa"), default=False)
 
     is_staff = models.BooleanField(
         _("staff status"),

@@ -85,7 +85,7 @@ class Enable2FaView(LoginRequiredMixin, View):
         return qr_code_data, totp
 
     def _enable_user_2fa(self, user):
-        user.has_2fa = True
+        user.enable_2fa = True
         user.save()
 
 
@@ -104,8 +104,7 @@ class Disable2FaView(LoginRequiredMixin, View):
             device.delete()
 
     def _disable_user_2fa(self, user):
-        # has_2faをFalseに更新
-        user.has_2fa = False
+        user.enable_2fa = False
         user.save()
 
 
