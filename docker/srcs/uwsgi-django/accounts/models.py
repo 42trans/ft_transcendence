@@ -8,7 +8,7 @@ from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
-
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -138,6 +138,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     kNICKNAME_MAX_LENGTH = 30
     email = models.EmailField(_("email address"), unique=True)
     nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
+    has_2fa = models.BooleanField(_("has 2fa"), default=False)
 
     is_staff = models.BooleanField(
         _("staff status"),
@@ -163,3 +164,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    devices = models.ManyToManyField(TOTPDevice)

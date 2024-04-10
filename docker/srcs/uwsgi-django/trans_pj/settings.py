@@ -56,6 +56,10 @@ INSTALLED_APPS = [
 	'pong',
 	'django_prometheus',
 	'accounts',  # user_accounts
+	'django_otp',  						# 2fa
+	'django_otp.plugins.otp_totp',  	# 2fa
+	'django_otp.plugins.otp_hotp',  	# 2fa
+	'django_otp.plugins.otp_static',  	# 2fa
 	# 'django.contrib.sites',  # allauth
 	# 'allauth',  # allauth
 	# 'allauth.account',  # allauth
@@ -89,15 +93,18 @@ MIDDLEWARE = [
 	# Prometheus----------
 	'django_prometheus.middleware.PrometheusAfterMiddleware',
 	# --------------------
+	'django_otp.middleware.OTPMiddleware',  # 2fa
 	# 'allauth.account.middleware.AccountMiddleware',  # allauth
 ]
 
 
-# allauth
 # AUTHENTICATION_BACKENDS = [
+	# 'django_otp.backends.OTPAuthenticationBackend',  # 2fa
 # 	'django.contrib.auth.backends.ModelBackend',  # allauth
 # 	'allauth.account.auth_backends.AuthenticationBackend',  # allauth
 # ]
+
+OTP_TOTP_ISSUER = 'trans_pj'
 
 ROOT_URLCONF = 'trans_pj.urls'
 

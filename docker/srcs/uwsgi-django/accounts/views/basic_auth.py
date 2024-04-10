@@ -3,6 +3,7 @@
 from django.contrib.auth import login, logout
 from django.views import View
 from django.shortcuts import render, redirect
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from accounts.forms import SignupForm, LoginForm
 
@@ -43,7 +44,9 @@ class LoginView(View):
             return redirect(to=self.authenticated_redirect_to)
 
         form = LoginForm()
-        param = {'form': form}
+        param = {
+            'form': form
+        }
         return render(request, self.login_url, param)
 
 
@@ -52,13 +55,23 @@ class LoginView(View):
             return redirect(to=self.authenticated_redirect_to)
 
         form = LoginForm(request, data=request.POST)
+        print('login 1')
         if form.is_valid():
             user = form.get_user()
             if user:
-                login(request, user)
-                return redirect(to=self.authenticated_redirect_to)
+                if user.has_2fa:
+                    print('login 2')
+                    request.session['temp_auth_user_id'] = user.id  # 一時的な認証情報をセッションに保存
+                    return redirect(to='accounts:verify_2fa')  # OTP検証ページへリダイレクト
+                else:
+                    print('login 3')
+                    login(request, user)  # 2FAが無効ならば、通常通りログイン
+                    return redirect(to=self.authenticated_redirect_to)
 
-        param = {'form': form}
+        param = {
+            'form': form
+        }
+        print('login 4')
         return render(request, self.login_url, param)
 
 
