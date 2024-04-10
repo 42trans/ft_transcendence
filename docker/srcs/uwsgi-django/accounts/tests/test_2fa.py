@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.messages import get_messages
 from django.urls import reverse, resolve
@@ -30,6 +30,7 @@ class Enable2FaFormTests(TestCase):
             'password'  : self.kUserPassword,
         }
         self.response = self.client.post(login_url, user_field)
+        self.assertTrue('_auth_user_id' in self.client.session)
 
         # access to enable_2fa
         enable_2fa_url = reverse(self.kEnable2FaName)
@@ -99,6 +100,10 @@ class Verify2FaFormTests(TestCase):
         self.response = self.client.post(login_url, user_field, follow=True)
         # login -> redirect to verify_2fa
 
+    def test_authenticate(self):
+        # not logged in until OTP auth
+        self.assertFalse('_auth_user_id' in self.client.session)
+
     def test_status_code(self):
         self.assertEqual(self.response.status_code, 200)
 
@@ -123,7 +128,79 @@ class Verify2FaFormTests(TestCase):
         self.assertContains(self.response, 'type="text"', 1)    # token
 
 
-class NotLoginUserAccessEnable2FaTests(TestCase):
+class AccessEnable2FaEnableUserTests(TestCase):
+    """
+    login -> enable2fa -> accounts:enable_2fa redirect to "accounts:user"
+    """
+    kUserEmail = 'test@example.com'
+    kUserNickname = 'test'
+    kUserPassword = 'pass012345'
+
+    kLoginName = "accounts:login"
+    kEnable2FaName = "accounts:enable_2fa"
+    kUserPageName = "accounts:user"
+
+    kEnable2FaURL = "/accounts/verify/enable_2fa/"
+
+    def setUp(self):
+        User = get_user_model()
+        user = User.objects.create_user(email=self.kUserEmail,
+                                        nickname=self.kUserNickname,
+                                        password=self.kUserPassword,
+                                        enable_2fa=True)  # enable
+        user.save()
+
+        # login
+        self.client.force_login(user)
+
+        # access to accounts:enable_2fa
+        enable_2fa_url = reverse(self.kEnable2FaName)
+        self.response = self.client.get(enable_2fa_url)
+
+    def test_status_code(self):
+        self.assertEqual(self.response.status_code, 302)
+
+    def test_redirect(self):
+        user_page_url = reverse(self.kUserPageName)
+        self.assertRedirects(self.response, user_page_url)
+
+
+class AccessEnable2FaDisableUserTests(TestCase):
+    """
+    login -> enable2fa -> accounts:enable_2fa redirect to "accounts:user"
+    """
+    kUserEmail = 'test@example.com'
+    kUserNickname = 'test'
+    kUserPassword = 'pass012345'
+
+    kLoginName = "accounts:login"
+    kEnable2FaName = "accounts:enable_2fa"
+    kEnable2FaURL = "/accounts/verify/enable_2fa/"
+
+    def setUp(self):
+        User = get_user_model()
+        user = User.objects.create_user(email=self.kUserEmail,
+                                        nickname=self.kUserNickname,
+                                        password=self.kUserPassword,
+                                        enable_2fa=False)  # disable
+        user.save()
+
+        # login
+        self.client.force_login(user)
+
+        # access to accounts:enable_2fa
+        self.enable_2fa_url = reverse(self.kEnable2FaName)
+        self.response = self.client.get(self.enable_2fa_url)
+
+    def test_status_code(self):
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_redirect(self):
+        enable_2fa_view = resolve(self.kEnable2FaURL)
+        self.assertEqual(enable_2fa_view.func.view_class, Enable2FaView)
+
+
+class AccessEnable2FaNotLoginUserTests(TestCase):
     kEnable2FaName = "accounts:enable_2fa"
     kUserPageName = "accounts:user"
     kLoginName = "accounts:login"
