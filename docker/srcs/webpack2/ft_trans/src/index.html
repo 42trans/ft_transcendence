@@ -1,80 +1,121 @@
-<!-- 参考:【シーンの作成 – three.js docs】 <https://threejs.org/docs/#manual/ja/introduction/Creating-a-scene></https:> -->
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>My first three.js app</title>
-		<style>
-			body { margin: 0; }
-		</style>
-		<style>
-			body { margin: 0; }
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>My first three.js app</title>
+    <style>
+        body { margin: 0; }
+        #info {
+            position: absolute;
+            top: 100px;
+            width: 100%;
+            color: blueviolet;
+            text-align: center;
+            z-index: 1;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.163/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163/examples/jsm/"
+    }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-			#info {
-				position: absolute;
-				top: 100px;
-				width: 100%;
-				color:blueviolet;
-				text-align: center;
-				z-index: 1;
-				display: block;
-			}
-		</style>
-	</head>
-	<body>
-		<!-- import文を使って外部スクリプトやライブラリを読み込む （CDN経由） -->
-		
-		<script type="module">
-			import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js'
+const scene = new THREE.Scene();
+const camera = setupCamera();
+const renderer = setupRenderer();
+const light = new THREE.AmbientLight(0xffffff, 10);
+scene.add(light);
 
-			// 3D空間のシーンを作成します。これはカメラやオブジェクト、ライトなど、すべての要素を含むコンテナ
-			const scene = new THREE.Scene();
-			// 遠近法カメラ。第一引数は視野角(FOV)、第二引数はアスペクト比、第三および第四引数はカメラの視界(ビューフラストラム、錐台型)の「近く」と「遠く」のクリッピング面
-			const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-			// WebGLRenderer:three.jsライブラリ内のクラス. WebGL APIとの間のインターフェースの役割. キャンバスに描画するなど.
+let mixer, model;
+const clock = new THREE.Clock();
+const loader = new GLTFLoader();
+loadModel();
 
-			camera.position.set( 0, 0, 100 );
-			camera.lookAt( 0, 0, 0 );
+const controls = new OrbitControls(camera, renderer.domElement);
+animate();
 
-			const renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement)
+function setupCamera() {
+    const cam = new THREE.PerspectiveCamera(125, window.innerWidth / window.innerHeight, 0.1, 1000);
+    cam.position.set(0, 0, 10);
+    cam.lookAt(0, 0, 0);
+    return cam;
+}
 
-			// const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-			// const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-			// const cube = new THREE.Mesh( geometry, material );
-			// scene.add( cube );
-			
-			//create a blue LineBasicMaterial
-			const material = new THREE.LineBasicMaterial({ color:0x0000ff})
-			const points = [];
-			points.push( new THREE.Vector3(-1, 0, 0));
-			points.push( new THREE.Vector3(0, 1, 0));
-			points.push( new THREE.Vector3(1, 0, 0));
-			const geometry = new THREE.BufferGeometry().setFromPoints(points);
-			const Line = new THREE.Line(geometry, material);
-			scene.add(Line);
-			
+function setupRenderer() {
+    const rend = new THREE.WebGLRenderer();
+    rend.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(rend.domElement);
+    return rend;
+}
 
-			function animate() {
-				requestAnimationFrame( animate );
-				Line.rotation.x += 0.00;
-				Line.rotation.y += 0.01;
-				renderer.render( scene, camera );
-			}
-			// function animate() {
-			// 	requestAnimationFrame( animate );
-			// 	cube.rotation.x += 0.01;
-			// 	cube.rotation.y += 0.01;
-			// 	renderer.render( scene, camera );
-			// }
-			animate();
-			camera.position.z = 5;
-		</script>
+function loadModel() {
+    loader.load('assets/vespa_mandarinia/scene.gltf', function (gltf) {
+        model = gltf.scene;
+        scene.add(model);
+        model.position.set(-10, 8, -1);
+        model.scale.set(1, 1, 1);
+        mixer = new THREE.AnimationMixer(model);
+        if (gltf.animations && gltf.animations.length) {
+            const action = mixer.clipAction(gltf.animations[0]);
+            action.play();
+        }
+    }, undefined, function (error) {
+        console.error(error);
+    });
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    const delta = clock.getDelta(); // 前のフレームからの経過時間を取得
+    if (mixer) { // AnimationMixerが初期化されていれば更新
+        mixer.update(delta);
+    }
+
+    // モデルが存在し、かつモデルがロードされている場合にY軸に沿って回転させる
+    if (model) {
+        model.rotation.y += 0.01;
+    }
+
+    updateModelPosition(); // モデルの位置を更新
+    controls.update(); // OrbitControlsをアップデート
+    renderer.render(scene, camera);
+}
 
 
-			
-		<div id="info">Description</div>
+const maxSpeed = 0.01;
+let speed = { x: randomSpeed(), y: randomSpeed(), z: randomSpeed() };
 
-	</body>
+function randomSpeed() {
+    return (Math.random() - 0.5) * 2 * maxSpeed;
+}
+
+function updateModelPosition() {
+    if (!model) return;
+    model.position.x += speed.x;
+    model.position.y += speed.y;
+    model.position.z += speed.z;
+    checkBounds();
+}
+
+function checkBounds() {
+    if (model.position.x > 10 || model.position.x < -10 ||
+        model.position.y > 8 || model.position.y < -8 ||
+        model.position.z > -1 || model.position.z < -10) {
+        speed = { x: randomSpeed(), y: randomSpeed(), z: randomSpeed() };
+    }
+}
+</script>
+
+<div id="info">スズメバチ dir,pos: random, rotation: y</div>
+</body>
 </html>
