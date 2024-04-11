@@ -11,6 +11,11 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
+from django.views.generic import TemplateView
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from accounts.forms import UserEditForm, CustomPasswordChangeForm
 
@@ -18,22 +23,28 @@ from accounts.forms import UserEditForm, CustomPasswordChangeForm
 logger = logging.getLogger(__name__)
 
 
-class UserPageView(LoginRequiredMixin, View):
-    """
-    render user page
-    user is not authenticated, redirect to LOGIN_URL written in setting.py
-    """
-    user_page_url = "accounts/user.html"
+class UserProfileView(LoginRequiredMixin, TemplateView):
+    template_name = "accounts/user.html"
 
     def get(self, request, *args, **kwargs):
-        user = request.user
+        user_auth = JWTAuthentication().authenticate(request)
+        if user_auth is None:
+            return redirect(to='accounts:login')
+        return super().get(request, *args, **kwargs)
 
+
+class UserProfileAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
         params = {
             'email': user.email,
             'nickname': user.nickname,
+            'enable_2fa': user.enable_2fa,
         }
-        return render(request, self.user_page_url, params)
-
+        return Response(params)
 
 
 class EditUserProfileView(LoginRequiredMixin, View):
