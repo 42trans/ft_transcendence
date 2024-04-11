@@ -183,8 +183,7 @@ class EnableAndVerify2FaTests(TestCase):
         self.assertFalse(self.user.enable_2fa)  # disable
 
         response = self.client.get(self.enable_2fa_url)
-        setup_key = response.context['setup_key']
-        secret_key_base32 = b32encode(bytes.fromhex(setup_key)).decode('utf-8')
+        secret_key_base32 = response.context['setup_key']
         totp = pyotp.TOTP(secret_key_base32)
         otp_token = totp.now()
 
@@ -194,8 +193,6 @@ class EnableAndVerify2FaTests(TestCase):
         self.assertRedirects(response, self.user_page_url)   # succeed enable2fa -> redirect to user
 
         self.assertTrue('_auth_user_id' in self.client.session)  # login
-
-        self.user.enable_2fa = True
 
         self.user.refresh_from_db()
         self.assertTrue(self.user.enable_2fa)  # enable

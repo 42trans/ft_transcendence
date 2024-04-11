@@ -1,8 +1,10 @@
 from base64 import b64encode, b32encode, b32decode, b64decode
 from binascii import hexlify, unhexlify
+from datetime import datetime, timedelta, timezone
 from io import BytesIO
 import pyotp
 import qrcode
+import time
 
 from django import forms
 from django.contrib.auth import get_user_model, login
@@ -12,6 +14,7 @@ from django_otp import devices_for_user
 from django_otp.oath import TOTP
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.util import random_hex
+from django.utils.timezone import make_aware
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -29,7 +32,7 @@ class Enable2FaView(LoginRequiredMixin, View):
 
         form = Enable2FAForm()
         secret_key, secret_key_base32 = self._get_secret_key(request)
-        qr_code_data, _ = self._generate_qr_code(secret_key, request.user.get_username())
+        qr_code_data, _ = self._generate_qr_code(secret_key_base32, request.user.get_username())
         param = {
             'qr_code_data': qr_code_data,
             'setup_key': secret_key_base32,
@@ -61,22 +64,40 @@ class Enable2FaView(LoginRequiredMixin, View):
                 device.confirmed = True
                 device.save()
 
-            del request.session['enable_2fa_temp_secret']
+            del request.session['enable_2fa_temp_secret_info']
             self._enable_user_2fa(user)
             return redirect(to=self.user_page_path)
         else:
             param = {
                 'qr_code_data': qr_code_data,
+                'setup_key': secret_key_base32,
                 'form': form
             }
             return render(request, self.template_name, param)
 
     def _get_secret_key(self, request):
-        secret_key = request.session.get('enable_2fa_temp_secret')
-        if secret_key is None:
-            secret_key = random_hex(20)
-            request.session['enable_2fa_temp_secret'] = secret_key  # can access only Enable2FaView
+        """
+        OTP用の秘密鍵を生成する
+        GET, POSTで同じ秘密鍵を参照できるよう、Sessionに保存する
+        OTPを登録せずに離脱した場合、次回アクセス時に秘密鍵が再利用されないよう、有効期限を1分とする
+        """
+        now = make_aware(datetime.now())
+        secret_info = request.session.get('enable_2fa_temp_secret_info')
+
+        if secret_info:
+            secret_key = secret_info['key']
+            timestamp = datetime.fromtimestamp(secret_info['timestamp'], tz=timezone.utc)
+            if request.method == 'POST' or now <= timestamp + timedelta(minutes=1):
+                secret_key_base32 = b32encode(bytes.fromhex(secret_key)).decode('utf-8')
+                return secret_key, secret_key_base32
+
+        secret_key = random_hex(20)
         secret_key_base32 = b32encode(bytes.fromhex(secret_key)).decode('utf-8')
+
+        request.session['enable_2fa_temp_secret_info'] = {
+            'key': secret_key,
+            'timestamp': int(now.timestamp())
+        }
         return secret_key, secret_key_base32
 
     def _generate_qr_code(self, secret_key_base32, username):
