@@ -2,7 +2,7 @@
 /**
  * @file App.ts
  * 
- * メインのクラス
+ * メインのクラス。全体（bundle.js）のフローを管理
  * シーンの初期化、アニメーションのループを呼び出す
  */
 
@@ -12,7 +12,7 @@ import SceneSetup from './SceneSetup';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { ControlsGUI } from '../ControlsGUI';
 import { loadModel } from './suzumebachiModelLoader';
-import { setMixer, animate } from './animation';
+import AnimationManager from './AnimationManager'
 //dev用GUI
 import * as lil from 'lil-gui'; 
 
@@ -22,6 +22,7 @@ class App {
 	private camera!: THREE.PerspectiveCamera;
 	private renderer!: THREE.WebGLRenderer;
 	private controls!: OrbitControls;
+	private animationManager!: AnimationManager;
 	private gui: lil.GUI = new lil.GUI();;
 
 	constructor(){
@@ -43,12 +44,13 @@ class App {
 		const contorolsGUI = new ControlsGUI(this.scene, this.gui, this.camera);
 		contorolsGUI.setupControlsGUI();
 	}
-
+	
 	private setModel() {
+		this.animationManager = new AnimationManager(this.renderer, this.scene, this.camera, this.controls);
 		loadModel(this.scene, (model, loadedMixer) => {
 			// TODO_ft: エラーハンドリング
-			setMixer(loadedMixer);
-			animate(this.renderer, this.scene, this.camera, this.controls);
+			this.animationManager.setMixer(loadedMixer);
+			this.animationManager.startAnimationLoop();
 		});
 	}
 
