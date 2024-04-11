@@ -1,3 +1,9 @@
+
+/**
+ * @file dev時に右上に表示するコントローラーの設定
+ * 
+ */
+
 import * as THREE from 'three';
 import * as lil from 'lil-gui';
 
@@ -37,13 +43,15 @@ export class ControlsGUI {
 					folder.add(child.position, 'y', -50, 50, 0.01);
 					folder.add(child.position, 'z', -50, 50, 0.01);
 				}
-				if (child instanceof THREE.SpotLight || child instanceof THREE.PointLight) {
+				if (child instanceof THREE.PointLight) {
 					folder.add(child, 'distance', 0, 500, 1);
 					folder.add(child, 'decay', 0, 4, 0.01);
-					if (child instanceof THREE.SpotLight) {
-						folder.add(child, 'angle', 0, Math.PI, 0.01);
-						folder.add(child, 'penumbra', 0, 1, 0.01);
-					}
+				}
+				if (child instanceof THREE.SpotLight) {
+					folder.add(child, 'distance', 0, 500, 1);
+					folder.add(child, 'decay', 0, 4, 0.01);
+					folder.add(child, 'angle', 0, Math.PI, 0.01);
+					folder.add(child, 'penumbra', 0, 1, 0.01);
 				}
 				folder.close();
 			}

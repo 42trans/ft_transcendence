@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>suzumebachi ft_trans three.js app</title>
-    <style>
-        body { margin: 0; }
-        #info {
-            position: absolute;
-            top: 100px;
-            width: 100%;
-            color: blueviolet;
-            text-align: center;
-            z-index: 1;
-            display: block;
-        }
-    </style>
+	<meta charset="UTF-8">
+	<title>suzumebachi ft_trans three.js app</title>
+	<style>
+		body { margin: 0; }
+		#threejs-canvas-container {
+			width: 100%;
+			height: 100vh;
+			display: block;
+		}
+		#info {
+			position: absolute;
+			top: 100px;
+			color: blueviolet;
+			z-index: 1;
+		}
+	</style>
 </head>
 <body>
-    <div id="info">スズメバチ dir,pos: random, rotation: y</div>
-    <script type="module" src="./bundle.js"></script>
+	<div id="info">
+		スズメバチ dir,pos: random, rotation:
+	</div>
+	<div id="threejs-canvas-container"></div>
 </body>
 </html>

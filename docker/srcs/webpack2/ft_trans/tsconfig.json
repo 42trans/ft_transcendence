@@ -16,7 +16,8 @@
 	// モジュールの解決戦略としてnodeを使用
 		"moduleResolution": "node"
 	},
-		"exclude": [
+	"exclude": [
+		"src/old",
 		"node_modules" // node_modulesディレクトリはコンパイル対象外とする
 	]
 }

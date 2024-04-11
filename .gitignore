@@ -30,6 +30,7 @@ docker/srcs/pgadmin
 # 3D用
 docker/srcs/webpack/ft_trans/public
 docker/srcs/webpack2/ft_trans/public
+docker/srcs/webpack2/ft_trans/docs
 
 #### init/ #####
 
