@@ -13,6 +13,7 @@ module.exports = {
 	output: {
 		//  出力ファイルのディレクトリ名
 		path: `${__dirname}/public`,
+		filename: 'bundle.js',
 	},
 	module: {
 	  rules: [
@@ -63,11 +64,13 @@ module.exports = {
 	// ローカル開発用環境を立ち上げる
 	devServer: {
 		static: {
-			directory: `${__dirname}/src`,
-			watch: {
-				// ポーリング設定
-				poll: 1000, // 1秒ごとにポーリング
-			},
+			directory: path.join(__dirname, 'public'), // この行を修正
+			watch: true,
+			// directory: `${__dirname}/src`,
+			// watch: {
+			// 	// ポーリング設定
+			// 	poll: 1000, // 1秒ごとにポーリング
+			// },
 		},
 		headers: {
 			'Access-Control-Allow-Origin': '*',
