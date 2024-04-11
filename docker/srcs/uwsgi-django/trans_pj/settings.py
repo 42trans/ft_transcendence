@@ -95,6 +95,7 @@ MIDDLEWARE = [
 	# --------------------
 	'django_otp.middleware.OTPMiddleware',  # 2fa
 	# 'allauth.account.middleware.AccountMiddleware',  # allauth
+	'accounts.middleware.JWTAuthenticationMiddleware',  # jwt
 ]
 
 
@@ -288,6 +289,13 @@ LOGGING = {
 # ACCOUNT_EMAIL_VERIFICATION = 'none'
 # ACCOUNT_EMAIL_REQUIRED = True   # ユーザ登録にメルアド必須にする
 # # allauth setting --------------------------------------------------------------
+
+# JWT
+REST_FRAMEWORK = {
+	'DEFAULT_AUTHENTICATION_CLASSES': [
+		'rest_framework_simplejwt.authentication.JWTAuthentication',
+	],
+}
 
 LOGIN_URL = '/accounts/login/'
 

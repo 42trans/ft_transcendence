@@ -21,9 +21,10 @@ myst-parser
 
 requests
 
-# OAuth
-# django-allauth==0.61.1
 # 2FA
 django-otp==1.3.0
 qrcode==7.4.2
 pyotp==2.9.0
+
+# JWT
+djangorestframework-simplejwt==5.3.1

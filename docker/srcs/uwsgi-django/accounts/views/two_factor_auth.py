@@ -20,6 +20,7 @@ from django.views import View
 
 from accounts.forms import Enable2FAForm, Verify2FAForm
 from accounts.models import CustomUser, UserManager
+from accounts.views.jwt import response_with_jwt
 
 
 class Enable2FaView(LoginRequiredMixin, View):
@@ -167,7 +168,8 @@ class Verify2FaView(View):
         if form.is_valid():
             login(request, user)
             del request.session['temp_auth_user_id']
-            return redirect(to=self.authenticated_redirect_to)
+            return response_with_jwt(user, self.authenticated_redirect_to)
+
         else:
             form.add_error(None, 'Invalid token')
             param = {

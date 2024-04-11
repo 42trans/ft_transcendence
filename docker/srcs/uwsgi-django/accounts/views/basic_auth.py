@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from accounts.forms import SignupForm, LoginForm
+from accounts.views.jwt import response_with_jwt
 
 
 class SignupView(View):
@@ -63,7 +64,7 @@ class LoginView(View):
                     return redirect(to='accounts:verify_2fa')  # OTP検証ページへリダイレクト
                 else:
                     login(request, user)  # 2FAが無効ならば、通常通りログイン
-                    return redirect(to=self.authenticated_redirect_to)
+                    return response_with_jwt(user, self.authenticated_redirect_to)
 
         param = {
             'form': form

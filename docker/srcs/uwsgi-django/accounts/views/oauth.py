@@ -14,6 +14,7 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
+from accounts.views.jwt import response_with_jwt
 
 
 logging.basicConfig(
@@ -78,9 +79,8 @@ class OAuthWith42(View):
             request.session['temp_auth_user_id'] = user.id  # 一時的な認証情報をセッションに保存
             return redirect(to='accounts:verify_2fa')  # OTP検証ページへリダイレクト
 
-        # login(request, user)  # 2FAが無効ならば、通常通りログイン
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return redirect(to=self.authenticated_redirect_to)
+        return response_with_jwt(user, self.authenticated_redirect_to)
 
 
     def _is_valid_state(self, request: HttpRequest) -> bool:
