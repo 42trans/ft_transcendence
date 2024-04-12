@@ -2,4 +2,5 @@
 	"entryPoints": ["src"],
 	"out": "docs",
 	"name": "ft_transcendence"
+
 }
