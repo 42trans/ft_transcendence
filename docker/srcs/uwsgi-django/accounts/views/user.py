@@ -23,7 +23,7 @@ from accounts.forms import UserEditForm, CustomPasswordChangeForm
 logger = logging.getLogger(__name__)
 
 
-class UserProfileView(LoginRequiredMixin, TemplateView):
+class UserProfileView(TemplateView):
     template_name = "accounts/user.html"
 
     def get(self, request, *args, **kwargs):

@@ -17,10 +17,17 @@ from django_otp.util import random_hex
 from django.utils.timezone import make_aware
 from django.shortcuts import render, redirect
 from django.views import View
+from django.views.generic import TemplateView
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from accounts.forms import Enable2FAForm, Verify2FAForm
 from accounts.models import CustomUser, UserManager
-from accounts.views.jwt import response_with_jwt
+from accounts.views.jwt import response_with_jwt, get_jwt_response
 
 
 class Enable2FaView(LoginRequiredMixin, View):
@@ -142,6 +149,63 @@ class Disable2FaView(LoginRequiredMixin, View):
         user.save()
 
 
+class Verify2FaTepmlateView(TemplateView):
+    template_name = 'verify/verify_2fa.html'
+    login_page_path = 'accounts:login'
+
+    def dispatch(self, request, *args, **kwargs):
+        user, _ = Verify2FaAPIView._get_user_and_devices(request)
+        if user is None:
+            return redirect(self.login_page_path)
+        return super().dispatch(request, *args, **kwargs)
+
+
+class Verify2FaAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [AllowAny]  # Non-Login before verify 2FA
+
+    def post(self, request, *args, **kwargs):
+        user, devices = self._get_user_and_devices(request)
+        if user is None:
+            data = {
+                'error': 'No valid session found.',
+                'redirect': '/accounts/login/',
+            }
+            return Response(data, status=401)
+
+        token = request.data.get('token')
+        for device in devices:
+            if device.verify_token(token):
+                # login(request, user)  # JWT auth -> login() unused
+                del request.session['tmp_auth_user_id']
+                data = {
+                    'message': '2FA verification successful',
+                    'redirect': '/accounts/user/'
+                }
+                return get_jwt_response(user, data)
+
+        data = {'error': 'Invalid token'}
+        return Response(data, status=400)
+
+    @classmethod
+    def _get_user_and_devices(self, request):
+        tmp_user_id = request.session.get('tmp_auth_user_id')
+
+        if tmp_user_id is None:
+            user = None
+            devices = []
+        else:
+            User = get_user_model()
+            try:
+                user = User.objects.get(id=tmp_user_id)
+                devices = list(devices_for_user(user, confirmed=True))
+            except User.DoesNotExist:
+                user = None
+                devices = []
+        return user, devices
+
+
+# todo: JWT認証への切り替えで不要に。testなどの呼び出しを変更後、削除予定
 class Verify2FaView(View):
     template_name = 'verify/verify_2fa.html'
     login_page_path = 'accounts:login'
@@ -167,7 +231,7 @@ class Verify2FaView(View):
         form = Verify2FAForm(request.POST, devices=devices)
         if form.is_valid():
             login(request, user)
-            del request.session['temp_auth_user_id']
+            del request.session['tmp_auth_user_id']
             return response_with_jwt(user, self.authenticated_redirect_to)
 
         else:
@@ -178,14 +242,14 @@ class Verify2FaView(View):
             return render(request, self.template_name, param)
 
     def _get_user_and_devices(self, request):
-        temp_user_id = request.session.get('temp_auth_user_id')
-        if temp_user_id is None:
+        tmp_user_id = request.session.get('tmp_auth_user_id')
+        if tmp_user_id is None:
             user = None
             devices = []
         else:
             User = get_user_model()
             try:
-                user = User.objects.get(id=temp_user_id)
+                user = User.objects.get(id=tmp_user_id)
                 devices = list(devices_for_user(user, confirmed=True))
             except User.DoesNotExist:
                 user = None
