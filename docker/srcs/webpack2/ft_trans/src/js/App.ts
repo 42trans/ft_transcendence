@@ -43,7 +43,7 @@ class App {
 		// 以下、privateメソッド
 		this.setupScene();
 		this.setupControlsGUI(); 
-		this.startAnimationLoop(); 
+		this.loadModelsAndRunLoop(); 
 	}
 	/**　
 	 * @description メソッドの実装は SceneSetup.ts
@@ -64,7 +64,7 @@ class App {
 	/**　
 	 * @description メソッドの実装は AnimationManager.ts
 	 */
-	private startAnimationLoop() {
+	private loadModelsAndRunLoop() {
 		this.animMgr = new AnimationManager(this.renderer, this.scene, this.camera, this.controls);
 		const sceneConfig = new SceneConfig();
 		const modelsLoader = new ModelsLoader(this.scene, sceneConfig, this.animMgr);
