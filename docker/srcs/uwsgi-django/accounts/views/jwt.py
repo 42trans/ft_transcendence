@@ -27,10 +27,18 @@ def response_with_jwt(user, redirect_to: str) -> HttpResponse:
         secure=True,    # HTTPSを通じてのみCookieを送信
         samesite='Lax', # Cookieは現在のウェブサイトからのリクエストでのみ送信
     )
+    response.set_cookie(
+        'Refresh-Token',
+        jwt['refresh'],
+        max_age=3600,   # トークンの有効期限（秒）
+        httponly=True,  # JavaScriptからのアクセスを防ぐ -> XSS対策
+        secure=True,    # HTTPSを通じてのみCookieを送信
+        samesite='Lax', # Cookieは現在のウェブサイトからのリクエストでのみ送信
+    )
     return response
 
 
-def get_jwt_response(user, data):
+def get_jwt_response(user, data) -> JsonResponse:
     jwt = get_jwt_for_user(user)
     response = JsonResponse(data, status=200)
 
