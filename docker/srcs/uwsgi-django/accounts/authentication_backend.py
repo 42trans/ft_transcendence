@@ -8,7 +8,7 @@ class JWTAuthenticationBackend(BaseBackend):
     def authenticate(self, request, token=None):
         User = get_user_model()
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            payload = jwt.decode(token, settings.SIMPLE_JWT["SIGNING_KEY"], algorithms=["HS256"])
             user_id = payload.get('user_id')
             user = User.objects.get(id=user_id)
             return user

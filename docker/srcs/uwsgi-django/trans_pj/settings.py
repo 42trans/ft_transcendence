@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 
@@ -106,6 +107,24 @@ AUTHENTICATION_BACKENDS = [
 # 	'django.contrib.auth.backends.ModelBackend',  # allauth
 # 	'allauth.account.auth_backends.AuthenticationBackend',  # allauth
 ]
+
+
+SIMPLE_JWT = {
+	'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),  # アクセストークンの有効期間
+	'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # リフレッシュトークンの有効期間
+	'ROTATE_REFRESH_TOKENS': False,
+	'BLACKLIST_AFTER_ROTATION': True,
+	'UPDATE_LAST_LOGIN': False,
+
+	'ALGORITHM': 'HS256',
+	'SIGNING_KEY': SECRET_KEY,
+	'VERIFYING_KEY': None,
+	'AUDIENCE': None,
+	'ISSUER': None,
+	'JWK_URL': None,
+	'LEEWAY': 0,
+}
+
 
 OTP_TOTP_ISSUER = 'trans_pj'
 
