@@ -1,4 +1,5 @@
 from django.utils.deprecation import MiddlewareMixin
+from accounts.authentication_backend import JWTAuthenticationBackend
 
 
 class JWTAuthenticationMiddleware(MiddlewareMixin):
@@ -7,3 +8,8 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
         if token:
             # JWTをAuthorizationヘッダーに設定
             request.META['HTTP_AUTHORIZATION'] = f'Bearer {token}'
+
+            backend = JWTAuthenticationBackend()
+            user = backend.authenticate(request, token=token)
+            if user:
+                request.user = user

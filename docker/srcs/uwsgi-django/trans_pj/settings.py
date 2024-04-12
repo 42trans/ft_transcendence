@@ -99,11 +99,13 @@ MIDDLEWARE = [
 ]
 
 
-# AUTHENTICATION_BACKENDS = [
+AUTHENTICATION_BACKENDS = [
+	'accounts.authentication_backend.JWTAuthenticationBackend',
+	'django.contrib.auth.backends.ModelBackend',  # Optional
 	# 'django_otp.backends.OTPAuthenticationBackend',  # 2fa
 # 	'django.contrib.auth.backends.ModelBackend',  # allauth
 # 	'allauth.account.auth_backends.AuthenticationBackend',  # allauth
-# ]
+]
 
 OTP_TOTP_ISSUER = 'trans_pj'
 
