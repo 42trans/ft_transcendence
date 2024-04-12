@@ -12,6 +12,9 @@ import SceneSetup from './SceneSetup';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import ControlsGUI from '../ControlsGUI';
 import { loadModel } from './suzumebachiModelLoader';
+import { loadModels } from './loadModels';
+import { LightConfig, ModelConfig, AnimationConfig } from './type';
+
 import AnimationManager from './AnimationManager'
 //dev用GUI
 import * as lil from 'lil-gui'; 
@@ -66,11 +69,9 @@ class App {
 	 */
 	private startAnimationLoop() {
 		this.animMgr = new AnimationManager(this.renderer, this.scene, this.camera, this.controls);
-		loadModel(this.scene, (model, loadedMixer) => {
-			// TODO_ft: エラーハンドリング
-			this.animMgr.setMixer(loadedMixer);
-			this.animMgr.startAnimationLoop();
-		});
+		const sceneConfig = new SceneConfig();
+		loadModels(this.scene, sceneConfig, this.animMgr);
+		this.animMgr.startAnimationLoop();
 	}
 
 	public static main() {

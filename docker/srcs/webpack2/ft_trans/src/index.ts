@@ -18,7 +18,15 @@
  *   - docker exec -it webpack2 bash -c "npm run build"
  *   - webpack2/public/に一式できます。マウント共有してるので二回再起動すればDjangoに認識されるはず
  *   - static/share_wabpack2/に自動で入ります。ホストマシンに保存されます。.gitignore済み
- */
+ * 
+ * ## ディレクトリ構成
+ * - SceneConfig.tsに値を設定してください。scene設定はそこで全てです。
+ * - Contorls.tsのパラメーターはスライダーの感度調整なので変更しなくても問題ないはずです。が、必要なら。
+ * - 他の.js,.tsファイルは js/ にまとめてます。 
+ * - 型情報は js/type.ts にまとめていきたい方針
+ * - App.tsから全ての処理のフローが見通せるように書きたい。ファサードパターンで。
+ * - 3Dmodel.gltfやtextureは assets/にまとめてます。
+*/
 
 import App from './js/App'
 

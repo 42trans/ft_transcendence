@@ -6,7 +6,8 @@
  */
 
 import * as THREE from 'three';
-import { LightConfig } from './js/type';
+// import { LightConfig } from './js/type';
+import { LightConfig, ModelConfig, AnimationConfig } from './js/type';
 
 class SceneConfig {
 
@@ -80,6 +81,47 @@ class SceneConfig {
 			name: 'spotLight',
 		},
 	];
+
+	modelsConfig: ModelConfig[] = [
+		{
+			path: 'assets/vespa_mandarinia/scene.gltf',
+			initialPosition: new THREE.Vector3(0, 0, 0),
+			initialScale: new THREE.Vector3(1, 1, 1),
+			name: 'suzumebachi',
+			defaultAnimation: 'Hover',
+		},
+		{
+			path: 'assets/vespa_mandarinia/scene.gltf',
+			initialPosition: new THREE.Vector3(1, 1, 1),
+			initialScale: new THREE.Vector3(1, 1, 1),
+			name: 'suzumebachi2',
+			defaultAnimation: 'idle',
+		},
+		{
+			path: 'assets/vespa_mandarinia/scene.gltf',
+			initialPosition: new THREE.Vector3(-1, -1, 1),
+			initialScale: new THREE.Vector3(1, 1, 1),
+			name: 'suzumebachi3',
+			// defaultAnimation: 'Hover',
+		},
+	];
+
+	// Animations Configuration
+	animationsConfig: AnimationConfig[] = [
+		{
+			model: 'suzumebachi',
+			autoplay: true
+		},
+		{
+			model: 'suzumebachi2',
+			autoplay: true
+		},
+		{
+			model: 'suzumebachi3',
+			autoplay: true
+		},
+	];
+
 }
 
 export default SceneConfig;

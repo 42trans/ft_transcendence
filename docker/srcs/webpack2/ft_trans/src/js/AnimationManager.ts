@@ -4,7 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 /** アニメーションを管理するクラス */
 class AnimationManager {
 	// 外部からアクセス可能なアニメーションの状態を管理するための変数と関数
-	private mixer: THREE.AnimationMixer | null = null;
+	private mixers: THREE.AnimationMixer[] = [];
+	// private mixer: THREE.AnimationMixer | null = null;
 	// アニメーションを管理するクロックインスタンス
 	private clock: THREE.Clock = new THREE.Clock();
 	private scene: THREE.Scene
@@ -41,8 +42,9 @@ class AnimationManager {
 	 * - イベント駆動が可能: アニメーションフック(特定のタイミングでサウンド再生、シーン遷移など)
 	 * @param newMixer nullも受け付ける
 	 */
-	setMixer(newMixer: THREE.AnimationMixer | null): void {
-		this.mixer = newMixer;
+	setMixer(newMixer: THREE.AnimationMixer) {
+		this.mixers.push(newMixer);
+		// this.mixer = newMixer;
 	}
 
 	/**
@@ -84,10 +86,7 @@ class AnimationManager {
 
 	private update(): void {
 		const delta = this.clock.getDelta();
-		if (this.mixer){
-			this.mixer.update(delta);
-		}
-		this.controls.update();
+		this.mixers.forEach(mixer => mixer.update(delta));
 	}
 
 	private render(): void {

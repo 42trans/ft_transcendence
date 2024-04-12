@@ -47,3 +47,22 @@ export interface SpotLightConfig {
 }
 
 export type LightConfig = AmbientLightConfig | DirectionalLightConfig | HemisphereLightConfig | PointLightConfig | SpotLightConfig;
+
+export interface ModelConfig {
+	path: string;
+	initialPosition: THREE.Vector3;
+	initialScale: THREE.Vector3;
+	name: string;
+	defaultAnimation?: string;
+}
+
+export interface AnimationClipConfig {
+	name: string;
+	loop: THREE.AnimationActionLoopStyles;
+}
+
+export interface AnimationConfig {
+	model: string;
+	autoplay: boolean;
+	// clips: AnimationClipConfig[];
+}
