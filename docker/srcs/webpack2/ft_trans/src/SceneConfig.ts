@@ -104,6 +104,13 @@ class SceneConfig {
 			name: 'suzumebachi3',
 			// defaultAnimation: 'Hover',
 		},
+		{
+			path: 'assets/model_47a_-_loggerhead_sea_turtle/scene.gltf',
+			initialPosition: new THREE.Vector3(1, -3, 1),
+			initialScale: new THREE.Vector3(0.1, 0.1, 0.1),
+			name: 'kame',
+			defaultAnimation: 'cycle',
+		},
 	];
 
 	// Animations Configuration
