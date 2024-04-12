@@ -1,3 +1,4 @@
+// docker/srcs/webpack2/ft_trans/src/js/type.ts
 import * as THREE from 'three';
 
 export interface AmbientLightConfig {
@@ -48,12 +49,22 @@ export interface SpotLightConfig {
 
 export type LightConfig = AmbientLightConfig | DirectionalLightConfig | HemisphereLightConfig | PointLightConfig | SpotLightConfig;
 
+export interface TexturePaths {
+	baseColor?: string;
+	normalMap?: string;
+	roughnessMap?: string;
+	metalnessMap?: string;
+	specularMap?: string;
+}
+
 export interface ModelConfig {
 	path: string;
 	initialPosition: THREE.Vector3;
 	initialScale: THREE.Vector3;
+	initialRotation?: THREE.Euler; //向き
 	name: string;
 	defaultAnimation?: string;
+	textures?: TexturePaths;
 }
 
 export interface AnimationClipConfig {

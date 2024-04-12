@@ -11,7 +11,6 @@ import SceneConfig from '../SceneConfig';
 import SceneSetup from './SceneSetup';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import ControlsGUI from '../ControlsGUI';
-// import { loadModel } from './suzumebachiModelLoader';
 import ModelsLoader from './ModelsLoader';
 import AnimationManager from './AnimationManager'
 //dev用GUI

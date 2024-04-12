@@ -12,7 +12,7 @@ import { LightConfig, ModelConfig, AnimationConfig } from './js/type';
 class SceneConfig {
 
 	cameraConfig = {
-		fov: 125,
+		fov: 70,
 		aspect: window.innerWidth / window.innerHeight,
 		near: 0.1,
 		far: 1000,
@@ -41,14 +41,14 @@ class SceneConfig {
 	lightsConfig: LightConfig[] = [
 		{
 			type: 'AmbientLight',
-			color: 0xc50bd5,
-			intensity: 1,
+			color: 0x999999,
+			intensity: 0.31,
 			name: 'ambientLight',
 		},
 		{
 			type: 'DirectionalLight',
 			color: 0xffffff,
-			intensity: 0.1,
+			intensity: 1,
 			position: new THREE.Vector3(50, 50, -50),
 			name: 'directionalLight',
 		},
@@ -56,75 +56,94 @@ class SceneConfig {
 			type: 'HemisphereLight',
 			skyColor: 0xffffff,
 			groundColor: 0x444444,
-			intensity: 1,
-			position: new THREE.Vector3(0, 20, 0),
+			intensity: 0.1,
+			position: new THREE.Vector3(50, 50, -50),
 			name: 'hemiLight',
 		},
 		{
 			type: 'PointLight',
-			color: 0x050aa3,
-			intensity: 1,
-			distance: 100,
-			decay: 2,
-			position: new THREE.Vector3(10, 10, 10),
+			color: 0x4b27ce,
+			intensity: 1.5,
+			distance: 200,
+			decay: 0,
+			position: new THREE.Vector3(-6, -12, 9),
 			name: 'pointLight',
 		},
 		{
 			type: 'SpotLight',
 			color: 0x1cb526,
-			intensity: 0.1,
+			intensity: 1.5,
 			distance: 200,
-			angle: Math.PI / 50,
+			angle: Math.PI / 200,
 			penumbra: 0.1,
 			decay: 0.5,
-			position: new THREE.Vector3(10, 10, 10),
+			position: new THREE.Vector3(10, 8, -9),
 			name: 'spotLight',
 		},
 	];
 
 	modelsConfig: ModelConfig[] = [
-		{
-			path: 'assets/vespa_mandarinia/scene.gltf',
-			initialPosition: new THREE.Vector3(0, 0, 0),
-			initialScale: new THREE.Vector3(1, 1, 1),
-			name: 'suzumebachi',
-			defaultAnimation: 'Hover',
-		},
-		{
-			path: 'assets/vespa_mandarinia/scene.gltf',
-			initialPosition: new THREE.Vector3(1, 1, 1),
-			initialScale: new THREE.Vector3(1, 1, 1),
-			name: 'suzumebachi2',
-			defaultAnimation: 'idle',
-		},
-		{
-			path: 'assets/vespa_mandarinia/scene.gltf',
-			initialPosition: new THREE.Vector3(-1, -1, 1),
-			initialScale: new THREE.Vector3(1, 1, 1),
-			name: 'suzumebachi3',
-			// defaultAnimation: 'Hover',
-		},
+		// {
+		// 	path: 'assets/vespa_mandarinia/scene.gltf',
+		// 	initialPosition: new THREE.Vector3(0, 2, 0),
+		// 	initialScale: new THREE.Vector3(1, 1, 1),
+		// 	name: 'suzumebachi',
+		// 	defaultAnimation: 'Hover',
+		// },
+		// {
+		// 	path: 'assets/vespa_mandarinia/scene.gltf',
+		// 	initialPosition: new THREE.Vector3(1, 2, 1),
+		// 	initialScale: new THREE.Vector3(1, 1, 1),
+		// 	name: 'suzumebachi2',
+		// 	defaultAnimation: 'idle',
+		// },
+		// {
+		// 	path: 'assets/vespa_mandarinia/scene.gltf',
+		// 	initialPosition: new THREE.Vector3(1, 3, 0),
+		// 	initialScale: new THREE.Vector3(1, 1, 1),
+		// 	initialRotation: new THREE.Euler(0, 1, 0),
+		// 	name: 'vespa_mandarinia',
+		// 	defaultAnimation: 'fly',
+		// 	textures: {
+		// 		baseColor: 'assets/vespa_mandarinia/textures/material_baseColor.png',
+		// 		normalMap: 'assets/vespa_mandarinia/textures/material_clearcoat_normal.png',
+		// 		roughnessMap: 'assets/vespa_mandarinia/textures/material_metallicRoughness.png',
+		// 		specularMap: 'assets/vespa_mandarinia/textures/material_specularf0.png',
+		// 	}
+		// },
 		{
 			path: 'assets/model_47a_-_loggerhead_sea_turtle/scene.gltf',
-			initialPosition: new THREE.Vector3(1, -3, 1),
+			initialPosition: new THREE.Vector3(0, 0, 0),
 			initialScale: new THREE.Vector3(0.1, 0.1, 0.1),
+			initialRotation: new THREE.Euler(0, 2.8, 0),
 			name: 'kame',
-			defaultAnimation: 'cycle',
+			defaultAnimation: 'swim',
+			textures: {
+				baseColor: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_diffuse.png',
+				normalMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_normal.jpeg',
+				// roughnessMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_specularGlossiness.png',
+				specularMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_specularGlossiness.png',
+
+			}
 		},
 	];
 
 	// Animations Configuration
 	animationsConfig: AnimationConfig[] = [
+		// {
+		// 	model: 'suzumebachi',
+		// 	autoplay: true
+		// },
+		// {
+		// 	model: 'suzumebachi2',
+		// 	autoplay: true
+		// },
+		// {
+		// 	model: 'suzumebachi3',
+		// 	autoplay: true
+		// },
 		{
-			model: 'suzumebachi',
-			autoplay: true
-		},
-		{
-			model: 'suzumebachi2',
-			autoplay: true
-		},
-		{
-			model: 'suzumebachi3',
+			model: 'kame',
 			autoplay: true
 		},
 	];
