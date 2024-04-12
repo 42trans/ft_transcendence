@@ -133,8 +133,8 @@ class LogoutTemplateView(TemplateView):
 
 
 class LogoutAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         data = {

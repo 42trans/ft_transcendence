@@ -67,6 +67,10 @@ class UserManager(BaseUserManager):
             return False, err
         if not nickname.isalnum():
             return False, "Invalid nickname format"
+
+        if CustomUser.objects.filter(nickname=nickname).exists():
+            return False, "This nickname is already in use"
+
         return True, None
 
 

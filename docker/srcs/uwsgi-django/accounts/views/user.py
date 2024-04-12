@@ -6,6 +6,7 @@ import requests
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
@@ -16,8 +17,10 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken
 
 from accounts.forms import UserEditForm, CustomPasswordChangeForm
+from accounts.models import CustomUser, UserManager
 
 
 logger = logging.getLogger(__name__)
@@ -27,9 +30,15 @@ class UserProfileView(TemplateView):
     template_name = "accounts/user.html"
 
     def get(self, request, *args, **kwargs):
-        user_auth = JWTAuthentication().authenticate(request)
-        if user_auth is None:
-            return redirect(to='accounts:login')
+        try:
+            # JWTトークンを検証
+            user_auth = JWTAuthentication().authenticate(request)
+            if user_auth is None:
+                return redirect(to='accounts:login')
+        except InvalidToken:
+            # トークンが無効または期限切れの場合、ログインページにリダイレクト
+            return redirect('accounts:login')
+
         return super().get(request, *args, **kwargs)
 
 
@@ -45,6 +54,95 @@ class UserProfileAPIView(APIView):
             'enable_2fa': user.enable_2fa,
         }
         return Response(params)
+
+
+class EditUserProfileTemplateView(TemplateView):
+    template_name = "accounts/edit_profile.html"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # JWTトークンを検証
+            user_auth = JWTAuthentication().authenticate(request)
+            if user_auth is None:
+                return redirect(to='accounts:login')
+        except InvalidToken:
+            # トークンが無効または期限切れの場合、ログインページにリダイレクト
+            return redirect('accounts:login')
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_user = self.request.user
+        context['current_nickname'] = current_user.nickname if current_user.is_authenticated else 'current-nickname'
+        return context
+
+
+class EditUserProfileAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        new_nickname = request.data.get('nickname')
+        new_password = request.data.get('new_password', None)
+        input_current_password = request.data.get('current_password', None)
+
+        if new_nickname is not None:
+            is_ok, msg = self._update_nickname(request.user, new_nickname)
+            if is_ok is False:
+                data = {'error': msg}
+                return Response(data, status=400)
+
+            data = {'message': msg}
+            return Response(data, status=200)
+
+        if input_current_password is not None and new_password is not None:
+            is_ok, msg = self._update_password(request, input_current_password, new_password)
+            if is_ok is False:
+                data = {'error': msg}
+                return Response(data, status=400)
+
+            data = {'message': msg}
+            return Response(data, status=200)
+
+        data = {'error': 'Update profile error'}
+        return Response(data, status=400)
+
+    def _update_nickname(self, user, new_nickname):
+
+        old_nickname = user.nickname
+        if old_nickname == new_nickname:
+            msg = "new nickname same as current"
+            return False, msg
+
+        is_ok, err = UserManager._is_valid_nickname(new_nickname)
+        if is_ok is False:
+            return False, err
+
+
+        user.nickname = new_nickname
+        user.save()
+        return True, f"nickname updat successfully {old_nickname} -> {new_nickname}"
+
+
+    def _update_password(self, request, input_current_password, new_password):
+        user = request.user
+        if not check_password(input_current_password, user.password):
+            return False, "Current password is incorrect"
+
+        if input_current_password == new_password:
+            return False, "new password same as current"
+
+        tmp_user = CustomUser(email=user.email, nickname=user.nickname)
+        is_ok, msg = UserManager._is_valid_password(new_password, tmp_user)
+        if is_ok is False:
+            return False, msg
+
+        user.set_password(new_password)
+        update_session_auth_hash(request, user)  # password更新によるsessionを継続
+        user.save()
+        return True, "password updat successfully"
+
 
 
 class EditUserProfileView(LoginRequiredMixin, View):
