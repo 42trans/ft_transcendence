@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import * as lil from 'lil-gui';
 
-export class ControlsGUI {
+class ControlsGUI {
 	scene: THREE.Scene;
 	gui: lil.GUI;
 	camera: THREE.PerspectiveCamera;
@@ -58,3 +58,5 @@ export class ControlsGUI {
 		});
 	}
 }
+
+export default ControlsGUI;

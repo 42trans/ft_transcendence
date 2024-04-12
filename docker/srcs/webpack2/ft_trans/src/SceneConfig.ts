@@ -1,7 +1,8 @@
 
 /**
  * @file シーンの初期値を指定するconfigファイル
- * 
+ * @note
+ * - 開発環境の画面右側のControlsGUIの設定は、ControlsGUI.tsで直接行う方針
  */
 
 import * as THREE from 'three';
