@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import auraTexture from '../../src/assets/texture/bg.png';
 
 /**
  * オーラ球クラスです。
@@ -18,8 +19,9 @@ export class Aura extends THREE.Object3D {
     const geometry = new THREE.SphereGeometry(2.02, 40, 40);
 
     // カラーマップ
-    const loader = new THREE.TextureLoader();
-    this._map = loader.load("./assets/texture/aura3_type2.png");
+    // const loader = new THREE.TextureLoader();
+    // this._map = loader.load("./assets/texture/aura3_type2.png");
+    this._map = new THREE.TextureLoader().load(auraTexture);
     this._map.wrapS = this._map.wrapT = THREE.RepeatWrapping;
 
     // マテリアル

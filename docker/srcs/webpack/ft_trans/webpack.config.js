@@ -1,3 +1,6 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
 
 module.exports = {
 	// モード値を production に設定すると最適化された状態で、
@@ -19,6 +22,27 @@ module.exports = {
 		  // TypeScript をコンパイルする
 		  use: 'ts-loader',
 		},
+		{
+			test: /\.(png|svg|jpg|jpeg|gif)$/i,
+			type: 'asset/resource',
+		},
+		// {
+		// 	test: /\.(png|svg|jpg|jpeg|gif)$/i,
+		// 	use: [
+		// 	  'file-loader', // 画像ファイルを扱う
+		// 	  {
+		// 		loader: 'image-webpack-loader', // 画像を最適化
+		// 		options: {
+		// 		  mozjpeg: { progressive: true },
+		// 		  optipng: { enabled: false },
+		// 		  pngquant: { quality: [0.65, 0.90], speed: 4 },
+		// 		  gifsicle: { interlaced: false },
+		// 		  // WebP形式での画像の提供も有効化（ブラウザのサポートが必要）
+		// 		  webp: { quality: 75 }
+		// 		},
+		// 	  },
+		// 	],
+		//   },
 	  ],
 	},
 	// import 文で .ts ファイルを解決するため
@@ -31,15 +55,35 @@ module.exports = {
 			'.ts', '.js',
 		],
 	},
+	plugins: [
+		new HtmlWebpackPlugin({
+		  template: './src/index.html', // 入力となるHTMLファイルのパス
+		  filename: 'index.html', // 出力されるHTMLファイルの名前
+		}),
+		new CopyWebpackPlugin({
+			patterns: [
+			  { from: 'src/assets', to: 'assets' }, // src/assetsディレクトリ内のファイルを出力ディレクトリのassetsにコピー
+			],
+		}),
+	],
 	// ローカル開発用環境を立ち上げる
 	devServer: {
 		static: {
-			directory: `${__dirname}/public`,
+			directory: `${__dirname}/src`,
 			watch: {
 				// ポーリング設定
 				poll: 1000, // 1秒ごとにポーリング
 			},
 		},
+		// client: {
+		// 	webSocketURL: {
+		// 		// DockerホストのIPアドレスまたはドメインを使用
+		// 		hostname: 'host.docker.internal',
+		// 		port: 8180,
+		// 		// HTTPSを使用している場合は`wss`を指定
+		// 		protocol: 'ws',
+		// 	},
+		// },
 		hot: true,
 		host: '0.0.0.0',
 		port: 8080,

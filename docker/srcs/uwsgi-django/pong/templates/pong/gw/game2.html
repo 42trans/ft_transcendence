@@ -3,45 +3,15 @@
 {% block title %}Game2 - hth Pong{% endblock title %}
 
 <!-- docker/srcs/uwsgi-django/pong/static/pong/gw/ball_aura/docs -->
+<!-- <link rel="stylesheet" href="{% static 'pong/gw/css/gw_base.css' %}"/>
+<link rel="stylesheet" href="{% static 'pong/gw/css/gw_contents.css' %}"/> -->
+
 {% block content %} 
   <script src="https://unpkg.com/three@0.137.0/build/three.min.js"></script>
-
-  <script type="text/javascript">
-  var magmaTextureURL = "{% static 'pong/gw/ball_aura/texture/magma.png' %}";
-  </script>
-    <!-- <script src="main.js"></script> -->
-    <script src="{% static 'pong/gw/ball_aura/main.js' %}"></script>
-    <style>
-      html,
-      body {
-        height:10%;
-      }
-
-      body {
-        background-color: #000000;
-        overflow: hidden;
-        margin: 0;
-        cursor: move;
-        font-family: sans-serif;
-      }
-      .annotation {
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        margin: 0;
-        padding: 4px 8px;
-        font-size: 0.625rem;
-        border-radius: 4px;
-        color: white;
-        background: rgb(0, 0, 0, 0.5);
-        z-index: 1;
-        user-select: none;
-      }
-    </style>
-
-  <!-- <body> -->
-    <canvas id="myCanvas"></canvas>
-    <!-- <p class="annotation">マウスドラッグで操作できます</p> -->
-  <!-- </body> -->
-
-  {% endblock %}
+    <script src="{% static 'share_webpack/main.js' %}"></script>
+  	<div class="canvas-container">
+      <!-- <div class="container"> -->
+        <canvas id="myCanvas"></canvas>
+      <!-- </div> -->
+    </div>
+{% endblock %}
