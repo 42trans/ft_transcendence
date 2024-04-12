@@ -11,10 +11,8 @@ import SceneConfig from '../SceneConfig';
 import SceneSetup from './SceneSetup';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import ControlsGUI from '../ControlsGUI';
-import { loadModel } from './suzumebachiModelLoader';
-import { loadModels } from './loadModels';
-import { LightConfig, ModelConfig, AnimationConfig } from './type';
-
+// import { loadModel } from './suzumebachiModelLoader';
+import ModelsLoader from './ModelsLoader';
 import AnimationManager from './AnimationManager'
 //dev用GUI
 import * as lil from 'lil-gui'; 
@@ -70,7 +68,8 @@ class App {
 	private startAnimationLoop() {
 		this.animMgr = new AnimationManager(this.renderer, this.scene, this.camera, this.controls);
 		const sceneConfig = new SceneConfig();
-		loadModels(this.scene, sceneConfig, this.animMgr);
+		const modelsLoader = new ModelsLoader(this.scene, sceneConfig, this.animMgr);
+		modelsLoader.loadModels();
 		this.animMgr.startAnimationLoop();
 	}
 

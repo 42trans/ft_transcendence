@@ -64,5 +64,4 @@ export interface AnimationClipConfig {
 export interface AnimationConfig {
 	model: string;
 	autoplay: boolean;
-	// clips: AnimationClipConfig[];
 }
