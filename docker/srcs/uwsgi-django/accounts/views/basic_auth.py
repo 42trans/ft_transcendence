@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 
 from accounts.forms import SignupForm, LoginForm
@@ -53,6 +54,7 @@ class LoginAPIView(APIView):
     """
     returns JsonResponse(redirect or error)
     """
+    authentication_classes = [JWTAuthentication]
     permission_classes = [AllowAny]
 
     # @csrf_exempt
