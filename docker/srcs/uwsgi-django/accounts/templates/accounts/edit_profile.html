@@ -17,7 +17,16 @@
 
 <br>
 
+
 <!-- パスワード更新用のフォーム -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const is42AuthUser = "{{ is_42auth_user|yesno:'true,false' }}";  // Djangoのyesnoフィルターを使用
+        if (is42AuthUser) {
+            document.getElementById('password-form').style.display = 'none';  // パスワードフォームを非表示にする
+        }
+    });
+</script>
 <form id="password-form" onsubmit="updatePassword(event)">
     <h2>password</h2>
     <p>current password: <input type="password" id="current_password" placeholder="current-password" required></p>
@@ -87,77 +96,3 @@
 <a href="/pong">🏓 return to pong</a>
 </body>
 </html>
-
-
-
-<!--{% load static %}-->
-<!--<!doctype html>-->
-<!--<html lang="ja">-->
-<!--<head>-->
-<!--    <meta charset="utf-8">-->
-<!--    <title>edit profile</title>-->
-
-<!--    <style>-->
-<!--        .success-message {-->
-<!--            color: blue;-->
-<!--        }-->
-<!--        .errorlist {-->
-<!--            color: red;-->
-<!--        }-->
-<!--    </style>-->
-
-<!--</head>-->
-<!--<body>-->
-
-<!--{% block content %}-->
-<!--<div class="container">-->
-<!--    <h2>Edit Profile</h2>-->
-
-<!--    <hr>-->
-
-<!--    &lt;!&ndash; フィードバックメッセージの表示 &ndash;&gt;-->
-<!--    {% if messages %}-->
-<!--    <ul class="messages">-->
-<!--        {% for message in messages %}-->
-<!--        <li {% if message.tags %} class="{{ message.tags }} success-message"{% endif %}>{{ message }}</li>-->
-<!--        {% endfor %}-->
-<!--    </ul>-->
-<!--    {% endif %}-->
-
-<!--    &lt;!&ndash; ニックネーム編集フォーム &ndash;&gt;-->
-<!--    <form method="post">-->
-<!--        {% csrf_token %}-->
-<!--        <h4>Edit Nickname</h4>-->
-<!--        {{ user_form.as_p }}-->
-<!--        <button type="submit">change nickname</button>-->
-<!--    </form>-->
-
-<!--    <br>-->
-
-<!--    {% if password_form %}-->
-<!--    <hr>-->
-<!--    &lt;!&ndash; パスワード変更フォーム &ndash;&gt;-->
-<!--    <form method="post">-->
-<!--        {% csrf_token %}-->
-<!--        <h4>Change Password</h4>-->
-<!--        {% for field in password_form %}-->
-<!--        <p>-->
-<!--            {{ field.help_text }}-->
-<!--            {{ field.errors }}-->
-<!--            {{ field.label_tag }} {{ field }}-->
-<!--        </p>-->
-<!--        {% endfor %}-->
-<!--        <button type="submit">change password</button>-->
-<!--    </form>-->
-<!--    {% endif %}-->
-
-<!--</div>-->
-<!--{% endblock %}-->
-
-<!--<hr>-->
-<!--<br>-->
-<!--<a href="/pong/">🏓 pong index page</a>-->
-
-<!--</body>-->
-
-<!--</html>-->

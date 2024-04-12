@@ -17,10 +17,10 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.exceptions import InvalidToken
 
 from accounts.forms import UserEditForm, CustomPasswordChangeForm
 from accounts.models import CustomUser, UserManager
+from accounts.views.jwt import is_valid_jwt
 
 
 logger = logging.getLogger(__name__)
@@ -30,13 +30,7 @@ class UserProfileView(TemplateView):
     template_name = "accounts/user.html"
 
     def get(self, request, *args, **kwargs):
-        try:
-            # JWTトークンを検証
-            user_auth = JWTAuthentication().authenticate(request)
-            if user_auth is None:
-                return redirect(to='accounts:login')
-        except InvalidToken:
-            # トークンが無効または期限切れの場合、ログインページにリダイレクト
+        if not is_valid_jwt(request):
             return redirect('accounts:login')
 
         return super().get(request, *args, **kwargs)
@@ -60,13 +54,7 @@ class EditUserProfileTemplateView(TemplateView):
     template_name = "accounts/edit_profile.html"
 
     def get(self, request, *args, **kwargs):
-        try:
-            # JWTトークンを検証
-            user_auth = JWTAuthentication().authenticate(request)
-            if user_auth is None:
-                return redirect(to='accounts:login')
-        except InvalidToken:
-            # トークンが無効または期限切れの場合、ログインページにリダイレクト
+        if not is_valid_jwt(request):
             return redirect('accounts:login')
 
         return super().get(request, *args, **kwargs)
@@ -75,7 +63,11 @@ class EditUserProfileTemplateView(TemplateView):
         context = super().get_context_data(**kwargs)
         current_user = self.request.user
         context['current_nickname'] = current_user.nickname if current_user.is_authenticated else 'current-nickname'
+        context['is_42auth_user'] = self._is_42auth_user(self.request)
         return context
+
+    def _is_42auth_user(self, request: HttpRequest) -> bool:
+        return not request.user.has_usable_password()
 
 
 class EditUserProfileAPIView(APIView):
@@ -145,6 +137,8 @@ class EditUserProfileAPIView(APIView):
 
 
 
+
+# todo: rm
 class EditUserProfileView(LoginRequiredMixin, View):
     """
     render edit user profile page

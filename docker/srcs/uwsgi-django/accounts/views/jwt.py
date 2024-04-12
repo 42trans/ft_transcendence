@@ -2,6 +2,8 @@ from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
@@ -59,6 +61,16 @@ def get_jwt_response(user, data) -> JsonResponse:
         samesite='None', # Cookieは現在のウェブサイトからのリクエストでのみ送信
     )
     return response
+
+
+def is_valid_jwt(request) -> bool:
+    try:
+        # JWTトークンを検証
+        user_auth = JWTAuthentication().authenticate(request)
+        return user_auth is not None
+    except InvalidToken:
+        # トークンが無効または期限切れ
+        return false
 
 
 class JWTAuthenticationView(APIView):
