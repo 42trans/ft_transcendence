@@ -38,6 +38,13 @@ module.exports = {
 			test: /\.(png|svg|jpg|jpeg|gif)$/i,
 			type: 'asset/resource',
 		},
+		{
+			test: /\.css$/,
+			use: [
+				'style-loader', // CSSをDOMに注入する
+				'css-loader'   // CSSをCommonJSに変換する
+			]
+		},
 	  ],
 	},
 	// import 文で .ts ファイルを解決するため

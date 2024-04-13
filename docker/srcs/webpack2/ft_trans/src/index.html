@@ -2,36 +2,14 @@
 <html lang="ja">
 <head>
 	<meta charset="UTF-8">
-	<title>suzumebachi ft_trans three.js app</title>
-	<style>
-		body { 
-			margin: 0;
-		}
-		#threejs-canvas-container {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100vh;
-			background-image: url('assets/bg.png');
-			overflow: hidden; 
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			background-size: cover;
-			position: relative;
-		}
-		#info {
-			position: absolute;
-			top: 100px;
-			color: blueviolet;
-			z-index: 1;
-		}
-	</style>
+	<title>game ft_trans three.js app</title>
 </head>
 <body>
 	<div id="info">
 		🐢カメ rotation:none
+	</div>
+	<div id="ui-layer">
+		<button id="startButton">Start Game</button>
 	</div>
 	<div id="threejs-canvas-container">
 		<!-- ここに自動的にthree.jsによって挿入する設定 -->

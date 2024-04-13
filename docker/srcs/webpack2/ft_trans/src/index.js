@@ -28,5 +28,6 @@
 */
 
 import App from './js/App'
+import './css/3d.css';
 
 App.main();

@@ -12,7 +12,6 @@ import ModelsLoader from './ModelsLoader';
 import AnimationManager from './AnimationManager'
 //dev用GUI
 import * as lil from 'lil-gui'; 
-
 /**
  * @param scene - 描画操作が行われる空間・ワールド。THREE.Sceneのインスタンス
  * @param sceneSetup - シーンを設定するメソッドを持つクラス。setupScene()で使用
@@ -78,6 +77,7 @@ class App {
 	static main() {
 		new App();
 	}
+	
 }
 
 export default App;
