@@ -158,17 +158,3 @@ class LogoutAPIView(APIView):
     def _del_jwt(self, response):
         response.delete_cookie('Access-Token')
         response.delete_cookie('Refresh-Token')
-
-
-
-# todo: rm
-class LogoutView(View):
-    logout_url = "accounts/logout.html"
-
-    def get(self, request, *args, **kwargs):
-        # logout(request)
-        response = render(request, self.logout_url)
-
-        response.delete_cookie('Access-Token')
-        response.delete_cookie('Refresh-Token')
-        return response
