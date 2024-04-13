@@ -10,6 +10,7 @@ from django import forms
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django_otp import devices_for_user
 from django_otp.oath import TOTP
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -30,58 +31,68 @@ from accounts.models import CustomUser, UserManager
 from accounts.views.jwt import response_with_jwt, get_jwt_response
 
 
-class Enable2FaView(LoginRequiredMixin, View):
+class Enable2FaTemplateView(TemplateView):
     template_name = 'verify/enable_2fa.html'
-    user_page_path = 'accounts:user'
+    login_path = "accounts:login"
+    user_page_path = "accounts:user"
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(to=self.login_path)
+
+        if request.user.enable_2fa:
+            return redirect(to=self.user_page_path)
+
+        return render(request, self.template_name)
+
+
+class Enable2FaAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    template_name = 'verify/enable_2fa.html'
+    enabled_redirect_to = '/accounts/user/'
+    authenticated_redirect_to = "/pong/"
 
     def get(self, request, *args, **kwargs):
         if request.user.enable_2fa:
-            return redirect(to=self.user_page_path)
-
-        form = Enable2FAForm()
-        secret_key, secret_key_base32 = self._get_secret_key(request)
-        qr_code_data, _ = self._generate_qr_code(secret_key_base32, request.user.get_username())
-        param = {
-            'qr_code_data': qr_code_data,
-            'setup_key': secret_key_base32,
-            'form': form
-        }
-        return render(request, self.template_name, param)
+            data = {
+                "message": "Already enabled 2FA",
+                "redirect": self.authenticated_redirect_to,
+            }
+        else:
+            secret_key, secret_key_base32 = self._get_secret_key(request)
+            qr_code_data, _ = self._generate_qr_code(secret_key_base32,
+                                                     request.user.get_username())
+            data = {
+                'qr_code_data': qr_code_data,
+                'setup_key': secret_key_base32,
+            }
+        return JsonResponse(data, status=200)
 
     def post(self, request, *args, **kwargs):
         if request.user.enable_2fa:
-            return redirect(to=self.user_page_path)
-
-        secret_key, secret_key_base32 = self._get_secret_key(request)
-        qr_code_data, totp = self._generate_qr_code(secret_key_base32, request.user.get_username())
-        form = Enable2FAForm(request.POST, totp=totp)
-        if form.is_valid():
-            user = request.user
-            device, created = TOTPDevice.objects.get_or_create(
-                user=user,
-                defaults={
-                    'key': secret_key,
-                    'step': totp.interval,
-                    'name': 'default',
-                    'confirmed': True
-                })
-            if not created:
-                device.key = secret_key
-                device.step = totp.interval
-                device.name = 'default'
-                device.confirmed = True
-                device.save()
-
-            del request.session['enable_2fa_temp_secret_info']
-            self._enable_user_2fa(user)
-            return redirect(to=self.user_page_path)
-        else:
-            param = {
-                'qr_code_data': qr_code_data,
-                'setup_key': secret_key_base32,
-                'form': form
+            data = {
+                "message": "Already enabled 2FA",
+                "redirect": self.authenticated_redirect_to,
             }
-            return render(request, self.template_name, param)
+            return JsonResponse(data, status=200)
+
+        token = request.data.get('token')
+        secret_key, secret_key_base32 = self._get_secret_key(request)
+        totp = pyotp.TOTP(secret_key_base32)
+
+        if totp.verify(token):
+            self._enable_user_2fa(request.user)
+            self._register_device(request.user, secret_key, totp)
+            del request.session['enable_2fa_temp_secret_info']
+            data = {
+                "message": "2FA has been enabled successfully",
+                "redirect": self.enabled_redirect_to,
+            }
+            return JsonResponse(data, status=200)
+        else:
+            data = {"error": "Invalid token provided"}
+            return JsonResponse(data, status=400)
 
     def _get_secret_key(self, request):
         """
@@ -124,6 +135,22 @@ class Enable2FaView(LoginRequiredMixin, View):
         img.save(io)
         qr_code_data = b64encode(io.getvalue()).decode('utf-8')
         return qr_code_data, totp
+
+    def _register_device(self, user, secret_key, totp):
+        device, created = TOTPDevice.objects.get_or_create(
+            user=user,
+            defaults={
+                'key': secret_key,
+                'step': totp.interval,
+                'name': 'default',
+                'confirmed': True
+            })
+        if not created:
+            device.key = secret_key
+            device.step = totp.interval
+            device.name = 'default'
+            device.confirmed = True
+            device.save()
 
     def _enable_user_2fa(self, user):
         user.enable_2fa = True
