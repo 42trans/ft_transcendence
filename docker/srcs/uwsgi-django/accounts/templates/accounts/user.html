@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="ja">
 <head>
@@ -26,12 +27,14 @@
                     `<li>2FA: ✅Enabled</li><li><a href="/accounts/verify/disable_2fa/">Disable 2FA</a></li>` :
                     `<li>2FA: Disabled</li><li><a href="/accounts/verify/enable_2fa/">Enable 2FA</a></li>`}
             <br>
-            <li><a href="/accounts/logout/">Logout</a></li>
+            <button onclick="handleLogout()">Logout</button>
         `;
             })
             .catch(error => console.error("Error:", error));
     });
 </script>
+
+<script src="{% static 'js/logout.js' %}"></script>
 
 <hr>
 <br>
