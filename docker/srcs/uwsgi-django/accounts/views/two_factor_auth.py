@@ -130,14 +130,16 @@ class Enable2FaView(LoginRequiredMixin, View):
         user.save()
 
 
-class Disable2FaView(LoginRequiredMixin, View):
+class Disable2FaView(APIView):
+    permission_classes = [IsAuthenticated]
     redirect_to = 'accounts:user'
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        self._delete_totp_devices(user)
-        self._disable_user_2fa(user)
-        return redirect(to=self.redirect_to)
+        if user.enable_2fa:
+            self._delete_totp_devices(user)
+            self._disable_user_2fa(user)
+        return redirect(self.redirect_to)
 
     def _delete_totp_devices(self, user):
         devices = TOTPDevice.objects.filter(user=user, confirmed=True)
