@@ -163,7 +163,6 @@ class Verify2FaTepmlateView(TemplateView):
 
 
 class Verify2FaAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
     permission_classes = [AllowAny]  # Non-Login before verify 2FA
 
     def post(self, request, *args, **kwargs):

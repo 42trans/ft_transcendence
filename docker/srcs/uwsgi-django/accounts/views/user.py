@@ -37,7 +37,6 @@ class UserProfileView(TemplateView):
 
 
 class UserProfileAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -71,7 +70,6 @@ class EditUserProfileTemplateView(TemplateView):
 
 
 class EditUserProfileAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):

@@ -27,7 +27,6 @@ class SignupTemplateView(View):
 
 
 class SignupAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
     permission_classes = [AllowAny]
     authenticated_redirect_to = "/pong/"
 
@@ -104,7 +103,6 @@ class LoginAPIView(APIView):
     """
     returns JsonResponse(redirect or error)
     """
-    authentication_classes = [JWTAuthentication]
     permission_classes = [AllowAny]
 
     # @csrf_exempt
@@ -183,8 +181,7 @@ class LogoutTemplateView(TemplateView):
 
 
 class LogoutAPIView(APIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         data = {
