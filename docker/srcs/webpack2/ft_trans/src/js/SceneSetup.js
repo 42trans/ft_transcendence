@@ -4,27 +4,19 @@
  * 
  * 設定ファイル（SceneConfig）の値を読み取って設定する、初期化時のメソッドを提供
  */
-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import SceneConfig from '../SceneConfig';
 
-// import { HemisphereLightConfig, SpotLightConfig } from './type';
-
 class SceneSetup{
-	// scene: THREE.Scene;
-	// sceneConfig: SceneConfig;
-
 	/**
 	 * @param {THREE.Scene} scene
 	 * @param {SceneConfig} sceneConfig
 	 */
 	constructor(scene, sceneConfig) {
-	// constructor(scene: THREE.Scene, sceneConfig: SceneConfig) {
 		this.scene = scene;
 		this.sceneConfig = sceneConfig;
 	}
-
 	/**
 	 * @returns {THREE.PerspectiveCamera}
 	 */
@@ -40,15 +32,20 @@ class SceneSetup{
 		cam.lookAt(config.lookAt);
 		return cam;
 	}
-
 	/**
 	 * @returns {THREE.WebGLRenderer}
 	 */
 	setupRenderer() {
 		const config = this.sceneConfig.rendererConfig;
-		const rend = new THREE.WebGLRenderer({ antialias: config.antialias });
+		const rendererOptions = {
+			antialias: config.antialias,
+			pixelRatio: config.pixelRatio,
+			alpha: config.alpha,
+		};
+		const rend = new THREE.WebGLRenderer(rendererOptions);
 		rend.setSize(window.innerWidth, window.innerHeight);
-		rend.setPixelRatio(config.pixelRatio);
+		// rend.setPixelRatio(config.pixelRatio);
+		// rend.setClearColor(0x000000, 0); // 背景色を透明に設定
 		
 		// 特定のdivにレンダラーを追加 （index.htmlで設定したthreejs-canvas-container）
 		const container = document.getElementById('threejs-canvas-container');

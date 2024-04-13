@@ -1,11 +1,9 @@
-
+// docker/srcs/webpack2/ft_trans/src/js/App.js
 /**
  * @file App.js
- * 
  * メインのクラス。全体（bundle.js）のフローを管理
  * シーンの初期化、アニメーションのループを呼び出す
  */
-
 import * as THREE from 'three';
 import SceneConfig from '../SceneConfig';
 import SceneSetup from './SceneSetup';
@@ -21,7 +19,7 @@ import * as lil from 'lil-gui';
  * @param camera - カメラ。THREE.PerspectiveCameraのインスタンス
  * @param renderer - 計算された画像（3Dを2Dに投影）を画面に出力・描画する。THREE.WebGLRendererのインスタンス
  * @param controls - カメラの操作。OrbitControlsのインスタンス。
- * @param { lil.GUI} - gui
+ * @param {lil.GU} - 開発時コントローラーGUI
  */
 class App {
 	/**
@@ -34,16 +32,19 @@ class App {
 		this.scene = new THREE.Scene();
 		const sceneConfig = new SceneConfig();
 		this.sceneSetup = new SceneSetup(this.scene, sceneConfig);
-		this.gui = new lil.GUI();
 		// 以下、privateメソッド
 		this.setupScene();
+		
+		// TODO_ft: dev用GUI
+		this.gui = new lil.GUI();
 		this.setupControlsGUI(); 
+		// 
+
 		this.loadModelsAndRunLoop(); 
 	}
 	/**　
 	 * Private method
 	 * @description メソッドの実装は SceneSetup.ts
-	 * 
 	 */
 	setupScene(){
 		/** @type {THREE.PerspectiveCamera} */
@@ -73,9 +74,7 @@ class App {
 		modelsLoader.loadModels();
 		this.animMgr.startAnimationLoop();
 	}
-	/**
-	 * Public method
-	 */
+	/** Public method*/
 	static main() {
 		new App();
 	}

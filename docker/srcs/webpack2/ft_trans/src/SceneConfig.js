@@ -21,10 +21,11 @@ class SceneConfig {
 			lookAt: new THREE.Vector3(0, 0, 0),
 		};
 
-		/** @type {{ antialias: boolean, pixelRatio: number }} */
+		/** @type {{ antialias: boolean, pixelRatio: number, alpha: boolean }} */
 		this.rendererConfig = {
 			antialias: true,
 			pixelRatio: window.devicePixelRatio,
+			alpha: true,
 		};
 
 		/** @type {{ enableDamping: boolean, dampingFactor: number, screenSpacePanning: boolean, maxPolarAngle: number, minDistance: number, maxDistance: number, rotateSpeed: number, zoomSpeed: number, autoRotate: boolean, autoRotateSpeed: number }} */
