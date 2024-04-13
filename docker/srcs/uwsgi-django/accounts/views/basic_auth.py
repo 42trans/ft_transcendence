@@ -106,7 +106,7 @@ class LoginAPIView(APIView):
     permission_classes = [AllowAny]
 
     # @csrf_exempt
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs) -> JsonResponse:
         if request.user.is_authenticated:
             data = {
                 'message': 'already logged in',
@@ -117,7 +117,6 @@ class LoginAPIView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        # Djangoの認証システムを使用してユーザーを認証します。
         user = authenticate(request, email=email, password=password)
         if user is None:
             data = {'error': 'Invalid credentials'}
@@ -137,43 +136,6 @@ class LoginAPIView(APIView):
                 'redirect': '/accounts/user/'
             }
             return get_jwt_response(user, data)
-
-
-# todo: rm, unused
-class LoginView(View):
-    login_url = "accounts/login.html"
-    authenticated_redirect_to = "/pong/"
-
-    def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect(to=self.authenticated_redirect_to)
-
-        form = LoginForm()
-        param = {
-            'form': form
-        }
-        return render(request, self.login_url, param)
-
-
-    def post(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect(to=self.authenticated_redirect_to)
-
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            if user:
-                if user.enable_2fa:
-                    request.session['tmp_auth_user_id'] = user.id  # 一時的な認証情報をセッションに保存
-                    return redirect(to='accounts:verify_2fa')  # OTP検証ページへリダイレクト
-                else:
-                    login(request, user)  # 2FAが無効ならば、通常通りログイン
-                    return response_with_jwt(user, self.authenticated_redirect_to)
-
-        param = {
-            'form': form
-        }
-        return render(request, self.login_url, param)
 
 
 class LogoutTemplateView(TemplateView):
