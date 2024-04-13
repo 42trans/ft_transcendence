@@ -51,6 +51,10 @@ class UserManager(BaseUserManager):
     def _is_valid_email(self, email):
         if not email:
             return False, "The given email must be set"
+
+        if CustomUser.objects.filter(email=email).exists():
+            return False, "This email is already in use"
+
         try:
             validate_email(email)
             return True, None

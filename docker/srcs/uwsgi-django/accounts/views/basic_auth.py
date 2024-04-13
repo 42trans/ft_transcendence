@@ -12,8 +12,58 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 
 from accounts.forms import SignupForm, LoginForm
+from accounts.models import CustomUser, UserManager
 from accounts.views.jwt import response_with_jwt, get_jwt_response
 
+
+class SignupTemplateView(View):
+    template_name = "accounts/signup.html"
+    authenticated_redirect_to = "/pong/"
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(to=self.authenticated_redirect_to)
+        return render(request, self.template_name)
+
+
+class SignupAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [AllowAny]
+    authenticated_redirect_to = "/pong/"
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(to=self.authenticated_redirect_to)
+
+        email = request.data.get('email')
+        nickname = request.data.get('nickname')
+        password1 = request.data.get('password1')
+        password2 = request.data.get('password2')
+
+        print(f"signup email: {email}, nickname: {nickname}, password1: {password1}, password2: {password2}")
+        if password1 != password2:
+            data = {'error': "passwords don't match"}
+            return JsonResponse(data, status=400)
+
+        ok, err = CustomUser.objects._is_valid_user_field(email, nickname, password1)
+        if not ok:
+            data = {'error': err}
+            return JsonResponse(data, status=400)
+
+        try:
+            user = CustomUser.objects.create_user(email=email, password=password1, nickname=nickname)
+            # login(request, user)  # JWT: unuse login()
+            data = {
+                'message': "Signup successful",
+                'redirect': self.authenticated_redirect_to,
+            }
+            return get_jwt_response(user, data)
+        except Exception as e:
+            data = {'error': str(e)}
+            return JsonResponse(data, status=500)
+
+
+# todo: rm
 class SignupView(View):
     signup_url = "accounts/signup.html"
     authenticated_redirect_to = "/pong/"

@@ -2,7 +2,7 @@
 
 from django.urls import include, path
 
-from accounts.views.basic_auth import SignupView, LogoutView
+from accounts.views.basic_auth import SignupTemplateView, SignupAPIView
 from accounts.views.basic_auth import LogoutTemplateView, LogoutAPIView
 from accounts.views.basic_auth import LoginTemplateView, LoginAPIView
 from accounts.views.user import UserProfileView, UserProfileAPIView
@@ -14,7 +14,7 @@ from accounts.views.two_factor_auth import Verify2FaTepmlateView, Verify2FaAPIVi
 app_name = 'accounts'
 
 urlpatterns = [
-    path('signup/', SignupView.as_view(), name='signup'),
+    path('signup/', SignupTemplateView.as_view(), name='signup'),
     path('login/', LoginTemplateView.as_view(), name='login'),
 
     path('oauth-ft/', OAuthWith42.as_view(), name='oauth_ft'),
@@ -29,6 +29,7 @@ urlpatterns = [
     path('verify/enable_2fa/', Enable2FaView.as_view(), name='enable_2fa'),
     path('verify/verify_2fa/', Verify2FaTepmlateView.as_view(), name='verify_2fa'),
 
+    path('api/signup/', SignupAPIView.as_view(), name='api_signup'),
     path('api/login/', LoginAPIView.as_view(), name='api_login'),
     path('api/logout/', LogoutAPIView.as_view(), name='api_logout'),
     path('api/user/profile/', UserProfileAPIView.as_view(), name='api_user_profile'),
