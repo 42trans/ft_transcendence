@@ -6,12 +6,12 @@
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import SceneConfig from '../SceneConfig';
+import BaseConfig from './config/BaseConfig'; 
 
 class SceneSetup{
 	/**
 	 * @param {THREE.Scene} scene
-	 * @param {SceneConfig} sceneConfig
+	 * @param {BaseConfig} sceneConfig
 	 */
 	constructor(scene, sceneConfig) {
 		this.scene = scene;
@@ -44,8 +44,6 @@ class SceneSetup{
 		};
 		const rend = new THREE.WebGLRenderer(rendererOptions);
 		rend.setSize(window.innerWidth, window.innerHeight);
-		// rend.setPixelRatio(config.pixelRatio);
-		// rend.setClearColor(0x000000, 0); // 背景色を透明に設定
 		
 		// 特定のdivにレンダラーを追加 （index.htmlで設定したthreejs-canvas-container）
 		const container = document.getElementById('threejs-canvas-container');

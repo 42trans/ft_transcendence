@@ -3,8 +3,8 @@
 import * as THREE from 'three';
 // GLTFフォーマットの3Dモデルをロードするための特定のローダーをインポート。
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import SceneConfig from '../SceneConfig';
-import AnimationManager from './AnimationManager'
+// import SceneConfig from '../SceneConfig';
+// import AnimationManager from './AnimationManager'
 /**
  * ModelsLoader クラス:
  * 役割・機能: 3Dモデルをロードし、設定されたアニメーションとともにシーンに追加する
@@ -202,12 +202,12 @@ class ModelsLoader {
 	) {
 		const mixer = new THREE.AnimationMixer(model);
 		if (gltf.animations.length > 0) {
+			let animationToPlay;
 			/**
 			 * GLTFのアニメーション配列から、指定されたデフォルトアニメーションを検索
 			 * defaultAnimation が指定されていない場合や見つからない場合は、配列の最初のアニメーションを選択
 			 * @param {THREE.AnimationClip} anim 
 			 */
-			let animationToPlay;
 			const foundAnimation = gltf.animations.find((anim) => {
 				return anim.name === defaultAnimation;
 			});

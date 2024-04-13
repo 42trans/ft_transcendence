@@ -6,9 +6,8 @@
  */
 
 import * as THREE from 'three';
-// import { LightConfig, ModelConfig, AnimationConfig } from './js/type';
 
-class SceneConfig {
+class BackgoundSceneConfig {
 
 	constructor() {
 		/** @type {{ fov: number, aspect: number, near: number, far: number, position: THREE.Vector3, lookAt: THREE.Vector3 }} */
@@ -157,4 +156,4 @@ class SceneConfig {
 
 }
 
-export default SceneConfig;
+export default BackgoundSceneConfig;

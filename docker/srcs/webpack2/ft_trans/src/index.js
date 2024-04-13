@@ -27,7 +27,12 @@
  * - 3Dmodel.gltfやtextureは assejs/にまとめてます。
 */
 
-import App from './js/App'
+// import Main from './js/Main'
+// import './css/3d.css';
+
+// Main.main();
+
+import RenderManager from './js/RenderManager'
 import './css/3d.css';
 
-App.main();
+RenderManager.main();
