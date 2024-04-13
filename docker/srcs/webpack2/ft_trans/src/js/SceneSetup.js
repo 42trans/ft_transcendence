@@ -9,18 +9,26 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import SceneConfig from '../SceneConfig';
 
-import { HemisphereLightConfig, SpotLightConfig } from './type';
+// import { HemisphereLightConfig, SpotLightConfig } from './type';
 
 class SceneSetup{
-	scene: THREE.Scene;
-	sceneConfig: SceneConfig;
+	// scene: THREE.Scene;
+	// sceneConfig: SceneConfig;
 
-	constructor(scene: THREE.Scene, sceneConfig: SceneConfig) {
+	/**
+	 * @param {THREE.Scene} scene
+	 * @param {SceneConfig} sceneConfig
+	 */
+	constructor(scene, sceneConfig) {
+	// constructor(scene: THREE.Scene, sceneConfig: SceneConfig) {
 		this.scene = scene;
 		this.sceneConfig = sceneConfig;
 	}
 
-	setupCamera(): THREE.PerspectiveCamera {
+	/**
+	 * @returns {THREE.PerspectiveCamera}
+	 */
+	setupCamera() {
 		const config = this.sceneConfig.cameraConfig;
 		const cam = new THREE.PerspectiveCamera(
 			config.fov,
@@ -33,7 +41,10 @@ class SceneSetup{
 		return cam;
 	}
 
-	setupRenderer(): THREE.WebGLRenderer {
+	/**
+	 * @returns {THREE.WebGLRenderer}
+	 */
+	setupRenderer() {
 		const config = this.sceneConfig.rendererConfig;
 		const rend = new THREE.WebGLRenderer({ antialias: config.antialias });
 		rend.setSize(window.innerWidth, window.innerHeight);
@@ -51,7 +62,12 @@ class SceneSetup{
 		return rend;
 	}
 
-	setupControls(camera: THREE.Camera, renderer: THREE.Renderer): OrbitControls {
+	/**
+	 * @param {THREE.Camera} camera
+	 * @param {THREE.Renderer} renderer
+	 * @returns {OrbitControls}
+	 */
+	setupControls(camera, renderer) {
 		const config = this.sceneConfig.controlsConfig;
 		const controls = new OrbitControls(camera, renderer.domElement);
 		Object.assign(controls, config);
@@ -60,7 +76,8 @@ class SceneSetup{
 
 	setupLights() {
 		this.sceneConfig.lightsConfig.forEach((config) => {
-			let light: THREE.Light | null = null;
+			/** @type {THREE.Light} */
+			let light = null;
 
 			switch (config.type) {
 				case 'AmbientLight':
@@ -71,7 +88,8 @@ class SceneSetup{
 					if (config.position) light.position.set(config.position.x, config.position.y, config.position.z);
 					break;
 				case 'HemisphereLight':
-					const hemiConfig = config as HemisphereLightConfig;
+					/** @type {HemisphereLightConfig} */
+					const hemiConfig = config;
 					light = new THREE.HemisphereLight(hemiConfig.skyColor, hemiConfig.groundColor, hemiConfig.intensity);
 					if (hemiConfig.position) light.position.set(hemiConfig.position.x, hemiConfig.position.y, hemiConfig.position.z);
 					break;
@@ -80,7 +98,8 @@ class SceneSetup{
 					if (config.position) light.position.set(config.position.x, config.position.y, config.position.z);
 					break;
 				case 'SpotLight':
-					const spotConfig = config as SpotLightConfig;
+					/** @type {SpotLightConfig} */
+					const spotConfig = config;
 					light = new THREE.SpotLight(spotConfig.color, spotConfig.intensity, spotConfig.distance, spotConfig.angle, spotConfig.penumbra, spotConfig.decay);
 					if (spotConfig.position) light.position.set(spotConfig.position.x, spotConfig.position.y, spotConfig.position.z);
 					break;

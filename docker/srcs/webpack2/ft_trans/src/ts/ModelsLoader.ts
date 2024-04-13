@@ -1,11 +1,11 @@
-// docker/srcs/webpack2/ft_trans/src/js/ModelsLoader.ts
+// docker/srcs/webpack2/ft_trans/src/ts/ModelsLoader.ts
 
 import * as THREE from 'three';
 // GLTFフォーマットの3Dモデルをロードするための特定のローダーをインポート。
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import SceneConfig from '../SceneConfig';
 import AnimationManager from './AnimationManager'
-import { ModelConfig, TexturePaths } from './type';
+import { ModelConfig, TexturePaths } from '../js/type';
 /**
  * ModelsLoader クラス:
  * 役割・機能: 3Dモデルをロードし、設定されたアニメーションとともにシーンに追加する

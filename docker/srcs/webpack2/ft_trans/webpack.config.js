@@ -8,7 +8,7 @@ module.exports = {
 	mode: 'development',
 
 	// メインとなるJavaScriptファイル（エントリーポイント）
-	entry: './src/index.ts',
+	entry: './src/index.js',
 
 	output: {
 		//  出力ファイルのディレクトリ名
@@ -17,12 +17,12 @@ module.exports = {
 	},
 	module: {
 	  rules: [
-		{
-		  // 拡張子 .ts の場合
-		  test: /\.ts$/,
-		  // TypeScript をコンパイルする
-		  use: 'ts-loader',
-		},
+		// {
+		//   // 拡張子 .ts の場合
+		//   test: /\.ts$/,
+		//   // TypeScript をコンパイルする
+		//   use: 'ts-loader',
+		// },
 		{
 			test: /\.js$/,
 			exclude: /node_modules/,

@@ -1,10 +1,10 @@
-// docker/srcs/webpack2/ft_trans/src/index.ts
+// docker/srcs/webpack2/ft_trans/src/index.js
 
 /**
  * @file エントリーポイント
  * 
  * @description 
- * - 同階層にあるSceneConfig.tsで初期値を指定してください
+ * - 同階層にあるSceneConfig.jsで初期値を指定してください
  * - 他はjs/に保存しています
  * - public/へのビルド方法: docker exec -it webpack2 bash -c "npm run build"
  * - buildにより、一つのjsファイル（public/bundle.js）にまとめて生成されます。　
@@ -20,12 +20,11 @@
  *   - static/share_wabpack2/に自動で入ります。ホストマシンに保存されます。.gitignore済み
  * 
  * ## ディレクトリ構成
- * - SceneConfig.tsに値を設定してください。scene設定はそこで全てです。
- * - Contorls.tsのパラメーターはスライダーの感度調整なので変更しなくても問題ないはずです。が、必要なら。
- * - 他の.js,.tsファイルは js/ にまとめてます。 
- * - 型情報は js/type.ts にまとめていきたい方針
- * - App.tsから全ての処理のフローが見通せるように書きたい。ファサードパターンで。
- * - 3Dmodel.gltfやtextureは assets/にまとめてます。
+ * - SceneConfig.jsに値を設定してください。scene設定はそこで全てです。
+ * - Contorls.jsのパラメーターはスライダーの感度調整なので変更しなくても問題ないはずです。が、必要なら。
+ * - 他の.jsファイルは js/ にまとめてます。 
+ * - App.jsから全ての処理のフローが見通せるように書きたい。ファサードパターンで。
+ * - 3Dmodel.gltfやtextureは assejs/にまとめてます。
 */
 
 import App from './js/App'

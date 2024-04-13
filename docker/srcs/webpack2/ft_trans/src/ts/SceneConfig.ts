@@ -6,7 +6,7 @@
  */
 
 import * as THREE from 'three';
-import { LightConfig, ModelConfig, AnimationConfig } from './js/type';
+// import { LightConfig, ModelConfig, AnimationConfig } from './js/type';
 
 class SceneConfig {
 
