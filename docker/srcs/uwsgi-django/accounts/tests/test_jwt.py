@@ -6,101 +6,111 @@ from django.contrib.auth.models import User
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django.test import TestCase
 from django.urls import reverse, resolve
-from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework.test import APITestCase
+from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from accounts.views.two_factor_auth import Verify2FaView
 
-
-class TokenIssuanceTest(TestCase):
-    kLoginName = 'accounts:login'
-    kEnable2FaName = "accounts:enable_2fa"
-    kUserPageName = "accounts:user"
-
-    kHomeURL = "/pong/"
-
-    kVerify2FaName = "accounts:verify_2fa"
-    kVerify2FaURL = "/accounts/verify/verify_2fa/"
-
+class JWTTest(APITestCase):
     kUserEmail = 'test@example.com'
     kUserNickname = 'test'
-    kUserPassword = 'pass012345'
+    kUserPassword = 'pass01234'
+
+    kLoginAPIName = "accounts:api_login"
+    kLogoutAPIName = "accounts:api_logout"
+    kEnable2FaAPIName = "accounts:api_enable_2fa"
+    kVerify2FaAPIName = "accounts:api_verify_2fa"
+    kTokenRefreshAPIName = "accounts:api_token_refresh"
 
     def setUp(self):
+        self.enable_2fa_api_url = reverse(self.kEnable2FaAPIName)
+        self.verify_2fa_api_url = reverse(self.kVerify2FaAPIName)
+        self.login_api_path = reverse(self.kLoginAPIName)
+        self.token_refresh_api_url = reverse(self.kTokenRefreshAPIName)
+        self.client = APIClient()
+
         User = get_user_model()
         self.user = User.objects.create_user(email=self.kUserEmail,
-                                        nickname=self.kUserNickname,
-                                        password=self.kUserPassword,
-                                        enable_2fa=False)
+                                             nickname=self.kUserNickname,
+                                             password=self.kUserPassword,
+                                             enable_2fa=False)  # disable
         self.user.save()
 
-        self.login_url = reverse(self.kLoginName)
-        user_field = {
-            'username'  : self.kUserEmail,
-            'password'  : self.kUserPassword,
-        }
-        self.response = self.client.post(self.login_url, user_field)
-        self.assertRedirects(self.response, self.kHomeURL)
-        self.assertEqual(self.response.status_code, 302)
-        self.assertTrue('_auth_user_id' in self.client.session)
-
     def test_token_issuance_basic_login(self):
-        self.assertTrue('Access-Token' in self.response.cookies)
-        self.assertTrue('Refresh-Token' in self.response.cookies)
-
-        access_token_cookie = self.response.cookies['Access-Token']
-        self.assertTrue(access_token_cookie['httponly'])
-        self.assertEqual(access_token_cookie['samesite'], 'Strict')
+        response = self._basic_login()
+        self._assert_jwt_in_cookie(response)
 
     def test_token_issuance_2fa(self):
+        self._basic_login()
         self._enable_2fa()
         self.client.logout()
-        self._login_with_2fa()
+        response = self._login_with_2fa()
 
-        # assert JWT
-        self.assertTrue('Access-Token' in self.response.cookies)
-        self.assertTrue('Refresh-Token' in self.response.cookies)
+        self._assert_jwt_in_cookie(response)
 
-        access_token_cookie = self.response.cookies['Access-Token']
-        self.assertTrue(access_token_cookie['httponly'])
-        self.assertEqual(access_token_cookie['samesite'], 'Strict')
+    def test_refresh_token(self):
+        response = self._basic_login()
+        refresh_token = response.cookies.get('Refresh-Token').value
+
+        response = self.client.post(self.token_refresh_api_url, {'refresh': refresh_token})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self._assert_jwt_in_cookie(response)
+
+    def test_refresh_token_with_invalid_token(self):
+        response = self.client.post(self.token_refresh_api_url, {'refresh': 'invalidtoken1234567890'})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertIn('error', response.json())
+        self.assertEqual(response.json()['error'], 'Token is invalid or expired')
+
+    def test_invalid_credentials(self):
+        response = self.client.post(self.login_api_path, {'email': 'wrong@example.com', 'password': 'wrong'})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertIn('error', response.json())
+        self.assertEqual(response.json()['error'], 'Invalid credentials')
+
+    # helper
+    def _basic_login(self):
+        login_data = {
+            'email': self.kUserEmail,
+            'password': self.kUserPassword
+        }
+        response = self.client.post(self.login_api_path, data=login_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return response
+
+    def _login_with_2fa(self):
+        self._basic_login()
+        response = self._verify_2fa()
+        return response
+
+    def _verify_2fa(self):
+        response = self.client.post(self.verify_2fa_api_url, {'token': self.otp_token})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return response
 
     def _enable_2fa(self):
-        enable_2fa_url = reverse(self.kEnable2FaName)
-        response = self.client.get(enable_2fa_url)
-        secret_key_base32 = response.context['setup_key']
+        response = self.client.get(self.enable_2fa_api_url)
+        secret_key_base32 = response.json()['setup_key']
         totp = pyotp.TOTP(secret_key_base32)
-        otp_token = totp.now()
+        self.otp_token = totp.now()
 
-        response = self.client.post(enable_2fa_url, {'token': otp_token}, follow=True)
+        response = self.client.post(self.enable_2fa_api_url, {'token': self.otp_token})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        user_page_url = reverse(self.kUserPageName)
-        self.assertRedirects(response, user_page_url)   # succeed enable2fa -> redirect to user
-        self.assertTrue('_auth_user_id' in self.client.session)  # login
         self.user.refresh_from_db()
         self.assertTrue(self.user.enable_2fa)  # enable
 
-    def _login_with_2fa(self):
-        # login
-        user_field = {
-            'username'  : self.kUserEmail,
-            'password'  : self.kUserPassword,
-        }
-        response = self.client.post(self.login_url, user_field, follow=True)
-        self.assertFalse('_auth_user_id' in self.client.session)  # login yet
+    def _logout(self):
+        logout_api_url = reverse(self.kLogoutAPIName)
+        self.client.get(logout_api_url)
 
-        # verify 2fa form
-        enable_2fa_view = resolve(self.kVerify2FaURL)
-        self.assertEqual(enable_2fa_view.func.view_class, Verify2FaView)
+    def _assert_jwt_in_cookie(self, response):
+        self.assertIn('Access-Token', response.cookies)
+        self.assertIn('Refresh-Token', response.cookies)
+        self.assertNotEqual(response.cookies['Access-Token'].value, '')
+        self.assertNotEqual(response.cookies['Refresh-Token'].value, '')
 
-        devices = TOTPDevice.objects.filter(user=self.user, confirmed=True)
-        device = devices.first()
-        totp = pyotp.TOTP(b32encode(bytes.fromhex(device.key)).decode('utf-8'))
-        otp_token = totp.now()
-
-        # verify
-        verify_2fa_url = reverse(self.kVerify2FaName)
-        response = self.client.post(verify_2fa_url, {'token': otp_token}, follow=True)
-        self.assertRedirects(response, self.kHomeURL)
-        self.assertIn('_auth_user_id', self.client.session)  # login
+        access_token_cookie = response.cookies['Access-Token']
+        self.assertTrue(access_token_cookie['httponly'])
+        self.assertEqual(access_token_cookie['samesite'], 'Strict')
