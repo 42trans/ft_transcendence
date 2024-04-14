@@ -46,7 +46,6 @@ class ControlsGUI {
 		this.scene.children.forEach((child) => {
 			if (child instanceof THREE.Light) {
 				const folder = this.gui.addFolder(child.name);
-				// Light settings based on type
 				folder.add(child, 'intensity', 0, 2, 0.01);
 				folder.addColor(child, 'color');
 				if ('position' in child) {
