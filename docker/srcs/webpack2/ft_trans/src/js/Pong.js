@@ -1,6 +1,5 @@
-// docker/srcs/webpack2/ft_trans/src/js/App.js
 /**
- * @file App.js
+ * @file 
  * メインのクラス。全体（bundle.js）のフローを管理
  * シーンの初期化、アニメーションのループを呼び出す
  */
@@ -23,7 +22,7 @@ import * as lil from 'lil-gui';
  * @param controls - カメラの操作。OrbitControlsのインスタンス。
  * @param {lil.GU} - 開発時コントローラーGUI
  */
-class RenderManager {
+class Pong {
 	/**
 	 * シーンを設定し、アニメーションレンダリングループを非同期でスタートする。
 	 * 終了までこのコンストラクタが継続。
@@ -124,8 +123,8 @@ class RenderManager {
 	
 	/** Public method*/
 	static main() {
-		new RenderManager();
+		new Pong();
 	}
 }
 
-export default RenderManager;
+export default Pong;

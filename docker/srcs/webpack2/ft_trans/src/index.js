@@ -27,7 +27,7 @@
  * - 3Dmodel.gltfやtextureは assejs/にまとめてます。
 */
 
-import RenderManager from './js/RenderManager'
+import Pong from './js/Pong'
 import './css/3d.css';
 
-RenderManager.main();
+Pong.main();
