@@ -25,6 +25,7 @@ class ModelsLoader {
 		this.animMgr = animMgr
 		this.loader = new GLTFLoader();
 		this.textureLoader = new THREE.TextureLoader();
+		this.modelCache = new Map(); 
 	}
 
 	/**
@@ -77,6 +78,16 @@ class ModelsLoader {
 		modelsConfig,
 		defaultAnimation,
 	) {
+		// キャッシュからモデルを取得する試み
+		const cachedModel = this.modelCache.get(modelsConfig.path);
+		if (cachedModel) {
+			const modelClone = cachedModel.clone(); // モデルのクローンを作成
+			this.setupModel(modelClone, modelsConfig.initialPosition, modelsConfig.initialScale, modelsConfig.initialRotation);
+			this.scene.add(modelClone); // クローンをシーンに追加
+			return;
+		}
+
+		// モデルがキャッシュになければロード
 		/**
 		 * GLTFモデルを非同期でロード。
 		 * @description コールバック関数(gltf): GLTFモデルが正常にロードされた後に実行。
@@ -85,6 +96,7 @@ class ModelsLoader {
 
 			// ロードされたGLTFファイルからGLTF.sceneを取得
 			const model = gltf.scene;
+			this.modelCache.set(modelsConfig.path, model);
 			// 3Dモデルを配置
 			this.setupModel(
 				model, 
@@ -98,7 +110,6 @@ class ModelsLoader {
 			}
 			// モデルにアニメーションを設定
 			this.setupAnimation(model, gltf, defaultAnimation);
-		
 		}, undefined, function (error) {
 			console.error(error);
 		});

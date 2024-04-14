@@ -9,21 +9,68 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import ModelsLoader from './ModelsLoader';
 import AnimationManager from './AnimationManager'
 
-class SceneSetup{
+class SceneManager{
 	/**
 	* @param {THREE.WebGLRenderer} renderer - 計算された画像（3Dを2Dに投影）を画面に出力・描画するインスタンス。
 	* @param {THREE.Scene} scene - 描画操作が行われる空間・ワールド。
 	* @param {THREE.PerspectiveCamera} camera - カメラ。
 	*/
 	constructor(sceneConfig, renderer) {
+		this.sceneConfig = sceneConfig;
+		this.renderer = renderer;
 		this.scene = new THREE.Scene();
-		this.camera = this.setupCamera(sceneConfig.cameraConfig);
-		this.controls = this.setupControls(this.camera, renderer, sceneConfig.controlsConfig);
-		this.setupLights(sceneConfig.lightsConfig);
-		this.animMgr = new AnimationManager(this.controls);
-		this.modelsLoader = new ModelsLoader(this.scene, sceneConfig, this.animMgr);
-		this.modelsLoader.loadModels();
+		this.initializeScene();
 	}
+
+	clearScene() {
+		while (this.scene.children.length > 0) {
+			const object = this.scene.children.pop();
+			if (object instanceof THREE.Mesh) {
+				if (object.geometry) {
+					object.geometry.dispose();
+				}
+				if (object.material) {
+					if (Array.isArray(object.material)) {
+						object.material.forEach(material => material.dispose());
+					} else {
+						object.material.dispose();
+					}
+				}
+			}
+			if (object.dispose) {
+				object.dispose();
+			}
+			this.scene.remove(object);
+		}
+	}
+	
+	initializeScene() {
+		this.clearScene();
+		this.camera = this.setupCamera(this.sceneConfig.cameraConfig);
+		this.controls = this.setupControls(this.camera, this.renderer, this.sceneConfig.controlsConfig);
+		this.lights = [];
+		this.setupLights(this.sceneConfig.lightsConfig);
+		this.animMgr = new AnimationManager(this.controls);
+		this.modelsLoader = new ModelsLoader(this.scene, this.sceneConfig, this.animMgr);
+	}
+
+	refreshScene() {
+		this.clearScene();
+		// カメラの位置や向きをリセット
+		const { position, lookAt } = this.sceneConfig.cameraConfig;
+		this.camera.position.copy(position);
+		this.camera.lookAt(lookAt);
+
+		// ライトをリフレッシュ
+		this.lights.forEach(light => {
+			this.scene.remove(light);
+		});
+		this.setupLights(this.sceneConfig.lightsConfig);
+
+		// シーン内の特定のオブジェクトをリセットまたは更新
+		this.modelsLoader.loadModels(); 
+	}
+	
 	/**
 	 * @returns {THREE.PerspectiveCamera}
 	 */
@@ -38,32 +85,6 @@ class SceneSetup{
 		cam.position.copy(config.position);
 		cam.lookAt(config.lookAt);
 		return cam;
-	}
-	/**
-	 * @returns {THREE.WebGLRenderer}
-	 */
-	setupRenderer() {
-		const config = this.sceneConfig.rendererConfig;
-		const rendererOptions = {
-			antialias: config.antialias,
-			pixelRatio: config.pixelRatio,
-			alpha: config.alpha,
-		};
-		const rend = new THREE.WebGLRenderer(rendererOptions);
-		rend.autoClear = false; // 必須
-		rend.setClearColor(0x000000, 0); // 背景を透明に
-		rend.setSize(window.innerWidth, window.innerHeight);
-		
-		// 特定のdivにレンダラーを追加 （index.htmlで設定したthreejs-canvas-container）
-		const container = document.getElementById('threejs-canvas-container');
-		if (container) {
-			container.appendChild(rend.domElement);
-		} else {
-			console.error('three.jsのキャンバスを配置するためのコンテナが見つかりません。');
-		}
-		// もしもdivでなくbodyに埋め込む場合
-		// document.body.appendChild(rend.domElement);
-		return rend;
 	}
 
 	/**
@@ -111,10 +132,11 @@ class SceneSetup{
 
 			if (light) {
 				light.name = config.name;
+				this.lights.push(light);
 				this.scene.add(light);
 			}
 		});
 	}
 }
 
-export default SceneSetup;
+export default SceneManager;

@@ -6,11 +6,13 @@
 import * as THREE from 'three';
 import BackgoundSceneConfig from './config/BackgoundSceneConfig';
 import GameSceneConfig from './config/GameSceneConfig';
-import SceneSetup from './SceneSetup';
-import { BaseGameState, MainMenuState} from './game/BaseGameState'
+import SceneManager from './SceneManager';
 import RendererManager from './RendererManager'
+import GameStateManager from './GameStateManager'
 //dev用GUI
 import * as lil from 'lil-gui'; 
+import ControlsGUI from './ControlsGUI';
+
 /**
  * @param sceneSetup - シーンを設定するメソッドを持つクラス。setupScene()で使用
  * @param renderer - 計算された画像（3Dを2Dに投影）を画面に出力・描画する。THREE.WebGLRendererのインスタンス
@@ -18,45 +20,34 @@ import * as lil from 'lil-gui';
 class Pong {
 	/**
 	 * constructor():
-	 * シーンを設定し、アニメーションレンダリングループを非同期でスタートする。
-	 * 終了までこのコンストラクタが継続。
+	 * シーンを設定し、アニメーションレンダリングループを非同期でスタートする。終了までこのコンストラクタが継続。
 	 * @description
 	 * - 注: コンストラクタの呼び出しは即座に完了するが、ループはアプリケーションのライフサイクルに沿って継続
-	// - Rendererの処理が重いのでシングルトン
+	// - Rendererの処理が重いので一つに制限。シングルトン
 	 */
 	constructor() {
 		this.renderer = RendererManager.getRenderer();
 		this.setupScenesManager();
-		this.initStates();
+		this.gameStateManager = new GameStateManager(this); 
+		
+				// TODO_ft: dev用GUI　レビュー時削除
+				this.gui = new lil.GUI();
+				const contorolsGUI = new ControlsGUI(this.gameSceneManager.scene, this.gui, this.gameSceneManager.camera);
+				contorolsGUI.setupControlsGUI();
+				// 
+				
 		this.startAnimationLoop();
 	}
 
+	
 	/**
 	 * Private method
 	 * SceneManager:各sceneに必要な情報を一元的に持たせる
 	 * */
 	setupScenesManager() {
-		this.backgroundManager = new SceneSetup(new BackgoundSceneConfig(), this.renderer);
-		this.gameManager = new SceneSetup(new GameSceneConfig(), this.renderer);
-	}
-	/**
-	 * Private method
-	 * */
-	initStates() {
-		this.states = {
-			mainMenu: new MainMenuState(this),
-			// gameplay: new GameplayState(this),
-		};
-		this.currentState = this.states.mainMenu;
-		this.currentState.enter();
-	}
-	/**
-	 * Private method
-	 * */
-	changeState(newState) {
-		this.currentState.exit();
-		this.currentState = this.states[newState];
-		this.currentState.enter();
+		// this.backgroundSceneManager = new SceneManager(new BackgoundSceneConfig(), this.renderer);
+		this.gameSceneManager = new SceneManager(new GameSceneConfig(), this.renderer);
+		// 必要ならシーンを追加する。UI用,演出用など
 	}
 
 	/**
@@ -73,8 +64,8 @@ class Pong {
 	startAnimationLoop() {
 		const animate = () => {
 			requestAnimationFrame(animate);
-			this.currentState.update();
-			this.currentState.render();
+			this.gameStateManager.update();
+			this.gameStateManager.render();
 		};
 		animate();
 	}
