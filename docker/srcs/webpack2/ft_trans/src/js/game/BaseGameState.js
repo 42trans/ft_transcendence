@@ -1,8 +1,8 @@
-import AnimationManager from '../AnimationManager'
+import Pong from '../Pong'
 
 export class BaseGameState {
-	constructor(renderManager) {
-		this.renderManager = renderManager;
+	constructor(Pong) {
+		this.Pong = Pong;
 	}
 	enter() {
 		throw new Error("Enter method must be implemented");
@@ -24,8 +24,8 @@ export class BaseGameState {
 // export default BaseGameState;
 
 export class MainMenuState extends BaseGameState {
-	constructor (renderManager){
-		super(renderManager);
+	constructor (Pong){
+		super(Pong);
 	}
 	enter() {
 		// メインメニュー特有の初期化
@@ -33,15 +33,19 @@ export class MainMenuState extends BaseGameState {
 	}
 
 	update() {
-		this.renderManager.renderer.clear();
-		this.renderManager.backgroundAnimMgr.update();
-		this.renderManager.gameAnimMgr.update();
+		if (!this.Pong || !this.Pong.backgroundManager || !this.Pong.gameManager) {
+			console.error("One of the required properties is undefined.");
+			return;
+		}
+		this.Pong.renderer.clear();
+		this.Pong.backgroundManager.animMgr.update();
+		this.Pong.gameManager.animMgr.update();
 	}
 
 	render() {
-		this.renderManager.renderer.render(this.renderManager.backgroundScene, this.renderManager.backgroundCamera);
-		this.renderManager.renderer.clearDepth();
-		this.renderManager.renderer.render(this.renderManager.gameScene, this.renderManager.gameCamera);
+		this.Pong.renderer.render(this.Pong.backgroundManager.scene, this.Pong.backgroundManager.camera);
+		this.Pong.renderer.clearDepth();
+		this.Pong.renderer.render(this.Pong.gameManager.scene, this.Pong.gameManager.camera);
 	}
 
 	exit() {

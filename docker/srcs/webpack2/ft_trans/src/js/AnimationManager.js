@@ -13,14 +13,8 @@ class AnimationManager {
 	 * @param {THREE.Clock[]} clock - アニメーションを管理するクロックインスタンス
 	 */
 	constructor (
-		renderer,
-		scene,
-		camera,
 		controls
 	){
-		this.renderer = renderer;
-		this.scene = scene;
-		this.camera = camera;
 		this.controls = controls;
 		this.mixers = [];
 		this.clock =  new THREE.Clock();

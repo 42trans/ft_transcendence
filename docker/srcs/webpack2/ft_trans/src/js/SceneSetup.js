@@ -6,22 +6,29 @@
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import BaseSceneConfig from './config/BaseSceneConfig'; 
+import ModelsLoader from './ModelsLoader';
+import AnimationManager from './AnimationManager'
 
 class SceneSetup{
 	/**
-	 * @param {THREE.Scene} scene
-	 * @param {BaseSceneConfig} sceneConfig
-	 */
-	constructor(scene, sceneConfig) {
-		this.scene = scene;
-		this.sceneConfig = sceneConfig;
+	* @param {THREE.WebGLRenderer} renderer - 計算された画像（3Dを2Dに投影）を画面に出力・描画するインスタンス。
+	* @param {THREE.Scene} scene - 描画操作が行われる空間・ワールド。
+	* @param {THREE.PerspectiveCamera} camera - カメラ。
+	*/
+	constructor(sceneConfig, renderer) {
+		this.scene = new THREE.Scene();
+		this.camera = this.setupCamera(sceneConfig.cameraConfig);
+		this.controls = this.setupControls(this.camera, renderer, sceneConfig.controlsConfig);
+		this.setupLights(sceneConfig.lightsConfig);
+		this.animMgr = new AnimationManager(this.controls);
+		this.modelsLoader = new ModelsLoader(this.scene, sceneConfig, this.animMgr);
+		this.modelsLoader.loadModels();
 	}
 	/**
 	 * @returns {THREE.PerspectiveCamera}
 	 */
-	setupCamera() {
-		const config = this.sceneConfig.cameraConfig;
+	setupCamera(cameraConfig) {
+		const config = cameraConfig;
 		const cam = new THREE.PerspectiveCamera(
 			config.fov,
 			config.aspect,
@@ -64,15 +71,15 @@ class SceneSetup{
 	 * @param {THREE.Renderer} renderer
 	 * @returns {OrbitControls}
 	 */
-	setupControls(camera, renderer) {
-		const config = this.sceneConfig.controlsConfig;
+	setupControls(camera, renderer, controlsConfig) {
+		const config = controlsConfig;
 		const controls = new OrbitControls(camera, renderer.domElement);
 		Object.assign(controls, config);
 		return controls;
 	}
 
-	setupLights() {
-		this.sceneConfig.lightsConfig.forEach((config) => {
+	setupLights(lightsConfig) {
+		lightsConfig.forEach((config) => {
 			/** @type {THREE.Light} */
 			let light = null;
 
