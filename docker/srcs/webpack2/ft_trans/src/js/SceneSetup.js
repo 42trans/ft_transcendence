@@ -6,12 +6,12 @@
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import BaseConfig from './config/BaseConfig'; 
+import BaseSceneConfig from './config/BaseSceneConfig'; 
 
 class SceneSetup{
 	/**
 	 * @param {THREE.Scene} scene
-	 * @param {BaseConfig} sceneConfig
+	 * @param {BaseSceneConfig} sceneConfig
 	 */
 	constructor(scene, sceneConfig) {
 		this.scene = scene;
