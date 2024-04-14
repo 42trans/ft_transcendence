@@ -12,6 +12,7 @@ import ControlsGUI from './ControlsGUI';
 import ModelsLoader from './ModelsLoader';
 import AnimationManager from './AnimationManager'
 import { BaseGameState, MainMenuState} from './game/BaseGameState'
+import RendererManager from './RendererManager'
 //dev用GUI
 import * as lil from 'lil-gui'; 
 /**
@@ -30,6 +31,8 @@ class RenderManager {
 	 * - 注: コンストラクタの呼び出しは即座に完了するが、ループはアプリケーションのライフサイクルに沿って継続
 	 */
 	constructor() {
+		// RendererManagerインスタンスはシングルトン
+		this.renderer = RendererManager.getRenderer();
 		this.setupBackgroundScene();
 		this.setupGameScene();
 
@@ -50,7 +53,6 @@ class RenderManager {
 		this.backgroundScene = new THREE.Scene();
 		const sceneSetup = new SceneSetup(this.backgroundScene, config);
 		this.backgroundCamera = sceneSetup.setupCamera();
-		this.renderer = sceneSetup.setupRenderer(); // 共有レンダラー
 		this.backgroundControls = sceneSetup.setupControls(this.backgroundCamera, this.renderer);
 		sceneSetup.setupLights();
 		this.backgroundAnimMgr = new AnimationManager(
