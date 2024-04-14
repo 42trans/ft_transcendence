@@ -11,7 +11,6 @@ import SceneSetup from './SceneSetup';
 import ControlsGUI from './ControlsGUI';
 import ModelsLoader from './ModelsLoader';
 import AnimationManager from './AnimationManager'
-import { BaseGameState, MainMenuState} from './game/BaseGameState'
 //dev用GUI
 import * as lil from 'lil-gui'; 
 /**
@@ -32,15 +31,6 @@ class RenderManager {
 	constructor() {
 		this.setupBackgroundScene();
 		this.setupGameScene();
-
-		this.states = {
-			mainMenu: new MainMenuState(this),
-			// gameplay: new GameplayState(this),
-			// 他の状態も同様に
-		};
-
-		this.currentState = this.states.mainMenu;
-		this.currentState.enter();
 		
 		this.startAnimationLoop();
 	}
@@ -86,12 +76,6 @@ class RenderManager {
 		modelsLoader.loadModels();
 	}
 
-	changeState(newState) {
-		this.currentState.exit();
-		this.currentState = this.states[newState];
-		this.currentState.enter();
-	}
-
 	/**
 	 * Private method
 	 * ブラウザのフレーム更新タイミングに合わせて自身を再帰的に呼び出し、連続したアニメーションフレームを生成
@@ -114,8 +98,13 @@ class RenderManager {
 	startAnimationLoop() {
 		const animate = () => {
 			requestAnimationFrame(animate);
-			this.currentState.update();
-			this.currentState.render();
+			this.renderer.clear();
+			this.backgroundAnimMgr.update();
+			this.gameAnimMgr.update();
+
+			this.renderer.render(this.backgroundScene, this.backgroundCamera);
+			this.renderer.clearDepth();
+			this.renderer.render(this.gameScene, this.gameCamera);
 		};
 		animate();
 	}
