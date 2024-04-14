@@ -18,7 +18,7 @@ class MainMenuState extends BaseGameState {
 			return;
 		}
 		this.Pong.renderer.clear();
-		this.Pong.gameSceneManager.animMgr.update();
+		this.Pong.gameSceneManager.animMxr.update();
 	}
 
 	render() {

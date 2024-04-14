@@ -16,8 +16,8 @@ class GameplayState extends BaseGameState {
 			return;
 		}
 		// this.Pong.renderer.clear();
-		// this.Pong.backgroundManager.animMgr.update();
-		// this.Pong.gameManager.animMgr.update();
+		// this.Pong.backgroundManager.animMxr.update();
+		// this.Pong.gameManager.animMxr.update();
 	}
 
 	render() {

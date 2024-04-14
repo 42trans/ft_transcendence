@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 /** アニメーションを管理するクラス */
-class AnimationManager {
+class AnimationMixer {
 	/**
 	 * AnimationManagerのコンストラクタ
 	 * @param {THREE.WebGLRenderer} renderer - 計算された画像（3Dを2Dに投影）を画面に出力・描画するインスタンス。
@@ -47,4 +47,4 @@ class AnimationManager {
 	}
 }
 
-export default AnimationManager;
+export default AnimationMixer;

@@ -13,16 +13,16 @@ class ModelsLoader {
 	 * コンストラクタの引数にアクセス修飾子（private, public, protected）を直接付けることにより、プロパティの宣言と代入を一行で行う
 	 * @param scene THREE.Scene オブジェクト - 3Dオブジェクトが表示される空間
 	 * @param sceneConfig 設定情報を含むオブジェクト
-	 * @param animMgr アニメーションを管理するオブジェクト
+	 * @param animMxr アニメーションを管理するオブジェクト
 	*/
 	constructor (
 		scene,
 		sceneConfig,
-		animMgr
+		animMxr
 	) { 
 		this.scene = scene;
 		this.sceneConfig = sceneConfig,
-		this.animMgr = animMgr
+		this.animMxr = animMxr
 		this.loader = new GLTFLoader();
 		this.textureLoader = new THREE.TextureLoader();
 		this.modelCache = new Map(); 
@@ -232,7 +232,7 @@ class ModelsLoader {
 				const action = mixer.clipAction(animationToPlay);
 				action.play();
 				console.log(`Playing animation: ${animationToPlay.name}`);
-				this.animMgr.setMixer(mixer);
+				this.animMxr.setMixer(mixer);
 			} else {
 				console.warn(`Default animation '${defaultAnimation}' not found. Playing first animation: ${gltf.animations[0].name}`);
 			}

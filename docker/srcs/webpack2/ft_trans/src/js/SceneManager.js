@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import ModelsLoader from './ModelsLoader';
-import AnimationManager from './AnimationManager'
+import AnimationMixer from './AnimationMixer'
 
 class SceneManager{
 	/**
@@ -44,30 +44,33 @@ class SceneManager{
 		}
 	}
 	
+	/**
+	 * Private method
+	 * インスタンスの作成を担当
+	 */
 	initializeScene() {
 		this.clearScene();
 		this.camera = this.setupCamera(this.sceneConfig.cameraConfig);
 		this.controls = this.setupControls(this.camera, this.renderer, this.sceneConfig.controlsConfig);
 		this.lights = [];
 		this.setupLights(this.sceneConfig.lightsConfig);
-		this.animMgr = new AnimationManager(this.controls);
-		this.modelsLoader = new ModelsLoader(this.scene, this.sceneConfig, this.animMgr);
+		this.animMxr = new AnimationMixer(this.controls);
+		this.modelsLoader = new ModelsLoader(this.scene, this.sceneConfig, this.animMxr);
 	}
 
+	/**
+	 * Public mehod
+	 * 既存インスタンスの値のみを変更
+	 */
 	refreshScene() {
 		this.clearScene();
-		// カメラの位置や向きをリセット
 		const { position, lookAt } = this.sceneConfig.cameraConfig;
 		this.camera.position.copy(position);
 		this.camera.lookAt(lookAt);
-
-		// ライトをリフレッシュ
 		this.lights.forEach(light => {
 			this.scene.remove(light);
 		});
 		this.setupLights(this.sceneConfig.lightsConfig);
-
-		// シーン内の特定のオブジェクトをリセットまたは更新
 		this.modelsLoader.loadModels(); 
 	}
 	
