@@ -6,6 +6,7 @@
  */
 import * as THREE from 'three';
 import BackgoundSceneConfig from './config/BackgoundSceneConfig';
+import GameSceneConfig from './config/GameSceneConfig';
 import SceneSetup from './SceneSetup';
 import ControlsGUI from './ControlsGUI';
 import ModelsLoader from './ModelsLoader';
@@ -27,50 +28,52 @@ class RenderManager {
 	 * @description
 	 * - 注: コンストラクタの呼び出しは即座に完了するが、ループはアプリケーションのライフサイクルに沿って継続
 	 */
-	constructor(){
-		this.backgroundSceneConfig = new BackgoundSceneConfig();
-		this.backgroundAnimMgr = new AnimationManager();
-		this.buildScene(
-			this.backgroundSceneConfig,
-			this.backgroundAnimMgr
-		);
+	constructor() {
+		this.setupBackgroundScene();
+		this.setupGameScene();
 		
-		// this.gameSceneConfig = new GameSceneConfig();
-		// this.gameAnimMgr = new AnimationManager();
-		// this.buildScene(
-		// 	this.gameSceneConfig, 
-		// 	this.backgroundAnimMgr
-		// );
-	}
-
-	buildScene(sceneConfig, animMgr) {
-		this.scene = new THREE.Scene();
-		this.sceneSetup = new SceneSetup(this.scene, sceneConfig);
-		
-		this.setupScene();
-
-		const modelsLoader = new ModelsLoader(this.scene, sceneConfig, animMgr);
-		modelsLoader.loadModels();
-		
-		// TODO_ft: dev用GUI
-		this.gui = new lil.GUI();
-		const contorolsGUI = new ControlsGUI(this.scene, this.gui, this.camera);
-		contorolsGUI.setupControlsGUI();
-		// 
 		this.startAnimationLoop();
 	}
-	/**　
-	 * Private method
-	 * @description メソッドの実装は SceneSetup.ts
-	 */
-	setupScene(){
-		/** @type {THREE.PerspectiveCamera} */
-		this.camera = 	this.sceneSetup.setupCamera();
-		/** @type {THREE.WebGLRenderer} */
-		this.renderer = this.sceneSetup.setupRenderer();
-		/** @type {OrbitControls} */
-		this.controls = this.sceneSetup.setupControls(this.camera, this.renderer);
-		this.sceneSetup.setupLights();
+
+	setupBackgroundScene() {
+		const config = new BackgoundSceneConfig();
+		this.backgroundScene = new THREE.Scene();
+		const sceneSetup = new SceneSetup(this.backgroundScene, config);
+		this.backgroundCamera = sceneSetup.setupCamera();
+		this.renderer = sceneSetup.setupRenderer(); // 共有レンダラー
+		this.backgroundControls = sceneSetup.setupControls(this.backgroundCamera, this.renderer);
+		sceneSetup.setupLights();
+		this.backgroundAnimMgr = new AnimationManager(
+			this.renderer, 
+			this.backgroundScene, 
+			this.backgroundCamera, 
+			this.backgroundControls
+		);
+		const modelsLoader = new ModelsLoader(this.backgroundScene, config, this.backgroundAnimMgr);
+		modelsLoader.loadModels();
+		// TODO_ft: dev用GUI
+		this.gui = new lil.GUI();
+		const contorolsGUI = new ControlsGUI(this.backgroundScene, this.gui, this.backgroundCamera);
+		contorolsGUI.setupControlsGUI();
+		// 
+
+	}
+
+	setupGameScene() {
+		const config = new GameSceneConfig();
+		this.gameScene = new THREE.Scene();
+		const sceneSetup = new SceneSetup(this.gameScene, config);
+		this.gameCamera = sceneSetup.setupCamera();
+		this.gameControls = sceneSetup.setupControls(this.gameCamera, this.renderer);
+		sceneSetup.setupLights();
+		this.gameAnimMgr = new AnimationManager(
+			this.renderer, 
+			this.gameScene, 
+			this.gameCamera, 
+			this.gameControls
+		);
+		const modelsLoader = new ModelsLoader(this.gameScene, config, this.gameAnimMgr);
+		modelsLoader.loadModels();
 	}
 
 	/**
@@ -94,22 +97,18 @@ class RenderManager {
 	 */
 	startAnimationLoop() {
 		const animate = () => {
-			// 次のフレームでanimateを再び呼び出す
-			// 非同期。ブロックされない。requestAnimationFrame()の終了を待たずに進む
 			requestAnimationFrame(animate);
-			// 状態を更新
-			this.backgroundAnimMgr.update();
-			// this.gameAnimMgr.update();
-
-			// シーンを描画
 			this.renderer.clear();
-			this.renderer.render(this.scene, this.camera);
-			// this.renderer.clearDepth();
-			// this.renderer.render(this.gameScene, this.gameCamera);
-		}
-		// 初回の呼び出し
+			this.backgroundAnimMgr.update();
+			this.gameAnimMgr.update();
+
+			this.renderer.render(this.backgroundScene, this.backgroundCamera);
+			this.renderer.clearDepth();
+			this.renderer.render(this.gameScene, this.gameCamera);
+		};
 		animate();
 	}
+	
 	/** Public method*/
 	static main() {
 		new RenderManager();

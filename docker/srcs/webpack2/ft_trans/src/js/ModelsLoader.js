@@ -3,8 +3,7 @@
 import * as THREE from 'three';
 // GLTFフォーマットの3Dモデルをロードするための特定のローダーをインポート。
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-// import SceneConfig from '../SceneConfig';
-// import AnimationManager from './AnimationManager'
+
 /**
  * ModelsLoader クラス:
  * 役割・機能: 3Dモデルをロードし、設定されたアニメーションとともにシーンに追加する
@@ -33,10 +32,9 @@ class ModelsLoader {
 	 * forEach(): range-based for loop. コレクションの各要素に対して操作
 	 */
 	loadModels(){
-		// if (!this.sceneConfig.modelsConfig) {
 		if (!this.sceneConfig || !this.sceneConfig.modelsConfig) {
 			console.error('modelsConfig is undefined:', this.sceneConfig.modelsConfig);
-			return; // Stop execution if modelsConfig is not available
+			return;
 		}
 		this.sceneConfig.modelsConfig.forEach(modelsConfig => {
 			let defaultAnimation;

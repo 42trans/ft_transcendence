@@ -43,6 +43,8 @@ class SceneSetup{
 			alpha: config.alpha,
 		};
 		const rend = new THREE.WebGLRenderer(rendererOptions);
+		rend.autoClear = false; // 必須
+		rend.setClearColor(0x000000, 0); // 背景を透明に
 		rend.setSize(window.innerWidth, window.innerHeight);
 		
 		// 特定のdivにレンダラーを追加 （index.htmlで設定したthreejs-canvas-container）
