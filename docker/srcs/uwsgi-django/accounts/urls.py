@@ -11,6 +11,7 @@ from accounts.views.oauth import OAuthWith42
 from accounts.views.two_factor_auth import Disable2FaView
 from accounts.views.two_factor_auth import Enable2FaTemplateView, Enable2FaAPIView
 from accounts.views.two_factor_auth import Verify2FaTepmlateView, Verify2FaAPIView
+from accounts.views.jwt import JWTRefreshView
 
 app_name = 'accounts'
 
@@ -37,4 +38,6 @@ urlpatterns = [
     path('api/user/edit-profile/', EditUserProfileAPIView.as_view(), name='api_edit_profile'),
     path('api/enable_2fa/', Enable2FaAPIView.as_view(), name='api_enable_2fa'),
     path('api/verify_2fa/', Verify2FaAPIView.as_view(), name='api_verify_2fa'),
+
+    path('api/token/refresh/', JWTRefreshView.as_view(), name='api_token_refresh'),
 ]

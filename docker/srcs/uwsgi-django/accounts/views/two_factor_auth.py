@@ -28,7 +28,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from accounts.forms import Enable2FAForm, Verify2FAForm
 from accounts.models import CustomUser, UserManager
-from accounts.views.jwt import response_with_jwt, get_jwt_response
+from accounts.views.jwt import get_jwt_response
 
 
 class Enable2FaTemplateView(TemplateView):

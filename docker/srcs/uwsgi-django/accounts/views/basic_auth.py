@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 
 from accounts.forms import SignupForm, LoginForm
 from accounts.models import CustomUser, UserManager
-from accounts.views.jwt import response_with_jwt, get_jwt_response
+from accounts.views.jwt import get_jwt_response
 
 
 class SignupTemplateView(View):
