@@ -130,8 +130,12 @@ class LogoutAPIView(APIView):
         response = JsonResponse(data, status=200)
 
         self._del_jwt(response)
+        self._del_sesisons(request)
         return response
 
     def _del_jwt(self, response):
         response.delete_cookie('Access-Token')
         response.delete_cookie('Refresh-Token')
+
+    def _del_sesisons(self, request):
+        request.session.flush()

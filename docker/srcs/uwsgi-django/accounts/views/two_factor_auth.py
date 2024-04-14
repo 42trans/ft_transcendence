@@ -196,7 +196,7 @@ class Verify2FaAPIView(APIView):
         user, devices = self._get_user_and_devices(request)
         if user is None:
             data = {
-                'error': 'No valid session found.',
+                'error': 'No valid session found',
                 'redirect': '/accounts/login/',
             }
             return Response(data, status=401)
@@ -219,58 +219,6 @@ class Verify2FaAPIView(APIView):
     def _get_user_and_devices(self, request):
         tmp_user_id = request.session.get('tmp_auth_user_id')
 
-        if tmp_user_id is None:
-            user = None
-            devices = []
-        else:
-            User = get_user_model()
-            try:
-                user = User.objects.get(id=tmp_user_id)
-                devices = list(devices_for_user(user, confirmed=True))
-            except User.DoesNotExist:
-                user = None
-                devices = []
-        return user, devices
-
-
-# todo: JWT認証への切り替えで不要に。testなどの呼び出しを変更後、削除予定
-class Verify2FaView(View):
-    template_name = 'verify/verify_2fa.html'
-    login_page_path = 'accounts:login'
-    authenticated_redirect_to = "/pong/"
-
-    def get(self, request, *args, **kwargs):
-        form = Verify2FAForm()
-        user, _ = self._get_user_and_devices(request)
-
-        if user is None or user.enable_2fa is False:
-            return redirect(to=self.login_page_path)
-
-        param = {
-            'form': form,
-        }
-        return render(request, self.template_name, param)
-
-    def post(self, request, *args, **kwargs):
-        user, devices = self._get_user_and_devices(request)
-        if user is None or user.enable_2fa is False:
-            return redirect(to=self.login_page_path)
-
-        form = Verify2FAForm(request.POST, devices=devices)
-        if form.is_valid():
-            login(request, user)
-            del request.session['tmp_auth_user_id']
-            return response_with_jwt(user, self.authenticated_redirect_to)
-
-        else:
-            form.add_error(None, 'Invalid token')
-            param = {
-                'form': form,
-            }
-            return render(request, self.template_name, param)
-
-    def _get_user_and_devices(self, request):
-        tmp_user_id = request.session.get('tmp_auth_user_id')
         if tmp_user_id is None:
             user = None
             devices = []
