@@ -6,10 +6,13 @@
  */
 
 import * as THREE from 'three';
+import BaseSceneConfig from './BaseSceneConfig.js'
 
-class BackgoundSceneConfig {
+class BackgoundSceneConfig extends BaseSceneConfig {
 
 	constructor() {
+		super();
+
 		/** @type {{ fov: number, aspect: number, near: number, far: number, position: THREE.Vector3, lookAt: THREE.Vector3 }} */
 		this.cameraConfig = {
 			fov: 70,
