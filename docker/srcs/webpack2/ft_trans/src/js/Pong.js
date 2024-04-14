@@ -4,6 +4,7 @@
  */
 import BackgoundSceneConfig from './config/BackgoundSceneConfig';
 import GameSceneConfig from './config/GameSceneConfig';
+import EffectsSceneConfig from './config/EffectsSceneConfig';
 import RendererManager from './RendererManager'
 import SceneManager from './SceneManager';
 import GameStateManager from './GameStateManager'
@@ -35,6 +36,7 @@ class Pong {
 
 	setupScenesManager() {
 		this.gameSceneManager = new SceneManager(new GameSceneConfig(), this.renderer);
+		this.effectsSceneManager = new SceneManager(new EffectsSceneConfig(), this.renderer);
 		// 必要ならシーンを追加する。UI用,演出用など
 		// this.backgroundSceneManager = new SceneManager(new BackgoundSceneConfig(), this.renderer);
 	}

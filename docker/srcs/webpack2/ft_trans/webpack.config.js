@@ -8,7 +8,8 @@ module.exports = {
 	mode: 'development',
 
 	// メインとなるJavaScriptファイル（エントリーポイント）
-	entry: './src/index.js',
+	entry: './src/main.js',
+	// entry: './src/index.js',
 
 	output: {
 		//  出力ファイルのディレクトリ名

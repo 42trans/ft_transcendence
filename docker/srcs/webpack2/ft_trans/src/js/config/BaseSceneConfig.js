@@ -10,7 +10,7 @@ class BaseConfig {
 		this.cameraConfig = {};
 		this.rendererConfig = {};
 		this.controlsConfig = {};
-		this.lightsConfig = [];
+		// this.lightsConfig = [];
 		// this.modelsConfig = [];
 		// this.animationsConfig = [];
 	}

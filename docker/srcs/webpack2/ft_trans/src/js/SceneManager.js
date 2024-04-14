@@ -22,6 +22,15 @@ class SceneManager{
 		this.initializeScene();
 	}
 
+	update() {
+		// 例えば、シーン内のすべての子オブジェクトに対して update メソッドがあれば呼び出す
+		this.scene.traverse((object) => {
+			if (object.update instanceof Function) {
+				object.update();
+			}
+		});
+	}
+
 	clearScene() {
 		while (this.scene.children.length > 0) {
 			const object = this.scene.children.pop();
@@ -103,6 +112,10 @@ class SceneManager{
 	}
 
 	setupLights(lightsConfig) {
+		if (!lightsConfig || lightsConfig.length === 0) {
+			console.log("No lights configuration provided.");
+			return;
+		}
 		lightsConfig.forEach((config) => {
 			/** @type {THREE.Light} */
 			let light = null;
