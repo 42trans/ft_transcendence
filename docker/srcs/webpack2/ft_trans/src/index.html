@@ -1,14 +1,42 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta charset="UTF-8">
 	<title>game ft_trans three.js app</title>
 </head>
+<style>
+	html,
+	body {
+	  height: 100%;
+	}
+
+	body {
+	  background-color: #000000;
+	  overflow: hidden;
+	  margin: 0;
+	  cursor: move;
+	  font-family: sans-serif;
+	}
+	.annotation {
+	  position: absolute;
+	  bottom: 8px;
+	  right: 8px;
+	  margin: 0;
+	  padding: 4px 8px;
+	  font-size: 0.625rem;
+	  border-radius: 4px;
+	  color: white;
+	  background: rgb(0, 0, 0, 0.5);
+	  z-index: 1;
+	  user-select: none;
+	}
+  </style>
 <body>
 	<div id="info">
 		<p>
-			backgroundScene: 🐢カメ rotation: false<br>
-			GameScene: 🐝ハチ rotation: true
+			<!-- backgroundScene: 🐢カメ rotation: false<br>
+			GameScene: 🐝ハチ rotation: true -->
 		</p>
 	</div>
 	<div id="ui-layer">
@@ -17,6 +45,7 @@
 		<div id="threejs-canvas-container">
 			<!-- ここに自動的にthree.jsによって挿入する設定 -->
 		</div>
+		<canvas id="myCanvas"></canvas>
 		<script src="bundle.js"></script> 
 </body>
 </html>

@@ -72,6 +72,12 @@ class SceneManager{
 	 * 既存インスタンスの値のみを変更
 	 */
 	refreshScene() {
+		let temporaryObject = null;
+		// MagmaFlare オブジェクトを一時保存
+		if (this.type === 'effects') {
+			temporaryObject = this.scene.getObjectByName("MagmaFlare");
+		}
+
 		this.clearScene();
 		const { position, lookAt } = this.sceneConfig.cameraConfig;
 		this.camera.position.copy(position);
@@ -80,6 +86,12 @@ class SceneManager{
 			this.scene.remove(light);
 		});
 		this.setupLights(this.sceneConfig.lightsConfig);
+
+		// MagmaFlare を再追加
+		if (this.type === 'effects' && temporaryObject) {
+			this.scene.add(temporaryObject);
+		}
+
 		this.modelsLoader.loadModels(); 
 	}
 	

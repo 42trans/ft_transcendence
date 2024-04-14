@@ -12,8 +12,8 @@ class MainMenuState extends BaseGameState {
 		console.log("Entering MainMenu state");
 		this.Pong.renderer.clear();
 
-		console.log("Camera Position:", this.Pong.gameSceneManager.camera.position);
-		console.log("Camera LookAt:", this.Pong.gameSceneManager.camera.lookAt);
+		// console.log("Camera Position:", this.Pong.gameSceneManager.camera.position);
+		// console.log("Camera LookAt:", this.Pong.gameSceneManager.camera.lookAt);
 
 		this.Pong.gameSceneManager.refreshScene();
 	}

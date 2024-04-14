@@ -1,4 +1,7 @@
 
+import { MagmaFlare } from './effect/MagmaFlare'
+
+
 /**
  * ブラウザのフレーム更新タイミングに合わせて自身を再帰的に呼び出し、連続したアニメーションフレームを生成
  * 次の画面描画タイミングで呼び出される。ループは非同期, ブロッキングしない
@@ -10,9 +13,11 @@
  * - render(): シーンとカメラの現在の状態をもとに画面を描画。rendererは全scene共通(インスタンスは一つだけ)
  */
 class AnimationLoop {
-	constructor(gameStateManager, renderer) {
-		this.gameStateManager = gameStateManager;
-		this.renderer = renderer;
+	constructor(pong) {
+		this.gameStateManager = pong.gameStateManager;
+		this.effectsSceneManager = pong.effectsSceneManager;
+		this.renderer = pong.renderer;
+		
 	}
 
 	start() {
@@ -26,6 +31,14 @@ class AnimationLoop {
 
 	update() {
 		this.gameStateManager.update();
+		// SceneManager が持つ MagmaFlare の更新
+		this.effectsSceneManager.scene.traverse((object) => {
+			if (object instanceof MagmaFlare) {
+				object.update();
+				// console.log("m up");
+			}
+			// console.log(object.name, object);
+		});
 	}
 
 	render() {

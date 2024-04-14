@@ -23,7 +23,7 @@ constructor() {
 	this.add(flare);
 	this._flareList.push(flare);
 	}
-	console.log("FlareEmitter initialized");
+	// console.log("FlareEmitter initialized");
 }
 
 /**
@@ -33,6 +33,6 @@ update() {
 	this._flareList.forEach((flare) => {
 		flare.update();
 	});
-	console.log("FlareEmitter updated");
+	// console.log("FlareEmitter updated");
 }
 }

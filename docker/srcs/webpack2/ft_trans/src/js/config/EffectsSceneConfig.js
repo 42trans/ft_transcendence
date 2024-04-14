@@ -17,9 +17,9 @@ class EffectsSceneConfig extends BaseSceneConfig{
 		this.cameraConfig = {
 			fov: 70,
 			aspect: window.innerWidth / window.innerHeight,
-			near: 0,
+			near: 0.1,
 			far: 100,
-			position: new THREE.Vector2(8, 6, 0),
+			position: new THREE.Vector3(0, 0, 5),
 			lookAt: new THREE.Vector3(0, 0, 0),
 		};
 

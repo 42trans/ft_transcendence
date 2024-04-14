@@ -6,7 +6,7 @@ import * as THREE from 'three';
 class EntryGameState extends BaseGameState {
 	constructor (Pong){
 		super(Pong);
-		this._magmaFlare = new MagmaFlare();
+		// this._magmaFlare = new MagmaFlare();
 	}
 
 	enter() {
@@ -19,8 +19,8 @@ class EntryGameState extends BaseGameState {
 	// console.log("Camera Position:", this.Pong.effectsSceneManager.camera.position);
 	// console.log("Camera LookAt:", this.Pong.effectsSceneManager.camera.lookAt);
 
-		this._magmaFlare.position.y = 1;
-		this.Pong.effectsSceneManager.scene.add(this._magmaFlare);
+		// this._magmaFlare.position.y = 1;
+		// this.Pong.effectsSceneManager.scene.add(this._magmaFlare);
 		
 		// console.log("All objects in the scene:");
 		// this.Pong.gameSceneManager.scene.traverse((obj) => {
@@ -38,7 +38,7 @@ class EntryGameState extends BaseGameState {
 		}
 		this.Pong.renderer.clear();
 
-		this._magmaFlare.update();
+		// this._magmaFlare.update();
 		
 		this.Pong.effectsSceneManager.animMxr.update();
 	}

@@ -10,6 +10,7 @@ class GameStateManager {
 			entry: new EntryGameState(pong),
 			gameplay: new GamePlayState(pong)
 		};
+		// this.currentState = this.states.mainMenu;
 		this.currentState = this.states.entry;
 		this.currentState.enter();
 	}

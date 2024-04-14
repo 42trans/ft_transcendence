@@ -12,6 +12,8 @@ import AnimationLoop from './AnimationLoop'
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
+import { MagmaFlare } from './effect/MagmaFlare'
+
 
 /**
  * constructor: C++でいうとmain()のような役割。AnimationLoopは非同期で再帰し、アプリ終了まで残ります。
@@ -19,7 +21,7 @@ import ControlsGUI from './ControlsGUI';
  */
 class Pong {
 	//  コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
-	constructor() {
+	constructor() {		
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
 		this.renderer = RendererManager.getRenderer();
 		// 3D空間（カメラ、照明、オブジェクト）を担当
@@ -27,7 +29,7 @@ class Pong {
 		// ゲームの状態（待機、Play、終了）を担当
 		this.gameStateManager = new GameStateManager(this); 
 		// アニメーションの更新を担当
-		this.animationLoop = new AnimationLoop(this.gameStateManager, this.renderer);
+		this.animationLoop = new AnimationLoop(this);
 		this.animationLoop.start();
 		
 				//dev用
@@ -35,10 +37,14 @@ class Pong {
 	}
 
 	setupScenesManager() {
-		this.gameSceneManager = new SceneManager(new GameSceneConfig(), this.renderer);
-		this.effectsSceneManager = new SceneManager(new EffectsSceneConfig(), this.renderer);
+		this.gameSceneManager = new SceneManager(new GameSceneConfig(), this.renderer, 'game');
+		this.effectsSceneManager = new SceneManager(new EffectsSceneConfig(), this.renderer, 'effects');
 		// 必要ならシーンを追加する。UI用,演出用など
 		// this.backgroundSceneManager = new SceneManager(new BackgoundSceneConfig(), this.renderer);
+		const magmaFlare = new MagmaFlare();
+		magmaFlare.name = "MagmaFlare";
+		this.effectsSceneManager.scene.add(magmaFlare);
+		// console.log("MagmaFlare added to the scene", this.effectsSceneManager.scene);
 	}
 
 	// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除

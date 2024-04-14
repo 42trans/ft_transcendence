@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import auraTexture from '../../assets/ballTexture/aura.png';
+import auraTexture from '../../assets/ballTexture/bg.png';
+// import auraTexture from '../../assets/ballTexture/aura.png';
 
 /**
  * オーラ球クラスです。
