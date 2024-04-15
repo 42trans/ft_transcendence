@@ -46,7 +46,6 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
 	'django.contrib.admin',
 	'django.contrib.auth',
@@ -59,23 +58,10 @@ INSTALLED_APPS = [
 	'accounts',  # user_accounts
 	'django_otp',  						# 2fa
 	'django_otp.plugins.otp_totp',  	# 2fa
-	'django_otp.plugins.otp_hotp',  	# 2fa
 	'django_otp.plugins.otp_static',  	# 2fa
-	# 'django.contrib.sites',  # allauth
-	# 'allauth',  # allauth
-	# 'allauth.account',  # allauth
-	# 'allauth.socialaccount',  # allauth
-	# 'socialaccount.providers.ft',  # 42auth with allauth
 ]
 
 
-# allauth
-# SOCIALACCOUNT_PROVIDERS = {
-# 	'ft': {
-# 		'CLIENT_ID': get_env_variable('FT_UID'),
-# 		'SECRET': get_env_variable('FT_SECRET'),
-# 	}
-# }
 FT_CLIENT_ID = get_env_variable('FT_UID')
 FT_SECRET = get_env_variable('FT_SECRET')
 
@@ -95,7 +81,6 @@ MIDDLEWARE = [
 	'django_prometheus.middleware.PrometheusAfterMiddleware',
 	# --------------------
 	'django_otp.middleware.OTPMiddleware',  # 2fa
-	# 'allauth.account.middleware.AccountMiddleware',  # allauth
 	'accounts.middleware.JWTAuthenticationMiddleware',  # jwt
 ]
 
@@ -103,9 +88,6 @@ MIDDLEWARE = [
 AUTHENTICATION_BACKENDS = [
 	'accounts.authentication_backend.JWTAuthenticationBackend',
 	'django.contrib.auth.backends.ModelBackend',  # Optional
-	# 'django_otp.backends.OTPAuthenticationBackend',  # 2fa
-# 	'django.contrib.auth.backends.ModelBackend',  # allauth
-# 	'allauth.account.auth_backends.AuthenticationBackend',  # allauth
 ]
 
 
@@ -141,7 +123,6 @@ TEMPLATES = [
 				'django.template.context_processors.request',
 				'django.contrib.auth.context_processors.auth',
 				'django.contrib.messages.context_processors.messages',
-				# 'django.template.context_processors.request',  # allauth
 			],
 		},
 	},
@@ -164,7 +145,6 @@ WSGI_APPLICATION = 'trans_pj.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
 
 
 DATABASES = {
@@ -292,24 +272,6 @@ LOGGING = {
 },
 }
 
-
-# # allauth setting --------------------------------------------------------------
-# ## sitesフレームワーク用のサイトID
-# SITE_ID = 1
-#
-# ## ログイン・ログアウト時のリダイレクト先
-# LOGIN_REDIRECT_URL = '/pong/'
-# ACCOUNT_LOGOUT_REDIRECT_URL = '/pong/'
-#
-# ## 認証方式を「メルアドとパスワード」に設定
-# ACCOUNT_AUTHENTICATION_METHOD = 'email'
-# ## ユーザ名は使用しない
-# ACCOUNT_USERNAME_REQUIRED = False
-#
-# ## ユーザ登録時に確認メールを送信するか(none=送信しない, mandatory=送信する)
-# ACCOUNT_EMAIL_VERIFICATION = 'none'
-# ACCOUNT_EMAIL_REQUIRED = True   # ユーザ登録にメルアド必須にする
-# # allauth setting --------------------------------------------------------------
 
 # JWT
 REST_FRAMEWORK = {
