@@ -141,12 +141,12 @@ reset_logstash:
 # -----------------------------------------------
 .PHONY: docker_rm
 docker_rm:
-	@if [ -n "$$(docker ps -qa)" ]; then docker stop $$(docker ps -qa); fi
-	@if [ -n "$$(docker ps -qa)" ]; then docker rm -f $$(docker ps -qa); fi
-	@if [ -n "$$(docker images -qa)" ]; then docker rmi -f $$(docker images -qa); fi
-	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
-	@docker network rm $$(docker network ls -q) 2>/dev/null || true
-	@docker volume prune -f
+	-@docker stop $$(docker ps -qa) 2>/dev/null
+	-@docker rm -f $$(docker ps -qa) 2>/dev/null
+	-@docker rmi -f $$(docker images -qa) 2>/dev/null
+	-@docker network rm $$(docker network ls -q) 2>/dev/null
+	-@docker volume rm $$(docker volume ls -q) 2>/dev/null
+	-@docker system prune -af --volumes
 
 .PHONY: remove_mount_volume_mac
 remove_mount_volume_mac:
