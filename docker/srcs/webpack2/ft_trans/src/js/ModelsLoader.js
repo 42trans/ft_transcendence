@@ -13,16 +13,15 @@ class ModelsLoader {
 	 * コンストラクタの引数にアクセス修飾子（private, public, protected）を直接付けることにより、プロパティの宣言と代入を一行で行う
 	 * @param scene THREE.Scene オブジェクト - 3Dオブジェクトが表示される空間
 	 * @param sceneConfig 設定情報を含むオブジェクト
-	 * @param animMxr アニメーションを管理するオブジェクト
 	*/
 	constructor (
 		scene,
 		sceneConfig,
-		animMxr
+		globalAnimationMixer
 	) { 
 		this.scene = scene;
 		this.sceneConfig = sceneConfig,
-		this.animMxr = animMxr
+		this.globalAnimationMixer = globalAnimationMixer;
 		this.loader = new GLTFLoader();
 		this.textureLoader = new THREE.TextureLoader();
 		this.modelCache = new Map(); 
@@ -34,7 +33,6 @@ class ModelsLoader {
 	 */
 	loadModels(){
 		if (!this.sceneConfig || !this.sceneConfig.modelsConfig) {
-			console.error('modelsConfig is undefined:', this.sceneConfig.modelsConfig);
 			return;
 		}
 		this.sceneConfig.modelsConfig.forEach(modelsConfig => {
@@ -209,6 +207,9 @@ class ModelsLoader {
 		gltf, 
 		defaultAnimation
 	) {
+		if (!gltf.animations || gltf.animations.length === 0) {
+			return;
+		}
 		const mixer = new THREE.AnimationMixer(model);
 		if (gltf.animations.length > 0) {
 			let animationToPlay;
@@ -231,11 +232,11 @@ class ModelsLoader {
 			if (animationToPlay) {
 				const action = mixer.clipAction(animationToPlay);
 				action.play();
-				console.log(`Playing animation: ${animationToPlay.name}`);
-				this.animMxr.setMixer(mixer);
-			} else {
-				console.warn(`Default animation '${defaultAnimation}' not found. Playing first animation: ${gltf.animations[0].name}`);
-			}
+				if (this.globalAnimationMixer) {
+					this.globalAnimationMixer.addMixer(mixer);
+					console.log("Mixerに追加");
+				} 
+			} 
 		} else {
 			console.warn('No animations found in the model' + model.name);
 		}

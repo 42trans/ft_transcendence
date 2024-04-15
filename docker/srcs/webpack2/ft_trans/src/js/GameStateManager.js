@@ -16,17 +16,25 @@ class GameStateManager {
 	}
 
 	changeState(newState) {
-		this.currentState.exit();
+		if (this.currentState) {
+			this.currentState.exit();
+		}
 		this.currentState = this.states[newState];
 		this.currentState.enter();
 	}
 
 	update() {
-		this.currentState.update();
+		if (this.currentState) {
+			this.currentState.update();
+		}
+		this.pong.sceneAggregate.updateAllScenes();
 	}
 
 	render() {
-		this.currentState.render();
+		if (this.currentState) {
+			this.currentState.render();
+		}
+		this.pong.sceneAggregate.renderAllScenes(this.pong.renderer);
 	}
 }
 

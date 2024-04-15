@@ -8,7 +8,7 @@
 import * as THREE from 'three';
 import BaseSceneConfig from './BaseSceneConfig.js'
 
-class BackgoundSceneConfig extends BaseSceneConfig {
+class BackgroundSceneConfig extends BaseSceneConfig {
 
 	constructor() {
 		super();
@@ -40,7 +40,7 @@ class BackgoundSceneConfig extends BaseSceneConfig {
 			maxDistance: 100,
 			rotateSpeed: 1.0,
 			zoomSpeed: 1.2,
-			autoRotate: false,
+			autoRotate: true,
 			autoRotateSpeed: 15.0,
 		};
 
@@ -105,35 +105,35 @@ class BackgoundSceneConfig extends BaseSceneConfig {
 			// 	name: 'suzumebachi2',
 			// 	defaultAnimation: 'idle',
 			// },
-			// {
-			// 	path: 'assets/vespa_mandarinia/scene.gltf',
-			// 	initialPosition: new THREE.Vector3(1, 3, 0),
-			// 	initialScale: new THREE.Vector3(1, 1, 1),
-			// 	initialRotation: new THREE.Euler(0, 1, 0),
-			// 	name: 'vespa_mandarinia',
-			// 	defaultAnimation: 'fly',
-			// 	textures: {
-			// 		baseColor: 'assets/vespa_mandarinia/textures/material_baseColor.png',
-			// 		normalMap: 'assets/vespa_mandarinia/textures/material_clearcoat_normal.png',
-			// 		roughnessMap: 'assets/vespa_mandarinia/textures/material_metallicRoughness.png',
-			// 		specularMap: 'assets/vespa_mandarinia/textures/material_specularf0.png',
-			// 	}
-			// },
 			{
-				path: '../assets/model_47a_-_loggerhead_sea_turtle/scene.gltf',
-				initialPosition: new THREE.Vector3(0, 0, 0),
-				initialScale: new THREE.Vector3(0.1, 0.1, 0.1),
-				initialRotation: new THREE.Euler(0, 2.8, 0),
-				name: 'kame',
-				defaultAnimation: 'swim',
+				path: 'assets/vespa_mandarinia/scene.gltf',
+				initialPosition: new THREE.Vector3(1, 3, 0),
+				initialScale: new THREE.Vector3(1, 1, 1),
+				initialRotation: new THREE.Euler(0, 1, 0),
+				name: 'vespa_mandarinia',
+				defaultAnimation: 'fly',
 				textures: {
-					baseColor: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_diffuse.png',
-					normalMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_normal.jpeg',
-					// roughnessMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_specularGlossiness.png',
-					specularMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_specularGlossiness.png',
-
+					baseColor: 'assets/vespa_mandarinia/textures/material_baseColor.png',
+					normalMap: 'assets/vespa_mandarinia/textures/material_clearcoat_normal.png',
+					roughnessMap: 'assets/vespa_mandarinia/textures/material_metallicRoughness.png',
+					specularMap: 'assets/vespa_mandarinia/textures/material_specularf0.png',
 				}
 			},
+			// {
+			// 	path: '../assets/model_47a_-_loggerhead_sea_turtle/scene.gltf',
+			// 	initialPosition: new THREE.Vector3(0, 0, 0),
+			// 	initialScale: new THREE.Vector3(0.1, 0.1, 0.1),
+			// 	initialRotation: new THREE.Euler(0, 2.8, 0),
+			// 	name: 'kame',
+			// 	defaultAnimation: 'swim',
+			// 	textures: {
+			// 		baseColor: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_diffuse.png',
+			// 		normalMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_normal.jpeg',
+			// 		// roughnessMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_specularGlossiness.png',
+			// 		specularMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_specularGlossiness.png',
+
+			// 	}
+			// },
 		];
 
 		/** @type {Array<{model: string, autoplay: boolean}>} */
@@ -146,17 +146,17 @@ class BackgoundSceneConfig extends BaseSceneConfig {
 			// 	model: 'suzumebachi2',
 			// 	autoplay: true
 			// },
-			// {
-			// 	model: 'suzumebachi3',
-			// 	autoplay: true
-			// },
 			{
-				model: 'kame',
+				model: 'suzumebachi3',
 				autoplay: true
 			},
+			// {
+			// 	model: 'kame',
+			// 	autoplay: true
+			// },
 		];
 	}
 
 }
 
-export default BackgoundSceneConfig;
+export default BackgroundSceneConfig;

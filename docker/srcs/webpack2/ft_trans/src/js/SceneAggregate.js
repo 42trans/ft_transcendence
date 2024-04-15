@@ -1,19 +1,29 @@
 class SceneAggregate {
-	constructor() {
+	constructor(globalAnimationMixer) {
 		this.sceneManagers = [];
+		this.globalAnimationMixer = globalAnimationMixer;
 	}
 
 	addSceneManager(sceneManager) {
 		this.sceneManagers.push(sceneManager);
 	}
 
+	// 全シーン、全アニメーションの更新
+	// すべてのシーンの update メソッドを呼び出し、全体のアニメーション状態を更新。
 	updateAllScenes() {
-		this.sceneManagers.forEach(manager => manager.update());
+		this.sceneManagers.forEach(sceneManager => {
+			sceneManager.update();
+		});
+		this.globalAnimationMixer.update(); 
 	}
 
+	// 全シーンをレンダリング
 	renderAllScenes(renderer) {
-		this.sceneManagers.forEach(manager => {
-			renderer.render(manager.scene, manager.camera);
+		renderer.clear();
+		this.sceneManagers.forEach((manager, index) => {
+			if (index > 0) {
+				renderer.render(manager.scene, manager.camera);
+			}
 		});
 	}
 }

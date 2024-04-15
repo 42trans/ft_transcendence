@@ -39,9 +39,10 @@ class GameSceneConfig extends BaseSceneConfig{
 			minDistance: 1,
 			maxDistance: 100,
 			rotateSpeed: 1.0,
+			enableZoom: false,
 			zoomSpeed: 1.2,
-			autoRotate: true,
-			autoRotateSpeed: 15.0,
+			autoRotate: false,
+			autoRotateSpeed: 5.0,
 		};
 
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */
@@ -93,7 +94,7 @@ class GameSceneConfig extends BaseSceneConfig{
 		this.modelsConfig = [
 			{
 				path: '../assets/vespa_mandarinia/scene.gltf',
-				initialPosition: new THREE.Vector3(0, 2, 0),
+				initialPosition: new THREE.Vector3(4, 4, -5),
 				initialScale: new THREE.Vector3(1, 1, 1),
 				name: 'suzumebachi',
 				defaultAnimation: 'Hover',

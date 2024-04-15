@@ -38,7 +38,7 @@ class EffectsSceneConfig extends BaseSceneConfig{
 			minPolarAngle: Math.PI / 8,
 			maxPolarAngle: Math.PI / 2,
 			minDistance: 3,
-			maxDistance: 1000,
+			maxDistance: 100,
 			rotateSpeed: 1.0,
 			zoomSpeed: 1.2,
 			autoRotate: true,
@@ -50,19 +50,19 @@ class EffectsSceneConfig extends BaseSceneConfig{
 
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */
 		this.lightsConfig = [
-			// {
-			// 	type: 'AmbientLight',
-			// 	color: 0x999999,
-			// 	intensity: 0.31,
-			// 	name: 'ambientLight',
-			// },
-			// {
-			// 	type: 'DirectionalLight',
-			// 	color: 0xffffff,
-			// 	intensity: 1,
-			// 	position: new THREE.Vector3(50, 50, -50),
-			// 	name: 'directionalLight',
-			// },
+			{
+				type: 'AmbientLight',
+				color: 0x999999,
+				intensity: 0.31,
+				name: 'ambientLight',
+			},
+			{
+				type: 'DirectionalLight',
+				color: 0xffffff,
+				intensity: 1,
+				position: new THREE.Vector3(50, 50, -50),
+				name: 'directionalLight',
+			},
 			// {
 			// 	type: 'HemisphereLight',
 			// 	skyColor: 0xffffff,
