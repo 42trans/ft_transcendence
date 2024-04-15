@@ -39,8 +39,9 @@ class BackgroundSceneConfig extends BaseSceneConfig {
 			minDistance: 1,
 			maxDistance: 100,
 			rotateSpeed: 1.0,
+			enableZoom: false,
 			zoomSpeed: 1.2,
-			autoRotate: true,
+			autoRotate: false, 
 			autoRotateSpeed: 15.0,
 		};
 
@@ -54,7 +55,7 @@ class BackgroundSceneConfig extends BaseSceneConfig {
 			},
 			{
 				type: 'DirectionalLight',
-				color: 0xffffff,
+				color: 0xa41832,
 				intensity: 1,
 				position: new THREE.Vector3(50, 50, -50),
 				name: 'directionalLight',
@@ -69,11 +70,12 @@ class BackgroundSceneConfig extends BaseSceneConfig {
 			},
 			{
 				type: 'PointLight',
-				color: 0x4b27ce,
-				intensity: 1.5,
+				color: new THREE.Color(5, 30, 1),
+				// color: 0x4b27ce,
+				intensity: 0.05,
 				distance: 200,
 				decay: 0,
-				position: new THREE.Vector3(-6, -12, 9),
+				position: new THREE.Vector3(-2, -5, 3),
 				name: 'pointLight',
 			},
 			{
@@ -105,35 +107,35 @@ class BackgroundSceneConfig extends BaseSceneConfig {
 			// 	name: 'suzumebachi2',
 			// 	defaultAnimation: 'idle',
 			// },
-			{
-				path: 'assets/vespa_mandarinia/scene.gltf',
-				initialPosition: new THREE.Vector3(1, 3, 0),
-				initialScale: new THREE.Vector3(1, 1, 1),
-				initialRotation: new THREE.Euler(0, 1, 0),
-				name: 'vespa_mandarinia',
-				defaultAnimation: 'fly',
-				textures: {
-					baseColor: 'assets/vespa_mandarinia/textures/material_baseColor.png',
-					normalMap: 'assets/vespa_mandarinia/textures/material_clearcoat_normal.png',
-					roughnessMap: 'assets/vespa_mandarinia/textures/material_metallicRoughness.png',
-					specularMap: 'assets/vespa_mandarinia/textures/material_specularf0.png',
-				}
-			},
 			// {
-			// 	path: '../assets/model_47a_-_loggerhead_sea_turtle/scene.gltf',
-			// 	initialPosition: new THREE.Vector3(0, 0, 0),
-			// 	initialScale: new THREE.Vector3(0.1, 0.1, 0.1),
-			// 	initialRotation: new THREE.Euler(0, 2.8, 0),
-			// 	name: 'kame',
-			// 	defaultAnimation: 'swim',
+			// 	path: 'assets/vespa_mandarinia/scene.gltf',
+			// 	initialPosition: new THREE.Vector3(1, 3, 0),
+			// 	initialScale: new THREE.Vector3(1, 1, 1),
+			// 	initialRotation: new THREE.Euler(0, 1, 0),
+			// 	name: 'vespa_mandarinia',
+			// 	defaultAnimation: 'fly',
 			// 	textures: {
-			// 		baseColor: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_diffuse.png',
-			// 		normalMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_normal.jpeg',
-			// 		// roughnessMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_specularGlossiness.png',
-			// 		specularMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_specularGlossiness.png',
-
+			// 		baseColor: 'assets/vespa_mandarinia/textures/material_baseColor.png',
+			// 		normalMap: 'assets/vespa_mandarinia/textures/material_clearcoat_normal.png',
+			// 		roughnessMap: 'assets/vespa_mandarinia/textures/material_metallicRoughness.png',
+			// 		specularMap: 'assets/vespa_mandarinia/textures/material_specularf0.png',
 			// 	}
 			// },
+			{
+				path: '../assets/model_47a_-_loggerhead_sea_turtle/scene.gltf',
+				initialPosition: new THREE.Vector3(0, 0, 0),
+				initialScale: new THREE.Vector3(0.1, 0.1, 0.1),
+				initialRotation: new THREE.Euler(0, 2.8, 0),
+				name: 'kame',
+				defaultAnimation: 'swim',
+				textures: {
+					baseColor: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_diffuse.png',
+					normalMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_normal.jpeg',
+					// roughnessMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_specularGlossiness.png',
+					specularMap: 'assets/model_47a_-_loggerhead_sea_turtle/textures/body_specularGlossiness.png',
+
+				}
+			},
 		];
 
 		/** @type {Array<{model: string, autoplay: boolean}>} */
@@ -146,14 +148,14 @@ class BackgroundSceneConfig extends BaseSceneConfig {
 			// 	model: 'suzumebachi2',
 			// 	autoplay: true
 			// },
-			{
-				model: 'suzumebachi3',
-				autoplay: true
-			},
 			// {
-			// 	model: 'kame',
+			// 	model: 'suzumebachi3',
 			// 	autoplay: true
 			// },
+			{
+				model: 'kame',
+				autoplay: true
+			},
 		];
 	}
 

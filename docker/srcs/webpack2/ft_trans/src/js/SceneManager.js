@@ -28,16 +28,16 @@ class SceneManager{
 		this.initializeScene();
 		// シーンのタイプ（'game', 'effects', 'background'）
 		this.type = type; 
-		this.addSpecialEffects();
+		// this.addSpecialEffects();
 	}
 
-	addSpecialEffects() {
-		if (this.type === 'effects') {
-			const magmaFlare = new MagmaFlare();
-			magmaFlare.name = "MagmaFlare";
-			this.scene.add(magmaFlare);
-		}
-	}
+	// addSpecialEffects() {
+	// 	if (this.type === 'effects') {
+	// 		const magmaFlare = new MagmaFlare();
+	// 		magmaFlare.name = "MagmaFlare";
+	// 		this.scene.add(magmaFlare);
+	// 	}
+	// }
 
 	update() {
 		// 例えば、シーン内のすべての子オブジェクトに対して update メソッドがあれば呼び出す
@@ -78,7 +78,7 @@ class SceneManager{
 	 * インスタンスの作成を担当
 	 */
 	initializeScene() {
-		this.clearScene();
+		// this.clearScene();
 		this.camera = this.setupCamera(this.sceneConfig.cameraConfig);
 		this.controls = this.setupControls(this.camera, this.renderer, this.sceneConfig.controlsConfig);
 		this.lights = [];
@@ -93,11 +93,11 @@ class SceneManager{
 	 * 既存インスタンスの値のみを変更
 	 */
 	refreshScene() {
-		let temporaryObject = null;
-		// MagmaFlare オブジェクトを一時保存
-		if (this.type === 'effects') {
-			temporaryObject = this.scene.getObjectByName("MagmaFlare");
-		}
+		// let temporaryObject = null;
+		// // MagmaFlare オブジェクトを一時保存
+		// if (this.type === 'effects') {
+		// 	temporaryObject = this.scene.getObjectByName("MagmaFlare");
+		// }
 
 		this.clearScene();
 		const { position, lookAt } = this.sceneConfig.cameraConfig;
@@ -108,10 +108,10 @@ class SceneManager{
 		});
 		this.setupLights(this.sceneConfig.lightsConfig);
 
-		// MagmaFlare を再追加
-		if (this.type === 'effects' && temporaryObject) {
-			this.scene.add(temporaryObject);
-		}
+		// // MagmaFlare を再追加
+		// if (this.type === 'effects' && temporaryObject) {
+		// 	this.scene.add(temporaryObject);
+		// }
 
 		this.modelsLoader.loadModels(); 
 	}

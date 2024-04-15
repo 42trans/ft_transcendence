@@ -19,12 +19,14 @@ class SceneAggregate {
 
 	// 全シーンをレンダリング
 	renderAllScenes(renderer) {
-		renderer.clear();
+		// renderer.clear();
 		this.sceneManagers.forEach((manager, index) => {
-			if (index > 0) {
+			// if (index > 0) {
+				renderer.clearDepth();
 				renderer.render(manager.scene, manager.camera);
 			}
-		});
+		// }
+	);
 	}
 }
 

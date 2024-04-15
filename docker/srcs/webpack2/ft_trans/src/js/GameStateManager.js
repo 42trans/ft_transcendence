@@ -13,6 +13,14 @@ class GameStateManager {
 		// this.currentState = this.states.mainMenu;
 		this.currentState = this.states.entry;
 		this.currentState.enter();
+
+		// UIの設定
+		this.setupUI();
+	}
+
+	setupUI() {
+		const startButton = document.getElementById('startButton');
+		startButton.addEventListener('click', () => this.changeState('gameplay'));
 	}
 
 	changeState(newState) {

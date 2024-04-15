@@ -12,9 +12,13 @@ class EntryGameState extends BaseGameState {
 		// メインメニュー特有の初期化
 		console.log("Entering Entry state");
 
-		// this.Pong.backgroundSceneManager.refreshScene();
+		
+		this.Pong.backgroundSceneManager.refreshScene();
 		this.Pong.gameSceneManager.refreshScene();
-		this.Pong.effectsSceneManager.refreshScene();
+		// this.Pong.effectsSceneManager.refreshScene();
+		const magmaFlare = new MagmaFlare();
+		magmaFlare.name = "MagmaFlare";
+		this.Pong.effectsSceneManager.scene.add(magmaFlare);
 	}
 
 	update() {
