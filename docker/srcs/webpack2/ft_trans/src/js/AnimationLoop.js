@@ -1,7 +1,4 @@
 
-import { MagmaFlare } from './effect/MagmaFlare'
-
-
 /**
  * ブラウザのフレーム更新タイミングに合わせて自身を再帰的に呼び出し、連続したアニメーションフレームを生成
  * 次の画面描画タイミングで呼び出される。ループは非同期, ブロッキングしない
@@ -21,30 +18,10 @@ class AnimationLoop {
 	start() {
 		const animate = () => {
 			requestAnimationFrame(animate);
-			this.update();
-			this.render();
+			this.pong.update();
+			this.pong.render();
 		};
 		animate();
-	}
-
-	update() {
-		this.pong.gameStateManager.update();
-		this.pong.effectsSceneManager.update();
-		this.pong.backgroundSceneManager.update();
-	}
-
-	render() {
-		this.pong.renderer.clear();
-		// this.pong.gameStateManager.render();
-		this.renderScene(this.pong.gameSceneManager);
-		this.renderScene(this.pong.effectsSceneManager);
-		this.renderScene(this.pong.backgroundSceneManager);
-	}
-
-	renderScene(sceneManager) {
-		if (sceneManager.scene && sceneManager.camera) {
-			this.pong.renderer.render(sceneManager.scene, sceneManager.camera);
-		}
 	}
 }
 

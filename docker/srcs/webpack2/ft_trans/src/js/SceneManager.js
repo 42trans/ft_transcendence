@@ -21,6 +21,7 @@ class SceneManager{
 		this.sceneConfig = sceneConfig;
 		this.renderer = renderer;
 		this.scene = new THREE.Scene();
+		this.animMxr = new AnimationMixer(this.scene);
 		this.initializeScene();
 		this.type = type; // シーンのタイプ（'game', 'effects', 'background'など）
 		this.addSpecialEffects();
@@ -41,6 +42,10 @@ class SceneManager{
 				object.update();
 			}
 		});
+		this.animMxr.update();
+		if (this.controls) {
+			this.controls.update();
+		}
 	}
 
 	clearScene() {
@@ -75,7 +80,7 @@ class SceneManager{
 		this.controls = this.setupControls(this.camera, this.renderer, this.sceneConfig.controlsConfig);
 		this.lights = [];
 		this.setupLights(this.sceneConfig.lightsConfig);
-		this.animMxr = new AnimationMixer(this.scene);
+		
 		// this.animMxr = new AnimationMixer(this.controls);
 		this.modelsLoader = new ModelsLoader(this.scene, this.sceneConfig, this.animMxr);
 	}

@@ -41,10 +41,13 @@ class AnimationMixer {
 	 */
 	update() {
 		const delta = this.clock.getDelta();
-		this.mixers.forEach(mixer => mixer.update(delta));
-		if (this.controls) {
-			this.controls.update();
-		}
+		this.mixers.forEach(mixer => {
+			mixer.update(delta);
+		});
+	}
+	
+	clearMixers() {
+		this.mixers = [];
 	}
 }
 

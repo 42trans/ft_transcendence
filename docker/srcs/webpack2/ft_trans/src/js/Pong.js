@@ -7,6 +7,7 @@ import GameSceneConfig from './config/GameSceneConfig';
 import EffectsSceneConfig from './config/EffectsSceneConfig';
 import RendererManager from './RendererManager'
 import SceneManager from './SceneManager';
+import SceneAggregate from './SceneAggregate';
 import GameStateManager from './GameStateManager'
 import AnimationLoop from './AnimationLoop'
 //dev用GUI
@@ -23,6 +24,8 @@ class Pong {
 	constructor() {		
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
 		this.renderer = RendererManager.getRenderer();
+		// 複数のSceneを一元的に管理
+		this.sceneAggregate = new SceneAggregate();
 		// 3D空間（カメラ、照明、オブジェクト）を担当
 		this.setupScenesManager();
 		// ゲームの状態（待機、Play、終了）を担当
@@ -38,8 +41,18 @@ class Pong {
 	setupScenesManager() {
 		this.gameSceneManager = new SceneManager(new GameSceneConfig(), this.renderer, 'game');
 		this.effectsSceneManager = new SceneManager(new EffectsSceneConfig(), this.renderer, 'effects');
-		// 必要ならシーンを追加する。UI用,演出用など
 		this.backgroundSceneManager = new SceneManager(new BackgoundSceneConfig(), this.renderer);
+		this.sceneAggregate.addSceneManager(this.gameSceneManager);
+		this.sceneAggregate.addSceneManager(this.effectsSceneManager);
+		this.sceneAggregate.addSceneManager(this.backgroundSceneManager);
+	}
+
+	update() {
+		this.sceneAggregate.updateAllScenes();
+	}
+
+	render() {
+		this.sceneAggregate.renderAllScenes(this.renderer);
 	}
 
 	// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除

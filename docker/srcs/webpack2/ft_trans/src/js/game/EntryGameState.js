@@ -27,9 +27,7 @@ class EntryGameState extends BaseGameState {
 			return;
 		}
 		this.Pong.renderer.clear();
-
 		this.Pong.effectsSceneManager.update();
-		
 		this.Pong.effectsSceneManager.animMxr.update();
 	}
 
