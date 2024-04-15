@@ -4,6 +4,16 @@
 <head>
     <meta charset="utf-8">
     <title>edit profile</title>
+
+    <style>
+        .success-message {
+            color: blue;
+        }
+        .errorlist {
+            color: red;
+        }
+    </style>
+
 </head>
 <body>
 
@@ -17,7 +27,7 @@
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}
-        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        <li {% if message.tags %} class="{{ message.tags }} success-message"{% endif %}>{{ message }}</li>
         {% endfor %}
     </ul>
     {% endif %}
@@ -38,7 +48,13 @@
     <form method="post">
         {% csrf_token %}
         <h4>Change Password</h4>
-        {{ password_form.as_p }}
+        {% for field in password_form %}
+        <p>
+            {{ field.help_text }}
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+        </p>
+        {% endfor %}
         <button type="submit">change password</button>
     </form>
     {% endif %}

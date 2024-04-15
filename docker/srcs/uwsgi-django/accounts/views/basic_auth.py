@@ -1,18 +1,19 @@
 # accounts/views/basic_auth.py
 
+from django.contrib.auth import login, logout
 from django.views import View
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
+
 from accounts.forms import SignupForm, LoginForm
 
 
 class SignupView(View):
     signup_url = "accounts/signup.html"
-    pong_top_url = "/pong/"
+    authenticated_redirect_to = "/pong/"
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(to=self.pong_top_url)
+            return redirect(to=self.authenticated_redirect_to)
 
         form = SignupForm()
         param = {'form': form}
@@ -21,13 +22,13 @@ class SignupView(View):
 
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(to=self.pong_top_url)
+            return redirect(to=self.authenticated_redirect_to)
 
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect(to=self.pong_top_url)
+            return redirect(to=self.authenticated_redirect_to)
 
         param = {'form': form}
         return render(request, self.signup_url, param)
@@ -35,11 +36,11 @@ class SignupView(View):
 
 class LoginView(View):
     login_url = "accounts/login.html"
-    pong_top_url = "/pong/"
+    authenticated_redirect_to = "/pong/"
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(to=self.pong_top_url)
+            return redirect(to=self.authenticated_redirect_to)
 
         form = LoginForm()
         param = {'form': form}
@@ -48,14 +49,14 @@ class LoginView(View):
 
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(to=self.pong_top_url)
+            return redirect(to=self.authenticated_redirect_to)
 
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             if user:
                 login(request, user)
-                return redirect(to=self.pong_top_url)
+                return redirect(to=self.authenticated_redirect_to)
 
         param = {'form': form}
         return render(request, self.login_url, param)

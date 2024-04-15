@@ -16,6 +16,10 @@ def index(request):
 	grafana_port = os.getenv('GRAFANA_PORT', '3032')
 	kibana_port = os.getenv('KIBANA_PORT', '5601')
 
+	admin_name = os.getenv('DJANGO_SUPERUSER_USERNAME', 'admin')
+	admin_email = os.getenv('DJANGO_SUPERUSER_EMAIL', 'admin@example.com')
+	admin_pass = os.getenv('DJANGO_SUPERUSER_PASSWORD', 'admin01234')
+
 	# コンテキストとして渡す
 	context = {
 		'nginx_ssl_port': nginx_ssl_port,
@@ -24,6 +28,9 @@ def index(request):
 		'ptometheus_port': ptometheus_port,
 		'grafana_port': grafana_port,
 		'kibana_port': kibana_port,
+		'admin_name': admin_name,
+		'admin_email': admin_email,
+		'admin_pass': admin_pass,
 	}
 	return render(request, 'index.html', context)
 
