@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-class GlobalAnimationMixer {
+class AnimationMixersManager {
 	constructor() {
 		this.mixers = [];
 		 // クロックはグローバルで一つだけ持つ
@@ -23,4 +23,4 @@ class GlobalAnimationMixer {
 	}
 }
 
-export default GlobalAnimationMixer;
+export default AnimationMixersManager;

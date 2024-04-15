@@ -6,18 +6,18 @@ import BackgroundSceneConfig from './config/BackgroundSceneConfig';
 import GameSceneConfig from './config/GameSceneConfig';
 import EffectsSceneConfig from './config/EffectsSceneConfig';
 import RendererManager from './RendererManager'
-import SceneManager from './SceneManager';
-import SceneAggregate from './SceneAggregate';
+import SceneUnit from './SceneUnit';
+import AllScenesManager from './AllScenesManager';
 import GameStateManager from './GameStateManager'
-import GlobalAnimationMixer from './GlobalAnimationMixer'
-import AnimationLoop from './AnimationLoop'
+import AnimationMixersManager from './AnimationMixersManager'
+import RenderLoop from './RenderLoop'
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
 // import { MagmaFlare } from './effect/MagmaFlare'
 
 /**
- * constructor: C++でいうとmain()のような役割。AnimationLoopは非同期で再帰し、アプリ終了まで残ります。
+ * constructor: C++でいうとmain()のような役割。RenderLoopは非同期で再帰し、アプリ終了まで残ります。
  * setupScenes: オーバーレイするシーンの数だけインスタンスを作成してください。
  */
 class Pong {
@@ -26,45 +26,45 @@ class Pong {
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
 		this.renderer = RendererManager.getRenderer();
 		// 全てのシーンのmixerを一元的に管理
-		this.globalAnimationMixer = new GlobalAnimationMixer();
+		this.AnimationMixersManager = new AnimationMixersManager();
 		// 複数のSceneを一元的に管理
-		this.sceneAggregate = new SceneAggregate(this.globalAnimationMixer);
+		this.AllScenesManager = new AllScenesManager(this.AnimationMixersManager);
 		// 3D空間（カメラ、照明、オブジェクト）を担当
 		this.setupScenes();
 		// ゲームの状態（待機、Play、終了）を担当
 		this.gameStateManager = new GameStateManager(this); 
 		// アニメーションの更新を担当
-		this.animationLoop = new AnimationLoop(this);
-		this.animationLoop.start();
+		this.RenderLoop = new RenderLoop(this);
+		this.RenderLoop.start();
 		
 				//dev用
 				this.setupDevEnv();
 	}
 
 	setupScenes() {
-		this.backgroundSceneManager = new SceneManager(new BackgroundSceneConfig(), this.renderer, 'background', this.globalAnimationMixer);
-		this.gameSceneManager = new SceneManager(new GameSceneConfig(), this.renderer, 'game', this.globalAnimationMixer);
-		this.effectsSceneManager = new SceneManager(new EffectsSceneConfig(), this.renderer, 'effects', this.globalAnimationMixer);
-		this.sceneAggregate.addSceneManager(this.backgroundSceneManager);
-		this.sceneAggregate.addSceneManager(this.gameSceneManager);
-		this.sceneAggregate.addSceneManager(this.effectsSceneManager);
+		this.backgroundSceneUnit = new SceneUnit(new BackgroundSceneConfig(), this.renderer, 'background', this.AnimationMixersManager);
+		this.gameSceneUnit = new SceneUnit(new GameSceneConfig(), this.renderer, 'game', this.AnimationMixersManager);
+		this.effectsSceneUnit = new SceneUnit(new EffectsSceneConfig(), this.renderer, 'effects', this.AnimationMixersManager);
+		this.AllScenesManager.addSceneUnit(this.backgroundSceneUnit);
+		this.AllScenesManager.addSceneUnit(this.gameSceneUnit);
+		this.AllScenesManager.addSceneUnit(this.effectsSceneUnit);
 	}
 
 	update() {
-		this.sceneAggregate.updateAllScenes();
+		this.AllScenesManager.updateAllScenes();
 	}
 
 	render() {
-		this.sceneAggregate.renderAllScenes(this.renderer);
+		this.AllScenesManager.renderAllScenes(this.renderer);
 	}
 
 	// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除
 	setupDevEnv() {
 		this.gui = new lil.GUI();
 		const contorolsGUI = new ControlsGUI(
-			this.backgroundSceneManager.scene, 
+			this.backgroundSceneUnit.scene, 
 			this.gui, 
-			this.backgroundSceneManager.camera);
+			this.backgroundSceneUnit.camera);
 		contorolsGUI.setupControlsGUI();
 	}
 

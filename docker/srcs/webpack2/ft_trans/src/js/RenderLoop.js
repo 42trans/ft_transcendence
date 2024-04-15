@@ -9,7 +9,7 @@
  * - update(): アニメーションミキサーの進行、カメラコントロールの更新（例えば、ユーザーのインタラクションに応じた視点変更）など
  * - render(): シーンとカメラの現在の状態をもとに画面を描画。rendererは全scene共通(インスタンスは一つだけ)
  */
-class AnimationLoop {
+class RenderLoop {
 	constructor(pong) {
 		this.pong = pong;
 		
@@ -25,4 +25,4 @@ class AnimationLoop {
 	}
 }
 
-export default AnimationLoop;
+export default RenderLoop;

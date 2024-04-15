@@ -6,11 +6,11 @@
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import ModelsLoader from './ModelsLoader';
+import GLTFModelsLoader from './GLTFModelsLoader';
 import { MagmaFlare } from './effect/MagmaFlare'
 
 
-class SceneManager{
+class SceneUnit{
 	/**
 	* @param {THREE.WebGLRenderer} renderer - 計算された画像（3Dを2Dに投影）を画面に出力・描画するインスタンス。
 	* @param {THREE.Scene} scene - 描画操作が行われる空間・ワールド。
@@ -19,12 +19,12 @@ class SceneManager{
 		sceneConfig, 
 		renderer, 
 		type, 
-		globalAnimationMixer
+		AnimationMixersManager
 	) {
 		this.sceneConfig = sceneConfig;
 		this.renderer = renderer;
 		this.scene = new THREE.Scene();
-		this.globalAnimationMixer = globalAnimationMixer;
+		this.AnimationMixersManager = AnimationMixersManager;
 		this.initializeScene();
 		// シーンのタイプ（'game', 'effects', 'background'）
 		this.type = type; 
@@ -85,7 +85,7 @@ class SceneManager{
 		this.setupLights(this.sceneConfig.lightsConfig);
 		
 		// this.animMxr = new AnimationMixer(this.controls);
-		this.modelsLoader = new ModelsLoader(this.scene, this.sceneConfig, this.globalAnimationMixer);
+		this.GLTFModelsLoader = new GLTFModelsLoader(this.scene, this.sceneConfig, this.AnimationMixersManager);
 	}
 
 	/**
@@ -113,7 +113,7 @@ class SceneManager{
 		// 	this.scene.add(temporaryObject);
 		// }
 
-		this.modelsLoader.loadModels(); 
+		this.GLTFModelsLoader.loadModels(); 
 	}
 	
 	/**
@@ -188,4 +188,4 @@ class SceneManager{
 	}
 }
 
-export default SceneManager;
+export default SceneUnit;

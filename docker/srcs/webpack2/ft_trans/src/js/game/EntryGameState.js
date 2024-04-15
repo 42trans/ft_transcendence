@@ -13,12 +13,12 @@ class EntryGameState extends BaseGameState {
 		console.log("Entering Entry state");
 
 		
-		this.Pong.backgroundSceneManager.refreshScene();
-		this.Pong.gameSceneManager.refreshScene();
-		// this.Pong.effectsSceneManager.refreshScene();
+		this.Pong.backgroundSceneUnit.refreshScene();
+		this.Pong.gameSceneUnit.refreshScene();
+		// this.Pong.effectsSceneUnit.refreshScene();
 		const magmaFlare = new MagmaFlare();
 		magmaFlare.name = "MagmaFlare";
-		this.Pong.effectsSceneManager.scene.add(magmaFlare);
+		this.Pong.effectsSceneUnit.scene.add(magmaFlare);
 	}
 
 	update() {

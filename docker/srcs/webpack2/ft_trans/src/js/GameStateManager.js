@@ -35,14 +35,14 @@ class GameStateManager {
 		if (this.currentState) {
 			this.currentState.update();
 		}
-		this.pong.sceneAggregate.updateAllScenes();
+		this.pong.AllScenesManager.updateAllScenes();
 	}
 
 	render() {
 		if (this.currentState) {
 			this.currentState.render();
 		}
-		this.pong.sceneAggregate.renderAllScenes(this.pong.renderer);
+		this.pong.AllScenesManager.renderAllScenes(this.pong.renderer);
 	}
 }
 

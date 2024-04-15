@@ -8,7 +8,7 @@ class GameplayState extends BaseGameState {
 	enter() {
 		// メインメニュー特有の初期化
 		console.log("Entering GamePlay state");
-		this.Pong.effectsSceneManager.refreshScene();
+		this.Pong.effectsSceneUnit.refreshScene();
 	}
 
 	update() {

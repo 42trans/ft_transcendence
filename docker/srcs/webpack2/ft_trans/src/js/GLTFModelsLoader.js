@@ -1,14 +1,14 @@
-// docker/srcs/webpack2/ft_trans/src/ts/ModelsLoader.ts
+// docker/srcs/webpack2/ft_trans/src/ts/GLTFModelsLoader.ts
 
 import * as THREE from 'three';
 // GLTFフォーマットの3Dモデルをロードするための特定のローダーをインポート。
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 /**
- * ModelsLoader クラス:
+ * GLTFModelsLoader クラス:
  * 役割・機能: 3Dモデルをロードし、設定されたアニメーションとともにシーンに追加する
  */
-class ModelsLoader {
+class GLTFModelsLoader {
 	/**
 	 * コンストラクタの引数にアクセス修飾子（private, public, protected）を直接付けることにより、プロパティの宣言と代入を一行で行う
 	 * @param scene THREE.Scene オブジェクト - 3Dオブジェクトが表示される空間
@@ -17,11 +17,11 @@ class ModelsLoader {
 	constructor (
 		scene,
 		sceneConfig,
-		globalAnimationMixer
+		AnimationMixersManager
 	) { 
 		this.scene = scene;
 		this.sceneConfig = sceneConfig,
-		this.globalAnimationMixer = globalAnimationMixer;
+		this.AnimationMixersManager = AnimationMixersManager;
 		this.loader = new GLTFLoader();
 		this.textureLoader = new THREE.TextureLoader();
 		this.modelCache = new Map(); 
@@ -232,8 +232,8 @@ class ModelsLoader {
 			if (animationToPlay) {
 				const action = mixer.clipAction(animationToPlay);
 				action.play();
-				if (this.globalAnimationMixer) {
-					this.globalAnimationMixer.addMixer(mixer);
+				if (this.AnimationMixersManager) {
+					this.AnimationMixersManager.addMixer(mixer);
 					console.log("Mixerに追加");
 				} 
 			} 
@@ -244,4 +244,4 @@ class ModelsLoader {
 
 }
 
-export default ModelsLoader;
+export default GLTFModelsLoader;
