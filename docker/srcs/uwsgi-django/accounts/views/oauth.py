@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.contrib.auth import login, get_user_model
 from django.conf import settings
 from django.urls import reverse
+from django.utils.translation import get_language_from_request
 
 
 logger = logging.getLogger(__name__)
@@ -28,6 +29,15 @@ class OAuthWith42(View):
         else:
             return self.oauth_ft(request)
 
+    def remove_lang(self, request):
+        uri = request.build_absolute_uri(reverse(self.callback_name))
+        host = request.get_host()
+        lang = "/" + get_language_from_request(request, True) + "/"
+
+        lang_p = uri.find(host) + len(host)
+        if lang in uri[lang_p:lang_p+4]:
+            return uri[0:lang_p] + "/" + uri[lang_p+4:]
+        return (uri)
 
     def oauth_ft(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -38,10 +48,11 @@ class OAuthWith42(View):
         # CSRF対策のためのstateを生成
         state = secrets.token_urlsafe()
         request.session['oauth_state'] = state
+        uri = self.remove_lang(request)
 
         params = {
             'client_id': settings.FT_CLIENT_ID,
-            'redirect_uri': request.build_absolute_uri(reverse(self.callback_name)),
+            'redirect_uri': uri,
             'response_type': 'code',
             'scope': 'public',
             'state': state,
