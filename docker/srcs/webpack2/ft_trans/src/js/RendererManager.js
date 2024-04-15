@@ -9,12 +9,13 @@ class RendererManager {
 	static instance = null;
 	constructor() {
 		if (!RendererManager.instance) {
-			const config = new RendererConfig();
-			const rendererOptions = {
-				antialias: config.antialias,
-				pixelRatio: config.pixelRatio,
-				alpha: config.alpha,
-			};
+			const rendererOptions = new RendererConfig().rendererOptions;
+			// const config = new RendererConfig();
+			// const rendererOptions = {
+			// 	antialias: config.antialias,
+			// 	pixelRatio: config.pixelRatio,
+			// 	alpha: config.alpha,
+			// };
 			this.renderer = new THREE.WebGLRenderer(rendererOptions);
 			this.initializeRenderer();
 			RendererManager.instance = this;
@@ -33,8 +34,6 @@ class RendererManager {
 		this.renderer.autoClear = false;
 		this.renderer.setClearColor(0x000000, 0);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		// this.renderer.setPixelRatio(options.pixelRatio);
-		// this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.attachRendererToDOM();
 	}
 
@@ -49,6 +48,7 @@ class RendererManager {
 			throw new Error('Container for three.js canvas is not found.');
 		}
 	}
+
 }
 
 export default RendererManager;

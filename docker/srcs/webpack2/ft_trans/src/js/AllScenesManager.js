@@ -1,3 +1,5 @@
+import RendererManager from './RendererManager'
+
 /**
  * - シングルトン
  *   - コンストラクタが呼び出されたときに既にインスタンスが存在するかどうかをチェック
@@ -10,6 +12,7 @@ class AllScenesManager {
 		if (!AllScenesManager.instance) {
 			this.sceneUnits = [];
 			this.animationMixersManager = animationMixersManager;
+			window.addEventListener('resize', this.onWindowResize.bind(this), false);
 			AllScenesManager.instance = this;
 		}
 		return AllScenesManager.instance;
@@ -41,6 +44,21 @@ class AllScenesManager {
 			renderer.clearDepth();
 			renderer.render(manager.scene, manager.camera);
 		});
+	}
+	// リサイズイベントハンドラ
+	onWindowResize() {
+		this.sceneUnits.forEach(sceneUnit => {
+			const camera = sceneUnit.camera;
+			if (camera.isPerspectiveCamera) {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+			}
+			// 他のカメラタイプの場合の処理もここに追加可能
+		});
+		if (RendererManager.instance) {
+			RendererManager.instance.renderer.setSize(window.innerWidth, window.innerHeight);
+		}
+		console.log('リサイズ: 全カメラとレンダラーのサイズが更新されました。');
 	}
 }
 

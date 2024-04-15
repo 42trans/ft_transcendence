@@ -8,7 +8,7 @@
 class BaseConfig {
 	constructor() {
 		this.cameraConfig = {};
-		this.rendererConfig = {};
+		// this.rendererConfig = {};
 		this.controlsConfig = {};
 		// this.lightsConfig = [];
 		// this.modelsConfig = [];

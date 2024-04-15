@@ -22,24 +22,25 @@ import ControlsGUI from './ControlsGUI';
  */
 class Pong {
 	//  コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
-	constructor() {		
-		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
-		this.renderer = RendererManager.getRnderer();
-		// 全てのシーンのmixerを一元的に管理
-		this.animationMixersManager = AnimationMixersManager.getInstance();
-		// 複数のSceneを一元的に管理
-		this.allScenesManager = AllScenesManager.getInstance(this.animationMixersManager);
-		// 3D空間（カメラ、照明、オブジェクト）を担当
-		this.setupScenes();
-		// ゲームの状態（待機、Play、終了）を担当
-		this.gameStateManager = GameStateManager.getInstance(this); 
-		// アニメーションの更新を担当
-		this.renderLoop = RenderLoop.getInstance(this);
-		// this.RenderLoop = new RenderLoop(this);
-		this.renderLoop.start();
-		
-				//dev用
-				this.setupDevEnv();
+	constructor() {
+		document.addEventListener('DOMContentLoaded', () => {
+			// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
+			this.renderer = RendererManager.getRnderer();
+			// 全てのシーンのmixerを一元的に管理
+			this.animationMixersManager = AnimationMixersManager.getInstance();
+			// 複数のSceneを一元的に管理
+			this.allScenesManager = AllScenesManager.getInstance(this.animationMixersManager);
+			// 3D空間（カメラ、照明、オブジェクト）を担当
+			this.setupScenes();
+			// ゲームの状態（待機、Play、終了）を担当
+			this.gameStateManager = GameStateManager.getInstance(this); 
+			// アニメーションの更新を担当
+			this.renderLoop = RenderLoop.getInstance(this);
+			this.renderLoop.start();
+			
+			//dev用
+			this.setupDevEnv();
+		});
 	}
 
 	setupScenes() {
