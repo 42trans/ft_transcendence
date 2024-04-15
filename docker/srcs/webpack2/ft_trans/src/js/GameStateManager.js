@@ -2,20 +2,34 @@ import MainMenuState from './game/MainMenuState'
 import GamePlayState from './game/GamePlayState'
 import EntryGameState from './game/EntryGameState'
 
+/**
+ * - シングルトン
+ */
 class GameStateManager {
+	static instance = null;
 	constructor(pong) {
-		this.pong = pong;
-		this.states = {
-			mainMenu: new MainMenuState(pong),
-			entry: new EntryGameState(pong),
-			gameplay: new GamePlayState(pong)
-		};
-		// this.currentState = this.states.mainMenu;
-		this.currentState = this.states.entry;
-		this.currentState.enter();
+		if (!GameStateManager.instance) {		
+			this.pong = pong;
+			this.states = {
+				mainMenu: new MainMenuState(pong),
+				entry: new EntryGameState(pong),
+				gameplay: new GamePlayState(pong)
+			};
+			this.currentState = this.states.entry;
+			// this.currentState = this.states.gameplay;
+			this.currentState.enter();
+			// StartButtonなどのUI設定
+			this.setupUI();
+			GameStateManager.instance = this;
+		}
+		return GameStateManager.instance;
+	}
 
-		// UIの設定
-		this.setupUI();
+	static getInstance(pong) {
+		if (!GameStateManager.instance) {
+			GameStateManager.instance = new GameStateManager(pong);
+		}
+		return GameStateManager.instance;
 	}
 
 	setupUI() {

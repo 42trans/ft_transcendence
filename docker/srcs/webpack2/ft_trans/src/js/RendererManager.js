@@ -6,8 +6,7 @@ import RendererConfig from './config/RendererConfig'
  * - パフォーマンスを考慮し、rendererはシングルトンとする。
  */
 class RendererManager {
-	static instance;
-
+	static instance = null;
 	constructor() {
 		if (!RendererManager.instance) {
 			const config = new RendererConfig();
@@ -23,7 +22,7 @@ class RendererManager {
 		return RendererManager.instance;
 	}
 
-	static getRenderer() {
+	static getRnderer() {
 		if (!RendererManager.instance) {
 			new RendererManager();
 		}

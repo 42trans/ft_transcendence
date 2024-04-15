@@ -10,9 +10,21 @@
  * - render(): シーンとカメラの現在の状態をもとに画面を描画。rendererは全scene共通(インスタンスは一つだけ)
  */
 class RenderLoop {
+	static instance = null;
+
 	constructor(pong) {
-		this.pong = pong;
-		
+		if (!RenderLoop.instance) {
+			this.pong = pong;
+			RenderLoop.instance = this;
+		}
+		return RenderLoop.instance;
+	}
+
+	static getInstance(pong) {
+		if (!RenderLoop.instance) {
+			RenderLoop.instance = new RenderLoop(pong);
+		}
+		return RenderLoop.instance;
 	}
 
 	start() {

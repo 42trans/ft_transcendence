@@ -1,32 +1,46 @@
+/**
+ * - シングルトン
+ *   - コンストラクタが呼び出されたときに既にインスタンスが存在するかどうかをチェック
+ *   - インスタンスが存在する場合は新しいインスタンスを作成せずに既存のインスタンスを返す
+ *   - getInstance 静的メソッド: インスタンスを取得するための唯一の手段として提供
+ */
 class AllScenesManager {
-	constructor(AnimationMixersManager) {
-		this.SceneUnits = [];
-		this.AnimationMixersManager = AnimationMixersManager;
+	static instance = null;
+	constructor(animationMixersManager) {
+		if (!AllScenesManager.instance) {
+			this.sceneUnits = [];
+			this.animationMixersManager = animationMixersManager;
+			AllScenesManager.instance = this;
+		}
+		return AllScenesManager.instance;
+	}
+	
+	static getInstance(animationMixersManager) {
+		if (!AllScenesManager.instance) {
+			AllScenesManager.instance = new AllScenesManager(animationMixersManager)
+		}
+		return AllScenesManager.instance;
 	}
 
-	addSceneUnit(SceneUnit) {
-		this.SceneUnits.push(SceneUnit);
+	addSceneUnit(sceneUnit) {
+		this.sceneUnits.push(sceneUnit);
 	}
 
 	// 全シーン、全アニメーションの更新
 	// すべてのシーンの update メソッドを呼び出し、全体のアニメーション状態を更新。
 	updateAllScenes() {
-		this.SceneUnits.forEach(SceneUnit => {
-			SceneUnit.update();
+		this.sceneUnits.forEach(sceneUnit => {
+			sceneUnit.update();
 		});
-		this.AnimationMixersManager.update(); 
+		this.animationMixersManager.update(); 
 	}
 
 	// 全シーンをレンダリング
 	renderAllScenes(renderer) {
-		// renderer.clear();
-		this.SceneUnits.forEach((manager, index) => {
-			// if (index > 0) {
-				renderer.clearDepth();
-				renderer.render(manager.scene, manager.camera);
-			}
-		// }
-	);
+		this.sceneUnits.forEach(manager => {
+			renderer.clearDepth();
+			renderer.render(manager.scene, manager.camera);
+		});
 	}
 }
 

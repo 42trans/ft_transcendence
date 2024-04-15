@@ -17,11 +17,11 @@ class GLTFModelsLoader {
 	constructor (
 		scene,
 		sceneConfig,
-		AnimationMixersManager
+		animationMixersManager
 	) { 
 		this.scene = scene;
 		this.sceneConfig = sceneConfig,
-		this.AnimationMixersManager = AnimationMixersManager;
+		this.animationMixersManager = animationMixersManager;
 		this.loader = new GLTFLoader();
 		this.textureLoader = new THREE.TextureLoader();
 		this.modelCache = new Map(); 
@@ -232,8 +232,8 @@ class GLTFModelsLoader {
 			if (animationToPlay) {
 				const action = mixer.clipAction(animationToPlay);
 				action.play();
-				if (this.AnimationMixersManager) {
-					this.AnimationMixersManager.addMixer(mixer);
+				if (this.animationMixersManager) {
+					this.animationMixersManager.addMixer(mixer);
 					console.log("Mixerに追加");
 				} 
 			} 

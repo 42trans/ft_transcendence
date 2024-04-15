@@ -19,25 +19,18 @@ class SceneUnit{
 		sceneConfig, 
 		renderer, 
 		type, 
-		AnimationMixersManager
+		animationMixersManager
 	) {
 		this.sceneConfig = sceneConfig;
 		this.renderer = renderer;
 		this.scene = new THREE.Scene();
-		this.AnimationMixersManager = AnimationMixersManager;
+		this.animationMixersManager = animationMixersManager;
 		this.initializeScene();
 		// シーンのタイプ（'game', 'effects', 'background'）
 		this.type = type; 
 		// this.addSpecialEffects();
 	}
 
-	// addSpecialEffects() {
-	// 	if (this.type === 'effects') {
-	// 		const magmaFlare = new MagmaFlare();
-	// 		magmaFlare.name = "MagmaFlare";
-	// 		this.scene.add(magmaFlare);
-	// 	}
-	// }
 
 	update() {
 		// 例えば、シーン内のすべての子オブジェクトに対して update メソッドがあれば呼び出す
@@ -85,7 +78,7 @@ class SceneUnit{
 		this.setupLights(this.sceneConfig.lightsConfig);
 		
 		// this.animMxr = new AnimationMixer(this.controls);
-		this.GLTFModelsLoader = new GLTFModelsLoader(this.scene, this.sceneConfig, this.AnimationMixersManager);
+		this.gLTFModelsLoader = new GLTFModelsLoader(this.scene, this.sceneConfig, this.animationMixersManager);
 	}
 
 	/**
@@ -93,12 +86,6 @@ class SceneUnit{
 	 * 既存インスタンスの値のみを変更
 	 */
 	refreshScene() {
-		// let temporaryObject = null;
-		// // MagmaFlare オブジェクトを一時保存
-		// if (this.type === 'effects') {
-		// 	temporaryObject = this.scene.getObjectByName("MagmaFlare");
-		// }
-
 		this.clearScene();
 		const { position, lookAt } = this.sceneConfig.cameraConfig;
 		this.camera.position.copy(position);
@@ -108,12 +95,7 @@ class SceneUnit{
 		});
 		this.setupLights(this.sceneConfig.lightsConfig);
 
-		// // MagmaFlare を再追加
-		// if (this.type === 'effects' && temporaryObject) {
-		// 	this.scene.add(temporaryObject);
-		// }
-
-		this.GLTFModelsLoader.loadModels(); 
+		this.gLTFModelsLoader.loadModels(); 
 	}
 	
 	/**

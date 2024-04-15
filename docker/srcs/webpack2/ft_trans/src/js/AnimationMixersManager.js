@@ -1,10 +1,29 @@
 import * as THREE from 'three';
 
+/**
+ * AnimationMixersManager:
+ * - シングルトン
+ *   - コンストラクタが呼び出されたときに既にインスタンスが存在するかどうかをチェック
+ *   - インスタンスが存在する場合は新しいインスタンスを作成せずに既存のインスタンスを返す
+ *   - getInstance 静的メソッド: インスタンスを取得するための唯一の手段として提供
+ * - THREE.Clockはグローバルで一つだけ持つ
+ */
 class AnimationMixersManager {
+	static instance = null;
 	constructor() {
-		this.mixers = [];
-		 // クロックはグローバルで一つだけ持つ
-		this.clock = new THREE.Clock();
+		if (!AnimationMixersManager.instance) {	
+			this.mixers = [];
+			this.clock = new THREE.Clock();
+			AnimationMixersManager.instance = this;
+		}
+		return AnimationMixersManager.instance;
+	}
+
+	static getInstance() {
+		if (!AnimationMixersManager.instance) {
+			AnimationMixersManager.instance = new AnimationMixersManager();
+		}
+		return AnimationMixersManager.instance;
 	}
 
 	addMixer(mixer) {
