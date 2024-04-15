@@ -14,7 +14,11 @@ _setting_log_file() {
 
 
 _migrate_db() {
-  python manage.py makemigrations
+# DBスキーマの変更に基づきマイグレーションファイルを生成
+# モデル変更時のみ実行
+#  python manage.py makemigrations
+
+# マイグレーションファイルをDBに適用、DBを最新の状態で再構築
   python manage.py migrate --noinput
 }
 
