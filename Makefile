@@ -169,6 +169,8 @@ ps_a:
 logs:
 	docker-compose $(COMPOSE_FILES_ARGS) logs
 
+.PHONY: fclean
+fclean: down docker_rm remove_mount_volume
 
 # -----------------------------------------------
 #  init
