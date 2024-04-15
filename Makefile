@@ -148,13 +148,13 @@ docker_rm:
 	-@docker volume rm $$(docker volume ls -q) 2>/dev/null
 	-@docker system prune -af --volumes
 
-.PHONY: remove_mount_volume_mac
-remove_mount_volume_mac:
-	rm -rf mount_volume
+.PHONY: remove_mount_volume
+remove_mount_volume:
+	sudo rm -rf mount_volume
 
 .PHONY: rm
 rm:
-	make remove_mount_volume_mac
+	make remove_mount_volume
 
 .PYHONY: ps
 ps:
@@ -177,6 +177,7 @@ logs:
 .PHONY: init
 init: env cert_key
 	@chmod +x init/add_host.sh && ./init/add_host.sh init/.os_env
+	@chmod +x init/make_dir.sh && ./init/make_dir.sh init/.os_env
 
 .PHONY: env
 env:
