@@ -6,7 +6,6 @@ import * as THREE from 'three';
 class EntryGameState extends BaseGameState {
 	constructor (Pong){
 		super(Pong);
-		// this._magmaFlare = new MagmaFlare();
 	}
 
 	enter() {
@@ -14,21 +13,12 @@ class EntryGameState extends BaseGameState {
 		console.log("Entering Entry state");
 		this.Pong.renderer.clear();
 
-		
-		// カメラの位置と向きをログで確認
-	// console.log("Camera Position:", this.Pong.effectsSceneManager.camera.position);
-	// console.log("Camera LookAt:", this.Pong.effectsSceneManager.camera.lookAt);
-
-		// this._magmaFlare.position.y = 1;
-		// this.Pong.effectsSceneManager.scene.add(this._magmaFlare);
-		
-		// console.log("All objects in the scene:");
-		// this.Pong.gameSceneManager.scene.traverse((obj) => {
-		// 	console.log(obj);
-		// });
-
 
 		this.Pong.effectsSceneManager.refreshScene();
+		// this.Pong.renderer.clearDepth();
+		// this.Pong.gameSceneManager.refreshScene();
+		// this.Pong.renderer.clearDepth();
+		// this.Pong.backgroundSceneManager.refreshScene();
 	}
 
 	update() {
@@ -38,7 +28,7 @@ class EntryGameState extends BaseGameState {
 		}
 		this.Pong.renderer.clear();
 
-		// this._magmaFlare.update();
+		this.Pong.effectsSceneManager.update();
 		
 		this.Pong.effectsSceneManager.animMxr.update();
 	}

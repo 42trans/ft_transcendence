@@ -12,8 +12,7 @@ import AnimationLoop from './AnimationLoop'
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
-import { MagmaFlare } from './effect/MagmaFlare'
-
+// import { MagmaFlare } from './effect/MagmaFlare'
 
 /**
  * constructor: C++でいうとmain()のような役割。AnimationLoopは非同期で再帰し、アプリ終了まで残ります。
@@ -40,11 +39,7 @@ class Pong {
 		this.gameSceneManager = new SceneManager(new GameSceneConfig(), this.renderer, 'game');
 		this.effectsSceneManager = new SceneManager(new EffectsSceneConfig(), this.renderer, 'effects');
 		// 必要ならシーンを追加する。UI用,演出用など
-		// this.backgroundSceneManager = new SceneManager(new BackgoundSceneConfig(), this.renderer);
-		const magmaFlare = new MagmaFlare();
-		magmaFlare.name = "MagmaFlare";
-		this.effectsSceneManager.scene.add(magmaFlare);
-		// console.log("MagmaFlare added to the scene", this.effectsSceneManager.scene);
+		this.backgroundSceneManager = new SceneManager(new BackgoundSceneConfig(), this.renderer);
 	}
 
 	// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除

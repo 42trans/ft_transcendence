@@ -13,9 +13,10 @@ class AnimationMixer {
 	 * @param {THREE.Clock[]} clock - アニメーションを管理するクロックインスタンス
 	 */
 	constructor (
-		controls
+		// controls
+		scene
 	){
-		this.controls = controls;
+		this.controls = scene.controls;
 		this.mixers = [];
 		this.clock =  new THREE.Clock();
 	}

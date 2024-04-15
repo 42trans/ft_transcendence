@@ -1,5 +1,8 @@
 import * as THREE from "three";
 import { MagmaFlare } from "./js/effect/MagmaFlare";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import './css/3d.css';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('threejs-canvas-container');
@@ -7,24 +10,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
     const renderer = new THREE.WebGLRenderer({ 
         antialias: true, 
-        // canvas: canvas,
 		alpha: true, 
     });
-    // this._renderer.setPixelRatio(devicePixelRatio);
-	// this._resize();
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; // カメラの動きを滑らかにする
+    controls.dampingFactor = 0.25;
+    controls.screenSpacePanning = false;
+    controls.maxPolarAngle = Math.PI / 2;
+
+
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(renderer.domElement);
+
+    // リサイズハンドラーのセットアップ
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onWindowResize, false);
+
+    if (!container.querySelector('canvas')) {
+        container.appendChild(renderer.domElement);
+    }
 
     // カメラの位置設定
     camera.position.z = 5;
-    // controls.target.set(0, 0, 0);
-
-    // ライトの追加
-    // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    // scene.add(ambientLight);
-    // const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    // directionalLight.position.set(0, 1, 1);
-    // scene.add(directionalLight);
+    controls.target.set(0, 0, 0);
 
     // MagmaFlare の追加
     const magmaFlare = new MagmaFlare();
@@ -33,14 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // アニメーションループ
     function animate() {
         requestAnimationFrame(animate);
-
-        // MagmaFlare の更新
         magmaFlare.update();
-
-        // シーンのレンダリング
         renderer.render(scene, camera);
     }
-
-    // アニメーション開始
     animate();
 });

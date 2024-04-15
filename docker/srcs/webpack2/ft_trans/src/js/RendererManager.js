@@ -6,6 +6,8 @@ import RendererConfig from './config/RendererConfig'
  * - パフォーマンスを考慮し、rendererはシングルトンとする。
  */
 class RendererManager {
+	static instance;
+
 	constructor() {
 		if (!RendererManager.instance) {
 			const config = new RendererConfig();
@@ -15,18 +17,7 @@ class RendererManager {
 				alpha: config.alpha,
 			};
 			this.renderer = new THREE.WebGLRenderer(rendererOptions);
-			this.renderer.autoClear = false; // 必須
-			this.renderer.setClearColor(0x000000, 0); // 背景を透明に
-			this.renderer.setSize(window.innerWidth, window.innerHeight);
-			// 特定のdivにレンダラーを追加 （index.htmlで設定したthreejs-canvas-container）
-			const container = document.getElementById('threejs-canvas-container');
-			if (container) {
-				container.appendChild(this.renderer.domElement);
-			} else {
-				console.error('three.jsのキャンバスを配置するためのコンテナが見つかりません。');
-			}
-			// もしもdivでなくbodyに埋め込む場合
-			// document.body.appendChild(rend.domElement);
+			this.initializeRenderer();
 			RendererManager.instance = this;
 		}
 		return RendererManager.instance;
@@ -39,10 +30,25 @@ class RendererManager {
 		return RendererManager.instance.renderer;
 	}
 
-	setRendererOptions(options) {
-		this.renderer.setPixelRatio(options.pixelRatio);
-		this.renderer.setSize(options.width, options.height);
-		this.renderer.setClearColor(options.clearColor, options.clearAlpha);
+	initializeRenderer() {
+		this.renderer.autoClear = false;
+		this.renderer.setClearColor(0x000000, 0);
+		this.renderer.setSize(window.innerWidth, window.innerHeight);
+		// this.renderer.setPixelRatio(options.pixelRatio);
+		// this.renderer.setPixelRatio(window.devicePixelRatio);
+		this.attachRendererToDOM();
+	}
+
+	// 特定のdivにレンダラーを追加 （index.htmlで設定したthreejs-canvas-container）
+	attachRendererToDOM() {
+		const container = document.getElementById('threejs-canvas-container');
+		if (container) {
+			if (!container.querySelector('canvas')) { 
+				container.appendChild(this.renderer.domElement);
+			}
+		} else {
+			throw new Error('Container for three.js canvas is not found.');
+		}
 	}
 }
 

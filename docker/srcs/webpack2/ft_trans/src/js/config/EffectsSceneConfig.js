@@ -19,7 +19,7 @@ class EffectsSceneConfig extends BaseSceneConfig{
 			aspect: window.innerWidth / window.innerHeight,
 			near: 0.1,
 			far: 100,
-			position: new THREE.Vector3(0, 0, 5),
+			position: new THREE.Vector3(8, 6, 10),
 			lookAt: new THREE.Vector3(0, 0, 0),
 		};
 
@@ -43,23 +43,26 @@ class EffectsSceneConfig extends BaseSceneConfig{
 			zoomSpeed: 1.2,
 			autoRotate: true,
 			autoRotateSpeed: 15.0,
+			dampingFactor: 0.25,
+			screenSpacePanning: false,
+			maxPolarAngle: Math.PI / 2,
 		};
 
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */
 		this.lightsConfig = [
-			{
-				type: 'AmbientLight',
-				color: 0x999999,
-				intensity: 0.31,
-				name: 'ambientLight',
-			},
-			{
-				type: 'DirectionalLight',
-				color: 0xffffff,
-				intensity: 1,
-				position: new THREE.Vector3(50, 50, -50),
-				name: 'directionalLight',
-			},
+			// {
+			// 	type: 'AmbientLight',
+			// 	color: 0x999999,
+			// 	intensity: 0.31,
+			// 	name: 'ambientLight',
+			// },
+			// {
+			// 	type: 'DirectionalLight',
+			// 	color: 0xffffff,
+			// 	intensity: 1,
+			// 	position: new THREE.Vector3(50, 50, -50),
+			// 	name: 'directionalLight',
+			// },
 			// {
 			// 	type: 'HemisphereLight',
 			// 	skyColor: 0xffffff,

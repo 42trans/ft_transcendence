@@ -8,6 +8,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import ModelsLoader from './ModelsLoader';
 import AnimationMixer from './AnimationMixer'
+import { MagmaFlare } from './effect/MagmaFlare'
+
 
 class SceneManager{
 	/**
@@ -15,11 +17,21 @@ class SceneManager{
 	* @param {THREE.Scene} scene - 描画操作が行われる空間・ワールド。
 	* @param {THREE.PerspectiveCamera} camera - カメラ。
 	*/
-	constructor(sceneConfig, renderer) {
+	constructor(sceneConfig, renderer, type) {
 		this.sceneConfig = sceneConfig;
 		this.renderer = renderer;
 		this.scene = new THREE.Scene();
 		this.initializeScene();
+		this.type = type; // シーンのタイプ（'game', 'effects', 'background'など）
+		this.addSpecialEffects();
+	}
+
+	addSpecialEffects() {
+		if (this.type === 'effects') {
+			const magmaFlare = new MagmaFlare();
+			magmaFlare.name = "MagmaFlare";
+			this.scene.add(magmaFlare);
+		}
 	}
 
 	update() {
@@ -63,7 +75,8 @@ class SceneManager{
 		this.controls = this.setupControls(this.camera, this.renderer, this.sceneConfig.controlsConfig);
 		this.lights = [];
 		this.setupLights(this.sceneConfig.lightsConfig);
-		this.animMxr = new AnimationMixer(this.controls);
+		this.animMxr = new AnimationMixer(this.scene);
+		// this.animMxr = new AnimationMixer(this.controls);
 		this.modelsLoader = new ModelsLoader(this.scene, this.sceneConfig, this.animMxr);
 	}
 

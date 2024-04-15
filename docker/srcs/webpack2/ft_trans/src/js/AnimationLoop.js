@@ -14,9 +14,7 @@ import { MagmaFlare } from './effect/MagmaFlare'
  */
 class AnimationLoop {
 	constructor(pong) {
-		this.gameStateManager = pong.gameStateManager;
-		this.effectsSceneManager = pong.effectsSceneManager;
-		this.renderer = pong.renderer;
+		this.pong = pong;
 		
 	}
 
@@ -30,20 +28,23 @@ class AnimationLoop {
 	}
 
 	update() {
-		this.gameStateManager.update();
-		// SceneManager が持つ MagmaFlare の更新
-		this.effectsSceneManager.scene.traverse((object) => {
-			if (object instanceof MagmaFlare) {
-				object.update();
-				// console.log("m up");
-			}
-			// console.log(object.name, object);
-		});
+		this.pong.gameStateManager.update();
+		this.pong.effectsSceneManager.update();
+		this.pong.backgroundSceneManager.update();
 	}
 
 	render() {
-		this.renderer.clear();
-		this.gameStateManager.render();
+		this.pong.renderer.clear();
+		// this.pong.gameStateManager.render();
+		this.renderScene(this.pong.gameSceneManager);
+		this.renderScene(this.pong.effectsSceneManager);
+		this.renderScene(this.pong.backgroundSceneManager);
+	}
+
+	renderScene(sceneManager) {
+		if (sceneManager.scene && sceneManager.camera) {
+			this.pong.renderer.render(sceneManager.scene, sceneManager.camera);
+		}
 	}
 }
 
