@@ -14,7 +14,6 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
-from django.utils.translation import get_language_from_request
 
 
 logging.basicConfig(
@@ -36,16 +35,6 @@ class OAuthWith42(View):
         else:
             return self.oauth_ft(request)
 
-    def remove_lang(self, request):
-        uri = request.build_absolute_uri(reverse(self.callback_name))
-        host = request.get_host()
-        lang = "/" + get_language_from_request(request, True) + "/"
-
-        lang_p = uri.find(host) + len(host)
-        if lang in uri[lang_p:lang_p+4]:
-            return uri[0:lang_p] + "/" + uri[lang_p+4:]
-        return (uri)
-
     def oauth_ft(self, request: HttpRequest, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(to=self.authenticated_redirect_to)
@@ -53,11 +42,11 @@ class OAuthWith42(View):
         # CSRF対策のためのstateを生成
         state = secrets.token_urlsafe()
         request.session['oauth_state'] = state
-        uri = self.remove_lang(request)
+        REDIRECT_URI = 'https://localhost/accounts/oauth-ft/callback/'
 
         params = {
             'client_id': settings.FT_CLIENT_ID,
-            'redirect_uri': uri,
+            'redirect_uri': REDIRECT_URI,
             'response_type': 'code',
             'scope': 'public',
             'state': state,
