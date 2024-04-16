@@ -42,6 +42,8 @@ class OAuthWith42(View):
         # CSRF対策のためのstateを生成
         state = secrets.token_urlsafe()
         request.session['oauth_state'] = state
+
+        # ディレクトリ構造が変わったらこの値もそれに合わせて変更してください
         REDIRECT_URI = 'https://localhost/accounts/oauth-ft/callback/'
 
         params = {
