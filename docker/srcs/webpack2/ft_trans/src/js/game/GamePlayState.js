@@ -1,5 +1,7 @@
 import Pong from '../Pong'
 import BaseGameState from './BaseGameState'
+import BackgroundSceneConfig from '../config/BackgroundSceneConfig';
+import SceneUnit from '../SceneUnit';
 
 class GameplayState extends BaseGameState {
 	constructor (Pong){
@@ -8,7 +10,7 @@ class GameplayState extends BaseGameState {
 	enter() {
 		// メインメニュー特有の初期化
 		console.log("Entering GamePlay state");
-		this.Pong.effectsSceneUnit.refreshScene();
+		this.Pong.backgroundSceneUnit.refreshScene();
 	}
 
 	update() {

@@ -8,7 +8,7 @@
 import * as THREE from 'three';
 import BaseSceneConfig from './BaseSceneConfig.js'
 
-class GameSceneConfig extends BaseSceneConfig{
+class GameSceneConfig2 extends BaseSceneConfig{
 
 	constructor() {
 		super();
@@ -88,25 +88,24 @@ class GameSceneConfig extends BaseSceneConfig{
 
 		/** @type {Array<{path: string, initialPosition: THREE.Vector3, initialScale: THREE.Vector3, initialRotation: THREE.Euler, name: string, defaultAnimation: string, textures: {baseColor: string, normalMap: string, specularMap: string}}>} */
 		this.modelsConfig = [
-			{
-				path: '../assets/vespa_mandarinia/scene.gltf',
-				initialPosition: new THREE.Vector3(40, 40, -50),
-				initialScale: new THREE.Vector3(10, 10, 10),
-				name: 'suzumebachi',
-				defaultAnimation: 'Hover',
-			},
 			// {
+			// 	path: '../assets/vespa_mandarinia/scene.gltf',
+			// 	initialPosition: new THREE.Vector3(40, 40, -50),
+			// 	initialScale: new THREE.Vector3(10, 10, 10),
+			// 	name: 'suzumebachi',
+			// 	defaultAnimation: 'Hover',
+			// },
 		];
 
 		/** @type {Array<{model: string, autoplay: boolean}>} */
 		this.animationsConfig = [
-			{
-				model: 'suzumebachi',
-				autoplay: true
-			},
+			// {
+			// 	model: 'suzumebachi',
+			// 	autoplay: true
+			// },
 		];
 	}
 
 }
 
-export default GameSceneConfig;
+export default GameSceneConfig2;

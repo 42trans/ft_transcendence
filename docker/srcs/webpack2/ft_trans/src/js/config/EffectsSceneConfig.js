@@ -38,38 +38,38 @@ class EffectsSceneConfig extends BaseSceneConfig{
 
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */
 		this.lightsConfig = [
-			{
-				type: 'AmbientLight',
-				color: 0x999999,
-				intensity: 0.31,
-				name: 'ambientLight',
-			},
-			{
-				type: 'DirectionalLight',
-				color: 0xffffff,
-				intensity: 1,
-				position: new THREE.Vector3(50, 50, -50),
-				name: 'directionalLight',
-			},
+			// {
+			// 	type: 'AmbientLight',
+			// 	color: 0x999999,
+			// 	intensity: 0.31,
+			// 	name: 'ambientLight',
+			// },
+			// {
+			// 	type: 'DirectionalLight',
+			// 	color: 0xffffff,
+			// 	intensity: 1,
+			// 	position: new THREE.Vector3(50, 50, -50),
+			// 	name: 'directionalLight',
+			// },
 		];
 
 		/** @type {Array<{path: string, initialPosition: THREE.Vector3, initialScale: THREE.Vector3, initialRotation: THREE.Euler, name: string, defaultAnimation: string, textures: {baseColor: string, normalMap: string, specularMap: string}}>} */
 		this.modelsConfig = [
-			{
-				path: '../assets/vespa_mandarinia/scene.gltf',
-				initialPosition: new THREE.Vector3(0, 2, 0),
-				initialScale: new THREE.Vector3(1.1, 1.1, 1.1),
-				name: 'suzumebachi',
-				defaultAnimation: 'Hover',
-			},
+			// {
+			// 	path: '../assets/vespa_mandarinia/scene.gltf',
+			// 	initialPosition: new THREE.Vector3(0, 2, 0),
+			// 	initialScale: new THREE.Vector3(1.1, 1.1, 1.1),
+			// 	name: 'suzumebachi',
+			// 	defaultAnimation: 'Hover',
+			// },
 		];
 
 		/** @type {Array<{model: string, autoplay: boolean}>} */
 		this.animationsConfig = [
-			{
-				model: 'suzumebachi',
-				autoplay: true
-			},
+			// {
+			// 	model: 'suzumebachi',
+			// 	autoplay: true
+			// },
 		];
 	}
 

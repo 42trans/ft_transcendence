@@ -4,6 +4,8 @@
  */
 import BackgroundSceneConfig from './config/BackgroundSceneConfig';
 import GameSceneConfig from './config/GameSceneConfig';
+import BackgroundSceneConfigNone from './config/BackgroundSceneConfigNone';
+import GameSceneConfig2 from './config/GameSceneConfig2';
 import EffectsSceneConfig from './config/EffectsSceneConfig';
 import RendererManager from './RendererManager'
 import SceneUnit from './SceneUnit';
@@ -43,13 +45,16 @@ class Pong {
 		});
 	}
 
+		// TODO_ft:開幕はモデルを読み込まないようにしたい　
 	setupScenes() {
-		this.backgroundSceneUnit = new SceneUnit(new BackgroundSceneConfig(), this.renderer, 'background', this.animationMixersManager);
-		this.gameSceneUnit = new SceneUnit(new GameSceneConfig(), this.renderer, 'game', this.animationMixersManager);
 		this.effectsSceneUnit = new SceneUnit(new EffectsSceneConfig(), this.renderer, 'effects', this.animationMixersManager);
-		this.allScenesManager.addSceneUnit(this.backgroundSceneUnit);
-		this.allScenesManager.addSceneUnit(this.gameSceneUnit);
 		this.allScenesManager.addSceneUnit(this.effectsSceneUnit);
+		setTimeout(() => {
+			this.backgroundSceneUnit = new SceneUnit(new BackgroundSceneConfig(), this.renderer, 'background', this.animationMixersManager);
+			this.gameSceneUnit = new SceneUnit(new GameSceneConfig(), this.renderer, 'game', this.animationMixersManager);
+			this.allScenesManager.addSceneUnit(this.backgroundSceneUnit);
+			this.allScenesManager.addSceneUnit(this.gameSceneUnit);
+		}, 0);
 	}
 
 	update() {

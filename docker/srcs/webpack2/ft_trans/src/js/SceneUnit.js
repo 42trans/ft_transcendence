@@ -25,9 +25,10 @@ class SceneUnit{
 		this.renderer = renderer;
 		this.scene = new THREE.Scene();
 		this.animationMixersManager = animationMixersManager;
+		this.modelsLoaded = false;
 		this.initializeScene();
 		// シーンのタイプ（'game', 'effects', 'background'）
-		this.type = type; 
+		// this.type = type; 
 	}
 
 
@@ -70,13 +71,10 @@ class SceneUnit{
 	 * インスタンスの作成を担当
 	 */
 	initializeScene() {
-		// this.clearScene();
 		this.camera = this.setupCamera(this.sceneConfig.cameraConfig);
 		this.controls = this.setupControls(this.camera, this.renderer, this.sceneConfig.controlsConfig);
 		this.lights = [];
 		this.setupLights(this.sceneConfig.lightsConfig);
-		
-		// this.animMxr = new AnimationMixer(this.controls);
 		this.gLTFModelsLoader = new GLTFModelsLoader(this.scene, this.sceneConfig, this.animationMixersManager);
 	}
 
@@ -93,8 +91,11 @@ class SceneUnit{
 			this.scene.remove(light);
 		});
 		this.setupLights(this.sceneConfig.lightsConfig);
-
+		// if (!this.modelsLoaded) {
 		this.gLTFModelsLoader.loadModels(); 
+		// 	this.modelsLoaded = true; // モデルが読み込まれたとマーク
+		// }
+		// await this.gLTFModelsLoader.loadModelsAsync(); // Promiseを返す新しいメソッドを想定
 	}
 	
 	/**
