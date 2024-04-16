@@ -29,6 +29,9 @@ class OAuthWith42(View):
     callback_name = "accounts:oauth_ft_callback"
     api_path = "https://api.intra.42.fr"
 
+    # ディレクトリ構造が変わったらこの値もそれに合わせて変更してください
+    redirect_uri = 'https://localhost/accounts/oauth-ft/callback/'
+
     def get(self, request, *args, **kwargs):
         if 'callback' in request.path:
             return self.oauth_ft_callback(request)
@@ -43,12 +46,10 @@ class OAuthWith42(View):
         state = secrets.token_urlsafe()
         request.session['oauth_state'] = state
 
-        # ディレクトリ構造が変わったらこの値もそれに合わせて変更してください
-        REDIRECT_URI = 'https://localhost/accounts/oauth-ft/callback/'
 
         params = {
             'client_id': settings.FT_CLIENT_ID,
-            'redirect_uri': REDIRECT_URI,
+            'redirect_uri': self.redirect_uri,
             'response_type': 'code',
             'scope': 'public',
             'state': state,
@@ -107,7 +108,7 @@ class OAuthWith42(View):
             'client_id': settings.FT_CLIENT_ID,
             'client_secret': settings.FT_SECRET,
             'code': code,
-            'redirect_uri': request.build_absolute_uri(reverse(self.callback_name)),
+            'redirect_uri': self.redirect_uri,
         }
 
         try:
