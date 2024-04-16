@@ -10,12 +10,6 @@ class RendererManager {
 	constructor() {
 		if (!RendererManager.instance) {
 			const rendererOptions = new RendererConfig().rendererOptions;
-			// const config = new RendererConfig();
-			// const rendererOptions = {
-			// 	antialias: config.antialias,
-			// 	pixelRatio: config.pixelRatio,
-			// 	alpha: config.alpha,
-			// };
 			this.renderer = new THREE.WebGLRenderer(rendererOptions);
 			this.initializeRenderer();
 			RendererManager.instance = this;

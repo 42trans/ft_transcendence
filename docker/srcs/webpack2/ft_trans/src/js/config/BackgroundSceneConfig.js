@@ -15,34 +15,14 @@ class BackgroundSceneConfig extends BaseSceneConfig {
 
 		/** @type {{ fov: number, aspect: number, near: number, far: number, position: THREE.Vector3, lookAt: THREE.Vector3 }} */
 		this.cameraConfig = {
-			fov: 70,
-			aspect: window.innerWidth / window.innerHeight,
-			near: 0.1,
+			...this.cameraConfig,
 			far: 1000,
 			position: new THREE.Vector3(0, 0, 10),
-			lookAt: new THREE.Vector3(0, 0, 0),
 		};
-
-		// /** @type {{ antialias: boolean, pixelRatio: number, alpha: boolean }} */
-		// this.rendererConfig = {
-		// 	antialias: true,
-		// 	pixelRatio: window.devicePixelRatio,
-		// 	alpha: true,
-		// };
 
 		/** @type {{ enableDamping: boolean, dampingFactor: number, screenSpacePanning: boolean, maxPolarAngle: number, minDistance: number, maxDistance: number, rotateSpeed: number, zoomSpeed: number, autoRotate: boolean, autoRotateSpeed: number }} */
 		this.controlsConfig = {
-			enableDamping: true,
-			dampingFactor: 0.05,
-			screenSpacePanning: false,
-			maxPolarAngle: Math.PI / 2,
-			minDistance: 1,
-			maxDistance: 100,
-			rotateSpeed: 1.0,
-			enableZoom: false,
-			zoomSpeed: 1.2,
-			autoRotate: false, 
-			autoRotateSpeed: 15.0,
+			...this.controlsConfig,
 		};
 
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */

@@ -39,7 +39,7 @@ class Pong {
 			this.renderLoop.start();
 			
 			//dev用
-			this.setupDevEnv();
+			// this.setupDevEnv();
 		});
 	}
 

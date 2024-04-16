@@ -15,32 +15,72 @@ class GameSceneConfig extends BaseSceneConfig{
 		
 		/** @type {{ fov: number, aspect: number, near: number, far: number, position: THREE.Vector3, lookAt: THREE.Vector3 }} */
 		this.cameraConfig = {
-			...this.cameraConfig,
-			fov: 50,
-			far: 10000,
+			fov: 70,
+			aspect: window.innerWidth / window.innerHeight,
+			near: 0.1,
+			far: 1000,
 			position: new THREE.Vector3(0, 0, 320),
+			lookAt: new THREE.Vector3(0, 0, 0),
 		};
+
 
 		/** @type {{ enableDamping: boolean, dampingFactor: number, screenSpacePanning: boolean, maxPolarAngle: number, minDistance: number, maxDistance: number, rotateSpeed: number, zoomSpeed: number, autoRotate: boolean, autoRotateSpeed: number }} */
 		this.controlsConfig = {
 			...this.controlsConfig,
+			enableDamping: true,
+			dampingFactor: 0.05,
+			screenSpacePanning: false,
+			maxPolarAngle: Math.PI / 2,
+			minDistance: 1,
+			maxDistance: 100,
+			rotateSpeed: 1.0,
+			enableZoom: false,
+			enablePan: false,
+			zoomSpeed: 1.2,
+			autoRotate: false,
+			autoRotateSpeed: 5.0,
 		};
 
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */
 		this.lightsConfig = [
 			{
+				type: 'AmbientLight',
+				color: 0x999999,
+				intensity: 0.31,
+				name: 'ambientLight',
+			},
+			{
+				type: 'DirectionalLight',
+				color: 0xffffff,
+				intensity: 1,
+				position: new THREE.Vector3(50, 50, -50),
+				name: 'directionalLight',
+			},
+			{
+				type: 'HemisphereLight',
+				skyColor: 0xffffff,
+				groundColor: 0x444444,
+				intensity: 0.1,
+				position: new THREE.Vector3(50, 50, -50),
+				name: 'hemiLight',
+			},
+			{
 				type: 'PointLight',
-				color: 0xF8D898,
-				intensity: 2.9,
-				distance: 10000,
-				position: { x: -1000, y: 0, z: 1000 },
+				color: 0x4b27ce,
+				intensity: 1.5,
+				distance: 200,
+				decay: 0,
+				position: new THREE.Vector3(-6, -12, 9),
 				name: 'pointLight',
 			},
 			{
 				type: 'SpotLight',
+				color: 0x1cb526,
 				intensity: 1.5,
-				position: { x: 0, y: 0, z: 460 },
-				castShadow: true,
+				distance: 200,
+				angle: Math.PI / 200,
+				penumbra: 0.1,
+				decay: 0.5,
 				position: new THREE.Vector3(10, 8, -9),
 				name: 'spotLight',
 			},
@@ -55,6 +95,7 @@ class GameSceneConfig extends BaseSceneConfig{
 				name: 'suzumebachi',
 				defaultAnimation: 'Hover',
 			},
+			// {
 		];
 
 		/** @type {Array<{model: string, autoplay: boolean}>} */
@@ -64,16 +105,8 @@ class GameSceneConfig extends BaseSceneConfig{
 				autoplay: true
 			},
 		];
-
-		this.gameElements = {
-			fieldWidth: 400,
-			fieldHeight: 200,
-			paddleWidth: 10,
-			paddleHeight: 30,
-			paddleDepth: 10,
-			ballSize: 5
-		}
 	}
+
 }
 
 export default GameSceneConfig;

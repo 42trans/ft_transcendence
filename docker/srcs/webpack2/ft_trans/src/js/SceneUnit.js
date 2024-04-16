@@ -28,7 +28,6 @@ class SceneUnit{
 		this.initializeScene();
 		// シーンのタイプ（'game', 'effects', 'background'）
 		this.type = type; 
-		// this.addSpecialEffects();
 	}
 
 

@@ -1,5 +1,6 @@
 /**
  * @file シーンの初期値を指定するconfigファイル
+ * - 参考:【WebGLRenderer – three.js docs】 <https://threejs.org/docs/#api/en/renderers/WebGLRenderer>
  */
 class RendererConfig {
 	constructor() {

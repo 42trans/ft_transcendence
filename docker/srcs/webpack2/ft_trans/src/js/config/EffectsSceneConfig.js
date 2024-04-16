@@ -15,26 +15,13 @@ class EffectsSceneConfig extends BaseSceneConfig{
 		
 		/** @type {{ fov: number, aspect: number, near: number, far: number, position: THREE.Vector3, lookAt: THREE.Vector3 }} */
 		this.cameraConfig = {
-			fov: 70,
-			aspect: window.innerWidth / window.innerHeight,
-			near: 0.1,
-			far: 100,
+			...this.cameraConfig,
 			position: new THREE.Vector3(8, 6, 10),
-			lookAt: new THREE.Vector3(0, 0, 0),
 		};
-
-		// /** @type {{ antialias: boolean, pixelRatio: number, alpha: boolean }} */
-		// this.rendererConfig = {
-		// 	antialias: true,
-		// 	pixelRatio: window.devicePixelRatio,
-		// 	alpha: true,
-		// };
 
 		/** @type {{ enableDamping: boolean, dampingFactor: number, screenSpacePanning: boolean, maxPolarAngle: number, minDistance: number, maxDistance: number, rotateSpeed: number, zoomSpeed: number, autoRotate: boolean, autoRotateSpeed: number }} */
 		this.controlsConfig = {
-			enableDamping: true,
-			dampingFactor: 0.05,
-			screenSpacePanning: false,
+			...this.controlsConfig,
 			minPolarAngle: Math.PI / 8,
 			maxPolarAngle: Math.PI / 2,
 			minDistance: 3,
@@ -42,10 +29,11 @@ class EffectsSceneConfig extends BaseSceneConfig{
 			rotateSpeed: 1.0,
 			zoomSpeed: 1.2,
 			autoRotate: true,
+			enableZoom: true,
+			enablePan: true,
+			enableRotate: true,
 			autoRotateSpeed: 15.0,
 			dampingFactor: 0.25,
-			screenSpacePanning: false,
-			maxPolarAngle: Math.PI / 2,
 		};
 
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */
@@ -63,34 +51,6 @@ class EffectsSceneConfig extends BaseSceneConfig{
 				position: new THREE.Vector3(50, 50, -50),
 				name: 'directionalLight',
 			},
-			// {
-			// 	type: 'HemisphereLight',
-			// 	skyColor: 0xffffff,
-			// 	groundColor: 0x444444,
-			// 	intensity: 0.1,
-			// 	position: new THREE.Vector3(50, 50, -50),
-			// 	name: 'hemiLight',
-			// },
-			// {
-			// 	type: 'PointLight',
-			// 	color: 0x4b27ce,
-			// 	intensity: 1.5,
-			// 	distance: 200,
-			// 	decay: 0,
-			// 	position: new THREE.Vector3(-6, -12, 9),
-			// 	name: 'pointLight',
-			// },
-			// {
-			// 	type: 'SpotLight',
-			// 	color: 0x1cb526,
-			// 	intensity: 1.5,
-			// 	distance: 200,
-			// 	angle: Math.PI / 200,
-			// 	penumbra: 0.1,
-			// 	decay: 0.5,
-			// 	position: new THREE.Vector3(10, 8, -9),
-			// 	name: 'spotLight',
-			// },
 		];
 
 		/** @type {Array<{path: string, initialPosition: THREE.Vector3, initialScale: THREE.Vector3, initialRotation: THREE.Euler, name: string, defaultAnimation: string, textures: {baseColor: string, normalMap: string, specularMap: string}}>} */

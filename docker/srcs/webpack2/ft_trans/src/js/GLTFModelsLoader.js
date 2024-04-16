@@ -234,7 +234,8 @@ class GLTFModelsLoader {
 				action.play();
 				if (this.animationMixersManager) {
 					this.animationMixersManager.addMixer(mixer);
-					console.log("Mixerに追加");
+					// 参考:【Object3D – three.js docs】 <https://threejs.org/docs/?q=AnimationMixer#api/en/core/Object3D>
+					console.log("Mixerに追加" + mixer.getRoot().name);
 				} 
 			} 
 		} else {
