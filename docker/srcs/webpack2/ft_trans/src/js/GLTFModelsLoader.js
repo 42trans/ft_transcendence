@@ -31,7 +31,8 @@ class GLTFModelsLoader {
 	 * 各モデルのロードを行い、対応するアニメーションを設定する。
 	 * forEach(): range-based for loop. コレクションの各要素に対して操作
 	 */
-	loadModels(){
+	loadModels(sceneUnit){
+		this.sceneUnit = sceneUnit;
 		if (!this.sceneConfig || !this.sceneConfig.modelsConfig) {
 			return;
 		}
@@ -48,6 +49,7 @@ class GLTFModelsLoader {
 			if (animConfig) {
 				defaultAnimation = modelsConfig.defaultAnimation;
 				autoplay = animConfig.autoplay;
+				console.log('autoplay:' + autoplay);
 			} else {
 				defaultAnimation = undefined;
 			}
@@ -55,6 +57,7 @@ class GLTFModelsLoader {
 			this.loadModel(
 				modelsConfig,
 				defaultAnimation, 
+				autoplay
 			)
 		})
 	}
@@ -75,26 +78,30 @@ class GLTFModelsLoader {
 	loadModel(
 		modelsConfig,
 		defaultAnimation,
+		autoplay
 	) {
-		// キャッシュからモデルを取得する試み
-		const cachedModel = this.modelCache.get(modelsConfig.path);
-		if (cachedModel) {
-			const modelClone = cachedModel.clone(); // モデルのクローンを作成
-			this.setupModel(modelClone, modelsConfig.initialPosition, modelsConfig.initialScale, modelsConfig.initialRotation);
-			this.scene.add(modelClone); // クローンをシーンに追加
-			return;
-		}
-
-		// モデルがキャッシュになければロード
 		/**
 		 * GLTFモデルを非同期でロード。
 		 * @description コールバック関数(gltf): GLTFモデルが正常にロードされた後に実行。
 		 */
 		this.loader.load(modelsConfig.path, (gltf) => {
 
-			// ロードされたGLTFファイルからGLTF.sceneを取得
-			const model = gltf.scene;
-			this.modelCache.set(modelsConfig.path, model);
+			let model;
+			let animations;
+
+			const cachedModel = this.modelCache.get(modelsConfig.path);
+			if (cachedModel) {
+				animations = cachedModel.animations;
+			} else {
+				// ロードされたGLTFファイルからGLTF.sceneを取得
+				animations = gltf.animations;
+				this.modelCache.set(modelsConfig.path, {
+					animations: animations  // アニメーション情報も保存
+				});
+			}
+			// 新たにモデルを取得（毎回新しいインスタンスを使用）
+			model = gltf.scene;
+			
 			// 3Dモデルを配置
 			this.setupModel(
 				model, 
@@ -102,16 +109,18 @@ class GLTFModelsLoader {
 				modelsConfig.initialScale, 
 				modelsConfig.initialRotation
 			);
+			this.scene.add(model);
 			// モデルにテクスチャを設定
 			if (modelsConfig.textures) {
 				this.setupTextures(model, modelsConfig.textures);
 			}
 			// モデルにアニメーションを設定
-			this.setupAnimation(model, gltf, defaultAnimation);
+			this.setupAnimation(model, gltf, defaultAnimation, true);
 		}, undefined, function (error) {
 			console.error(error);
 		});
 	}
+
 
 	/**
 	 * Private method
@@ -171,20 +180,51 @@ class GLTFModelsLoader {
 
 				if (material instanceof THREE.MeshStandardMaterial) {
 					if (textureConfig.baseColor) {
+						let baseColorTexture = this.getTextureFromCache(textureConfig.baseColor);
+						if (!baseColorTexture) {
+							baseColorTexture = this.textureLoader.load(textureConfig.baseColor, (loadedTexture) => {
+								this.modelCache.set(textureConfig.baseColor, loadedTexture);
+								console.log(`テクスチャをキャッシュに追加: ${textureConfig.baseColor}`);
+							});
+						}
 						material.map = this.textureLoader.load(textureConfig.baseColor);
 					}
 					if (textureConfig.normalMap) {
+						let normalMapTexture = this.getTextureFromCache(textureConfig.normalMap);
+						if (!normalMapTexture) {
+							normalMapTexture = this.textureLoader.load(textureConfig.normalMap, (loadedTexture) => {
+								this.modelCache.set(textureConfig.normalMap, loadedTexture);
+							});
+						}
 						material.normalMap = this.textureLoader.load(textureConfig.normalMap);
 					}
 					if (textureConfig.roughnessMap) {
+						let roughnessMapTexture = this.getTextureFromCache(textureConfig.roughnessMap);
+						if (!roughnessMapTexture) {
+							roughnessMapTexture = this.textureLoader.load(textureConfig.roughnessMap, (loadedTexture) => {
+								this.modelCache.set(textureConfig.roughnessMap, loadedTexture);
+							});
+						}
 						material.roughnessMap = this.textureLoader.load(textureConfig.roughnessMap);
 					}
 					if (textureConfig.metalnessMap) {
+						let metalnessMapTexture = this.getTextureFromCache(textureConfig.metalnessMap);
+						if (!metalnessMapTexture) {
+							metalnessMapTexture = this.textureLoader.load(textureConfig.metalnessMap, (loadedTexture) => {
+								this.modelCache.set(textureConfig.metalnessMap, loadedTexture);
+							});
+						}
 						material.metalnessMap = this.textureLoader.load(textureConfig.metalnessMap);
 					}
 					if ('reflectivity' in material && textureConfig.specularMap) {
-						material.reflectivity = this.textureLoader.load(textureConfig.specularMap);
+						let specularMapTexture = this.getTextureFromCache(textureConfig.specularMap);
+						if (!specularMapTexture) {
+							specularMapTexture = this.textureLoader.load(textureConfig.specularMap, (loadedTexture) => {
+								this.modelCache.set(textureConfig.specularMap, loadedTexture);
+							});
 						}
+						material.reflectivity = this.textureLoader.load(textureConfig.specularMap);
+					}
 				}
 			});
 
@@ -205,12 +245,14 @@ class GLTFModelsLoader {
 	setupAnimation(
 		model, 
 		gltf, 
-		defaultAnimation
+		defaultAnimation,
+		autoplay
 	) {
 		if (!gltf.animations || gltf.animations.length === 0) {
 			return;
 		}
 		const mixer = new THREE.AnimationMixer(model);
+		// this.animationMixersManager.associateMixer(model, mixer);
 		if (gltf.animations.length > 0) {
 			let animationToPlay;
 			/**
@@ -231,9 +273,11 @@ class GLTFModelsLoader {
 
 			if (animationToPlay) {
 				const action = mixer.clipAction(animationToPlay);
-				action.play();
+				if (autoplay) {
+					action.play();
+				}
 				if (this.animationMixersManager) {
-					this.animationMixersManager.addMixer(mixer);
+					this.animationMixersManager.addMixer(model, mixer);
 					// 参考:【Object3D – three.js docs】 <https://threejs.org/docs/?q=AnimationMixer#api/en/core/Object3D>
 					console.log("Mixerに追加" + mixer.getRoot().name);
 				} 

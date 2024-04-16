@@ -47,18 +47,17 @@ class Pong {
 
 		// TODO_ft:開幕はモデルを読み込まないようにしたい　
 	setupScenes() {
+		this.gameSceneUnit = new SceneUnit(new GameSceneConfig(), this.renderer, 'game', this.animationMixersManager);
+		this.allScenesManager.addSceneUnit(this.gameSceneUnit);
 		this.effectsSceneUnit = new SceneUnit(new EffectsSceneConfig(), this.renderer, 'effects', this.animationMixersManager);
 		this.allScenesManager.addSceneUnit(this.effectsSceneUnit);
-		setTimeout(() => {
-			this.backgroundSceneUnit = new SceneUnit(new BackgroundSceneConfig(), this.renderer, 'background', this.animationMixersManager);
-			this.gameSceneUnit = new SceneUnit(new GameSceneConfig(), this.renderer, 'game', this.animationMixersManager);
-			this.allScenesManager.addSceneUnit(this.backgroundSceneUnit);
-			this.allScenesManager.addSceneUnit(this.gameSceneUnit);
-		}, 0);
+		this.backgroundSceneUnit = new SceneUnit(new BackgroundSceneConfig(), this.renderer, 'background', this.animationMixersManager);
+		this.allScenesManager.addSceneUnit(this.backgroundSceneUnit);
 	}
 
 	update() {
 		this.allScenesManager.updateAllScenes();
+		// console.log('pong.update');
 	}
 
 	render() {

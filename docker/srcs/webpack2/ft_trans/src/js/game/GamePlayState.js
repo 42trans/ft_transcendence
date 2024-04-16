@@ -1,6 +1,8 @@
 import Pong from '../Pong'
 import BaseGameState from './BaseGameState'
 import BackgroundSceneConfig from '../config/BackgroundSceneConfig';
+import GameSceneConfig from '../config/GameSceneConfig';
+// import GameStateManager from './states/GameStateManager';
 import SceneUnit from '../SceneUnit';
 
 class GameplayState extends BaseGameState {
@@ -8,9 +10,11 @@ class GameplayState extends BaseGameState {
 		super(Pong);
 	}
 	enter() {
-		// メインメニュー特有の初期化
 		console.log("Entering GamePlay state");
-		this.Pong.backgroundSceneUnit.refreshScene();
+		// this.Pong.backgroundSceneUnit.refreshScene(new BackgroundSceneConfig());
+		this.Pong.gameSceneUnit.refreshScene(new GameSceneConfig());
+		// this.pongEngine = new PongEngine();
+		// this.pongEngine(this.Pong.renderer, this.Pong.animationMixersManager, this.gameSceneUnit.scene);
 	}
 
 	update() {
@@ -21,6 +25,9 @@ class GameplayState extends BaseGameState {
 
 	exit() {
 		console.log("Exiting GamePlay state");
+		// this.Pong.backgroundSceneUnit.clearScene();
+		this.Pong.gameSceneUnit.clearScene();
+
 	}
 }
 

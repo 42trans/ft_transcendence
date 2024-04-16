@@ -7,8 +7,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GLTFModelsLoader from './GLTFModelsLoader';
-import { MagmaFlare } from './effect/MagmaFlare'
-
 
 class SceneUnit{
 	/**
@@ -29,6 +27,7 @@ class SceneUnit{
 		this.initializeScene();
 		// シーンのタイプ（'game', 'effects', 'background'）
 		// this.type = type; 
+		
 	}
 
 
@@ -47,6 +46,15 @@ class SceneUnit{
 	clearScene() {
 		while (this.scene.children.length > 0) {
 			const object = this.scene.children.pop();
+			console.log(`Removing object: `, object);
+
+			// ミキサーの削除とアニメーションの停止
+			const mixer = this.animationMixersManager.mixersMap.get(object.uuid);
+			if (mixer) {
+				mixer.stopAllAction(); // すべてのアニメーションアクションを停止
+				this.animationMixersManager.removeMixer(object); // ミキサーを削除
+			}
+			
 			if (object instanceof THREE.Mesh) {
 				if (object.geometry) {
 					object.geometry.dispose();
@@ -74,7 +82,7 @@ class SceneUnit{
 		this.camera = this.setupCamera(this.sceneConfig.cameraConfig);
 		this.controls = this.setupControls(this.camera, this.renderer, this.sceneConfig.controlsConfig);
 		this.lights = [];
-		this.setupLights(this.sceneConfig.lightsConfig);
+		// this.setupLights(this.sceneConfig.lightsConfig);
 		this.gLTFModelsLoader = new GLTFModelsLoader(this.scene, this.sceneConfig, this.animationMixersManager);
 	}
 
@@ -82,26 +90,32 @@ class SceneUnit{
 	 * Public mehod
 	 * 既存インスタンスの値のみを変更
 	 */
-	refreshScene() {
+	refreshScene(newConfig) {
+		if (!newConfig || !newConfig.cameraConfig) {
+			console.error("Invalid or incomplete configuration provided:", newConfig);
+			return;
+		}
+		console.log("リフレッシュ時のconfigファイル:", newConfig);
 		this.clearScene();
-		const { position, lookAt } = this.sceneConfig.cameraConfig;
-		this.camera.position.copy(position);
-		this.camera.lookAt(lookAt);
+		this.sceneConfig = newConfig;
+		this.camera = this.setupCamera(this.sceneConfig.cameraConfig);
+		this.controls = this.setupControls(this.camera, this.renderer, this.sceneConfig.controlsConfig);
 		this.lights.forEach(light => {
 			this.scene.remove(light);
 		});
+		this.lights = [];
 		this.setupLights(this.sceneConfig.lightsConfig);
-		// if (!this.modelsLoaded) {
-		this.gLTFModelsLoader.loadModels(); 
-		// 	this.modelsLoaded = true; // モデルが読み込まれたとマーク
-		// }
-		// await this.gLTFModelsLoader.loadModelsAsync(); // Promiseを返す新しいメソッドを想定
+		this.gLTFModelsLoader.loadModels(this);
 	}
 	
 	/**
 	 * @returns {THREE.PerspectiveCamera}
 	 */
 	setupCamera(cameraConfig) {
+		if (!cameraConfig) {
+			console.error("No camera configuration provided");
+			return;
+		}
 		const config = cameraConfig;
 		const cam = new THREE.PerspectiveCamera(
 			config.fov,
@@ -120,6 +134,10 @@ class SceneUnit{
 	 * @returns {OrbitControls}
 	 */
 	setupControls(camera, renderer, controlsConfig) {
+		if (!controlsConfig) {
+			console.error("No controlsConfig provided");
+			return;
+		}
 		const config = controlsConfig;
 		const controls = new OrbitControls(camera, renderer.domElement);
 		Object.assign(controls, config);

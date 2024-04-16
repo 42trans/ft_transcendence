@@ -1,4 +1,3 @@
-import MainMenuState from './game/MainMenuState'
 import GamePlayState from './game/GamePlayState'
 import EntryGameState from './game/EntryGameState'
 
@@ -11,12 +10,11 @@ class GameStateManager {
 		if (!GameStateManager.instance) {		
 			this.pong = pong;
 			this.states = {
-				mainMenu: new MainMenuState(pong),
 				entry: new EntryGameState(pong),
-				gameplay: new GamePlayState(pong)
+				gamePlay: new GamePlayState(pong)
 			};
 			this.currentState = this.states.entry;
-			// this.currentState = this.states.gameplay;
+			// this.currentState = this.states.gamePlay;
 			this.currentState.enter();
 			// StartButtonなどのUI設定
 			this.setupUI();
@@ -34,13 +32,17 @@ class GameStateManager {
 
 	setupUI() {
 		const startButton = document.getElementById('startButton');
-		startButton.addEventListener('click', () => this.changeState('gameplay'));
+		startButton.addEventListener('click', () => this.changeState('gamePlay'));
+		const entryButton = document.getElementById('entryButton');
+		entryButton.addEventListener('click', () => this.changeState('entry'));
 	}
 
 	changeState(newState) {
 		if (this.currentState) {
+			console.log(`currentState.exit(): ${this.currentState}`);
 			this.currentState.exit();
 		}
+		console.log(`changeState(): ${newState}`);
 		this.currentState = this.states[newState];
 		this.currentState.enter();
 	}

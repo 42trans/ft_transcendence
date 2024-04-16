@@ -29,6 +29,8 @@ class RenderLoop {
 
 	start() {
 		const animate = () => {
+			// console.log('requestAnimationFrame');
+
 			requestAnimationFrame(animate);
 			this.pong.update();
 			this.pong.render();

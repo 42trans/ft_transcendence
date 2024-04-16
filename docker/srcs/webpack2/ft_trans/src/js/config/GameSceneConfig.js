@@ -24,6 +24,8 @@ class GameSceneConfig extends BaseSceneConfig{
 		/** @type {{ enableDamping: boolean, dampingFactor: number, screenSpacePanning: boolean, maxPolarAngle: number, minDistance: number, maxDistance: number, rotateSpeed: number, zoomSpeed: number, autoRotate: boolean, autoRotateSpeed: number }} */
 		this.controlsConfig = {
 			...this.controlsConfig,
+			enableDamping: true,
+			dampingFactor: 0.2,
 		};
 
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */
@@ -41,7 +43,7 @@ class GameSceneConfig extends BaseSceneConfig{
 				intensity: 1.5,
 				position: { x: 0, y: 0, z: 460 },
 				castShadow: true,
-				position: new THREE.Vector3(10, 8, -9),
+				// position: new THREE.Vector3(10, 8, -9),
 				name: 'spotLight',
 			},
 		];
@@ -61,18 +63,10 @@ class GameSceneConfig extends BaseSceneConfig{
 		this.animationsConfig = [
 			{
 				model: 'suzumebachi',
-				autoplay: true
+				// autoplay: true
 			},
 		];
 
-		this.gameElements = {
-			fieldWidth: 400,
-			fieldHeight: 200,
-			paddleWidth: 10,
-			paddleHeight: 30,
-			paddleDepth: 10,
-			ballSize: 5
-		}
 	}
 }
 
