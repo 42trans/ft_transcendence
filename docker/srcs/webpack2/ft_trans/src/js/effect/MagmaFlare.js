@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { Aura } from "./Aura";
 import { FlareEmitter } from "./FlareEmitter";
 
-export class MagmaFlare extends THREE.Object3D {
+class MagmaFlare extends THREE.Object3D {
 	constructor() {
 		super();
 		this.name = "MagmaFlare";
@@ -16,3 +16,5 @@ export class MagmaFlare extends THREE.Object3D {
 		this._flareEmitter.update();
 	}
 }
+
+export default MagmaFlare;

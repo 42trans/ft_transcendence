@@ -25,7 +25,7 @@
  * - 3Dmodel.gltfやtextureは assejs/にまとめてます。
 */
 
-import Pong from './js/Pong'
+import PongApp from './js/PongApp'
 import './css/3d.css';
 
-Pong.main();
+PongApp.main();

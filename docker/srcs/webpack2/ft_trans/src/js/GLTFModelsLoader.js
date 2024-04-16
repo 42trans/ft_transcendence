@@ -89,18 +89,19 @@ class GLTFModelsLoader {
 			let model;
 			let animations;
 
-			const cachedModel = this.modelCache.get(modelsConfig.path);
-			if (cachedModel) {
-				animations = cachedModel.animations;
-			} else {
-				// ロードされたGLTFファイルからGLTF.sceneを取得
-				animations = gltf.animations;
-				this.modelCache.set(modelsConfig.path, {
-					animations: animations  // アニメーション情報も保存
-				});
-			}
-			// 新たにモデルを取得（毎回新しいインスタンスを使用）
+			// const cachedModel = this.modelCache.get(modelsConfig.path);
+			// if (cachedModel) {
+			// 	animations = cachedModel.animations;
+			// } else {
+			// 	// ロードされたGLTFファイルからGLTF.sceneを取得
+			// 	animations = gltf.animations;
+			// 	this.modelCache.set(modelsConfig.path, {
+			// 		animations: animations  // アニメーション情報も保存
+			// 	});
+			// }
+			// // 新たにモデルを取得（毎回新しいインスタンスを使用）
 			model = gltf.scene;
+			animations = gltf.animations;
 			
 			// 3Dモデルを配置
 			this.setupModel(
@@ -180,49 +181,49 @@ class GLTFModelsLoader {
 
 				if (material instanceof THREE.MeshStandardMaterial) {
 					if (textureConfig.baseColor) {
-						let baseColorTexture = this.getTextureFromCache(textureConfig.baseColor);
-						if (!baseColorTexture) {
-							baseColorTexture = this.textureLoader.load(textureConfig.baseColor, (loadedTexture) => {
-								this.modelCache.set(textureConfig.baseColor, loadedTexture);
-								console.log(`テクスチャをキャッシュに追加: ${textureConfig.baseColor}`);
-							});
-						}
+						// let baseColorTexture = this.getTextureFromCache(textureConfig.baseColor);
+						// if (!baseColorTexture) {
+						// 	baseColorTexture = this.textureLoader.load(textureConfig.baseColor, (loadedTexture) => {
+						// 		this.modelCache.set(textureConfig.baseColor, loadedTexture);
+						// 		console.log(`テクスチャをキャッシュに追加: ${textureConfig.baseColor}`);
+						// 	});
+						// }
 						material.map = this.textureLoader.load(textureConfig.baseColor);
 					}
-					if (textureConfig.normalMap) {
-						let normalMapTexture = this.getTextureFromCache(textureConfig.normalMap);
-						if (!normalMapTexture) {
-							normalMapTexture = this.textureLoader.load(textureConfig.normalMap, (loadedTexture) => {
-								this.modelCache.set(textureConfig.normalMap, loadedTexture);
-							});
-						}
+					// if (textureConfig.normalMap) {
+					// 	let normalMapTexture = this.getTextureFromCache(textureConfig.normalMap);
+					// 	if (!normalMapTexture) {
+					// 		normalMapTexture = this.textureLoader.load(textureConfig.normalMap, (loadedTexture) => {
+					// 			this.modelCache.set(textureConfig.normalMap, loadedTexture);
+					// 		});
+					// 	}
 						material.normalMap = this.textureLoader.load(textureConfig.normalMap);
-					}
+					// }
 					if (textureConfig.roughnessMap) {
-						let roughnessMapTexture = this.getTextureFromCache(textureConfig.roughnessMap);
-						if (!roughnessMapTexture) {
-							roughnessMapTexture = this.textureLoader.load(textureConfig.roughnessMap, (loadedTexture) => {
-								this.modelCache.set(textureConfig.roughnessMap, loadedTexture);
-							});
-						}
+						// let roughnessMapTexture = this.getTextureFromCache(textureConfig.roughnessMap);
+						// if (!roughnessMapTexture) {
+						// 	roughnessMapTexture = this.textureLoader.load(textureConfig.roughnessMap, (loadedTexture) => {
+						// 		this.modelCache.set(textureConfig.roughnessMap, loadedTexture);
+						// 	});
+						// }
 						material.roughnessMap = this.textureLoader.load(textureConfig.roughnessMap);
 					}
 					if (textureConfig.metalnessMap) {
-						let metalnessMapTexture = this.getTextureFromCache(textureConfig.metalnessMap);
-						if (!metalnessMapTexture) {
-							metalnessMapTexture = this.textureLoader.load(textureConfig.metalnessMap, (loadedTexture) => {
-								this.modelCache.set(textureConfig.metalnessMap, loadedTexture);
-							});
-						}
+						// let metalnessMapTexture = this.getTextureFromCache(textureConfig.metalnessMap);
+						// if (!metalnessMapTexture) {
+						// 	metalnessMapTexture = this.textureLoader.load(textureConfig.metalnessMap, (loadedTexture) => {
+						// 		this.modelCache.set(textureConfig.metalnessMap, loadedTexture);
+						// 	});
+						// }
 						material.metalnessMap = this.textureLoader.load(textureConfig.metalnessMap);
 					}
 					if ('reflectivity' in material && textureConfig.specularMap) {
-						let specularMapTexture = this.getTextureFromCache(textureConfig.specularMap);
-						if (!specularMapTexture) {
-							specularMapTexture = this.textureLoader.load(textureConfig.specularMap, (loadedTexture) => {
-								this.modelCache.set(textureConfig.specularMap, loadedTexture);
-							});
-						}
+						// let specularMapTexture = this.getTextureFromCache(textureConfig.specularMap);
+						// if (!specularMapTexture) {
+						// 	specularMapTexture = this.textureLoader.load(textureConfig.specularMap, (loadedTexture) => {
+						// 		this.modelCache.set(textureConfig.specularMap, loadedTexture);
+						// 	});
+						// }
 						material.reflectivity = this.textureLoader.load(textureConfig.specularMap);
 					}
 				}

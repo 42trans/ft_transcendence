@@ -1,9 +1,9 @@
-import Pong from '../Pong'
+import PongApp from '../PongApp'
 
 
 class BaseGameState {
-	constructor(Pong) {
-		this.Pong = Pong;
+	constructor(PongApp) {
+		this.PongApp = PongApp;
 	}
 	enter() {
 		throw new Error("Enter method must be implemented");

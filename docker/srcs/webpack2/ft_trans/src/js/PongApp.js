@@ -2,30 +2,34 @@
  * @file 
  * メインのクラス。システム全体の初期設定と、ゲームのメインループを担当
  */
+import * as THREE from 'three';
+
 import BackgroundSceneConfig from './config/BackgroundSceneConfig';
 import GameSceneConfig from './config/GameSceneConfig';
 import BackgroundSceneConfigNone from './config/BackgroundSceneConfigNone';
 import GameSceneConfig2 from './config/GameSceneConfig2';
 import EffectsSceneConfig from './config/EffectsSceneConfig';
-import RendererManager from './RendererManager'
+
+import AllScenesManager from './manager/AllScenesManager';
+import AnimationMixersManager from './manager/AnimationMixersManager'
+import GameStateManager from './manager/GameStateManager'
+import LoopManager from './manager/LoopManager'
+import RendererManager from './manager/RendererManager'
+
 import SceneUnit from './SceneUnit';
-import AllScenesManager from './AllScenesManager';
-import GameStateManager from './GameStateManager'
-import AnimationMixersManager from './AnimationMixersManager'
-import RenderLoop from './RenderLoop'
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
-// import { MagmaFlare } from './effect/MagmaFlare'
 
 /**
  * constructor: C++でいうとmain()のような役割。RenderLoopは非同期で再帰し、アプリ終了まで残ります。
  * setupScenes: オーバーレイするシーンの数だけインスタンスを作成してください。
  */
-class Pong {
+class PongApp {
 	//  コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
 	constructor() {
 		document.addEventListener('DOMContentLoaded', () => {
+			THREE.Cache.enabled = true;
 			// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
 			this.renderer = RendererManager.getRnderer();
 			// 全てのシーンのmixerを一元的に管理
@@ -37,7 +41,7 @@ class Pong {
 			// ゲームの状態（待機、Play、終了）を担当
 			this.gameStateManager = GameStateManager.getInstance(this); 
 			// アニメーションの更新を担当
-			this.renderLoop = RenderLoop.getInstance(this);
+			this.renderLoop = LoopManager.getInstance(this);
 			this.renderLoop.start();
 			
 			//dev用
@@ -57,7 +61,7 @@ class Pong {
 
 	update() {
 		this.allScenesManager.updateAllScenes();
-		// console.log('pong.update');
+		// console.log('PongApp.update');
 	}
 
 	render() {
@@ -76,8 +80,8 @@ class Pong {
 	}
 
 	static main() {
-		new Pong();
+		new PongApp();
 	}
 }
 
-export default Pong;
+export default PongApp;

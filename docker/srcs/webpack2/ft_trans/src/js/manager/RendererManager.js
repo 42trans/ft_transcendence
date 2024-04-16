@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import RendererConfig from './config/RendererConfig'
+import RendererConfig from '../config/RendererConfig'
 
 /**
  * RendererManager:

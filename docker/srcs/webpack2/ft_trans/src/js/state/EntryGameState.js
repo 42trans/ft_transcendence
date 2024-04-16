@@ -1,11 +1,11 @@
-import Pong from '../Pong'
+import PongApp from '../PongApp'
 import BaseGameState from './BaseGameState'
-import { MagmaFlare } from '../effect/MagmaFlare'
-import * as THREE from 'three';
+import MagmaFlare from '../effect/MagmaFlare'
+// import * as THREE from 'three';
 
 class EntryGameState extends BaseGameState {
-	constructor (Pong){
-		super(Pong);
+	constructor (PongApp){
+		super(PongApp);
 	}
 
 	enter() {
@@ -14,7 +14,7 @@ class EntryGameState extends BaseGameState {
 
 		const magmaFlare = new MagmaFlare();
 		magmaFlare.name = "MagmaFlare";
-		this.Pong.effectsSceneUnit.scene.add(magmaFlare);
+		this.PongApp.effectsSceneUnit.scene.add(magmaFlare);
 	}
 
 	update() {
@@ -26,7 +26,7 @@ class EntryGameState extends BaseGameState {
 
 	exit() {
 		console.log("Exiting Entry state");
-		this.Pong.effectsSceneUnit.clearScene();
+		this.PongApp.effectsSceneUnit.clearScene();
 	}
 }
 

@@ -1,5 +1,5 @@
-import GamePlayState from './game/GamePlayState'
-import EntryGameState from './game/EntryGameState'
+import GamePlayState from '../state/GamePlayState'
+import EntryGameState from '../state/EntryGameState'
 
 /**
  * - シングルトン
@@ -13,8 +13,8 @@ class GameStateManager {
 				entry: new EntryGameState(pong),
 				gamePlay: new GamePlayState(pong)
 			};
-			this.currentState = this.states.entry;
-			// this.currentState = this.states.gamePlay;
+			// this.currentState = this.states.entry;
+			this.currentState = this.states.gamePlay;
 			this.currentState.enter();
 			// StartButtonなどのUI設定
 			this.setupUI();
