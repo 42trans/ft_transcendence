@@ -14,6 +14,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
 
     path('oauth-ft/', OAuthWith42.as_view(), name='oauth_ft'),
+    path('oauth-ft/callback/', OAuthWith42.as_view(), name='oauth_ft_callback'),
 
     path('logout/', LogoutView.as_view(), name='logout'),
 
