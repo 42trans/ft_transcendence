@@ -1,17 +1,19 @@
 import GamePlayState from '../state/GamePlayState'
 import EntryGameState from '../state/EntryGameState'
+import RendererManager from './RendererManager';
 
 /**
  * - シングルトン
  */
 class GameStateManager {
 	static instance = null;
-	constructor(pong) {
+	constructor(pongApps, allScenesManager) {
 		if (!GameStateManager.instance) {		
-			this.pong = pong;
+			this.pongApps = pongApps;
+			this.allScenesManager = allScenesManager;
 			this.states = {
-				entry: new EntryGameState(pong),
-				gamePlay: new GamePlayState(pong)
+				entry: new EntryGameState(pongApps),
+				gamePlay: new GamePlayState(pongApps)
 			};
 			// this.currentState = this.states.entry;
 			this.currentState = this.states.gamePlay;
@@ -23,9 +25,9 @@ class GameStateManager {
 		return GameStateManager.instance;
 	}
 
-	static getInstance(pong) {
+	static getInstance(pongApps) {
 		if (!GameStateManager.instance) {
-			GameStateManager.instance = new GameStateManager(pong);
+			GameStateManager.instance = new GameStateManager(pongApps);
 		}
 		return GameStateManager.instance;
 	}
@@ -51,14 +53,14 @@ class GameStateManager {
 		if (this.currentState) {
 			this.currentState.update();
 		}
-		this.pong.AllScenesManager.updateAllScenes();
+		this.allScenesManager.updateAllScenes();
 	}
 
 	render() {
 		if (this.currentState) {
 			this.currentState.render();
 		}
-		this.pong.AllScenesManager.renderAllScenes(this.pong.renderer);
+		this.allScenesManager.renderAllScenes(RendererManager.getRnderer());
 	}
 }
 

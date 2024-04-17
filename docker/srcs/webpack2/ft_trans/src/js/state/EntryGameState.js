@@ -14,7 +14,7 @@ class EntryGameState extends BaseGameState {
 
 		const magmaFlare = new MagmaFlare();
 		magmaFlare.name = "MagmaFlare";
-		this.PongApp.effectsSceneUnit.scene.add(magmaFlare);
+		this.PongApp.allScenesManager.effectsSceneUnit.scene.add(magmaFlare);
 	}
 
 	update() {
@@ -26,7 +26,7 @@ class EntryGameState extends BaseGameState {
 
 	exit() {
 		console.log("Exiting Entry state");
-		this.PongApp.effectsSceneUnit.clearScene();
+		this.PongApp.allScenesManager.effectsSceneUnit.clearScene();
 	}
 }
 

@@ -12,7 +12,6 @@ class AnimationMixersManager {
 	static instance = null;
 	constructor() {
 		if (!AnimationMixersManager.instance) {	
-			// this.mixers = [];
 			this.clock = new THREE.Clock();
 			AnimationMixersManager.instance = this;
 			this.mixersMap = new Map();
@@ -28,22 +27,22 @@ class AnimationMixersManager {
 	}
 
 	addMixer(object, mixer) {
-        this.mixersMap.set(object.uuid, mixer);
-		console.log(` UUID: ${object.uuid}`);
-		console.log(` mixer: ${mixer}`);
-    }
+		this.mixersMap.set(object.uuid, mixer);
+		// console.log(` UUID: ${object.uuid}`);
+		// console.log(` mixer: ${mixer}`);
+	}
 
 	removeMixer(object) {
 		if (!object || !object.uuid) {
-			console.error("Invalid object or missing UUID.");
+			// console.error("Invalid object or missing UUID.");
 			return;
 		}
 	
 		if (this.mixersMap.has(object.uuid)) {
 			this.mixersMap.delete(object.uuid);
-			console.log(`Mixer removed for object UUID: ${object.uuid}`);
+			// console.log(`Mixer removed for object UUID: ${object.uuid}`);
 		} else {
-			console.log(`Mixer not found for UUID: ${object.uuid}`);
+			// console.log(`Mixer not found for UUID: ${object.uuid}`);
 		}
 	}
 

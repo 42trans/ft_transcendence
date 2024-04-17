@@ -28,4 +28,5 @@
 import PongApp from './js/PongApp'
 import './css/3d.css';
 
+// PongApp.main('dev');
 PongApp.main();

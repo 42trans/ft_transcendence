@@ -1,4 +1,12 @@
+import BackgroundSceneConfig from '../config/BackgroundSceneConfig';
+import GameSceneConfig from '../config/GameSceneConfig';
+import BackgroundSceneConfigNone from '../config/BackgroundSceneConfigNone';
+import GameSceneConfig2 from '../config/GameSceneConfig2';
+import EffectsSceneConfig from '../config/EffectsSceneConfig';
+
 import RendererManager from './RendererManager'
+
+import SceneUnit from '../SceneUnit';
 
 /**
  * - シングルトン
@@ -23,6 +31,15 @@ class AllScenesManager {
 			AllScenesManager.instance = new AllScenesManager(animationMixersManager)
 		}
 		return AllScenesManager.instance;
+	}
+
+	setupScenes() {
+		this.gameSceneUnit = new SceneUnit(new GameSceneConfig(), RendererManager.getRnderer(), 'game', this.animationMixersManager);
+		this.addSceneUnit(this.gameSceneUnit);
+		this.effectsSceneUnit = new SceneUnit(new EffectsSceneConfig(), RendererManager.getRnderer(), 'effects', this.animationMixersManager);
+		this.addSceneUnit(this.effectsSceneUnit);
+		this.backgroundSceneUnit = new SceneUnit(new BackgroundSceneConfig(), RendererManager.getRnderer(), 'background', this.animationMixersManager);
+		this.addSceneUnit(this.backgroundSceneUnit);
 	}
 
 	addSceneUnit(sceneUnit) {
@@ -55,8 +72,8 @@ class AllScenesManager {
 			}
 			// 他のカメラタイプの場合の処理もここに追加可能
 		});
-		if (RendererManager.instance) {
-			RendererManager.instance.renderer.setSize(window.innerWidth, window.innerHeight);
+		if (RendererManager.getRnderer()) {
+			RendererManager.getRnderer().renderer.setSize(window.innerWidth, window.innerHeight);
 		}
 		console.log('リサイズ: 全カメラとレンダラーのサイズが更新されました。');
 	}

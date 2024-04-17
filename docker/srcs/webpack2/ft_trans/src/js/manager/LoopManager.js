@@ -1,3 +1,4 @@
+import RendererManager from "./RendererManager";
 
 /**
  * ブラウザのフレーム更新タイミングに合わせて自身を再帰的に呼び出し、連続したアニメーションフレームを生成
@@ -34,8 +35,8 @@ class RenderLoop {
 			// console.log('requestAnimationFrame');
 
 			requestAnimationFrame(animate);
-			this.pong.update();
-			this.pong.render();
+			this.pong.allScenesManager.updateAllScenes();
+			this.pong.allScenesManager.renderAllScenes(RendererManager.getRnderer())
 		};
 		animate();
 	}

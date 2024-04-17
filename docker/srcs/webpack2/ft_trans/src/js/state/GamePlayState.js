@@ -12,8 +12,8 @@ class GameplayState extends BaseGameState {
 	}
 	enter() {
 		console.log("Entering GamePlay state");
-		this.PongApp.backgroundSceneUnit.refreshScene(new BackgroundSceneConfig());
-		this.PongApp.gameSceneUnit.refreshScene(new GameSceneConfig());
+		this.PongApp.allScenesManager.backgroundSceneUnit.refreshScene(new BackgroundSceneConfig());
+		this.PongApp.allScenesManager.gameSceneUnit.refreshScene(new GameSceneConfig());
 		// this.pongEngine = new PongEngine();
 		// this.pongEngine(this.PongApp.renderer, this.PongApp.animationMixersManager, this.gameSceneUnit.scene);
 	}
@@ -26,8 +26,8 @@ class GameplayState extends BaseGameState {
 
 	exit() {
 		console.log("Exiting GamePlay state");
-		this.PongApp.backgroundSceneUnit.clearScene();
-		this.PongApp.gameSceneUnit.clearScene();
+		this.PongApp.allScenesManager.backgroundSceneUnit.clearScene();
+		this.PongApp.allScenesManager.gameSceneUnit.clearScene();
 
 	}
 }
