@@ -13,10 +13,11 @@ class BaseConfig {
 		this.cameraConfig = {
 			fov: 70,
 			aspect: window.innerWidth / window.innerHeight,
-			near: 0.1,
-			far: 100,
+			near: 0.1, // 撮影可能な近さ
+			far: 100,  // 撮影可能な遠さ
 			position: new THREE.Vector3(0, 0, 10),
 			lookAt: new THREE.Vector3(0, 0, 0),
+			up: new THREE.Vector3(0, 1, 0),
 		};
 		this.controlsConfig = {
 			enableZoom: false,

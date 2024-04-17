@@ -1,11 +1,9 @@
 import BackgroundSceneConfig from '../config/BackgroundSceneConfig';
 import GameSceneConfig from '../config/GameSceneConfig';
-import BackgroundSceneConfigNone from '../config/BackgroundSceneConfigNone';
-import GameSceneConfig2 from '../config/GameSceneConfig2';
+// import BackgroundSceneConfigNone from '../config/BackgroundSceneConfigNone';
+// import GameSceneConfig2 from '../config/GameSceneConfig2';
 import EffectsSceneConfig from '../config/EffectsSceneConfig';
-
 import RendererManager from './RendererManager'
-
 import SceneUnit from '../SceneUnit';
 
 /**
@@ -34,12 +32,12 @@ class AllScenesManager {
 	}
 
 	setupScenes() {
-		this.gameSceneUnit = new SceneUnit(new GameSceneConfig(), RendererManager.getRnderer(), 'game', this.animationMixersManager);
-		this.addSceneUnit(this.gameSceneUnit);
-		this.effectsSceneUnit = new SceneUnit(new EffectsSceneConfig(), RendererManager.getRnderer(), 'effects', this.animationMixersManager);
-		this.addSceneUnit(this.effectsSceneUnit);
-		this.backgroundSceneUnit = new SceneUnit(new BackgroundSceneConfig(), RendererManager.getRnderer(), 'background', this.animationMixersManager);
-		this.addSceneUnit(this.backgroundSceneUnit);
+		this.backgroundScene = new SceneUnit(new BackgroundSceneConfig(), RendererManager.getRnderer(), 'background', this.animationMixersManager);
+		this.addSceneUnit(this.backgroundScene);
+		this.gameScene = new SceneUnit(new GameSceneConfig(), RendererManager.getRnderer(), 'game', this.animationMixersManager);
+		this.addSceneUnit(this.gameScene);
+		this.effectsScene = new SceneUnit(new EffectsSceneConfig(), RendererManager.getRnderer(), 'effects', this.animationMixersManager);
+		this.addSceneUnit(this.effectsScene);
 	}
 
 	addSceneUnit(sceneUnit) {
@@ -62,20 +60,16 @@ class AllScenesManager {
 			renderer.render(manager.scene, manager.camera);
 		});
 	}
+	
 	// リサイズイベントハンドラ
 	onWindowResize() {
 		this.sceneUnits.forEach(sceneUnit => {
 			const camera = sceneUnit.camera;
-			if (camera.isPerspectiveCamera) {
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-			}
-			// 他のカメラタイプの場合の処理もここに追加可能
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
 		});
-		if (RendererManager.getRnderer()) {
-			RendererManager.getRnderer().renderer.setSize(window.innerWidth, window.innerHeight);
-		}
-		console.log('リサイズ: 全カメラとレンダラーのサイズが更新されました。');
+		RendererManager.getRnderer().setSize(window.innerWidth, window.innerHeight);
+		console.log('リサイズ: 全シーンのサイズが更新されました。');
 	}
 }
 

@@ -24,10 +24,12 @@ class RendererManager {
 		return RendererManager.instance.renderer;
 	}
 
+	// 参考:【WebGLRenderer#shadowMap – three.js ドキュメント】 <https://threejs.org/docs/?q=renderer#api/en/renderers/WebGLRenderer.shadowMap>
 	initializeRenderer() {
 		this.renderer.autoClear = false;
 		this.renderer.setClearColor(0x000000, 0);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
+		this.renderer.PCFShadowMap = true;
 		this.attachRendererToDOM();
 	}
 

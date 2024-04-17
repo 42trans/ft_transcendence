@@ -125,6 +125,7 @@ class SceneUnit{
 		);
 		cam.position.copy(config.position);
 		cam.lookAt(config.lookAt);
+		cam.up.copy(config.up)
 		return cam;
 	}
 
