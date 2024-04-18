@@ -15,7 +15,8 @@ class GameParametersConfig {
 	constructor() {
 		this.fields = {
 			WIDTH: 400,
-			HEIGHT: 200,
+			// HEIGHT: 100,
+			HEIGHT: 300,
 		};
 
 		// this.sceneSize = {
@@ -79,6 +80,7 @@ class GameParametersConfig {
 
 		this.paddle1 = {
 			WIDTH: 10,
+			// HEIGHT: 90,
 			HEIGHT: 30,
 			DEPTH: 10,
 			SEGMENTS: 1,
@@ -93,12 +95,13 @@ class GameParametersConfig {
 			RECEIVE_SHADOW: true, 
 			CAST_SHADOW: true,
 			SPEED: 3,
-			paddle1DirY: 0,
-			paddle2DirY: 0, 
+			DirY: 0,
+			// paddle2DirY: 0, 
 		};
 		
 		this.paddle2 = {
 			WIDTH: 10,
+			// HEIGHT: 90,
 			HEIGHT: 30,
 			DEPTH: 10,
 			SEGMENTS: 1,
@@ -111,8 +114,8 @@ class GameParametersConfig {
 			RECEIVE_SHADOW: true, 
 			CAST_SHADOW: true,
 			SPEED: 3,
-			paddle1DirY: 0,
-			paddle2DirY: 0, 
+			// paddle1DirY: 0,
+			DirY: 0, 
 		};
 		
 		this.gameSettings = {

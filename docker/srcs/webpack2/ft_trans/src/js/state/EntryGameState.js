@@ -20,6 +20,17 @@ class EntryGameState extends BaseGameState {
 		this.PongApp.allScenesManager.effectsScene.scene.add(this.magmaFlare);
 	}
 
+	update() {
+	}
+
+	render() {
+	}
+
+	exit() {
+		console.log("exit(): EntryGameState");
+		this.zoomToMagmaFlare();
+	}
+
 	// easeInOutQuad イージング関数
 	easeInOutQuad(t) {
 		return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
@@ -85,16 +96,6 @@ class EntryGameState extends BaseGameState {
 		updateZoom();
 	}
 
-	update() {
-	}
-
-	render() {
-	}
-
-	exit() {
-		console.log("exit(): EntryGameState");
-		this.zoomToMagmaFlare();
-	}
 }
 
 export default EntryGameState;

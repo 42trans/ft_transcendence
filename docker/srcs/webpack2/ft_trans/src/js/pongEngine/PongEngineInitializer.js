@@ -20,6 +20,7 @@ class PongEngineInitializer {
 					this.config.plane.SEGMENTS,
 					this.config.plane.SEGMENTS
 				),
+				// 参考:【MeshStandardMaterial – three.js docs】 <https://threejs.org/docs/#api/en/materials/MeshStandardMaterial>
 				new THREE.MeshStandardMaterial({ 
 				// new THREE.MeshBasicMaterial({
 					color: this.config.plane.MATERIAL.color,
@@ -109,16 +110,17 @@ class PongEngineInitializer {
 		this.scene.add(objects.paddle1);
 		this.scene.add(objects.paddle2);
 		
+		// RECEIVE_SHADOW
 		objects.plane.receiveShadow = this.config.plane.RECEIVE_SHADOW;
 		objects.table.receiveShadow = this.config.table.RECEIVE_SHADOW;
 		objects.ball.receiveShadow = this.config.ball.RECEIVE_SHADOW;
 		objects.paddle1.receiveShadow = this.config.paddle1.RECEIVE_SHADOW;
 		objects.paddle2.receiveShadow = this.config.paddle2.RECEIVE_SHADOW;
-		
+		// CAST_SHADOW
 		objects.ball.castShadow = this.config.ball.CAST_SHADOW;
 		objects.paddle1.castShadow = this.config.paddle1.CAST_SHADOW;
 		objects.paddle2.castShadow = this.config.paddle2.CAST_SHADOW;
-		
+		// position
 		objects.paddle1.position.set(
 			(this.fieldWidth * -0.95) / 2 + 50, 
 			0, 
@@ -129,13 +131,26 @@ class PongEngineInitializer {
 			0, 
 			this.config.paddle2.DEPTH,
 		);
-		
 		objects.table.position.z = this.config.table.POSITION_Z;
 		objects.ball.position.z = this.config.ball.RADIUS;
-
+		
+		// othrer: paddle1 
+		objects.paddle1.speed = this.config.paddle1.SPEED,
+		objects.paddle1.dirY = this.config.paddle1.DirY,
+		objects.paddle1.width = this.config.paddle1.WIDTH;
+		objects.paddle1.height = this.config.paddle1.HEIGHT;
+		// othrer: paddle2 
+		objects.paddle2.speed = this.config.paddle2.SPEED,
+		objects.paddle2.dirY = this.config.paddle2.DirY,
+		objects.paddle2.width = this.config.paddle2.WIDTH;
+		objects.paddle2.height = this.config.paddle2.HEIGHT;
+		// 
 		objects.maxScore = this.config.gameSettings.MAX_SCORE;
 		objects.score1 = this.config.gameSettings.SCORE1;
 		objects.score2 = this.config.gameSettings.SCORE2;
+		objects.difficulty = this.config.gameSettings.DIFFICULTY;
+		objects.fieldWidth = this.config.fields.WIDTH;
+		objects.fieldHeight = this.config.fields.HEIGHT;
 	}
 	
 }

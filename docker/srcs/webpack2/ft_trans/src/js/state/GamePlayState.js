@@ -20,13 +20,19 @@ class GameplayState extends BaseGameState {
 		this.scenesMgr.gameScene.refreshScene(new GameSceneConfig());
 
 		this.pongEngine = new PongEngine(
-			this.scenesMgr.gameScene.scene
+			this.PongApp
 		);
 
 		this.zoomToTable();	
+
+		setTimeout( () => {
+			this.scenesMgr.effectsScene.clearScene();
+		}, 4500);
 	}
 
 	update() {
+				// this.pongEngineUpdate = new PongEngineUpdate(this.scene, this.renderer);
+
 	}
 
 	render() {
@@ -40,7 +46,7 @@ class GameplayState extends BaseGameState {
 
 	}
 
-
+	// 参考:【OrbitControls – three.js docs】 <https://threejs.org/docs/#examples/en/controls/OrbitControls>
 	zoomToTable() {
 		const targetPosition = new THREE.Vector3();
 		this.pongEngine.objects.plane.getWorldPosition(targetPosition); 

@@ -25,11 +25,13 @@ class GameSceneConfig extends BaseSceneConfig{
 		/** @type {{ enableDamping: boolean, dampingFactor: number, screenSpacePanning: boolean, maxPolarAngle: number, minDistance: number, maxDistance: number, rotateSpeed: number, zoomSpeed: number, autoRotate: boolean, autoRotateSpeed: number }} */
 		this.controlsConfig = {
 			...this.controlsConfig,
+
 			minPolarAngle: 0,  // 0 = カメラが真上から見下ろす
 			maxPolarAngle: Math.PI / 4, // Math.PI = カメラが真下を向く角度
 			minAzimuthAngle: Math.PI / 1, // 方位角を90度（東）に固定
 			maxAzimuthAngle: Math.PI / 1, // 最大角度
-			minDistance: 30,
+			
+			minDistance: 300,
 			maxDistance: 1000,
 			// rotateSpeed: 1.0,
 			zoomSpeed: 1.2,
