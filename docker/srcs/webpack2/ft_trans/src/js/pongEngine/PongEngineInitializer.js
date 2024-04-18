@@ -10,35 +10,41 @@ class PongEngineInitializer {
 		this.fieldHeight = this.config.fields.HEIGHT;
 	}
 
+
 	createGameObjects() {
 		const objects = {
 			plane: new THREE.Mesh(
 				new THREE.PlaneGeometry(
-					this.config.fields.WIDTH * 0.95,
-					this.config.fields.HEIGHT,
+					this.fieldWidth * 0.95,
+					this.fieldHeight,
 					this.config.plane.SEGMENTS,
 					this.config.plane.SEGMENTS
 				),
-				new THREE.MeshLambertMaterial({
+				new THREE.MeshStandardMaterial({ 
+				// new THREE.MeshBasicMaterial({
 					color: this.config.plane.MATERIAL.color,
-					transparent: this.config.plane.TRANSPARENT,
-					opacity: this.config.plane.OPACITY
+					roughness: this.config.plane.MATERIAL.roughness,
+					metalness: this.config.plane.MATERIAL.metalness,
+					transparent: this.config.plane.MATERIAL.transparent,
+					opacity: this.config.plane.MATERIAL.opacity,
 				})
 			),
 
+
 			table: new THREE.Mesh(
 				new THREE.BoxGeometry(
-					this.config.fields.WIDTH * 1.05,    
-					this.config.fields.HEIGHT * 1.03,
+					this.fieldWidth * 1.05, 
+					this.fieldHeight * 1.03,
 					this.config.table.DEPTH,
 					this.config.table.SEGMENTS,
 					this.config.table.SEGMENTS,
 					this.config.table.SEGMENTS,
 				),
-				new THREE.MeshLambertMaterial({
+				new THREE.MeshBasicMaterial({
+				// new THREE.MeshStandardMaterial({ 
 					color: this.config.table.MATERIAL.color,
-					transparent: this.config.table.TRANSPARENT,
-					opacity: this.config.table.OPACITY
+					transparent: this.config.table.MATERIAL.transparent,
+					opacity: this.config.table.MATERIAL.opacity,
 				})
 			),
 
@@ -49,35 +55,47 @@ class PongEngineInitializer {
 					this.config.ball.SEGMENTS, 
 					// this.config.ball.RINGS
 				),
-				new THREE.MeshBasicMaterial({ color: this.config.ball.MATERIAL.color })
+				new THREE.MeshStandardMaterial({ 
+					color: this.config.ball.MATERIAL.color,
+					roughness: this.config.ball.MATERIAL.roughness,
+					metalness: this.config.ball.MATERIAL.metalness,
+					transparent: this.config.ball.MATERIAL.transparent,
+					opacity: this.config.ball.MATERIAL.opacity,
+				 })
 			),
 	
 			paddle1: new THREE.Mesh(
 				new THREE.BoxGeometry(
-					this.config.paddles.WIDTH, 
-					this.config.paddles.HEIGHT, 
-					this.config.paddles.DEPTH,
-					this.config.paddles.SEGMENTS,
-					this.config.paddles.SEGMENTS,
-					this.config.paddles.SEGMENTS,
+					this.config.paddle1.WIDTH, 
+					this.config.paddle1.HEIGHT, 
+					this.config.paddle1.DEPTH,
+					this.config.paddle1.SEGMENTS,
+					this.config.paddle1.SEGMENTS,
+					this.config.paddle1.SEGMENTS,
 				),
-				new THREE.MeshBasicMaterial(
-					this.config.paddles.MATERIALS.paddle1
-				)
+				new THREE.MeshStandardMaterial({
+					color: this.config.paddle1.MATERIAL.color,
+					roughness: this.config.paddle1.MATERIAL.roughness,
+					metalness: this.config.paddle1.MATERIAL.metalness,
+					transparent: this.config.paddle1.MATERIAL.transparent,
+					opacity: this.config.paddle1.MATERIAL.opacity,
+				})
 			),
 
 			paddle2: new THREE.Mesh(
 				new THREE.BoxGeometry(
-					this.config.paddles.WIDTH, 
-					this.config.paddles.HEIGHT, 
-					this.config.paddles.DEPTH,
-					this.config.paddles.SEGMENTS,
-					this.config.paddles.SEGMENTS,
-					this.config.paddles.SEGMENTS,
+					this.config.paddle2.WIDTH, 
+					this.config.paddle2.HEIGHT, 
+					this.config.paddle2.DEPTH,
+					this.config.paddle2.SEGMENTS,
+					this.config.paddle2.SEGMENTS,
+					this.config.paddle2.SEGMENTS,
 				),
-				new THREE.MeshBasicMaterial(
-					this.config.paddles.MATERIALS.paddle2
-				)
+				new THREE.MeshStandardMaterial({
+					color: this.config.paddle2.MATERIAL.color,
+					roughness: this.config.paddle2.MATERIAL.roughness,
+					metalness: this.config.paddle2.MATERIAL.metalness,
+				})
 			)
 		};
 
@@ -91,30 +109,33 @@ class PongEngineInitializer {
 		this.scene.add(objects.paddle1);
 		this.scene.add(objects.paddle2);
 		
-		objects.plane.receiveShadow = true;
+		objects.plane.receiveShadow = this.config.plane.RECEIVE_SHADOW;
+		objects.table.receiveShadow = this.config.table.RECEIVE_SHADOW;
+		objects.ball.receiveShadow = this.config.ball.RECEIVE_SHADOW;
+		objects.paddle1.receiveShadow = this.config.paddle1.RECEIVE_SHADOW;
+		objects.paddle2.receiveShadow = this.config.paddle2.RECEIVE_SHADOW;
 		
-		objects.table.position.z = -51;
-		objects.table.receiveShadow = true;	
+		objects.ball.castShadow = this.config.ball.CAST_SHADOW;
+		objects.paddle1.castShadow = this.config.paddle1.CAST_SHADOW;
+		objects.paddle2.castShadow = this.config.paddle2.CAST_SHADOW;
+		
+		objects.paddle1.position.set(
+			(this.fieldWidth * -0.95) / 2 + 50, 
+			0, 
+			this.config.paddle1.DEPTH,
+		);
+		objects.paddle2.position.set(
+			(this.fieldWidth * 0.95)/ 2 - 50, 
+			0, 
+			this.config.paddle2.DEPTH,
+		);
+		
+		objects.table.position.z = this.config.table.POSITION_Z;
+		objects.ball.position.z = this.config.ball.RADIUS;
 
-		objects.ball.position.set(0, 0, this.config.ball.RADIUS);
-		objects.ball.receiveShadow = true;
-		objects.ball.castShadow = true;
-
-		objects.paddle1.position.set((this.fieldWidth * -0.95) / 2 + 50, 0, 0);
-		objects.paddle1.receiveShadow = true;
-		objects.paddle1.castShadow = true;
-
-		objects.paddle2.position.set((this.fieldWidth * 0.95)/ 2 - 50, 0, 0);
-		objects.paddle2.receiveShadow = true;
-		objects.paddle2.castShadow = true;
-
-		objects.paddle1.position.z = this.config.paddles.DEPTH;
-		objects.paddle2.position.z = this.config.paddles.DEPTH;
-
-
-		objects.maxScore = this.config.gameSettings.maxScore;
-		objects.score1 = this.config.gameSettings.score1;
-		objects.score2 = this.config.gameSettings.score2;
+		objects.maxScore = this.config.gameSettings.MAX_SCORE;
+		objects.score1 = this.config.gameSettings.SCORE1;
+		objects.score2 = this.config.gameSettings.SCORE2;
 	}
 	
 }

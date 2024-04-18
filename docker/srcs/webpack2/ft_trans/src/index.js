@@ -16,6 +16,7 @@
  *   - docker exec -it webpack2 bash -c "npm run build"
  *   - webpack2/public/に一式できます。マウント共有してるので二回再起動すればDjangoに認識されるはず
  *   - static/share_wabpack2/に自動で入ります。ホストマシンに保存されます。.gitignore済み
+ * - main()の引数に文字列'dev'を渡すことでライトやカメラをコントロールするGUIを表示
  * 
  * ## ディレクトリ構成
  * - シーン（空間）毎にSceneConfig.jsに値を設定してください。scene設定はそこで全てです。
@@ -28,5 +29,6 @@
 import PongApp from './js/PongApp'
 import './css/3d.css';
 
+// 'dev'= コントローラーGUI表示 
 // PongApp.main('dev');
 PongApp.main();

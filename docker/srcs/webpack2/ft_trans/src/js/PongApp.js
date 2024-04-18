@@ -52,17 +52,17 @@ class PongApp {
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
 	}
 	
-	static main() {
-		new PongApp();
+	static main(env) {
+		new PongApp(env);
 	}
 
 						// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除
 						setupDevEnv() {
 							this.gui = new lil.GUI();
 							const contorolsGUI = new ControlsGUI(
-								this.backgroundScene.scene, 
+								this.allScenesManager.gameScene.scene, 
 								this.gui, 
-								this.backgroundScene.camera
+								this.allScenesManager.gameScene.camera
 							);
 							contorolsGUI.setupControlsGUI();
 						}

@@ -15,8 +15,8 @@ class PongEngine {
 		this.config = new GameParametersConfig();
 
 		this.builder = new PongEngineInitializer(this.renderer, this.scene, this.config);
-		const objects = this.builder.createGameObjects();
-		this.builder.setupGameScene(objects);
+		this.objects = this.builder.createGameObjects();
+		this.builder.setupGameScene(this.objects);
 	}
 	
 	updeat() {

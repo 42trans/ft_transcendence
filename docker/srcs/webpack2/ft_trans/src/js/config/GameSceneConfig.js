@@ -44,19 +44,46 @@ class GameSceneConfig extends BaseSceneConfig{
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */
 		this.lightsConfig = [
 			{
+				type: 'AmbientLight',
+				color: 0x999999,
+				intensity: 0.31,
+				name: 'ambientLight',
+			},
+			{
+				type: 'DirectionalLight',
+				// color: 0xa41832,
+				color: this.rgbToHex(20, 200, 5),
+				intensity: 1,
+				position: new THREE.Vector3(-50, 50, -50),
+				name: 'directionalLight',
+			},
+			{
+				type: 'HemisphereLight',
+				skyColor: 0xffffff,
+				groundColor: 0x444444,
+				intensity: 0.1,
+				position: new THREE.Vector3(50, 50, -50),
+				name: 'hemiLight',
+			},
+			{
 				type: 'PointLight',
-				color: 0xF8D898,
-				intensity: 2.9,
-				distance: 10000,
-				position: { x: -1000, y: 0, z: 1000 },
+				color: new THREE.Color(200, 100, 100),
+				// color: 0x4b27ce,
+				intensity: 0.5,
+				distance: 300,
+				decay: 1,
+				position: new THREE.Vector3(0, 0, 50),
 				name: 'pointLight',
 			},
 			{
 				type: 'SpotLight',
+				color: 0x1cb526,
 				intensity: 1.5,
-				position: { x: 0, y: 0, z: 460 },
-				castShadow: true,
-				// position: new THREE.Vector3(10, 8, -9),
+				distance: 200,
+				angle: Math.PI / 200,
+				penumbra: 0.1,
+				decay: 0.5,
+				position: new THREE.Vector3(10, 8, -9),
 				name: 'spotLight',
 			},
 		];
@@ -80,6 +107,10 @@ class GameSceneConfig extends BaseSceneConfig{
 			// },
 		];
 
+	}
+
+	rgbToHex(r, g, b) {
+		return (r << 16) + (g << 8) + b;
 	}
 }
 
