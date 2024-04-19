@@ -49,7 +49,7 @@ class GameplayState extends BaseGameState {
 	// 参考:【OrbitControls – three.js docs】 <https://threejs.org/docs/#examples/en/controls/OrbitControls>
 	zoomToTable() {
 		const targetPosition = new THREE.Vector3();
-		this.pongEngine.objects.plane.getWorldPosition(targetPosition); 
+		this.pongEngine.data.objects.plane.getWorldPosition(targetPosition); 
 
 		this.camera = this.PongApp.allScenesManager.gameScene.camera;
 		this.controls = this.PongApp.allScenesManager.gameScene.controls;

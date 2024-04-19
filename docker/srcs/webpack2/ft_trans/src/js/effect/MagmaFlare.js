@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Aura } from "./Aura";
 import { FlareEmitter } from "./FlareEmitter";
 
+// 参考:【エフェクト作成入門講座 Three.js編 ゲーム演出に役立つマグマ表現の作り方 - ICS MEDIA】 <https://ics.media/entry/13973/>
 class MagmaFlare extends THREE.Object3D {
 	constructor() {
 		super();

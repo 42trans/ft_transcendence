@@ -1,45 +1,50 @@
 
-import GameParametersConfig from './GameParametersConfig';
-import PongEngineInitializer from './PongEngineInitializer';
-import PongEngineUpdate from './PongEngineUpdate';
-// import PongEngineUpdate from './PongEngineUpdate';
 import * as THREE from 'three';
+import PongEngineConfig from '../config/PongEngineConfig';
+import PongEngineUpdate from './PongEngineUpdate';
+import PongEngineData from './PongEngineData';
+import PongEnginePhysics from './PongEnginePhysics';
+import PongEngineMatch from './PongEngineMatch';
 import RendererManager from '../manager/RendererManager';
-import AnimationMixersManager from '../manager/AnimationMixersManager';
 
 /**
  * 参考:【nklsrh/BuildNewGames_ThreeJSGame: A game built to show off some of the basic features of the Three.JS WebGL library.】 <https://github.com/nklsrh/BuildNewGames_ThreeJSGame/tree/gh-pages>
  */
 class PongEngine {
 	constructor(PongApp) {
+		this.initializeRendering(PongApp);
+		this.initializeGameData();
+		this.initializeGameSystems();
+		
+		this.animate = this.animate.bind(this);
+		setTimeout(() => this.animate(), 4500);
+	}
 
-		this.renderer = RendererManager.getRnderer();
-		this.animationMixersManager = AnimationMixersManager.getInstance();
-		this.scene = PongApp.allScenesManager.gameScene.scene;
-		this.camera = PongApp.allScenesManager.gameScene.camera;
-		this.config = new GameParametersConfig();
+	initializeRendering(PongApp) {
+		this.scene		= PongApp.allScenesManager.gameScene.scene;
+		this.camera		= PongApp.allScenesManager.gameScene.camera;
+		this.renderer	= RendererManager.getRnderer();
+	}
 
-		this.initializer = new PongEngineInitializer(this.renderer, this.scene, this.config);
-		this.objects = this.initializer.createGameObjects();
-		this.initializer.setupGameScene(this.objects);
-		this.pongEngineUpdate = new PongEngineUpdate(this);
+	initializeGameData() {
+		this.config	= new PongEngineConfig();
+		this.data	= new PongEngineData(this);
+		this.data.initObjects();
+	}
 
-		this.animate = this.animate.bind(this);  // バインドして、正しいコンテキストで呼び出されるようにする
-		// アニメーションを開始する前に一定時間待機
-		setTimeout(() => {
-			this.animate();  // ゲームループ開始
-		}, 4500); // 1500ミリ秒後に開始、この値は必要に応じて調整
-		// this.animate();  // ゲームループ開始
+	initializeGameSystems() {
+		this.physics	= new PongEnginePhysics(this.data);
+		this.match		= new PongEngineMatch(this.data);
+		this.update		= new PongEngineUpdate(this.data, this.physics, this.match);
 	}
 	
-	updateGame() {
-		this.pongEngineUpdate.updateGame();
+	updatePongEngine() {
+		this.update.updateGame();
 	}
 
 	animate() {
-		requestAnimationFrame(this.animate);  // 次のフレームをスケジュール
-		this.updateGame();  // ゲーム状態を更新
-		// this.renderer.render(this.scene, this.camera);  // シーンをレンダリング（カメラを適切に設定）
+		requestAnimationFrame(this.animate);
+		this.updatePongEngine();
 	}
 }
 

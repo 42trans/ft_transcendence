@@ -11,25 +11,13 @@ import * as THREE from 'three';
  *   - オブジェクト毎にセクション `{}`にプロパティを `key: value`で設定する
  * 
  */
-class GameParametersConfig {
+class PongEngineConfig {
 	constructor() {
 		this.fields = {
 			WIDTH: 400,
 			// HEIGHT: 100,
 			HEIGHT: 300,
 		};
-
-		// this.sceneSize = {
-		// 	WIDTH: 640,
-		// 	HEIGHT: 360,
-		// };
-
-		// this.camra = {
-			// VIEW_ANGLE: 50,
-			// ASPECT = WIDTH / HEIGHT,
-			// NEAR = 0.1,
-			// FAR = 10000;
-		// };
 
 		// 参考:【PlaneGeometry – three.js docs】 <https://threejs.org/docs/?q=BoxGeometry#api/en/geometries/PlaneGeometry>
 		this.plane = {
@@ -39,7 +27,7 @@ class GameParametersConfig {
 				// roughness: 0.7,
 				// metalness: 0.3,
 				transparent: true,
-				opacity: 0.5,
+				opacity: 0.7,
 				receiveShadow: true,
 			},
 			RECEIVE_SHADOW: true,
@@ -50,7 +38,6 @@ class GameParametersConfig {
 			DEPTH: 100,
 			SEGMENTS: 10,
 			MATERIAL: { 
-				// color: 0x111111,
 				color: this.rgbToHex(10, 10, 0),
 				transparent: true,
 				opacity: 0.7,
@@ -65,64 +52,61 @@ class GameParametersConfig {
 			SEGMENTS: 16,
 			// RINGS: 6,
 			MATERIAL: { 
-				// color: 0xFFFFFF,
 				color: this.rgbToHex(10, 10, 10),
 				roughness: 0.1, // 鏡面反射=0.0
 				metalness: 1.0, // 非金属材料=0.0
-				// transparent: true,
-				// opacity: 0.5,
+				transparent: false,
+				opacity: 1.0,
 			},
 			SPEED: 2,
-			DIRECTION: { x: 1, y: 1 },
+			DIRECTION: { x: 1, y: 0.1 },
 			RECEIVE_SHADOW: true,
 			CAST_SHADOW: true,
 		};
 
 		this.paddle1 = {
 			WIDTH: 10,
-			// HEIGHT: 90,
-			HEIGHT: 30,
+			HEIGHT: 290,
+			// HEIGHT: 30,
 			DEPTH: 10,
 			SEGMENTS: 1,
 			MATERIAL: {
-				// color: 0x1B32C0,
 				color: this.rgbToHex(10, 10, 10),
 				roughness: 0.1,
 				metalness: 1.0,
-				// transparent: true,
-				// opacity: 0.7,
+				transparent: false,
+				opacity: 1.0,
 			},
 			RECEIVE_SHADOW: true, 
 			CAST_SHADOW: true,
-			SPEED: 3,
+			SPEED: 10,
 			DirY: 0,
-			// paddle2DirY: 0, 
 		};
 		
 		this.paddle2 = {
 			WIDTH: 10,
-			// HEIGHT: 90,
-			HEIGHT: 30,
+			HEIGHT: 250,
+			// HEIGHT: 30,
 			DEPTH: 10,
 			SEGMENTS: 1,
 			MATERIAL: {
-				// color: 0xFF4045,
 				color: this.rgbToHex(10, 10, 10),
 				roughness: 0.1,
 				metalness: 1.0,
+				transparent: false,
+				opacity: 1.0,
 			},
 			RECEIVE_SHADOW: true, 
 			CAST_SHADOW: true,
-			SPEED: 3,
-			// paddle1DirY: 0,
+			SPEED: 10,
 			DirY: 0, 
 		};
 		
 		this.gameSettings = {
-			SCORE1: 0, 
-			SCORE2: 0,
-			MAX_SCORE: 7,
-			DIFFICULTY: 0.2,
+			MAX_SCORE: 15,
+			INIT_BALL_SPEED: 2,
+			MAX_BALL_SPEED: 10, //10を超えると衝突判定がバグります
+			DIFFICULTY: 0.5,
 		};
 	}
 
@@ -131,4 +115,4 @@ class GameParametersConfig {
 	}
 }
 
-export default GameParametersConfig;
+export default PongEngineConfig;
