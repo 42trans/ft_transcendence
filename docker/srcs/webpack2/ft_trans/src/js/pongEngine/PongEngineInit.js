@@ -80,7 +80,7 @@ class PongEngineInit {
 	createTable() {
 		const geometry = new THREE.BoxGeometry(
 			this.config.fields.WIDTH * 1.1, 
-			this.config.fields.HEIGHT * 1.03,
+			this.config.fields.HEIGHT * 1.05,
 			this.config.table.DEPTH,
 			this.config.table.SEGMENTS,
 			this.config.table.SEGMENTS,

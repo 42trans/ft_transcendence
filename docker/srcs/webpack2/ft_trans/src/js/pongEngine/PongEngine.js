@@ -34,7 +34,7 @@ class PongEngine {
 
 	initializeGameSystems() {
 		this.physics	= new PongEnginePhysics(this.data);
-		this.match		= new PongEngineMatch(this.data);
+		this.match		= new PongEngineMatch(this.scene, this.data);
 		this.update		= new PongEngineUpdate(this.data, this.physics, this.match);
 	}
 	

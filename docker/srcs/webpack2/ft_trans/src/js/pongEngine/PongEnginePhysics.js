@@ -40,7 +40,7 @@ class PongEnginePhysics {
 			||(ball.dirX > 0 && ballX < paddleX)
 		) {
 			ball.dirX	= -ball.dirX;  // ボールの水平方向を反転
-			ball.dirY	+= paddle.dirY * 0.7;  // パドルの移動方向がボールに影響
+			ball.dirY	+= paddle.dirY * 0.05;  // パドルの移動方向がボールに影響
 			ball.speed	= Math.min(ball.speed * 1.1, this.maxBallSpeed);  // 速度を最大速度を超えないように10%増加
 		}
 	}

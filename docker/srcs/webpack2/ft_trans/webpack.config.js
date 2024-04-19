@@ -66,6 +66,7 @@ module.exports = {
 		new CopyWebpackPlugin({
 			patterns: [
 			  { from: 'src/assets', to: 'assets' }, // src/assetsディレクトリ内のファイルを出力ディレクトリのassetsにコピー
+			  { from: 'node_modules/three/examples/fonts', to: 'fonts' }
 			],
 		}),
 	],

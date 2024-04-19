@@ -35,7 +35,7 @@ class GameSceneConfig extends BaseSceneConfig{
 			maxDistance: 1000,
 			// rotateSpeed: 1.0,
 			zoomSpeed: 1.2,
-			// autoRotate: true,
+			// autoRotate: false,
 			enableZoom: true,
 			enablePan: true,
 			enableRotate: true,

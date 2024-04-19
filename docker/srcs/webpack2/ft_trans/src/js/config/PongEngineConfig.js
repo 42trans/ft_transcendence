@@ -66,8 +66,8 @@ class PongEngineConfig {
 
 		this.paddle1 = {
 			WIDTH: 10,
-			HEIGHT: 290,
-			// HEIGHT: 30,
+			// HEIGHT: 290,
+			HEIGHT: 30,
 			DEPTH: 10,
 			SEGMENTS: 1,
 			MATERIAL: {
@@ -79,14 +79,14 @@ class PongEngineConfig {
 			},
 			RECEIVE_SHADOW: true, 
 			CAST_SHADOW: true,
-			SPEED: 10,
+			SPEED: 10, //  
 			DirY: 0,
 		};
 		
 		this.paddle2 = {
 			WIDTH: 10,
-			HEIGHT: 250,
-			// HEIGHT: 30,
+			// HEIGHT: 20,
+			HEIGHT: 30,
 			DEPTH: 10,
 			SEGMENTS: 1,
 			MATERIAL: {

@@ -51,7 +51,6 @@ class BackgroundSceneConfig extends BaseSceneConfig {
 			{
 				type: 'PointLight',
 				color: new THREE.Color(5, 30, 1),
-				// color: 0x4b27ce,
 				intensity: 0.05,
 				distance: 200,
 				decay: 0,
