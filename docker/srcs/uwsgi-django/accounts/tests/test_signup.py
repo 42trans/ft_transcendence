@@ -1,92 +1,84 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse, resolve
+from django.urls import reverse
 from django.test import TestCase
-
-from accounts.forms import SignupForm
-from accounts.views.basic_auth import SignupView
-
-
-class SignUpFormTests(TestCase):
-    kSignUpName = "accounts:signup"
-    kSignUpURL = "/accounts/signup/"
-
-    def setUp(self):
-        url = reverse(self.kSignUpName)
-        self.response = self.client.get(url)
-
-    def test_signup_status_code(self):
-        self.assertEqual(self.response.status_code, 200)
-
-    def test_signup_url_resolves_signup_view(self):
-        view = resolve(self.kSignUpURL)
-        self.assertEqual(view.func.view_class, SignupView)
-
-    def test_csrf(self):
-        self.assertContains(self.response, 'csrfmiddlewaretoken')
-
-    def test_contains_form(self):
-        form = self.response.context.get('form')
-        self.assertIsInstance(form, SignupForm)
-
-    def test_form_inputs(self):
-        '''
-        The sign-up form contain 5 <input> tags:
-         (csrf), email, nickname, password1, password2
-        '''
-        self.assertContains(self.response, '<input', 5)
-        self.assertContains(self.response, 'type="hidden"', 1)      # csrf
-        self.assertContains(self.response, 'type="email"', 1)       # email
-        self.assertContains(self.response, 'type="text"', 1)        # nickname
-        self.assertContains(self.response, 'type="password"', 2)    # password
+from rest_framework import status
+from rest_framework.test import APIClient
 
 
-class SignUpSuccessTests(TestCase):
-    kSignUpName = "accounts:signup"
-    kSignUpURL = "/accounts/signup/"
-    kHomeURL = "/pong/"
+class SignUpAPITests(TestCase):
+    kSignUpAPIName = "accounts:api_signup"
+    kUserEmail = "test@example.com"
+    kUserNickname = "test"
+    kUserPassword = "pass0123"
 
     def setUp(self):
-        url = reverse(self.kSignUpName)
-        user_field = {
-            'email': 'test@signup.com',
-            'nickname': 'test',
-            'password1': 'pass0123',
-            'password2': 'pass0123'
+        self.client = APIClient()
+        self.signup_api_url = reverse(self.kSignUpAPIName)
+        self.user_data = {
+            'email': self.kUserEmail,
+            'nickname': self.kUserNickname,
+            'password1': self.kUserPassword,
+            'password2': self.kUserPassword,
         }
-        self.response = self.client.post(url, user_field)
-        self.home_url = self.kHomeURL
 
-    def test_redirection(self):
-        self.assertRedirects(self.response, self.home_url)
+        User = get_user_model()
+        self.user = User.objects.create_user(email=self.kUserEmail,
+                                             nickname=self.kUserNickname,
+                                             password=self.kUserPassword,
+                                             enable_2fa=False)
 
-    def test_user_creation(self):
-        user = get_user_model()
-        self.assertTrue(user.objects.exists())
+    def test_authenticated_user_redirect(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.signup_api_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("Already logged in", response.json()['message'])
+        self.assertIn("/pong/", response.json()['redirect'])
 
-    def test_user_authentication(self):
-        response = self.client.get(self.home_url)
-        user = response.context.get('user')
-        self.assertTrue(user.is_authenticated)
+    def test_password_mismatch(self):
+        user_data = self.user_data.copy()
+        user_data['password2'] = 'wrong0123'
+        response = self.client.post(self.signup_api_url, user_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("passwords don't match", response.json()['error'])
 
+    def test_invalid_email_already_use(self):
+        user_data = self.user_data.copy()
+        user_data['nickname'] = 'test1'
+        response = self.client.post(self.signup_api_url, user_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("This email is already in use", response.json()['error'])
 
+    def test_invalid_email(self):
+        user_data = self.user_data.copy()
+        user_data['email'] = 'invalid-email'
+        response = self.client.post(self.signup_api_url, user_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.json())
 
-class SignUpFailureTests(TestCase):
-    kSignUpName = "accounts:signup"
+    def test_invalid_nickname_already_use(self):
+        user_data = self.user_data.copy()
+        user_data['email'] = 'test1@signup.com'
+        response = self.client.post(self.signup_api_url, user_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("This nickname is already in use", response.json()['error'])
 
-    def setUp(self):
-        url = reverse(self.kSignUpName)
-        user_field = {}
-        self.response = self.client.post(url, user_field)
-        self.response = self.client.post(url, {})
+    def test_successful_signup(self):
+        user_data = self.user_data.copy()
+        user_data['email'] = 'test1@signup.com'
+        user_data['nickname'] = 'test1'
+        response = self.client.post(self.signup_api_url, user_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("Signup successful", response.json()['message'])
 
-    def test_signup_status_code(self):
-        self.assertEqual(self.response.status_code, 200)
+        self.assertIn('Access-Token', response.cookies)
+        self.assertIn('Refresh-Token', response.cookies)
+        self.assertNotEqual(response.cookies['Access-Token'].value, '')
+        self.assertNotEqual(response.cookies['Refresh-Token'].value, '')
 
-    def test_form_errors(self):
-        form = self.response.context.get('form')
-        self.assertTrue(form.errors)
-
-    def test_dont_create_user(self):
-        user = get_user_model()
-        self.assertFalse(user.objects.exists())
+    def test_signup_exception(self):
+        user_data = self.user_data.copy()
+        user_data['email'] = 'error@signup.com'
+        with self.assertRaises(Exception):
+            self.client.post(self.signup_api_url, data)
+            self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+            self.assertIn('error', response.json())

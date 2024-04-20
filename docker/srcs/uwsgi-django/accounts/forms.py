@@ -62,6 +62,7 @@ class Enable2FAForm(forms.Form):
         return token
 
 
+# todo: JWT認証への切り替えで不要に。testなどの呼び出しを変更後、削除予定
 class Verify2FAForm(forms.Form):
     token = forms.CharField(label='2FA Token', max_length=6, required=True)
 

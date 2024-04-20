@@ -1,95 +1,85 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
+from django.http import JsonResponse
 from django.urls import reverse, resolve
 from django.test import TestCase
-from accounts.forms import SignupForm
-from accounts.views.basic_auth import LoginView
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from accounts.models import CustomUser, UserManager
 
 
-class LoginFormTests(TestCase):
-    kLoginName = "accounts:login"
-    kLoginURL = "/accounts/login/"
+class LoginAPIViewTestCase(TestCase):
+    kUser1Email = 'test1@example.com'
+    kUser1Nickname = 'test1'
+    kUser1Password = 'pass012345'
 
-    def setUp(self):
-        url = reverse(self.kLoginName)
-        self.response = self.client.get(url)
+    kUser2Email = 'test2@example.com'
+    kUser2Nickname = 'test2'
+    kUser2Password = 'pass012345'
 
-    def test_login_status_code(self):
-        self.assertEqual(self.response.status_code, 200)
-
-    def test_login_url_resolves_login_view(self):
-        view = resolve(self.kLoginURL)
-        self.assertEqual(view.func.view_class, LoginView)
-
-    def test_csrf(self):
-        self.assertContains(self.response, 'csrfmiddlewaretoken')
-
-    def test_contains_form(self):
-        form = self.response.context.get('form')
-        self.assertIsInstance(form, AuthenticationForm)
-
-    def test_form_inputs(self):
-        '''
-        The login form should contain 3 <input> tags:
-         (csrf, next), email, password
-        '''
-        self.assertContains(self.response, '<input', 4)
-        self.assertContains(self.response, 'type="hidden"', 2)      # csrf, next
-        self.assertContains(self.response, 'type="text"', 1)        # username->email
-        self.assertContains(self.response, 'type="password"', 1)    # password
-
-
-class LoginSuccessTests(TestCase):
-    kLoginName = "accounts:login"
-    kHomeURL = "/pong/"
-
-    kUserEmail = 'test@example.com'
-    kUserNickname = 'test'
-    kUserPassword = 'pass012345'
-
+    kLoginAPIName = "accounts:api_login"
 
     def setUp(self):
-        self.user = get_user_model().objects.create_user(email=self.kUserEmail,
-                                                         nickname=self.kUserNickname,
-                                                         password=self.kUserPassword)
-        self.user.save()
-        url = reverse(self.kLoginName)
-        user_field = {
-            'username'  : self.kUserEmail,  # email is entered in the username field of the form
-            'password'  : self.kUserPassword,
+        self.client = APIClient()
+        self.login_path = reverse(self.kLoginAPIName)
+
+        User = get_user_model()
+        self._with_2fa = User.objects.create_user(email=self.kUser1Email,
+                                                  nickname=self.kUser1Nickname,
+                                                  password=self.kUser1Password,
+                                                  enable_2fa=True)
+
+        self.user = User.objects.create_user(email=self.kUser2Email,
+                                             nickname=self.kUser2Nickname,
+                                             password=self.kUser2Password,
+                                             enable_2fa=False)
+
+    def test_already_logged_in(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(self.login_path)
+        response_json = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('already logged in', response_json['message'])
+
+    def test_invalid_credentials(self):
+        login_data = {
+            'email': 'wrong@example.com',
+            'password': 'wrong'
         }
-        self.response = self.client.post(url, user_field)
-        self.home_url = self.kHomeURL
+        response = self.client.post(self.login_path, data=login_data)
+        response_json = response.json()
 
-    def test_redirection(self):
-        self.assertRedirects(self.response, self.home_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertIn('Invalid credentials', response_json['error'])
 
-    def test_user_authentication(self):
-        response = self.client.get(self.home_url)
-        user = response.context.get('user')
-        self.assertTrue(user.is_authenticated)
-
-
-class LoginFailureTests(TestCase):
-    kLoginName = "accounts:login"
-    kUserPassword = 'pass012345'
-
-    def setUp(self):
-        url = reverse(self.kLoginName)
-        user_field = {
-            'username'  : 'wrong@email.com',  # email is entered in the username field of the form
-            'password'  : self.kUserPassword,
+    def test_2fa_authentication_needed(self):
+        login_data = {
+            'email': self.kUser1Email,
+            'password': self.kUser1Password
         }
-        self.response = self.client.post(url, user_field)
+        response = self.client.post(self.login_path, data=login_data)
+        response_json = response.json()
 
-    def test_login_status_code(self):
-        self.assertEqual(self.response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('2fa authentication needed', response_json['message'])
+        self.assertIn('/accounts/verify/verify_2fa/', response_json['redirect'])
 
-    def test_form_errors(self):
-        form = self.response.context.get('form')
-        self.assertTrue(form.errors)
+    def test_basic_authentication_successful(self):
+        login_data = {
+            'email': self.kUser2Email,
+            'password': self.kUser2Password
+        }
+        response = self.client.post(self.login_path, data=login_data)
+        response_json = response.json()
 
-    def test_user_not_authenticated(self):
-        response = self.client.get(reverse('accounts:login'))
-        user = response.context.get('user')
-        self.assertFalse(user.is_authenticated)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('Basic authentication successful', response_json['message'])
+        self.assertIn('/accounts/user/', response_json['redirect'])
+
+        self.assertIn('Access-Token', response.cookies)
+        self.assertIn('Refresh-Token', response.cookies)
+        self.assertNotEqual(response.cookies['Access-Token'].value, '')
+        self.assertNotEqual(response.cookies['Refresh-Token'].value, '')

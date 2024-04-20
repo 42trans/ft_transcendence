@@ -3,40 +3,41 @@
 <html lang="ja">
 <head>
     <meta charset="utf-8">
-    <title>user info</title>
+    <title>User Info</title>
 </head>
 <body>
-<h1>user page</h1>
-<ul>
-    <li>email: {{email}}</li>
-    <li>nickname: {{nickname}}</li>
-
-    {% if user.has_usable_password %}
-        <li>password: ******</li>
-    {% endif %}
-
-    <li><a href="{% url 'accounts:edit' %}">edit profile</a></li>
-
-    <br>
-
-    <!-- 2FAの状態に応じた表示 -->
-    {% if user.enable_2fa %}
-        <li>2FA: ✅Enabled</li>
-        <li><a href="{% url 'accounts:disable_2fa' %}">Disable 2FA</a></li>
-    {% else %}
-        <li>2FA: Disabled</li>
-        <li><a href="{% url 'accounts:enable_2fa' %}">Enable 2FA</a></li>
-    {% endif %}
-
-    <br>
-
-    <li><a href="{% url 'accounts:logout' %}">logout</a></li>
+<h1>User Page</h1>
+<ul id="user-info">
+    <!-- JavaScriptで動的に内容が生成される -->
 </ul>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch("/accounts/api/user/profile/")
+            .then(response => response.json())
+            .then(data => {
+                const userInfo = document.getElementById("user-info");
+                userInfo.innerHTML = `
+            <li>Email: ${data.email}</li>
+            <li>Nickname: ${data.nickname}</li>
+            ${data.has_usable_password ? '<li>Password: ******</li>' : ''}
+            <li><a href="/accounts/edit/">Edit Profile</a></li>
+            <br>
+            ${data.enable_2fa ?
+                    `<li>2FA: ✅Enabled</li><li><a href="/accounts/verify/disable_2fa/">Disable 2FA</a></li>` :
+                    `<li>2FA: Disabled</li><li><a href="/accounts/verify/enable_2fa/">Enable 2FA</a></li>`}
+            <br>
+            <button onclick="handleLogout()">Logout</button>
+        `;
+            })
+            .catch(error => console.error("Error:", error));
+    });
+</script>
+
+<script src="{% static 'js/logout.js' %}"></script>
 
 <hr>
 <br>
-<a href="/pong/">🏓 pong index page</a>
-
+<a href="/pong/">🏓 Pong Index Page</a>
 </body>
-
 </html>

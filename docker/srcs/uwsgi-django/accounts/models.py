@@ -51,6 +51,10 @@ class UserManager(BaseUserManager):
     def _is_valid_email(self, email):
         if not email:
             return False, "The given email must be set"
+
+        if CustomUser.objects.filter(email=email).exists():
+            return False, "This email is already in use"
+
         try:
             validate_email(email)
             return True, None
@@ -67,6 +71,10 @@ class UserManager(BaseUserManager):
             return False, err
         if not nickname.isalnum():
             return False, "Invalid nickname format"
+
+        if CustomUser.objects.filter(nickname=nickname).exists():
+            return False, "This nickname is already in use"
+
         return True, None
 
 

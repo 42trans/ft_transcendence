@@ -5,167 +5,28 @@ import time
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.messages import get_messages
+from django.http import JsonResponse
 from django_otp.util import random_hex
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django.test import TestCase
 from django.urls import reverse, resolve
+from rest_framework import status
+from rest_framework.test import APIClient
 
-from accounts.forms import Enable2FAForm, Verify2FAForm
-from accounts.views.two_factor_auth import Enable2FaView, Verify2FaView
 
-
-class Enable2FaFormTests(TestCase):
+class Enable2FaAPITests(TestCase):
     kUserEmail = 'test@example.com'
     kUserNickname = 'test'
-    kUserPassword = 'pass012345'
+    kUserPassword = 'pass01234'
 
-    kLoginName = "accounts:login"
-    kEnable2FaName = "accounts:enable_2fa"
-    kEnable2FaURL = "/accounts/verify/enable_2fa/"
-
-    def setUp(self):
-
-        User = get_user_model()
-        user = User.objects.create_user(email=self.kUserEmail,
-                                        nickname=self.kUserNickname,
-                                        password=self.kUserPassword)
-        user.save()
-
-        login_url = reverse(self.kLoginName)
-        user_field = {
-            'username'  : self.kUserEmail,
-            'password'  : self.kUserPassword,
-        }
-        self.response = self.client.post(login_url, user_field)
-        self.assertTrue('_auth_user_id' in self.client.session)
-
-        # access to enable_2fa
-        enable_2fa_url = reverse(self.kEnable2FaName)
-        self.response = self.client.get(enable_2fa_url)
-
-    def test_status_code(self):
-        self.assertEqual(self.response.status_code, 200)
-
-    def test_url_resolve_view(self):
-        enable_2fa_view = resolve(self.kEnable2FaURL)
-        self.assertEqual(enable_2fa_view.func.view_class, Enable2FaView)
-
-    def test_csrf(self):
-        self.assertContains(self.response, 'csrfmiddlewaretoken')
-
-    def test_contains_form(self):
-        form = self.response.context.get('form')
-        self.assertIsInstance(form, Enable2FAForm)
-
-    def test_form_inputs(self):
-        '''
-        The edit form should contain 5 <input> tags:
-         (csrf), token
-        '''
-        self.assertContains(self.response, '<input', 2)
-        self.assertContains(self.response, 'type="hidden"', 1)  # csrf
-        self.assertContains(self.response, 'type="text"', 1)    # token
-
-    def test_input_invalid_token(self):
-        invalid_tokens = [
-            '', 'a', '@', '.',
-            'abcdef', '123abc'
-            '000000', '999999',
-            '+000000', '-00000', '0000.0',
-            '000000a', 'aaaaaa',
-            '00000000', '000000-0000',
-            ' 000000 ',
-            '０００００００',
-        ]
-
-        for token in invalid_tokens:
-            form = Enable2FAForm(data={'token': token})
-            self.assertFalse(form.is_valid())
-
-
-class Verify2FaFormTests(TestCase):
-    kUserEmail = 'test@example.com'
-    kUserNickname = 'test'
-    kUserPassword = 'pass012345'
-
-    kLoginName = "accounts:login"
-    kVerify2FaURL = "/accounts/verify/verify_2fa/"
+    kLoginAPIName = "accounts:api_login"
+    kLogoutAPIName = "accounts:api_logout"
+    kEnable2FaAPIName = "accounts:api_enable_2fa"
 
     def setUp(self):
-        User = get_user_model()
-        user = User.objects.create_user(email=self.kUserEmail,
-                                        nickname=self.kUserNickname,
-                                        password=self.kUserPassword,
-                                        enable_2fa=True)
-        user.save()
-
-        login_url = reverse(self.kLoginName)
-        user_field = {
-            'username'  : self.kUserEmail,
-            'password'  : self.kUserPassword,
-        }
-        self.response = self.client.post(login_url, user_field, follow=True)
-        # login -> redirect to verify_2fa
-
-    def test_authenticate(self):
-        # not logged in until OTP auth
-        self.assertFalse('_auth_user_id' in self.client.session)
-
-    def test_status_code(self):
-        self.assertEqual(self.response.status_code, 200)
-
-    def test_url_resolve_view(self):
-        enable_2fa_view = resolve(self.kVerify2FaURL)
-        self.assertEqual(enable_2fa_view.func.view_class, Verify2FaView)
-
-    def test_csrf(self):
-        self.assertContains(self.response, 'csrfmiddlewaretoken')
-
-    def test_contains_form(self):
-        form = self.response.context.get('form')
-        self.assertIsInstance(form, Verify2FAForm)
-
-    def test_form_inputs(self):
-        '''
-        The edit form should contain 5 <input> tags:
-         (csrf), token
-        '''
-        self.assertContains(self.response, '<input', 2)
-        self.assertContains(self.response, 'type="hidden"', 1)  # csrf
-        self.assertContains(self.response, 'type="text"', 1)    # token
-
-
-class EnableAndVerify2FaTests(TestCase):
-    """
-    enable2fa and logged in user access to
-     accounts:enable_2fa  -> redirect to "accounts:user"
-     accounts:verify_2fa  -> redirect to "/pong/"
-     accounts:disable_2fa -> 2fa disabled -> redirect to "accounts:user"
-    """
-    kUserEmail = 'test@example.com'
-    kUserNickname = 'test'
-    kUserPassword = 'pass012345'
-
-    kLoginName = "accounts:login"
-
-    kEnable2FaName = "accounts:enable_2fa"
-    kEnable2FaURL = "/accounts/verify/enable_2fa/"
-
-    kVerify2FaName = "accounts:verify_2fa"
-    kVerify2FaURL = "/accounts/verify/verify_2fa/"
-
-    kDisable2FaName = "accounts:disable_2fa"
-    kDisable2FaURL = "/accounts/verify/disable_2fa/"
-
-    kUserPageName = "accounts:user"
-    kHomeURL = "/pong/"
-
-    def setUp(self):
-        self.enable_2fa_url = reverse(self.kEnable2FaName)
-        self.verify_2fa_url = reverse(self.kVerify2FaName)
-        self.disable_2fa_url = reverse(self.kDisable2FaName)
-        self.user_page_url = reverse(self.kUserPageName)
-        self.login_url = reverse(self.kLoginName)
+        self.enable_2fa_api_url = reverse(self.kEnable2FaAPIName)
+        self.login_api_path = reverse(self.kLoginAPIName)
+        self.client = APIClient()
 
         User = get_user_model()
         self.user = User.objects.create_user(email=self.kUserEmail,
@@ -173,195 +34,152 @@ class EnableAndVerify2FaTests(TestCase):
                                              password=self.kUserPassword,
                                              enable_2fa=False)  # disable
         self.user.save()
-        self.client.force_login(self.user)
+        self._login()
 
-    def test_enable_2fa(self):
-        """
-        testing enable 2fa use post method for Enable2FaView
-        """
+    # get
+    def test_get_enabled_user(self):
+        self.user.enable_2fa = True
+        self.user.save()
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(self.enable_2fa_api_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("Already enabled 2FA", response.json()['message'])
+        self.assertIn("/pong/", response.json()['redirect'])
+
+    def test_get_disable_user(self):
+        response = self.client.get(self.enable_2fa_api_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('qr_code_data', response.json())
+        self.assertIn('setup_key', response.json())
+
+    def test_get_un_login_user(self):
+        self._logout()
+
+        response = self.client.get(self.enable_2fa_api_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    # post
+    def test_post_enabled_user(self):
+        self.user.enable_2fa = True
+        self.user.save()
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(self.enable_2fa_api_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("Already enabled 2FA", response.json()['message'])
+        self.assertIn("/pong/", response.json()['redirect'])
+
+    def test_post_succeed_enable_2fa(self):
         self.user.refresh_from_db()
         self.assertFalse(self.user.enable_2fa)  # disable
 
-        response = self.client.get(self.enable_2fa_url)
-        secret_key_base32 = response.context['setup_key']
+        response = self.client.get(self.enable_2fa_api_url)
+        secret_key_base32 = response.json()['setup_key']
         totp = pyotp.TOTP(secret_key_base32)
         otp_token = totp.now()
 
-        response = self.client.post(self.enable_2fa_url, {'token': otp_token}, follow=True)
-        # print(f"form.errors:[{response.context['form'].errors}]")
-
-        self.assertRedirects(response, self.user_page_url)   # succeed enable2fa -> redirect to user
-
-        self.assertTrue('_auth_user_id' in self.client.session)  # login
+        response = self.client.post(self.enable_2fa_api_url, {'token': otp_token})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("2FA has been enabled successfully", response.json()['message'])
+        self.assertIn("/accounts/user/", response.json()['redirect'])
 
         self.user.refresh_from_db()
         self.assertTrue(self.user.enable_2fa)  # enable
 
-    def test_verify_2fa(self):
-        # enable 2fa and logout
-        self.test_enable_2fa()
-        self.client.logout()
-
-        # login
-        user_field = {
-            'username'  : self.kUserEmail,
-            'password'  : self.kUserPassword,
-        }
-        response = self.client.post(self.login_url, user_field, follow=True)
-        self.assertFalse('_auth_user_id' in self.client.session)  # login yet
-
-        # verify 2fa form
-        enable_2fa_view = resolve(self.kVerify2FaURL)
-        self.assertEqual(enable_2fa_view.func.view_class, Verify2FaView)
-
-        devices = TOTPDevice.objects.filter(user=self.user, confirmed=True)
-        device = devices.first()
-        totp = pyotp.TOTP(b32encode(bytes.fromhex(device.key)).decode('utf-8'))
-        otp_token = totp.now()
-
-        # verify
-        response = self.client.post(self.verify_2fa_url, {'token': otp_token}, follow=True)
-        self.assertRedirects(response, self.kHomeURL)
-
-        self.assertIn('_auth_user_id', self.client.session)  # login
-
-
-
-class Disable2FaTests(TestCase):
-    kUserEmail = 'test@example.com'
-    kUserNickname = 'test'
-    kUserPassword = 'pass012345'
-
-    kDisable2FaName = "accounts:disable_2fa"
-
-    kUserPageName = "accounts:user"
-
-    def setUp(self):
-        self.disable_2fa_url = reverse(self.kDisable2FaName)
-        self.user_page_url = reverse(self.kUserPageName)
-
-        User = get_user_model()
-        self.user = User.objects.create_user(email=self.kUserEmail,
-                                             nickname=self.kUserNickname,
-                                             password=self.kUserPassword,
-                                             enable_2fa=True)  # enable
-        self.user.save()
-        self.client.force_login(self.user)
-
-    def test_access_to_disable_2fa(self):
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.enable_2fa)  # enable
-
-        self.response = self.client.get(self.disable_2fa_url, follow=True)
-        self.assertRedirects(self.response, self.user_page_url)
-
-        self.user.refresh_from_db()
-        self.assertFalse(self.user.enable_2fa)  # disabled
-
-    def test_re_access_to_disable_2fa(self):
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.enable_2fa)  # enable
-
-        self.response = self.client.get(self.disable_2fa_url, follow=True)
-        self.assertRedirects(self.response, self.user_page_url)
-
-        self.user.refresh_from_db()
-        self.assertFalse(self.user.enable_2fa)  # disabled
-
-        self.response = self.client.get(self.disable_2fa_url, follow=True)
-        self.assertRedirects(self.response, self.user_page_url)
+    def test_post_invalid_token1(self):
+        response = self.client.post(self.enable_2fa_api_url, {'token': '012345'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Invalid token provided", response.json()['error'])
 
         self.user.refresh_from_db()
         self.assertFalse(self.user.enable_2fa)  # disable
 
-
-class EnableUserAccessTests(TestCase):
-    """
-    enable2fa and logged in user access to
-     accounts:enable_2fa  -> redirect to "accounts:user"
-     accounts:verify_2fa  -> redirect to "/pong/"
-     accounts:disable_2fa -> 2fa disabled -> redirect to "accounts:user"
-    """
-    kUserEmail = 'test@example.com'
-    kUserNickname = 'test'
-    kUserPassword = 'pass012345'
-
-    kLoginName = "accounts:login"
-
-    kEnable2FaName = "accounts:enable_2fa"
-    kEnable2FaURL = "/accounts/verify/enable_2fa/"
-
-    kVerify2FaName = "accounts:verify_2fa"
-    kVerify2FaURL = "/accounts/verify/verify_2fa/"
-
-    kDisable2FaName = "accounts:disable_2fa"
-    kDisable2FaURL = "/accounts/verify/disable_2fa/"
-
-    kUserPageName = "accounts:user"
-    kHomeURL = "/pong/"
-
-    def setUp(self):
-        self.enable_2fa_url = reverse(self.kEnable2FaName)
-        self.verify_2fa_url = reverse(self.kVerify2FaName)
-        self.disable_2fa_url = reverse(self.kDisable2FaName)
-        self.user_page_url = reverse(self.kUserPageName)
-
-        User = get_user_model()
-        self.user = User.objects.create_user(email=self.kUserEmail,
-                                        nickname=self.kUserNickname,
-                                        password=self.kUserPassword,
-                                        enable_2fa=True)  # enable
-        self.user.save()
-        self.client.force_login(self.user)
-
-    def test_access_to_enable_2fa(self):
-        self.response = self.client.get(self.enable_2fa_url, follow=True)
-        self.assertRedirects(self.response, self.user_page_url)
-        self.assertTrue(self.user.enable_2fa)
-
-    def test_access_to_verify_2fa(self):
-        self.response = self.client.get(self.verify_2fa_url, follow=True)
-        self.assertRedirects(self.response, self.kHomeURL)
-        self.assertTrue(self.user.enable_2fa)
-
-    def test_access_to_disable_2fa(self):
-        self.response = self.client.get(self.disable_2fa_url, follow=True)
-        self.assertRedirects(self.response, self.user_page_url)
+    def test_post_invalid_token2(self):
+        response = self.client.post(self.enable_2fa_api_url, {'token': ''})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Invalid token provided", response.json()['error'])
 
         self.user.refresh_from_db()
-        self.assertFalse(self.user.enable_2fa)  # disabled
+        self.assertFalse(self.user.enable_2fa)  # disable
+
+    def test_post_invalid_token3(self):
+        response = self.client.post(self.enable_2fa_api_url, {'token': 'abc'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Invalid token provided", response.json()['error'])
+
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.enable_2fa)  # disable
+
+    def test_post_empty_token(self):
+        response = self.client.post(self.enable_2fa_api_url, {'token': ''})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('Invalid token provided', response.json()['error'])
+
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.enable_2fa)  # disable
+
+    def test_post_empty_request(self):
+        response = self.client.post(self.enable_2fa_api_url, {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('Invalid token provided', response.json()['error'])
+
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.enable_2fa)  # disable
+
+    def test_post_un_login_user(self):
+        self._logout()
+
+        response = self.client.post(self.enable_2fa_api_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    # other
+    def test_secret_key_regeneration(self):
+        response1 = self.client.get(self.enable_2fa_api_url)
+        secret_key1 = response1.json()['setup_key']
+
+        response2 = self.client.get(self.enable_2fa_api_url)
+        secret_key2 = response2.json()['setup_key']
+
+        self.assertEqual(secret_key1, secret_key2, "同一の秘密鍵が生成される")
+
+        self._logout()
+        self._login()
+        response3 = self.client.get(self.enable_2fa_api_url)
+        secret_key3 = response3.json()['setup_key']
+
+        self.assertNotEqual(secret_key1, secret_key3, "新しい秘密鍵が生成される")
+
+    # helper
+    def _login(self):
+        login_data = {
+            'email': self.kUserEmail,
+            'password': self.kUserPassword
+        }
+        self.client.post(self.login_api_path, data=login_data)
+
+    def _logout(self):
+        logout_api_url = reverse(self.kLogoutAPIName)
+        self.client.get(logout_api_url)
 
 
-class DisableUserAccessTests(TestCase):
-    """
-    disable2fa and logged in user access to
-     accounts:enable_2fa  -> display enable_2fa page
-     accounts:verify_2fa  -> redirect to "/pong/"
-     accounts:disable_2fa -> redirect to "accounts:user"
-    """
+class Verify2FaAPITests(TestCase):
     kUserEmail = 'test@example.com'
     kUserNickname = 'test'
-    kUserPassword = 'pass012345'
+    kUserPassword = 'pass01234'
 
-    kLoginName = "accounts:login"
-
-    kEnable2FaName = "accounts:enable_2fa"
-    kEnable2FaURL = "/accounts/verify/enable_2fa/"
-
-    kVerify2FaName = "accounts:verify_2fa"
-    kVerify2FaURL = "/accounts/verify/verify_2fa/"
-
-    kDisable2FaName = "accounts:disable_2fa"
-    kDisable2FaURL = "/accounts/verify/disable_2fa/"
-
-    kUserPageName = "accounts:user"
-    kHomeURL = "/pong/"
+    kLoginAPIName = "accounts:api_login"
+    kLogoutAPIName = "accounts:api_logout"
+    kEnable2FaAPIName = "accounts:api_enable_2fa"
+    kVerify2FaAPIName = "accounts:api_verify_2fa"
 
     def setUp(self):
-        self.enable_2fa_url = reverse(self.kEnable2FaName)
-        self.verify_2fa_url = reverse(self.kVerify2FaName)
-        self.disable_2fa_url = reverse(self.kDisable2FaName)
-        self.user_page_url = reverse(self.kUserPageName)
+        self.login_api_path = reverse(self.kLoginAPIName)
+        self.logout_api_url = reverse(self.kLogoutAPIName)
+        self.enable_2fa_api_url = reverse(self.kEnable2FaAPIName)
+        self.verify_2fa_api_url = reverse(self.kVerify2FaAPIName)
+
+        self.client = APIClient()
 
         User = get_user_model()
         self.user = User.objects.create_user(email=self.kUserEmail,
@@ -369,70 +187,61 @@ class DisableUserAccessTests(TestCase):
                                              password=self.kUserPassword,
                                              enable_2fa=False)  # disable
         self.user.save()
-        self.client.force_login(self.user)
+        self._login()
+        response = self.client.get(self.enable_2fa_api_url)
+        secret_key_base32 = response.json()['setup_key']
+        totp = pyotp.TOTP(secret_key_base32)
+        self.otp_token = totp.now()
 
-    def test_access_to_enable_2fa(self):
-        self.response = self.client.get(self.enable_2fa_url, follow=True)
-        enable_2fa_view = resolve(self.kEnable2FaURL)
-        self.assertEqual(enable_2fa_view.func.view_class, Enable2FaView)
-        self.assertFalse(self.user.enable_2fa)
+        response = self.client.post(self.enable_2fa_api_url, {'token': self.otp_token})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_access_to_verify_2fa(self):
-        self.response = self.client.get(self.verify_2fa_url, follow=True)
-        self.assertRedirects(self.response, self.kHomeURL)
-        self.assertFalse(self.user.enable_2fa)
+        self.client.get(self.logout_api_url)
 
-    def test_access_to_disable_2fa(self):
-        self.response = self.client.get(self.disable_2fa_url, follow=True)
-        self.assertRedirects(self.response, self.user_page_url)
+    def test_success_verify_2fa(self):
+        self._login()
 
-        self.user.refresh_from_db()
-        self.assertFalse(self.user.enable_2fa)
+        response = self.client.post(self.verify_2fa_api_url, {'token': self.otp_token})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("2FA verification successful", response.json()['message'])
+        self.assertIn("/accounts/user/", response.json()['redirect'])
 
+        self.assertIn('Access-Token', response.cookies)
+        self.assertIn('Refresh-Token', response.cookies)
+        self.assertNotEqual(response.cookies['Access-Token'].value, '')
+        self.assertNotEqual(response.cookies['Refresh-Token'].value, '')
 
-class UnLoginedUserAccessTests(TestCase):
-    """
-    un logged in user access to
-     accounts:enable_2fa  -> redirect to "accounts:login"
-     accounts:verify_2fa  -> redirect to "accounts:login"
-     accounts:disable_2fa -> redirect to "accounts:login"
-    """
-    kUserEmail = 'test@example.com'
-    kUserNickname = 'test'
-    kUserPassword = 'pass012345'
+    def test_faulure_invalid_token(self):
+        self._login()
 
-    kLoginName = "accounts:login"
+        response = self.client.post(self.verify_2fa_api_url, {'token': '012345'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('Invalid token', response.json()['error'])
 
-    kEnable2FaName = "accounts:enable_2fa"
-    kEnable2FaURL = "/accounts/verify/enable_2fa/"
+    def test_faulure_empty_token(self):
+        self._login()
 
-    kVerify2FaName = "accounts:verify_2fa"
-    kVerify2FaURL = "/accounts/verify/verify_2fa/"
+        response = self.client.post(self.verify_2fa_api_url, {'token': ''})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('Invalid token', response.json()['error'])
 
-    kDisable2FaName = "accounts:disable_2fa"
-    kDisable2FaURL = "/accounts/verify/disable_2fa/"
+    def test_faulure_empty_request(self):
+        self._login()
 
-    kUserPageName = "accounts:user"
-    kHomeURL = "/pong/"
+        response = self.client.post(self.verify_2fa_api_url, {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('Invalid token', response.json()['error'])
 
-    def setUp(self):
-        self.enable_2fa_url = reverse(self.kEnable2FaName)
-        self.verify_2fa_url = reverse(self.kVerify2FaName)
-        self.disable_2fa_url = reverse(self.kDisable2FaName)
-        self.user_page_url = reverse(self.kUserPageName)
-        self.login_url = reverse(self.kLoginName)
-        self.not_login_user_redirect_to = f"{self.login_url}?next="
+    def test_un_login_user(self):
+        response = self.client.post(self.verify_2fa_api_url, {'token': '012345'})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertIn('No valid session found', response.json()['error'])
+        self.assertIn('/accounts/login/', response.json()['redirect'])
 
-    def test_access_to_enable_2fa(self):
-        self.response = self.client.get(self.enable_2fa_url, follow=True)
-        redirect_to = self.not_login_user_redirect_to + self.enable_2fa_url
-        self.assertRedirects(self.response, redirect_to)
-
-    def test_access_to_verify_2fa(self):
-        self.response = self.client.get(self.verify_2fa_url, follow=True)
-        self.assertRedirects(self.response, self.login_url)  # LoginRequiredMixinでないためnextなし
-
-    def test_access_to_disable_2fa(self):
-        self.response = self.client.get(self.disable_2fa_url, follow=True)
-        redirect_to = self.not_login_user_redirect_to + self.disable_2fa_url
-        self.assertRedirects(self.response, redirect_to)
+    # helper
+    def _login(self):
+        self.login_data = {
+            'email': self.kUserEmail,
+            'password': self.kUserPassword
+        }
+        self.client.post(self.login_api_path, data=self.login_data)

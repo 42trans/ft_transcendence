@@ -10,6 +10,7 @@ from django import forms
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django_otp import devices_for_user
 from django_otp.oath import TOTP
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -17,63 +18,81 @@ from django_otp.util import random_hex
 from django.utils.timezone import make_aware
 from django.shortcuts import render, redirect
 from django.views import View
+from django.views.generic import TemplateView
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from accounts.forms import Enable2FAForm, Verify2FAForm
 from accounts.models import CustomUser, UserManager
+from accounts.views.jwt import get_jwt_response
 
 
-class Enable2FaView(LoginRequiredMixin, View):
+class Enable2FaTemplateView(TemplateView):
     template_name = 'verify/enable_2fa.html'
-    user_page_path = 'accounts:user'
+    login_path = "accounts:login"
+    user_page_path = "accounts:user"
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(to=self.login_path)
+
+        if request.user.enable_2fa:
+            return redirect(to=self.user_page_path)
+
+        return render(request, self.template_name)
+
+
+class Enable2FaAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    template_name = 'verify/enable_2fa.html'
+    enabled_redirect_to = '/accounts/user/'
+    authenticated_redirect_to = "/pong/"
 
     def get(self, request, *args, **kwargs):
         if request.user.enable_2fa:
-            return redirect(to=self.user_page_path)
-
-        form = Enable2FAForm()
-        secret_key, secret_key_base32 = self._get_secret_key(request)
-        qr_code_data, _ = self._generate_qr_code(secret_key_base32, request.user.get_username())
-        param = {
-            'qr_code_data': qr_code_data,
-            'setup_key': secret_key_base32,
-            'form': form
-        }
-        return render(request, self.template_name, param)
+            data = {
+                "message": "Already enabled 2FA",
+                "redirect": self.authenticated_redirect_to,
+            }
+        else:
+            secret_key, secret_key_base32 = self._get_secret_key(request)
+            qr_code_data, _ = self._generate_qr_code(secret_key_base32,
+                                                     request.user.get_username())
+            data = {
+                'qr_code_data': qr_code_data,
+                'setup_key': secret_key_base32,
+            }
+        return JsonResponse(data, status=200)
 
     def post(self, request, *args, **kwargs):
         if request.user.enable_2fa:
-            return redirect(to=self.user_page_path)
-
-        secret_key, secret_key_base32 = self._get_secret_key(request)
-        qr_code_data, totp = self._generate_qr_code(secret_key_base32, request.user.get_username())
-        form = Enable2FAForm(request.POST, totp=totp)
-        if form.is_valid():
-            user = request.user
-            device, created = TOTPDevice.objects.get_or_create(
-                user=user,
-                defaults={
-                    'key': secret_key,
-                    'step': totp.interval,
-                    'name': 'default',
-                    'confirmed': True
-                })
-            if not created:
-                device.key = secret_key
-                device.step = totp.interval
-                device.name = 'default'
-                device.confirmed = True
-                device.save()
-
-            del request.session['enable_2fa_temp_secret_info']
-            self._enable_user_2fa(user)
-            return redirect(to=self.user_page_path)
-        else:
-            param = {
-                'qr_code_data': qr_code_data,
-                'setup_key': secret_key_base32,
-                'form': form
+            data = {
+                "message": "Already enabled 2FA",
+                "redirect": self.authenticated_redirect_to,
             }
-            return render(request, self.template_name, param)
+            return JsonResponse(data, status=200)
+
+        token = request.data.get('token')
+        secret_key, secret_key_base32 = self._get_secret_key(request)
+        totp = pyotp.TOTP(secret_key_base32)
+
+        if totp.verify(token):
+            self._enable_user_2fa(request.user)
+            self._register_device(request.user, secret_key, totp)
+            del request.session['enable_2fa_temp_secret_info']
+            data = {
+                "message": "2FA has been enabled successfully",
+                "redirect": self.enabled_redirect_to,
+            }
+            return JsonResponse(data, status=200)
+        else:
+            data = {"error": "Invalid token provided"}
+            return JsonResponse(data, status=400)
 
     def _get_secret_key(self, request):
         """
@@ -117,19 +136,37 @@ class Enable2FaView(LoginRequiredMixin, View):
         qr_code_data = b64encode(io.getvalue()).decode('utf-8')
         return qr_code_data, totp
 
+    def _register_device(self, user, secret_key, totp):
+        device, created = TOTPDevice.objects.get_or_create(
+            user=user,
+            defaults={
+                'key': secret_key,
+                'step': totp.interval,
+                'name': 'default',
+                'confirmed': True
+            })
+        if not created:
+            device.key = secret_key
+            device.step = totp.interval
+            device.name = 'default'
+            device.confirmed = True
+            device.save()
+
     def _enable_user_2fa(self, user):
         user.enable_2fa = True
         user.save()
 
 
-class Disable2FaView(LoginRequiredMixin, View):
+class Disable2FaView(APIView):
+    permission_classes = [IsAuthenticated]
     redirect_to = 'accounts:user'
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        self._delete_totp_devices(user)
-        self._disable_user_2fa(user)
-        return redirect(to=self.redirect_to)
+        if user.enable_2fa:
+            self._delete_totp_devices(user)
+            self._disable_user_2fa(user)
+        return redirect(self.redirect_to)
 
     def _delete_totp_devices(self, user):
         devices = TOTPDevice.objects.filter(user=user, confirmed=True)
@@ -141,49 +178,54 @@ class Disable2FaView(LoginRequiredMixin, View):
         user.save()
 
 
-class Verify2FaView(View):
+class Verify2FaTepmlateView(TemplateView):
     template_name = 'verify/verify_2fa.html'
     login_page_path = 'accounts:login'
-    authenticated_redirect_to = "/pong/"
 
-    def get(self, request, *args, **kwargs):
-        form = Verify2FAForm()
-        user, _ = self._get_user_and_devices(request)
+    def dispatch(self, request, *args, **kwargs):
+        user, _ = Verify2FaAPIView._get_user_and_devices(request)
+        if user is None:
+            return redirect(self.login_page_path)
+        return super().dispatch(request, *args, **kwargs)
 
-        if user is None or user.enable_2fa is False:
-            return redirect(to=self.login_page_path)
 
-        param = {
-            'form': form,
-        }
-        return render(request, self.template_name, param)
+class Verify2FaAPIView(APIView):
+    permission_classes = [AllowAny]  # Non-Login before verify 2FA
 
     def post(self, request, *args, **kwargs):
         user, devices = self._get_user_and_devices(request)
-        if user is None or user.enable_2fa is False:
-            return redirect(to=self.login_page_path)
-
-        form = Verify2FAForm(request.POST, devices=devices)
-        if form.is_valid():
-            login(request, user)
-            del request.session['temp_auth_user_id']
-            return redirect(to=self.authenticated_redirect_to)
-        else:
-            form.add_error(None, 'Invalid token')
-            param = {
-                'form': form,
+        if user is None:
+            data = {
+                'error': 'No valid session found',
+                'redirect': '/accounts/login/',
             }
-            return render(request, self.template_name, param)
+            return Response(data, status=401)
 
+        token = request.data.get('token')
+        for device in devices:
+            if device.verify_token(token):
+                # login(request, user)  # JWT auth -> login() unused
+                del request.session['tmp_auth_user_id']
+                data = {
+                    'message': '2FA verification successful',
+                    'redirect': '/accounts/user/'
+                }
+                return get_jwt_response(user, data)
+
+        data = {'error': 'Invalid token'}
+        return Response(data, status=400)
+
+    @classmethod
     def _get_user_and_devices(self, request):
-        temp_user_id = request.session.get('temp_auth_user_id')
-        if temp_user_id is None:
+        tmp_user_id = request.session.get('tmp_auth_user_id')
+
+        if tmp_user_id is None:
             user = None
             devices = []
         else:
             User = get_user_model()
             try:
-                user = User.objects.get(id=temp_user_id)
+                user = User.objects.get(id=tmp_user_id)
                 devices = list(devices_for_user(user, confirmed=True))
             except User.DoesNotExist:
                 user = None

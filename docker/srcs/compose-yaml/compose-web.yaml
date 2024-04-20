@@ -25,7 +25,8 @@ services:
     restart: unless-stopped
     depends_on:
       # - pgadmin
-      - uwsgi-django
+      uwsgi-django:
+        condition: service_healthy
     init: true
 
   frontend:
@@ -68,6 +69,11 @@ services:
         condition: service_healthy
     #      - postgres
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8001 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     init: true
     volumes:
       - '${VOLUME_PATH:?}/log_django_vol:/src/logs'
