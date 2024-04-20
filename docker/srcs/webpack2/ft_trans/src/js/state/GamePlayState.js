@@ -26,7 +26,7 @@ class GameplayState extends BaseGameState {
 		this.zoomToTable();	
 
 		setTimeout( () => {
-			// this.scenesMgr.effectsScene.clearScene();
+			this.scenesMgr.effectsScene.clearScene();
 		}, 4500);
 	}
 

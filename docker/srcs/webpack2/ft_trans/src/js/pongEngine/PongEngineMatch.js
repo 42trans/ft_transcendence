@@ -8,11 +8,12 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
  * - 参考:【TextGeometry – three.js docs】 <https://threejs.org/docs/#examples/en/geometries/TextGeometry>
  */
 class PongEngineMatch {
-	constructor(scene, data) {
+	constructor(pongEngine,scene, data) {
+		this.pongEngine = pongEngine;
 		this.scene	= scene;
 		this.score1 = data.state.score1;
 		this.score2 = data.state.score2;
-		this.maxScore = data.state.maxScore;
+		this.maxScore = data.settings.maxScore;
 
 		this.fontSize = 40;
 		this.textMaterial = new THREE.MeshBasicMaterial({ 
@@ -76,15 +77,98 @@ class PongEngineMatch {
 		}
 		this.updateScoreText();
 		this.checkMatchEnd();
+
+		console.log(`
+			score: ${this.score2} - ${this.score1}
+		`);	
 	}
 
 	checkMatchEnd() {
 		if (this.score1 >= this.maxScore || this.score2 >= this.maxScore) {
 			const winner = this.score1 >= this.maxScore ? 'Player 1' : 'Player 2';
-			console.log(`${winner} wins the match!`);
+			console.log(`${this.winner} wins the match!`);
 			// ここでゲーム終了の処理をするか、イベントを発火させる
+			this.pongEngine.isRunning = false;
+			this.endGame();
 		}
 	}
+
+	endGame() {
+		this.pongEngine.isRunning = false;
+		console.log('end game');
+		// this.sendMatchResult(this.winner);
+		this.displayEndGameButton();
+	}
+
+
+	displayEndGameButton() {
+		const button = document.createElement('button');
+		button.textContent = 'End Game';
+		button.id = 'startButton';
+		button.style.position = 'absolute'; // 位置の基準を絶対位置に設定
+		button.style.top = '50%';  // ボタンの位置調整
+		button.style.left = '50%';
+		button.onclick = function() {
+			window.location.href = '/';
+		};
+		// ボタンをページに追加
+		document.body.appendChild(button);
+	}
+
 }
 
 export default PongEngineMatch;
+
+
+
+// 	sendMatchResult(winner) {
+// 		const result = {
+// 			winner: winner,
+// 			score1: this.score1,
+// 			score2: this.score2,
+// 			// matchId: this.matchId,
+// 			// player1: this.player1,
+// 			// player2: this.player2
+// 		};
+
+// 		// ウェブリソースへのアクセス
+// 		fetch('https://localhost/pong/api/save_game_result/', {
+// 			method: 'POST',
+// // TODO_ft: テスト用
+// mode: 'no-cors', 
+// //
+// 			headers: {
+// 				'Content-Type': 'application/json',
+// 			},
+// 			// result オブジェクトをJSON文字列に変換してボディにセット
+// 			body: JSON.stringify(result)
+// 		})
+
+// 		// fetch からのレスポンスが返された後に実行
+// 		// ボディをJSONとして解析
+// 		// .then(response => {
+// 		// 	if (!response.ok) {
+// 		// 		throw new Error('response faled');
+// 		// 	}
+
+// 		// 	// ↑上記のmode: 'no-cors', では機能しない
+// 		// 	return response.json();
+// 		// 	// 
+// 		// })
+// 		// .then(data => console.log('Success:', data))
+// 		// .catch((error) => console.error('Error:', error));
+// 	}
+
+// 	displayEndGameButton() {
+// 		const button = document.createElement('button');
+// 		button.textContent = 'End Game';
+// 		button.style.position = 'absolute'; // 位置の基準を絶対位置に設定
+// 		button.style.top = '50%';  // ボタンの位置調整
+// 		button.style.left = '50%';
+// 		// button.style.zIndex = '1000'; // 他の要素より前面に表示
+// 		button.onclick = function() {
+// 			window.location.href = '/';
+// 		};
+// 		// ボタンをページに追加
+// 		document.body.appendChild(button);
+// 	}

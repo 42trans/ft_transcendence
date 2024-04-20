@@ -12,6 +12,7 @@ import RendererManager from '../manager/RendererManager';
  */
 class PongEngine {
 	constructor(PongApp) {
+		this.isRunning = true;
 		this.initializeRendering(PongApp);
 		this.initializeGameData();
 		this.initializeGameSystems();
@@ -34,7 +35,7 @@ class PongEngine {
 
 	initializeGameSystems() {
 		this.physics	= new PongEnginePhysics(this.data);
-		this.match		= new PongEngineMatch(this.scene, this.data);
+		this.match		= new PongEngineMatch(this, this.scene, this.data);
 		this.update		= new PongEngineUpdate(this.data, this.physics, this.match);
 	}
 	
@@ -43,7 +44,9 @@ class PongEngine {
 	}
 
 	animate() {
-		requestAnimationFrame(this.animate);
+		if (this.isRunning){
+			requestAnimationFrame(this.animate);
+		}
 		this.updatePongEngine();
 	}
 }

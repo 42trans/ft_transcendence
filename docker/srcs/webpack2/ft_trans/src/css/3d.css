@@ -30,12 +30,14 @@ body {
 #ui-layer {
 	position: absolute;
 	top: 95%;
-	left: 50%;
-	min-width: 153px;
+	left: 70%;
 	z-index: 1;
 }
 
 #startButton {
+	top: 95%;
+	left: 50%;
+	position: absolute;
 	z-index: 1;
 	transform: translate(-50%, -50%);
 	display: inline-block;

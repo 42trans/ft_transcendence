@@ -85,12 +85,12 @@ class PongEngineUpdate {
 	}
 
 	updateGame() {
-		console.log(`
-			paddle1 \tX: ${this.paddle1.position.x}  \tY: ${this.paddle1.position.y}
-			paddle1 \tW: ${this.paddle1.width}  \tH: ${this.paddle1.height}
-			DirY \tpaddle1: ${this.paddle1.dirY}  \tpaddle2: ${this.paddle2.dirY}
-			field \twidth: ${this.field.width}  \height: ${this.field.height}
-		`);	
+		// console.log(`
+		// 	paddle1 \tX: ${this.paddle1.position.x}  \tY: ${this.paddle1.position.y}
+		// 	paddle1 \tW: ${this.paddle1.width}  \tH: ${this.paddle1.height}
+		// 	DirY \tpaddle1: ${this.paddle1.dirY}  \tpaddle2: ${this.paddle2.dirY}
+		// 	field \twidth: ${this.field.width}  \height: ${this.field.height}
+		// `);	
 		this.handleCollisions();
 		this.updateBallPosition();
 		this.handlePaddleMovement();

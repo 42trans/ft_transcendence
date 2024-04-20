@@ -18,7 +18,29 @@ class EntryGameState extends BaseGameState {
 
 		this.magmaFlare.name = "MagmaFlare";
 		this.PongApp.allScenesManager.effectsScene.scene.add(this.magmaFlare);
+		this.displayEnterGameButton(); 
 	}
+
+	displayEnterGameButton() {
+		let button = document.getElementById('startButton');
+		if (!button) {
+			button = document.createElement('button');
+			button.textContent = 'Enter Game';
+			button.id = 'startButton';
+			document.body.appendChild(button);
+		}
+	
+		// イベントリスナーを一度だけ追加する
+		button.removeEventListener('click', this.handleButtonClick);
+		this.handleButtonClick = () => {
+			this.PongApp.gameStateManager.changeState('gamePlay');
+			button.style.display = 'none';
+			console.log('State changed to gamePlay');
+		};
+		button.addEventListener('click', this.handleButtonClick);
+	}
+	
+
 
 	update() {
 	}

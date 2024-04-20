@@ -15,8 +15,8 @@ class GameStateManager {
 				entry: new EntryGameState(pongApps),
 				gamePlay: new GamePlayState(pongApps)
 			};
-			// this.currentState = this.states.entry;
-			this.currentState = this.states.gamePlay;
+			this.currentState = this.states.entry;
+			// this.currentState = this.states.gamePlay;
 			this.currentState.enter();
 			// StartButtonなどのUI設定
 			this.setupUI();
