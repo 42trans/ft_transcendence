@@ -2,9 +2,13 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
+from django_otp.plugins.otp_totp.models import TOTPDevice
+
 from accounts.models import CustomUser, UserManager
 
+
 CustomUser = get_user_model()
+
 
 class SignupForm(UserCreationForm):
     class Meta:
@@ -42,3 +46,33 @@ class CustomPasswordChangeForm(PasswordChangeForm):
             raise ValidationError(error_message)
 
         return new_password1
+
+
+class Enable2FAForm(forms.Form):
+    token = forms.CharField(label='2FA Token', max_length=6, required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.totp = kwargs.pop('totp', None)
+        super(Enable2FAForm, self).__init__(*args, **kwargs)
+
+    def clean_token(self):
+        token = self.cleaned_data['token']
+        if self.totp is None or not self.totp.verify(token):
+            raise ValidationError('Invalid token')
+        return token
+
+
+# todo: JWT認証への切り替えで不要に。testなどの呼び出しを変更後、削除予定
+class Verify2FAForm(forms.Form):
+    token = forms.CharField(label='2FA Token', max_length=6, required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.devices = kwargs.pop('devices', [])
+        super().__init__(*args, **kwargs)
+
+    def clean_token(self):
+        token = self.cleaned_data.get('token')
+        valid_token = any(device.verify_token(token) for device in self.devices)
+        if not valid_token:
+            raise ValidationError('Invalid token')
+        return token

@@ -25,7 +25,8 @@ services:
     restart: unless-stopped
     depends_on:
       # - pgadmin
-      - uwsgi-django
+      uwsgi-django:
+        condition: service_healthy
     init: true
 
   frontend:
@@ -64,8 +65,15 @@ services:
       - "${DJANGO_PORT:?}:8000"
       - "8002:8002"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    #      - postgres
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8001 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     init: true
     volumes:
       - '${VOLUME_PATH:?}/log_django_vol:/src/logs'
@@ -97,6 +105,12 @@ services:
       - db_transcendence
     ports:
       - "${POSTGRES_PORT:?}:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:?} -d ${POSTGRES_DB:?}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     restart: unless-stopped
     init: true
 

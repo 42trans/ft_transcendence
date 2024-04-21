@@ -8,7 +8,7 @@ from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
-
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -51,6 +51,10 @@ class UserManager(BaseUserManager):
     def _is_valid_email(self, email):
         if not email:
             return False, "The given email must be set"
+
+        if CustomUser.objects.filter(email=email).exists():
+            return False, "This email is already in use"
+
         try:
             validate_email(email)
             return True, None
@@ -67,6 +71,10 @@ class UserManager(BaseUserManager):
             return False, err
         if not nickname.isalnum():
             return False, "Invalid nickname format"
+
+        if CustomUser.objects.filter(nickname=nickname).exists():
+            return False, "This nickname is already in use"
+
         return True, None
 
 
@@ -138,6 +146,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     kNICKNAME_MAX_LENGTH = 30
     email = models.EmailField(_("email address"), unique=True)
     nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
+    enable_2fa = models.BooleanField(_("enable 2fa"), default=False)
 
     is_staff = models.BooleanField(
         _("staff status"),
@@ -163,3 +172,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    devices = models.ManyToManyField(TOTPDevice)
