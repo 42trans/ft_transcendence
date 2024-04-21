@@ -21,15 +21,19 @@ class MagmaFlare extends THREE.Object3D
 		this._flareEmitter.update();
 	}
 
+	// 透明度を徐々に下げる
 	fadeOut(duration = 1000) 
 	{
 		const fadeOutStep = () => 
 		{
 			let isComplete = true;
+			// Object3D.traverse: 反復処理
 			this.traverse((child) => 
 			{
+				// ofjの種類を判定して透明度を下げる
 				if (child.material && child.material.transparent) 
 				{
+					// 1/16秒ごとに透明にしていく
 					child.material.opacity -= 1 / (duration / 16);
 					if (child.material.opacity > 0) 
 					{
@@ -43,7 +47,8 @@ class MagmaFlare extends THREE.Object3D
 			} 
 			else 
 			{
-				this.parent.remove(this);  // シーンからこのオブジェクトを削除
+				// シーンからこのオブジェクトを削除
+				this.parent.remove(this);  
 			}
 		};
 		requestAnimationFrame(fadeOutStep);
