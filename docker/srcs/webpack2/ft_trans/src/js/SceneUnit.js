@@ -95,7 +95,7 @@ class SceneUnit{
 			console.error("Invalid or incomplete configuration provided:", newConfig);
 			return;
 		}
-		console.log("リフレッシュ時のconfigファイル:", newConfig);
+		// console.log("リフレッシュ時のconfigファイル:", newConfig);
 		this.clearScene();
 		this.sceneConfig = newConfig;
 		this.camera = this.setupCamera(this.sceneConfig.cameraConfig);
@@ -147,7 +147,7 @@ class SceneUnit{
 
 	setupLights(lightsConfig) {
 		if (!lightsConfig || lightsConfig.length === 0) {
-			console.log("No lights configuration provided.");
+			// console.log("No lights configuration provided.");
 			return;
 		}
 		lightsConfig.forEach((config) => {
