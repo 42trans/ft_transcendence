@@ -8,7 +8,7 @@ from rest_framework.test import APIClient
 
 
 class UserProfileAPITests(TestCase):
-    kUserProfileAPIName = "accounts:api_user_profile"
+    kUserProfileAPIName = "api_accounts:api_user_profile"
 
     kUserEmail = "test@example.com"
     kUserNickname = "test"
@@ -39,9 +39,9 @@ class UserProfileAPITests(TestCase):
 
 
 class EditUserProfileAPITests(TestCase):
-    kEditUserProfileAPIName = "accounts:api_edit_profile"
-    kLoginAPIName = "accounts:api_login"
-    kLogoutAPIName = "accounts:api_logout"
+    kEditUserProfileAPIName = "api_accounts:api_edit_profile"
+    kLoginAPIName = "api_accounts:api_login"
+    kLogoutAPIName = "api_accounts:api_logout"
 
     kUserEmail = "test@example.com"
     kUserNickname = "test"

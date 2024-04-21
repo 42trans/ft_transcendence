@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 
 
 class SignUpAPITests(TestCase):
-    kSignUpAPIName = "accounts:api_signup"
+    kSignUpAPIName = "api_accounts:api_signup"
     kUserEmail = "test@example.com"
     kUserNickname = "test"
     kUserPassword = "pass0123"

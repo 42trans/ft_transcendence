@@ -7,7 +7,7 @@
 
 ### Endpoint
 - path: `/accounts/api/signup/`
-- name: `accounts:api_signup`
+- name: `api_accounts:api_signup`
 
 ### Permissions
 - 認証されていないユーザーもアクセス可能（`AllowAny`）
@@ -64,7 +64,7 @@
 
 ### Endpoint
 - path: `/accounts/api/login/`
-- name: `accounts:api_login`
+- name: `api_accounts:api_login`
 
 ### Permissions
 - 認証されていないユーザーもアクセス可能（`AllowAny`）
@@ -109,7 +109,7 @@
 
 ### Endpoint
 - path: `/accounts/api/logout/`
-- name: `accounts:api_logout`
+- name: `api_accounts:api_logout`
 - 
 ### Permissions
 - 認証されているユーザーのみアクセス可能（`IsAuthenticated`）
@@ -147,7 +147,7 @@
 
 ### Endpoint
 - path: `/accounts/api/enable_2fa/`
-- name: `accounts:api_enable_2fa`
+- name: `api_accounts:api_enable_2fa`
 
 ### Permissions
 - 認証されているユーザーのみアクセス可能（`IsAuthenticated`）
@@ -226,7 +226,7 @@
 
 ### Endpoint
 - path: `/accounts/api/verify_2fa/`
-- name: `accounts:api_verify_2fa`
+- name: `api_accounts:api_verify_2fa`
 
 ### Permissions
 - 認証されているユーザーのみアクセス可能（`IsAuthenticated`）
@@ -279,7 +279,7 @@
 
 ### Endpoint
 - path: `/accounts/api/disable_2fa/`
-- name: `accounts:api_disable_2fa`
+- name: `api_accounts:api_disable_2fa`
 
 ### Permissions
 - 認証されているユーザーのみアクセス可能（`IsAuthenticated`）
@@ -303,7 +303,7 @@
 
 ### Endpoint
 - path: `/accounts/api/user/profile/`
-- name: `accounts:api_user_profile`
+- name: `api_accounts:api_user_profile`
 
 ### Permissions
 - 認証されているユーザーのみアクセス可能（`IsAuthenticated`）
@@ -334,7 +334,7 @@
 
 ### Endpoint
 - path: `/accounts/api/user/edit-profile/`
-- name: `accounts:api_edit_profile`
+- name: `api_accounts:api_edit_profile`
 
 ### Permissions
 - 認証されているユーザーのみアクセス可能（`IsAuthenticated`）
@@ -382,7 +382,7 @@
 
 ### Endpoint
 - path: `/accounts/api/token/refresh/`
-- name: `accounts:api_token_refresh`
+- name: `api_accounts:api_token_refresh`
 
 ### Permissions
 - 認証されていないユーザーもアクセス可能（`AllowAny`）

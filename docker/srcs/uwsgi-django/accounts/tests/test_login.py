@@ -18,7 +18,7 @@ class LoginAPIViewTestCase(TestCase):
     kUser2Nickname = 'test2'
     kUser2Password = 'pass012345'
 
-    kLoginAPIName = "accounts:api_login"
+    kLoginAPIName = "api_accounts:api_login"
 
     def setUp(self):
         self.client = APIClient()

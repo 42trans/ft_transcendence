@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 class OAuthWith42(View):
     authenticated_redirect_to = "/pong/"
     error_page_path = "pong/error.html"
-    callback_name = "accounts:oauth_ft_callback"
+    callback_name = "api_accounts:oauth_ft_callback"
     api_path = "https://api.intra.42.fr"
 
     # ディレクトリ構造が変わったらこの値もそれに合わせて変更してください
