@@ -8,9 +8,13 @@ import * as THREE from 'three';
  * - 必須のプロパティを指定する
  * - rendererは別のConfigで設定する
  */
-class BaseConfig {
-	constructor() {
-		this.cameraConfig = {
+class BaseConfig 
+{
+	constructor() 
+	{
+		/** @type {{ fov: number, aspect: number, near: number, far: number, position: THREE.Vector3, lookAt: THREE.Vector3, up: THREE.Vector3 }} */
+		this.cameraConfig = 
+		{
 			fov: 70,
 			aspect: window.innerWidth / window.innerHeight,
 			near: 0.1, // 撮影可能な近さ
@@ -19,22 +23,20 @@ class BaseConfig {
 			lookAt: new THREE.Vector3(0, 0, 0),
 			up: new THREE.Vector3(0, 1, 0),
 		};
-		this.controlsConfig = {
+
+		/** @type {{ enableDamping: boolean, dampingFactor: number, screenSpacePanning: boolean, maxPolarAngle: number, minDistance: number, maxDistance: number, rotateSpeed: number, zoomSpeed: number, autoRotate: boolean, autoRotateSpeed: number }} */
+		this.controlsConfig = 
+		{
 			enableZoom: false,
 			enablePan: false,
 			enableRotate: false,
 			autoRotate: false,
-
-			// enableDamping: true,
-			// dampingFactor: 0.05,
-			// screenSpacePanning: false,
-			// maxPolarAngle: Math.PI / 2,
-			// minDistance: 1,
-			// maxDistance: 100,
 		};
-		// this.lightsConfig = [];
-		// this.modelsConfig = [];
-		// this.animationsConfig = [];
+	}
+
+	rgbToHex(r, g, b) 
+	{
+		return (r << 16) + (g << 8) + b;
 	}
 }
 export default BaseConfig;

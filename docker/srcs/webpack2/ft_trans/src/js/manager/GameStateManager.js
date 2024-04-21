@@ -33,9 +33,9 @@ class GameStateManager {
 	}
 
 	setupUI() {
-		const startButton = document.getElementById('startButton');
-		startButton.addEventListener('click', () => this.changeState('gamePlay'));
-		const entryButton = document.getElementById('entryButton');
+		// const startButton = document.getElementById('startButton');
+		// startButton.addEventListener('click', () => this.changeState('gamePlay'));
+		const entryButton = document.getElementById('devEntryButton');
 		entryButton.addEventListener('click', () => this.changeState('entry'));
 	}
 
@@ -60,7 +60,7 @@ class GameStateManager {
 		if (this.currentState) {
 			this.currentState.render();
 		}
-		this.allScenesManager.renderAllScenes(RendererManager.getRnderer());
+		this.allScenesManager.renderAllScenes(RendererManager.getRenderer());
 	}
 }
 

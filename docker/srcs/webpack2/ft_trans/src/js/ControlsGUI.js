@@ -11,7 +11,8 @@ import * as lil from 'lil-gui';
  * @class ControlsGUI
  * @description dev時に右上に表示するコントローラーの設定
  */
-class ControlsGUI {
+class ControlsGUI 
+{
 	/**
 	 * @param {THREE.Scene} scene - THREE.Sceneのインスタンス
 	 * @param {lil.GUI} gui - lil.GUIのインスタンス
@@ -20,20 +21,22 @@ class ControlsGUI {
 	constructor(
 		scene,
 		gui,
-		camera
-	) {
+		camera) 
+	{
 		this.scene = scene;
 		this.gui = gui;
 		this.camera = camera;
 	}
 
-	setupControlsGUI() {
+	setupControlsGUI() 
+	{
 		this.setupCameraGUI();
 		this.setupLightGUI();
 	}
 
 	/** Private method */
-	setupCameraGUI() {
+	setupCameraGUI() 
+	{
 		const cameraFolder = this.gui.addFolder('Camera Position');
 		cameraFolder.add(this.camera.position, 'x', -100, 100, 0.01).name('Position X');
 		cameraFolder.add(this.camera.position, 'y', -100, 100, 0.01).name('Position Y');
@@ -42,22 +45,27 @@ class ControlsGUI {
 	}
 
 	/** Private method */
-	setupLightGUI() {
+	setupLightGUI() 
+	{
 		this.scene.children.forEach((child) => {
-			if (child instanceof THREE.Light) {
+			if (child instanceof THREE.Light) 
+			{
 				const folder = this.gui.addFolder(child.name);
 				folder.add(child, 'intensity', 0, 2, 0.01);
 				folder.addColor(child, 'color');
-				if ('position' in child) {
+				if ('position' in child) 
+				{
 					folder.add(child.position, 'x', -50, 50, 0.01);
 					folder.add(child.position, 'y', -50, 50, 0.01);
 					folder.add(child.position, 'z', -50, 50, 0.01);
 				}
-				if (child instanceof THREE.PointLight) {
+				if (child instanceof THREE.PointLight) 
+				{
 					folder.add(child, 'distance', 0, 500, 1);
 					folder.add(child, 'decay', 0, 4, 0.01);
 				}
-				if (child instanceof THREE.SpotLight) {
+				if (child instanceof THREE.SpotLight) 
+				{
 					folder.add(child, 'distance', 0, 500, 1);
 					folder.add(child, 'decay', 0, 4, 0.01);
 					folder.add(child, 'angle', 0, Math.PI, 0.01);

@@ -1,23 +1,28 @@
-import PongApp from '../PongApp'
 
-
-class BaseGameState {
-	constructor(PongApp) {
+class BaseGameState 
+{
+	constructor(PongApp) 
+	{
 		this.PongApp = PongApp;
 	}
-	enter() {
+	
+	enter() 
+	{
 		throw new Error("Enter method must be implemented");
 	}
 
-	update() {
+	update() 
+	{
 		throw new Error("Update method must be implemented");
 	}
 
-	render() {
+	render() 
+	{
 		throw new Error("Render method must be implemented");
 	}
 
-	exit() {
+	exit() 
+	{
 		throw new Error("Exit method must be implemented");
 	}
 }

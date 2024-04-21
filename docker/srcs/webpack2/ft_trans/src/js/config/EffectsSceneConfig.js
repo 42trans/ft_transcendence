@@ -8,32 +8,33 @@
 import * as THREE from 'three';
 import BaseSceneConfig from './BaseSceneConfig.js'
 
-class EffectsSceneConfig extends BaseSceneConfig{
-
-	constructor() {
+class EffectsSceneConfig extends BaseSceneConfig
+{
+	constructor() 
+	{
 		super();
 		
-		/** @type {{ fov: number, aspect: number, near: number, far: number, position: THREE.Vector3, lookAt: THREE.Vector3 }} */
-		this.cameraConfig = {
+		this.cameraConfig = 
+		{
 			...this.cameraConfig,
 			position: new THREE.Vector3(8, 6, 10),
 		};
 
-		/** @type {{ enableDamping: boolean, dampingFactor: number, screenSpacePanning: boolean, maxPolarAngle: number, minDistance: number, maxDistance: number, rotateSpeed: number, zoomSpeed: number, autoRotate: boolean, autoRotateSpeed: number }} */
-		this.controlsConfig = {
+		this.controlsConfig = 
+		{
 			...this.controlsConfig,
-			// minPolarAngle: Math.PI / 8,
-			// maxPolarAngle: Math.PI / 2,
+			minPolarAngle: Math.PI / 8,
+			maxPolarAngle: Math.PI / 2,
 			minDistance: 3,
 			maxDistance: 100,
 			// rotateSpeed: 1.0,
 			// zoomSpeed: 1.2,
 			autoRotate: true,
 			// enableZoom: true,
-			// enablePan: true,
-			// enableRotate: true,
+			enablePan: true,
+			enableRotate: true,
 			autoRotateSpeed: 15.0,
-			// dampingFactor: 0.25,
+			dampingFactor: 0.25,
 		};
 
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */

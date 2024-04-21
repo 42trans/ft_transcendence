@@ -57,6 +57,10 @@ module.exports = {
 		extensions: [
 			'.ts', '.js',
 		],
+		alias: {
+			// 'three': path.resolve('./node_modules/three')
+			'three': path.resolve(__dirname, 'node_modules/three')
+		}
 	},
 	plugins: [
 		new HtmlWebpackPlugin({

@@ -36,7 +36,7 @@ class RenderLoop {
 
 			requestAnimationFrame(animate);
 			this.pong.allScenesManager.updateAllScenes();
-			this.pong.allScenesManager.renderAllScenes(RendererManager.getRnderer())
+			this.pong.allScenesManager.renderAllScenes(RendererManager.getRenderer())
 		};
 		animate();
 	}

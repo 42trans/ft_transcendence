@@ -2,13 +2,18 @@ import * as THREE from "three";
 import flareTexture from '../../assets/ballTexture/bg.png';
 import textureCache from './TextureCache';
 
-export class Flare extends THREE.Object3D {
-	constructor() {
+class Flare extends THREE.Object3D 
+{
+	constructor() 
+	{
 		super();
 		const geometry = new THREE.CylinderGeometry(6, 2, 0, 30, 3, true);
-		textureCache.getTexture(flareTexture).then(texture => {
-			const material = new THREE.ShaderMaterial({
-				uniforms: {
+		textureCache.getTexture(flareTexture).then(texture => 
+		{
+			const material = new THREE.ShaderMaterial(
+			{
+				uniforms: 
+				{
 					map: { type: "t", value: texture },
 					offset: { type: "v2", value: new THREE.Vector2(0, 0) },
 					opacity: { type: "f", value: 0.15 },
@@ -53,9 +58,12 @@ export class Flare extends THREE.Object3D {
 		}).catch(error => console.error('Texture load failed:', error));
 	}
 
-	update() {
+	update() 
+	{
 		if (!this._map || !this._offset) return;  
 		this._offset.x = (performance.now() / 1000) * 0.2 * this._randomRatio;
 		this._offset.y = (-performance.now() / 1000) * 0.8 * this._randomRatio;
 	}
 }
+
+export default Flare;

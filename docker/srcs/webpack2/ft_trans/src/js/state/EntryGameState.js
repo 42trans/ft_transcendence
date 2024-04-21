@@ -3,30 +3,64 @@ import BaseGameState from './BaseGameState'
 import MagmaFlare from '../effect/MagmaFlare'
 import * as THREE from 'three';
 import EffectsSceneConfig from '../config/EffectsSceneConfig';
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
+import ZoomBall from '../effect/ZoomBall';
+import AllScenesManager from '../manager/AllScenesManager';
 
 class EntryGameState extends BaseGameState {
-	constructor (PongApp){
+	constructor (PongApp)
+	{
 		super(PongApp);
+		this.scenesMgr = AllScenesManager.getInstance();
 		this.magmaFlare = new MagmaFlare();
+		this.zoomInDistance = 3; // ズームイン後の目的の距離
+		this.zoomOutDistance = 100; // ズームアウト後の目的の距離
+		this.duration = 2000; // アニメーションの持続時間 (ミリ秒)
+		this.pauseDuration = 500; // ズームインとズームアウトの間の遅延 (ミリ秒)
 	}
 
-	enter() {
+	enter() 
+	{
 		console.log("enter(): EntryGameState");
-		this.PongApp.allScenesManager.effectsScene.refreshScene(new EffectsSceneConfig());
-
+		this.scenesMgr.effectsScene.refreshScene(new EffectsSceneConfig());
 		this.magmaFlare.name = "MagmaFlare";
-		this.PongApp.allScenesManager.effectsScene.scene.add(this.magmaFlare);
+		this.scenesMgr.effectsScene.scene.add(this.magmaFlare);
 		this.displayEnterGameButton(); 
+		this.camera = this.scenesMgr.effectsScene.camera; // カメラを保存
+		this.controls = this.scenesMgr.effectsScene.controls; // コントロールを保存
+		this.zoomBall = new ZoomBall(this.camera, this.controls);
+	}
+
+	update() {/** empty */}
+	render() {/** empty */}
+	
+	exit() 
+	{
+		console.log("exit(): EntryGameState");
+		const targetPosition = new THREE.Vector3();
+		this.magmaFlare.getWorldPosition(targetPosition);
+		this.startDistance = this.camera.position.distanceTo(targetPosition);
+		this.zoomBall.animateZoom(
+			targetPosition, 
+			this.startDistance, 
+			this.zoomInDistance, 
+			this.zoomOutDistance, 
+			this.duration, 
+			this.pauseDuration,
+			() => {
+				this.scenesMgr.effectsScene.scene.remove(this.magmaFlare); // アニメーション完了後に MagmaFlare を削除
+			}
+		);
+		this.scenesMgr.effectsScene.scene.remove(this.magmaFlare);
+		this.scenesMgr.effectsScene.clearScene();
 	}
 
 	displayEnterGameButton() {
-		let button = document.getElementById('startButton');
+		let button = document.getElementById('sButton');
 		if (!button) {
 			button = document.createElement('button');
 			button.textContent = 'Enter Game';
-			button.id = 'startButton';
+			button.className = 'game-button';
+			button.id = 'sButton';
 			document.body.appendChild(button);
 		}
 	
@@ -40,84 +74,6 @@ class EntryGameState extends BaseGameState {
 		button.addEventListener('click', this.handleButtonClick);
 	}
 	
-
-
-	update() {
-	}
-
-	render() {
-	}
-
-	exit() {
-		console.log("exit(): EntryGameState");
-		this.zoomToMagmaFlare();
-	}
-
-	// easeInOutQuad イージング関数
-	easeInOutQuad(t) {
-		return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-	}
-	
-	zoomToMagmaFlare() {
-		const targetPosition = new THREE.Vector3();
-		this.magmaFlare.getWorldPosition(targetPosition);
-	
-		this.camera = this.PongApp.allScenesManager.effectsScene.camera;
-		this.controls = this.PongApp.allScenesManager.effectsScene.controls;
-	
-		this.controls.target.copy(targetPosition);
-	
-		const startDistance = this.camera.position.distanceTo(targetPosition);
-		const zoomInDistance = 3; // ズームイン後の目的の距離
-		const zoomOutDistance = 100; // ズームアウト後の目的の距離
-		const duration = 2000; // アニメーションの持続時間 (ミリ秒)
-		const pauseDuration = 500; // ズームインとズームアウトの間の遅延 (ミリ秒)
-	
-		let startTime = performance.now();
-	
-		const updateZoom = () => {
-			const now = performance.now();
-			const elapsedTime = now - startTime;
-			const fraction = elapsedTime / duration;
-	
-			if (fraction < 1) {
-				const easedFraction = this.easeInOutQuad(fraction);
-				const currentDistance = THREE.MathUtils.lerp(startDistance, zoomInDistance, easedFraction);
-				const direction = new THREE.Vector3().subVectors(targetPosition, this.camera.position).normalize();
-				this.camera.position.copy(targetPosition).add(direction.multiplyScalar(-currentDistance));
-				this.controls.update();
-				requestAnimationFrame(updateZoom);
-			} else {
-				// ズームイン後の小休止
-				setTimeout(() => {
-					startTime = performance.now(); // 時間をリセット
-					zoomOut(); // ズームアウト処理を開始
-				}, pauseDuration);
-			}
-		};
-	
-		const zoomOut = () => {
-			const now = performance.now();
-			const elapsedTime = now - startTime;
-			const fraction = elapsedTime / duration;
-	
-			if (fraction < 1) {
-				const easedFraction = this.easeInOutQuad(fraction);
-				const currentDistance = THREE.MathUtils.lerp(zoomInDistance, zoomOutDistance, easedFraction);
-				const direction = new THREE.Vector3().subVectors(targetPosition, this.camera.position).normalize();
-				this.camera.position.copy(targetPosition).add(direction.multiplyScalar(-currentDistance));
-				this.controls.update();
-				requestAnimationFrame(zoomOut);
-			} else {
-				const direction = new THREE.Vector3().subVectors(targetPosition, this.camera.position).normalize();
-				this.camera.position.copy(targetPosition).add(direction.multiplyScalar(-zoomOutDistance));
-				this.controls.update();
-			}
-		};
-	
-		updateZoom();
-	}
-
 }
 
 export default EntryGameState;

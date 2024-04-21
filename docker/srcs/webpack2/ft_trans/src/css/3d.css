@@ -34,7 +34,7 @@ body {
 	z-index: 1;
 }
 
-#startButton {
+.game-button {
 	top: 95%;
 	left: 50%;
 	position: absolute;
@@ -54,7 +54,7 @@ body {
 	text-decoration: none;
 }
 
-#startButton:hover {
+.game-button:hover {
 	background: #131313;
 	color: #ffb320;
 }
