@@ -40,7 +40,7 @@ class PongApp {
 	init() {
 		THREE.Cache.enabled = true;
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
-		this.renderer = RendererManager.getRnderer();
+		this.renderer = RendererManager.getRenderer();
 		// 全てのシーンのmixerを一元的に管理。シングルトン
 		this.animationMixersManager = AnimationMixersManager.getInstance();
 		// 複数のSceneを一元的に管理。シングルトン

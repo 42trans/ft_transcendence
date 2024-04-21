@@ -1,26 +1,53 @@
 import * as THREE from 'three';
 
-class PongEngineInit {
-	constructor(scene, config) {
+class PongEngineInit 
+{
+	constructor(scene, config) 
+	{
 		this.scene = scene;
 		this.config = config;
 	}
 
-	createGameObjects() {
-		// オブジェクト生成
-		const objects = {
+	/**  トンネル現象に対応するため、パドルの幅に基づいた速度に補正する */
+	capMaxSpeedToAvoidTunneling() 
+	{
+		return Math.min(
+			this.config.paddle1.WIDTH * 0.99,
+			this.config.paddle2.WIDTH * 0.99,
+			this.config.gameSettings.ABSOLUTE_MAX_SPEED
+		);
+	}
+	
+	initPongEngine(data) 
+	{
+		this.initSettings(data);
+		data.objects =
+		{
 			plane: this.createPlane(),
 			table: this.createTable(),
 			ball: this.createBall(),
 			paddle1: this.createPaddle(this.config.paddle1),
 			paddle2: this.createPaddle(this.config.paddle2)
 		};
-		// オブジェクトの属性設定
-		this.setupObjectAttributes(objects);
-		return objects;
+		this.setupObjectAttributes(data.objects);
+		this.addSceneObjects(data);
 	}
 
-	setupObjectAttributes(objects) {
+	initSettings(data) {
+		data.settings = {
+			maxScore: this.config.gameSettings.MAX_SCORE,
+			initBallSpeed: this.config.gameSettings.INIT_BALL_SPEED,
+			maxBallSpeed: this.capMaxSpeedToAvoidTunneling(),
+			difficulty: this.config.gameSettings.DIFFICULTY,
+			field: {
+				width: this.config.fields.WIDTH,
+				height: this.config.fields.HEIGHT
+			}
+		};
+	}
+
+	setupObjectAttributes(objects) 
+	{
 		// RECEIVE_SHADOW
 		objects.plane.receiveShadow = this.config.plane.RECEIVE_SHADOW;
 		objects.table.receiveShadow = this.config.table.RECEIVE_SHADOW;
@@ -61,6 +88,14 @@ class PongEngineInit {
 		objects.paddle2.height = this.config.paddle2.HEIGHT;
 	}
 
+	addSceneObjects(data) 
+	{
+		this.objects = data.objects;
+		Object.keys(this.objects).forEach(key => {
+			this.scene.add(this.objects[key]);
+		});
+	}
+
 	// 参考:【MeshStandardMaterial – three.js docs】 <https://threejs.org/docs/#api/en/materials/MeshStandardMaterial>
 	createPlane() {
 		const geometry = new THREE.PlaneGeometry(
@@ -69,7 +104,8 @@ class PongEngineInit {
 				this.config.plane.SEGMENTS,
 				this.config.plane.SEGMENTS
 			);
-		const material = new THREE.MeshStandardMaterial({
+		const material = new THREE.MeshStandardMaterial(
+		{
 			color: this.config.plane.MATERIAL.color,
 			transparent: this.config.plane.MATERIAL.transparent,
 			opacity: this.config.plane.MATERIAL.opacity,
@@ -86,7 +122,8 @@ class PongEngineInit {
 			this.config.table.SEGMENTS,
 			this.config.table.SEGMENTS,
 		);
-		const material = new THREE.MeshBasicMaterial({
+		const material = new THREE.MeshBasicMaterial(
+		{
 			color: this.config.table.MATERIAL.color,
 			transparent: this.config.table.MATERIAL.transparent,
 			opacity: this.config.table.MATERIAL.opacity,
@@ -99,7 +136,8 @@ class PongEngineInit {
 			this.config.ball.RADIUS, 
 			this.config.ball.SEGMENTS, 
 		);
-		const material = new THREE.MeshStandardMaterial({
+		const material = new THREE.MeshStandardMaterial(
+		{
 			color: this.config.ball.MATERIAL.color,
 			roughness: this.config.ball.MATERIAL.roughness,
 			metalness: this.config.ball.MATERIAL.metalness,
@@ -118,7 +156,8 @@ class PongEngineInit {
 			config.SEGMENTS,
 			config.SEGMENTS,
 		);
-		const material = new THREE.MeshStandardMaterial({ 
+		const material = new THREE.MeshStandardMaterial(
+		{ 
 			color: config.MATERIAL.color,
 			roughness: config.MATERIAL.roughness,
 			metalness: config.MATERIAL.metalness,
@@ -127,7 +166,6 @@ class PongEngineInit {
 		});
 		return new THREE.Mesh(geometry, material);
 	}
-	
 }
 
 export default PongEngineInit;

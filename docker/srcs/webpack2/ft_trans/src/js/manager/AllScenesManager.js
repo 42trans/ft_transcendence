@@ -32,11 +32,11 @@ class AllScenesManager {
 	}
 
 	setupScenes() {
-		this.backgroundScene = new SceneUnit(new BackgroundSceneConfig(), RendererManager.getRnderer(), 'background', this.animationMixersManager);
+		this.backgroundScene = new SceneUnit(new BackgroundSceneConfig(), RendererManager.getRenderer(), 'background', this.animationMixersManager);
 		this.addSceneUnit(this.backgroundScene);
-		this.gameScene = new SceneUnit(new GameSceneConfig(), RendererManager.getRnderer(), 'game', this.animationMixersManager);
+		this.gameScene = new SceneUnit(new GameSceneConfig(), RendererManager.getRenderer(), 'game', this.animationMixersManager);
 		this.addSceneUnit(this.gameScene);
-		this.effectsScene = new SceneUnit(new EffectsSceneConfig(), RendererManager.getRnderer(), 'effects', this.animationMixersManager);
+		this.effectsScene = new SceneUnit(new EffectsSceneConfig(), RendererManager.getRenderer(), 'effects', this.animationMixersManager);
 		this.addSceneUnit(this.effectsScene);
 	}
 
@@ -68,7 +68,7 @@ class AllScenesManager {
 			camera.aspect = window.innerWidth / window.innerHeight;
 			camera.updateProjectionMatrix();
 		});
-		RendererManager.getRnderer().setSize(window.innerWidth, window.innerHeight);
+		RendererManager.getRenderer().setSize(window.innerWidth, window.innerHeight);
 		console.log('リサイズ: 全シーンのサイズが更新されました。');
 	}
 }

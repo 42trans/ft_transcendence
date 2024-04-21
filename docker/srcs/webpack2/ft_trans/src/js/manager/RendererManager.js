@@ -17,7 +17,7 @@ class RendererManager {
 		return RendererManager.instance;
 	}
 
-	static getRnderer() {
+	static getRenderer() {
 		if (!RendererManager.instance) {
 			new RendererManager();
 		}

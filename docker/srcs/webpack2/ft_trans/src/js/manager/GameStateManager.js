@@ -60,7 +60,7 @@ class GameStateManager {
 		if (this.currentState) {
 			this.currentState.render();
 		}
-		this.allScenesManager.renderAllScenes(RendererManager.getRnderer());
+		this.allScenesManager.renderAllScenes(RendererManager.getRenderer());
 	}
 }
 
