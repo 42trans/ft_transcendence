@@ -37,6 +37,7 @@ urlpatterns += i18n_patterns(
 	path('admin/', admin.site.urls),
 	path('api/status/', main_views.api_status, name='api_status'),
 	path('accounts/', include(accounts.urls)),
+	path('chat/', include('chat.urls')),
 	path('', main_views.index, name='index'),
 	prefix_default_language=True
 )

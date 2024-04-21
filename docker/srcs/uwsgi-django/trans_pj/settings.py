@@ -48,6 +48,7 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
+	# 'daphne',							# chat, listed before django.contrib.staticfiles
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -60,6 +61,8 @@ INSTALLED_APPS = [
 	'django_otp',  						# 2fa
 	'django_otp.plugins.otp_totp',  	# 2fa
 	'django_otp.plugins.otp_static',  	# 2fa
+	'channels',							# chat
+	'chat',								# chat
 ]
 
 
@@ -131,6 +134,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'trans_pj.wsgi.application'
+ASGI_APPLICATION = 'trans_pj.asgi.application'
 
 
 # Database
@@ -287,7 +291,7 @@ LOGIN_URL = '/accounts/login/'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
- #　多言語設定
+ # 多言語設定
 
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
@@ -299,3 +303,16 @@ LANGUAGES = [
     ('en', _('English')),
     ('fr', _('French')),
 ]
+
+# chat
+CHANNEL_LAYERS = {
+    # 'default': {
+    # 	'BACKEND':'channels_redis.core.RedisChannelLayer',
+    # 	'CONFIG': {
+    # 		"hosts": [('127.0.0.1', 6379)],
+    # 	},
+    # },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"  # インメモリを使う場合
+    },
+}

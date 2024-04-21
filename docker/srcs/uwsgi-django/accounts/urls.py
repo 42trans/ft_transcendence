@@ -12,6 +12,7 @@ from accounts.views.two_factor_auth import Disable2FaView
 from accounts.views.two_factor_auth import Enable2FaTemplateView
 from accounts.views.two_factor_auth import Verify2FaTepmlateView
 
+
 app_name = 'accounts'
 
 # 非API用のURLパターン（国際化設定を使用）

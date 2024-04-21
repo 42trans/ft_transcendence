@@ -9,7 +9,9 @@ RUN apt-get update && apt-get install -y \
 	netcat \
 	lsof \
 	postgresql-client \
+    supervisor \
 	&& rm -rf /var/lib/apt/lists/*
+
 # 環境変数を設定
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -23,7 +25,11 @@ RUN pip install -r /code/requirements.txt
 
 # プロジェクトファイルをコピー
 COPY . /code/
+RUN mv /code/supervisord.conf /etc/supervisor/conf.d/
 
 COPY django-entrypoint.sh /entrypoint.sh
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD ["uwsgi", "--ini", "/code/uwsgi.ini"]
+
+#CMD ["uwsgi", "--ini", "/code/uwsgi.ini"]
+
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
