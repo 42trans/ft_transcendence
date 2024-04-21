@@ -8,8 +8,8 @@ from accounts.models import CustomUser, UserManager
 
 
 class LogoutAPITests(TestCase):
-    kLoginAPIName = "accounts:api_login"
-    kLogoutAPIName = "accounts:api_logout"
+    kLoginAPIName = "api_accounts:api_login"
+    kLogoutAPIName = "api_accounts:api_logout"
     kLoginURL = "accounts/login.html"
     kLogoutURL = "accounts/logout.html"
     kHomeURL = "/pong/"

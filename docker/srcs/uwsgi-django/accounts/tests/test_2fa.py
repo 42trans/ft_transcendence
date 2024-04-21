@@ -19,9 +19,9 @@ class Enable2FaAPITests(TestCase):
     kUserNickname = 'test'
     kUserPassword = 'pass01234'
 
-    kLoginAPIName = "accounts:api_login"
-    kLogoutAPIName = "accounts:api_logout"
-    kEnable2FaAPIName = "accounts:api_enable_2fa"
+    kLoginAPIName = "api_accounts:api_login"
+    kLogoutAPIName = "api_accounts:api_logout"
+    kEnable2FaAPIName = "api_accounts:api_enable_2fa"
 
     def setUp(self):
         self.enable_2fa_api_url = reverse(self.kEnable2FaAPIName)
@@ -168,10 +168,10 @@ class Verify2FaAPITests(TestCase):
     kUserNickname = 'test'
     kUserPassword = 'pass01234'
 
-    kLoginAPIName = "accounts:api_login"
-    kLogoutAPIName = "accounts:api_logout"
-    kEnable2FaAPIName = "accounts:api_enable_2fa"
-    kVerify2FaAPIName = "accounts:api_verify_2fa"
+    kLoginAPIName = "api_accounts:api_login"
+    kLogoutAPIName = "api_accounts:api_logout"
+    kEnable2FaAPIName = "api_accounts:api_enable_2fa"
+    kVerify2FaAPIName = "api_accounts:api_verify_2fa"
 
     def setUp(self):
         self.login_api_path = reverse(self.kLoginAPIName)

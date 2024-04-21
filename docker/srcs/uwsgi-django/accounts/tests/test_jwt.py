@@ -17,11 +17,11 @@ class JWTTest(APITestCase):
     kUserNickname = 'test'
     kUserPassword = 'pass01234'
 
-    kLoginAPIName = "accounts:api_login"
-    kLogoutAPIName = "accounts:api_logout"
-    kEnable2FaAPIName = "accounts:api_enable_2fa"
-    kVerify2FaAPIName = "accounts:api_verify_2fa"
-    kTokenRefreshAPIName = "accounts:api_token_refresh"
+    kLoginAPIName = "api_accounts:api_login"
+    kLogoutAPIName = "api_accounts:api_logout"
+    kEnable2FaAPIName = "api_accounts:api_enable_2fa"
+    kVerify2FaAPIName = "api_accounts:api_verify_2fa"
+    kTokenRefreshAPIName = "api_accounts:api_token_refresh"
 
     def setUp(self):
         self.enable_2fa_api_url = reverse(self.kEnable2FaAPIName)
