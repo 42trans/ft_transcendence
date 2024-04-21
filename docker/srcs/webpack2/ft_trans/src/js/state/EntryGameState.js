@@ -31,6 +31,7 @@ class EntryGameState extends BaseGameState {
 	}
 
 	update() {/** empty */}
+	
 	render() {/** empty */}
 	
 	exit() 
@@ -39,7 +40,7 @@ class EntryGameState extends BaseGameState {
 		const targetPosition = new THREE.Vector3();
 		this.magmaFlare.getWorldPosition(targetPosition);
 		this.startDistance = this.camera.position.distanceTo(targetPosition);
-		this.zoomBall.animateZoom(
+		this.zoomBall.zoomToBall(
 			targetPosition, 
 			this.startDistance, 
 			this.zoomInDistance, 
@@ -48,10 +49,9 @@ class EntryGameState extends BaseGameState {
 			this.pauseDuration,
 			() => {
 				this.scenesMgr.effectsScene.scene.remove(this.magmaFlare); // アニメーション完了後に MagmaFlare を削除
+				this.scenesMgr.effectsScene.clearScene();
 			}
 		);
-		this.scenesMgr.effectsScene.scene.remove(this.magmaFlare);
-		this.scenesMgr.effectsScene.clearScene();
 	}
 
 	displayEnterGameButton() {
