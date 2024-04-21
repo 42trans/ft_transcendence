@@ -16,18 +16,39 @@ class GameplayState extends BaseGameState
 	{
 		super(PongApp);
 		this.scenesMgr = AllScenesManager.getInstance();
+		this.camera = this.scenesMgr.gameScene.camera;
+		this.controls = this.scenesMgr.gameScene.controls;
 	}
+	
 	enter() 
 	{
-		console.log("Entering GamePlay state");
+		// console.log("Entering GamePlay state");
 		this.scenesMgr.gameScene.refreshScene(new GameSceneConfig());
 		this.pongEngine = new PongEngine(this.PongApp);
 
-		this.camera = this.PongApp.allScenesManager.gameScene.camera;
-		this.controls = this.PongApp.allScenesManager.gameScene.controls;
+		
+		const zoomParams = {
+			targetPosition: new THREE.Vector3(),
+			startDistance: this.camera.position.distanceTo(new THREE.Vector3()), // Assuming some target position
+			zoomInDistance: 1000,
+			zoomOutDistance: 420,
+			duration: 1500,
+			pauseDuration: 100,
+			initialPolarAngle: Math.PI / 4,
+			finalPolarAngle: 0
+		};
+		this.pongEngine.data.objects.plane.getWorldPosition(zoomParams.targetPosition);
 
-		const zoomController = new ZoomTable(this.pongEngine, this.camera, this.controls);
-		zoomController.zoomToTable();
+
+		const zoomController = new ZoomTable(
+			this.pongEngine,
+			this.camera,
+			this.controls
+		);
+		
+		zoomController.zoomToTable(
+			zoomParams
+		);
 
 		setTimeout(() => {
 			this.scenesMgr.effectsScene.clearScene();
@@ -35,6 +56,7 @@ class GameplayState extends BaseGameState
 	}
 
 	update() {}
+	
 	render() {}
 
 	exit() {
@@ -42,6 +64,7 @@ class GameplayState extends BaseGameState
 		// this.PongApp.allScenesManager.backgroundScene.clearScene();
 		this.PongApp.allScenesManager.gameScene.clearScene();
 	}
+
 }
 
 export default GameplayState;

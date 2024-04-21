@@ -64,6 +64,7 @@ class ZoomBall
 			// アニメーション完了判定
 			if (fraction >= 1) 
 			{
+				resolve();
 				break;
 			}
 
