@@ -53,14 +53,14 @@ class GameStateManager {
 		if (this.currentState) {
 			this.currentState.update();
 		}
-		this.allScenesManager.updateAllScenes();
+		// this.allScenesManager.updateAllScenes();
 	}
 
 	render() {
 		if (this.currentState) {
 			this.currentState.render();
 		}
-		this.allScenesManager.renderAllScenes(RendererManager.getRenderer());
+		// this.allScenesManager.renderAllScenes(RendererManager.getRenderer());
 	}
 }
 

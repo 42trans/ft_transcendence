@@ -35,7 +35,9 @@ class RenderLoop {
 			// console.log('requestAnimationFrame');
 
 			requestAnimationFrame(animate);
+			this.pong.gameStateManager.update();
 			this.pong.allScenesManager.updateAllScenes();
+			this.pong.animationMixersManager.update(); 
 			this.pong.allScenesManager.renderAllScenes(RendererManager.getRenderer())
 		};
 		animate();

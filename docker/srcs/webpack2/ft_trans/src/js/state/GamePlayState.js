@@ -23,6 +23,7 @@ class GameplayState extends BaseGameState
 	enter() 
 	{
 		// console.log("Entering GamePlay state");
+		// this.scenesMgr.backgroundScene.refreshScene(new GameSceneConfig());
 		this.scenesMgr.gameScene.refreshScene(new GameSceneConfig());
 		this.pongEngine = new PongEngine(this.PongApp);
 

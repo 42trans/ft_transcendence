@@ -50,7 +50,7 @@ class AllScenesManager {
 		this.sceneUnits.forEach(sceneUnit => {
 			sceneUnit.update();
 		});
-		this.animationMixersManager.update(); 
+		// this.animationMixersManager.update(); 
 	}
 
 	// 全シーンをレンダリング

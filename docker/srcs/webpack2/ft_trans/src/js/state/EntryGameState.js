@@ -3,6 +3,7 @@ import BaseGameState from './BaseGameState'
 import MagmaFlare from '../effect/MagmaFlare'
 import * as THREE from 'three';
 import EffectsSceneConfig from '../config/EffectsSceneConfig';
+import GameSceneConfig from '../config/GameSceneConfig';
 import ZoomBall from '../effect/ZoomBall';
 import AllScenesManager from '../manager/AllScenesManager';
 
@@ -20,17 +21,29 @@ class EntryGameState extends BaseGameState {
 
 	enter() 
 	{
+		// this.scenesMgr.backgroundScene.refreshScene(new GameSceneConfig());
 		console.log("enter(): EntryGameState");
 		this.scenesMgr.effectsScene.refreshScene(new EffectsSceneConfig());
 		this.magmaFlare.name = "MagmaFlare";
 		this.scenesMgr.effectsScene.scene.add(this.magmaFlare);
 		this.displayEnterGameButton(); 
-		this.camera = this.scenesMgr.effectsScene.camera; // カメラを保存
-		this.controls = this.scenesMgr.effectsScene.controls; // コントロールを保存
+		this.camera = this.scenesMgr.effectsScene.camera;
+		this.controls = this.scenesMgr.effectsScene.controls;
 		this.zoomBall = new ZoomBall(this.camera, this.controls);
+		this.testUpdateMagmaFlare();
 	}
 
-	update() {/** empty */}
+	testUpdateMagmaFlare() {
+		console.log("Testing MagmaFlare update...");
+		this.magmaFlare.update();  // MagmaFlareのupdateメソッドを呼び出す
+		console.log("Update called on MagmaFlare.");
+	}
+
+	update() 
+	{
+		this.testUpdateMagmaFlare();
+		// this.magmaFlare.update();
+	}
 	
 	render() {/** empty */}
 	
