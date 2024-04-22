@@ -6,12 +6,9 @@ class RendererConfig
 {
 	constructor() 
 	{
-		// TODO_ft:　<div>から<canvas>への挿入
-		// const canvas = document.getElementById('threejs-canvas-container');
-		/** @type {{ antialias: boolean, pixelRatio: number, alpha: boolean }} */
+		const canvas = document.getElementById('threejs-canvas-container');
 		this.rendererOptions = {
-			// canvas: 'threejs-canvas-container',
-			// canvas: document.getElementById('threejs-canvas-container'),
+			canvas: canvas,
 			antialias: true,
 			pixelRatio: window.devicePixelRatio,
 			alpha: true,

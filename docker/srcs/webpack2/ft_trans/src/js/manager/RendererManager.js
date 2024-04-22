@@ -25,7 +25,7 @@ class RendererManager
 	{
 		if (!RendererManager.instance) 
 		{
-			new RendererManager();
+			RendererManager.instance = new RendererManager();
 		}
 		return RendererManager.instance.renderer;
 	}
@@ -36,24 +36,18 @@ class RendererManager
 		this.renderer.autoClear = false;
 		this.renderer.setClearColor(0x000000, 0);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		this.renderer.PCFShadowMap = true;
+		// this.renderer.PCFShadowMap = true;
+		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		this.attachRendererToDOM();
 	}
 
-	// 特定のdivにレンダラーを追加 （index.htmlで設定したthreejs-canvas-container）
 	attachRendererToDOM() 
 	{
-		const container = document.getElementById('threejs-canvas-container');
-		if (container) 
-		{
-			if (!container.querySelector('canvas')) 
-			{ 
-				container.appendChild(this.renderer.domElement);
-			}
-		} 
-		else 
-		{
-			throw new Error('Container for three.js canvas is not found.');
+		// configで<canvas>が指定されているため、appendChildは不要
+		// 確認のために親要素が正しいかをチェックするだけで良い
+		const canvas = document.getElementById('threejs-canvas-container');
+		if (!canvas) {
+			throw new Error('Canvas element not found in the document.');
 		}
 	}
 }
