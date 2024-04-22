@@ -52,6 +52,7 @@ class GameplayState extends BaseGameState
 		);
 
 		this.scenesMgr.disableAllControls();
+		this.pongEngine.update.initMouseControl();
 
 		setTimeout(() => 
 		{
