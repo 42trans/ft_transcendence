@@ -34,6 +34,16 @@ class AllScenesManager
 		return AllScenesManager.instance;
 	}
 
+	disableAllControls() {
+		this.sceneUnits.forEach(sceneUnit => {
+			if (sceneUnit.controls) {
+				sceneUnit.controls.dispose(); // イベントリスナーを削除
+				sceneUnit.controls = null; // 参照を削除
+			}
+		});
+		console.log('全てのOrbitControlsが無効化されました。');
+	}
+
 	setupScenes() 
 	{
 		this.backgroundScene = new SceneUnit(new BackgroundSceneConfig(), RendererManager.getRenderer(), 'background', this.animationMixersManager);

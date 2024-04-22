@@ -29,7 +29,7 @@ class GameplayState extends BaseGameState
 	
 	enter() 
 	{
-		// console.log("Entering GamePlay state");
+		console.log("Entering GamePlay state");
 		this.scenesMgr.gameScene.refreshScene(new GameSceneConfig());
 		this.pongEngine = new PongEngine(this.PongApp);
 
@@ -50,6 +50,8 @@ class GameplayState extends BaseGameState
 		zoomController.zoomToTable(
 			zoomParams
 		);
+
+		this.scenesMgr.disableAllControls();
 
 		setTimeout(() => 
 		{

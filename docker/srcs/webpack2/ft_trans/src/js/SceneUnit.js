@@ -112,6 +112,7 @@ class SceneUnit
 			console.error("Invalid or incomplete configuration provided:", newConfig);
 			return;
 		}
+
 		// console.log("リフレッシュ時のconfigファイル:", newConfig);
 		this.clearScene();
 		this.sceneConfig = newConfig;
@@ -124,6 +125,10 @@ class SceneUnit
 		this.lights = [];
 		this.setupLights(this.sceneConfig.lightsConfig);
 		this.gLTFModelsLoader.loadModels(this);
+
+		if (this.controlsEnabled !== undefined) {
+			this.controls.enabled = this.controlsEnabled;
+		}
 	}
 	
 	/**
