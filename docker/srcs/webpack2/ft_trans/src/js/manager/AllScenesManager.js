@@ -1,7 +1,5 @@
 import BackgroundSceneConfig from '../config/BackgroundSceneConfig';
 import GameSceneConfig from '../config/GameSceneConfig';
-// import BackgroundSceneConfigNone from '../config/BackgroundSceneConfigNone';
-// import GameSceneConfig2 from '../config/GameSceneConfig2';
 import EffectsSceneConfig from '../config/EffectsSceneConfig';
 import RendererManager from './RendererManager'
 import SceneUnit from '../SceneUnit';

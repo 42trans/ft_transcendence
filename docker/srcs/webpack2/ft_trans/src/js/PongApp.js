@@ -60,9 +60,9 @@ class PongApp {
 						setupDevEnv() {
 							this.gui = new lil.GUI();
 							const contorolsGUI = new ControlsGUI(
-								this.allScenesManager.gameScene.scene, 
+								this.allScenesManager.effectsScene.scene, 
 								this.gui, 
-								this.allScenesManager.gameScene.camera
+								this.allScenesManager.effectsScene.camera
 							);
 							contorolsGUI.setupControlsGUI();
 						}

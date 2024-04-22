@@ -26,12 +26,12 @@ class EffectsSceneConfig extends BaseSceneConfig
 			minPolarAngle: Math.PI / 8,
 			maxPolarAngle: Math.PI / 2,
 			minDistance: 3,
-			maxDistance: 100,
+			maxDistance: 1000,
 			// rotateSpeed: 1.0,
 			// zoomSpeed: 1.2,
 			autoRotate: true,
 			// enableZoom: true,
-			enablePan: true,
+			// enablePan: true,
 			enableRotate: true,
 			autoRotateSpeed: 15.0,
 			dampingFactor: 0.25,
@@ -39,19 +39,19 @@ class EffectsSceneConfig extends BaseSceneConfig
 
 		/** @type {Array<{type: string, color: number, intensity: number, position?: THREE.Vector3, name: string}>} */
 		this.lightsConfig = [
-			// {
-			// 	type: 'AmbientLight',
-			// 	color: 0x999999,
-			// 	intensity: 0.31,
-			// 	name: 'ambientLight',
-			// },
-			// {
-			// 	type: 'DirectionalLight',
-			// 	color: 0xffffff,
-			// 	intensity: 1,
-			// 	position: new THREE.Vector3(50, 50, -50),
-			// 	name: 'directionalLight',
-			// },
+			{
+				type: 'AmbientLight',
+				color: 0x999999,
+				intensity: 0.91,
+				name: 'ambientLight',
+			},
+			{
+				type: 'DirectionalLight',
+				color: 0xffffff,
+				intensity: 1,
+				position: new THREE.Vector3(50, 50, -50),
+				name: 'directionalLight',
+			},
 		];
 
 		/** @type {Array<{path: string, initialPosition: THREE.Vector3, initialScale: THREE.Vector3, initialRotation: THREE.Euler, name: string, defaultAnimation: string, textures: {baseColor: string, normalMap: string, specularMap: string}}>} */
@@ -63,6 +63,22 @@ class EffectsSceneConfig extends BaseSceneConfig
 			// 	name: 'suzumebachi',
 			// 	defaultAnimation: 'Hover',
 			// },
+			{
+				path: '../assets/animated_butterfly/scene.gltf',
+				initialPosition: new THREE.Vector3(0, 1.3, -1.6),
+				initialScale: new THREE.Vector3(1, 1, 1),
+				initialRotation: new THREE.Euler(-0.8, 0, 0),
+				name: 'tyou',
+				// defaultAnimation: 'Hover',
+				textures: {
+							baseColor: '../assets/animated_butterfly/textures/Wings_baseColor.png',
+							// roughnessMap: '../assets/animated_butterfly/textures/mat1_baseColor.png',
+							// specularMap: '../assets/animated_butterfly/textures/mat1_baseColor.png',
+					// 		normalMap: 'assets/vespa_mandarinia/textures/material_clearcoat_normal.png',
+					// 		roughnessMap: 'assets/vespa_mandarinia/textures/material_metallicRoughness.png',
+					// 		specularMap: 'assets/vespa_mandarinia/textures/material_specularf0.png',
+						}
+			},		
 		];
 
 		/** @type {Array<{model: string, autoplay: boolean}>} */
@@ -71,6 +87,10 @@ class EffectsSceneConfig extends BaseSceneConfig
 			// 	model: 'suzumebachi',
 			// 	autoplay: true
 			// },
+			{
+				model: 'tyou',
+				autoplay: true
+			},
 		];
 	}
 
