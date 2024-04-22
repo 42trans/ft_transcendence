@@ -1,6 +1,4 @@
 import PongEngineKey from './PongEngineKey'
-// import PongEngineMatch from './PongEngineMatch';
-// import PongEnginePhysics from './PongEnginePhysics';
 
 /**
  * ゲームの状態更新を担当。ボールやパドルの位置更新などのゲームロジックを実行
@@ -22,25 +20,25 @@ class PongEngineUpdate
 		this.maxBallSpeed	= pongEngineData.settings.maxBallSpeed;
 		this.initBallSpeed	= pongEngineData.settings.initBallSpeed;
 	
-		this.initMouseControl();
+		// this.initMouseControl();
 	}
 
-	initMouseControl() 
-	{
-		window.addEventListener('mousemove', this.handleMouseMove.bind(this));
-	}
+	// initMouseControl() 
+	// {
+	// 	window.addEventListener('mousemove', this.handleMouseMove.bind(this));
+	// }
 
-	handleMouseMove(event) 
-	{
-		const fieldHeight = this.pongEngineData.settings.field.height; // フィールドの高さを取得
-		const windowHeight = window.innerHeight; // ウィンドウの高さを取得
-		// マウスのY座標をウィンドウの高さに対する比率で取得
-		const mouseRatio = event.clientY / windowHeight;
-		// フィールド座標に変換（フィールドの中心を0として、マウスの比率に基づいてフィールド内の位置を計算）
-		const paddleY = (mouseRatio - 0.5) * fieldHeight;
-		// パドルの位置を更新（フィールドの範囲内に収まるようにclamp関数を使用して制限）
-		this.pongEngineData.objects.paddle1.position.y = Math.max(Math.min(paddleY, fieldHeight / 2), -fieldHeight / 2);
-	}
+	// handleMouseMove(event) 
+	// {
+	// 	const fieldHeight = this.pongEngineData.settings.field.height; // フィールドの高さを取得
+	// 	const windowHeight = window.innerHeight; // ウィンドウの高さを取得
+	// 	// マウスのY座標をウィンドウの高さに対する比率で取得
+	// 	const mouseRatio = event.clientY / windowHeight;
+	// 	// フィールド座標に変換（フィールドの中心を0として、マウスの比率に基づいてフィールド内の位置を計算）
+	// 	const paddleY = (mouseRatio - 0.5) * fieldHeight;
+	// 	// パドルの位置を更新（フィールドの範囲内に収まるようにclamp関数を使用して制限）
+	// 	this.pongEngineData.objects.paddle1.position.y = Math.max(Math.min(paddleY, fieldHeight / 2), -fieldHeight / 2);
+	// }
 
 	handleCollisions() 
 	{

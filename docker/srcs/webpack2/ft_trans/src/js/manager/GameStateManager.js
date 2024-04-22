@@ -19,8 +19,8 @@ class GameStateManager
 				entry: new EntryGameState(pongApps),
 				gamePlay: new GamePlayState(pongApps)
 			};
-			// this.currentState = this.states.entry;
-			this.currentState = this.states.gamePlay;
+			this.currentState = this.states.entry;
+			// this.currentState = this.states.gamePlay;
 			this.currentState.enter();
 			// Dev用　resetButtonなどのUI設定
 			this.devSetupUI();
@@ -49,10 +49,10 @@ class GameStateManager
 	{
 		if (this.currentState) 
 		{
-			console.log(`currentState.exit(): ${this.currentState}`);
+			// console.log(`currentState.exit(): ${this.currentState}`);
 			this.currentState.exit();
 		}
-		console.log(`changeState(): ${newState}`);
+		// console.log(`changeState(): ${newState}`);
 		this.currentState = this.states[newState];
 		this.currentState.enter();
 	}

@@ -29,7 +29,7 @@ class GameplayState extends BaseGameState
 	
 	enter() 
 	{
-		console.log("Entering GamePlay state");
+		// console.log("Entering GamePlay state");
 		this.scenesMgr.gameScene.refreshScene(new GameSceneConfig());
 		this.pongEngine = new PongEngine(this.PongApp);
 
@@ -51,8 +51,8 @@ class GameplayState extends BaseGameState
 			zoomParams
 		);
 
-		this.scenesMgr.disableAllControls();
-		this.pongEngine.update.initMouseControl();
+		// this.scenesMgr.disableAllControls();
+		// this.pongEngine.update.initMouseControl();
 
 		setTimeout(() => 
 		{
@@ -67,7 +67,7 @@ class GameplayState extends BaseGameState
 
 	exit() 
 	{
-		console.log("Exiting GamePlay state");
+		// console.log("Exiting GamePlay state");
 		// this.PongApp.allScenesManager.backgroundScene.clearScene();
 		this.PongApp.allScenesManager.gameScene.clearScene();
 	}

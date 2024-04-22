@@ -26,7 +26,7 @@ class EntryGameState extends BaseGameState
 	enter() 
 	{
 		// this.scenesMgr.backgroundScene.refreshScene(new BackgroundSceneConfig());
-		console.log("enter(): EntryGameState");
+		// console.log("enter(): EntryGameState");
 		this.scenesMgr.effectsScene.refreshScene(new EffectsSceneConfig());
 		this.magmaFlare.name = "MagmaFlare";
 		this.scenesMgr.effectsScene.scene.add(this.magmaFlare);

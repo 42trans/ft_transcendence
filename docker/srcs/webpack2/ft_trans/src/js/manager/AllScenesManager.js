@@ -41,7 +41,7 @@ class AllScenesManager
 				sceneUnit.controls = null; // 参照を削除
 			}
 		});
-		console.log('全てのOrbitControlsが無効化されました。');
+		// console.log('全てのOrbitControlsが無効化されました。');
 	}
 
 	setupScenes() 

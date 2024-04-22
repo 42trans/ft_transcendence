@@ -53,7 +53,7 @@ class SceneUnit
 		while (this.scene.children.length > 0) 
 		{
 			const object = this.scene.children.pop();
-			console.log(`Removing object: `, object);
+			// console.log(`Removing object: `, object);
 
 			// ミキサーの削除とアニメーションの停止
 			const mixer = this.animationMixersManager.mixersMap.get(object.uuid);
