@@ -1,3 +1,4 @@
+# trans_pj/asgi.py
 """
 ASGI config for trans_pj project.
 

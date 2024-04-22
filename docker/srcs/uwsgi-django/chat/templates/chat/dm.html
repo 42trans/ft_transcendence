@@ -1,0 +1,55 @@
+<!-- chat/templates/chat/dm.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>DM with {{ nickname }}</title>
+</head>
+<body>
+<h1>DM with [{{ nickname }}]</h1>
+<textarea id="chat-log" cols="100" rows="20"></textarea><br>
+<input id="chat-message-input" type="text" size="100"><br>
+<input id="chat-message-submit" type="button" value="Send">
+{{ nickname|json_script:"nickname" }}
+<script>
+    const dmTo = JSON.parse(document.getElementById('nickname').textContent);
+
+    const websocketUrl = 'wss://' + window.location.host + '/ws/dm/' + dmTo + '/';
+    console.log('Attempting to connect to WebSocket at:', websocketUrl);
+    const dmSocket = new WebSocket(websocketUrl);
+
+    dmSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        document.querySelector('#chat-log').value += (data.message + '\n');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        dmSocket.send(JSON.stringify({
+            'message': message
+        }));
+        messageInputDom.value = '';
+    };
+
+    dmSocket.onopen = function(event) {
+        console.log('WebSocket connection established with', dmTo);
+    };
+
+    dmSocket.onerror = function(event) {
+        console.error('WebSocket error observed:', event);
+    };
+
+    dmSocket.onclose = function(event) {
+        console.error('Chat socket closed unexpectedly:', event);
+    };
+</script>
+</body>
+</html>

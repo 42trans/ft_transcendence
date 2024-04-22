@@ -20,6 +20,7 @@ from django.urls import include, path
 from trans_pj.views import main_views  
 from django.conf.urls.i18n import i18n_patterns
 import accounts.urls, accounts.urls_api
+import chat.urls, chat.urls_api
 
 urlpatterns = [
 	path("i18n/", include("django.conf.urls.i18n")),
@@ -28,6 +29,7 @@ urlpatterns = [
 # API
 urlpatterns += [
 	path('accounts/', include(accounts.urls_api)),
+	# path('dm/', include(chat.urls_api)),
 ]
 
 # 国際化対象のURLパターン
@@ -37,7 +39,7 @@ urlpatterns += i18n_patterns(
 	path('admin/', admin.site.urls),
 	path('api/status/', main_views.api_status, name='api_status'),
 	path('accounts/', include(accounts.urls)),
-	path('chat/', include('chat.urls')),
+	path('chat/', include(chat.urls)),
 	path('', main_views.index, name='index'),
 	prefix_default_language=True
 )
