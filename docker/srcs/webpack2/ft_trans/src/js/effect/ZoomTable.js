@@ -5,12 +5,12 @@ import AllScenesManager from '../manager/AllScenesManager';
 /**
  * テーブルのズームアニメーションを実行する
  * 
- * @param {*} zoomInDistance ズームイン後の距離
- * @param {*} zoomOutDistance ズームアウト後の距離
- * @param {*} duration アニメーション時間
- * @param {*} pauseDuration 一時停止時間
- * @param {*} initialPolarAngle: 初期カメラの傾き
- * @param {*} finalPolarAngle: 最終カメラの傾き
+ * @param zoomInDistance ズームイン後の距離
+ * @param zoomOutDistance ズームアウト後の距離
+ * @param duration アニメーション時間
+ * @param pauseDuration 一時停止時間
+ * @param initialPolarAngle: 初期カメラの傾き
+ * @param finalPolarAngle: 最終カメラの傾き
  * 
  * 参考:【OrbitControls – three.js docs】 <https://threejs.org/docs/#examples/en/controls/OrbitControls>
  */
@@ -34,11 +34,13 @@ class ZoomTable
 		this.controls.target.copy(params.targetPosition);
 
 		 // 最初のズーム処理を開始
-		this.zoom(params, () => {
+		this.zoom(params, () => 
+		{
 			// 最初のズーム後に一時停止
 			setTimeout(() => {
 				// 逆方向のズームパラメータを設定
-				const reverseParams = {
+				const reverseParams = 
+				{
 					...params,
 					startDistance: params.zoomInDistance,
 					endDistance: params.zoomOutDistance,
@@ -62,7 +64,8 @@ class ZoomTable
 			const elapsedTime = performance.now() - startTime;
 			// 経過時間の割合を計算
 			const fraction = elapsedTime / params.duration;
-			if (fraction < 1) {
+			if (fraction < 1) 
+			{
 				// ズーム中の処理
 				const easedFraction = AnimationUtils.easeInOutQuad(fraction);
 				const newPos = this.adjustCameraTilt(params.targetPosition, params.startDistance, params.endDistance, params.initialPolarAngle, params.finalPolarAngle, easedFraction);
@@ -70,7 +73,9 @@ class ZoomTable
 				this.camera.lookAt(params.targetPosition);
 				this.controls.update();
 				requestAnimationFrame(updateZoom);
-			} else {
+			} 
+			else 
+			{
 				// ズーム完了後のコールバックを実行
 				callback();
 			}
@@ -85,7 +90,8 @@ class ZoomTable
 		const currentDistance = THREE.MathUtils.lerp(startDistance, endDistance, fraction);
 		// 現在のポーラ角を計算
 		const currentPolarAngle = THREE.MathUtils.lerp(initialPolarAngle, finalPolarAngle, fraction);
-		return targetPosition.clone().add(
+		return targetPosition.clone().add
+		(
 			new THREE.Vector3(
 				0, 
 				Math.sin(currentPolarAngle), 
@@ -105,7 +111,8 @@ class ZoomTable
 		const finalPosition = targetPosition.clone().add(new THREE.Vector3(0, 0, zoomOutDistance));
 		// リセットの持続時間を設定
 		const RESET_DURATION = 1000; 
-		const updateReset = () => {
+		const updateReset = () => 
+		{
 			// 経過時間を計算
 			const elapsedTime = performance.now() - resetStartTime;
 			// 経過時間の割合を計算

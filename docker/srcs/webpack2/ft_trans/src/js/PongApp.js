@@ -17,16 +17,20 @@ import ControlsGUI from './ControlsGUI';
  *   -コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
  * setupScenes: オーバーレイするシーンの数だけインスタンスを作成してください。
  */
-class PongApp {
-	constructor(env) {
-		document.addEventListener('DOMContentLoaded', () => {
+class PongApp 
+{
+	constructor(env) 
+	{
+		document.addEventListener('DOMContentLoaded', () => 
+		{
 			this.init();
 			// 無限ループでアニメーションの更新を担当。シングルトン
 			this.renderLoop = LoopManager.getInstance(this);
 			this.renderLoop.start();
 						
 						//dev用　index.jsで`PongApp.main('dev');`で呼び出す
-						if (env === 'dev'){
+						if (env === 'dev')
+						{
 							this.setupDevEnv();
 						}
 		});
@@ -37,7 +41,8 @@ class PongApp {
 	 * - manager/内のクラスのシングルトンのインスタンスを生成
 	 * - Sceneの基礎(camera,lightなど)をあらかじめ設定
 	 */
-	init() {
+	init() 
+	{
 		THREE.Cache.enabled = true;
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
 		this.renderer = RendererManager.getRenderer();
@@ -52,12 +57,14 @@ class PongApp {
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
 	}
 	
-	static main(env) {
+	static main(env) 
+	{
 		new PongApp(env);
 	}
 
 						// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除
-						setupDevEnv() {
+						setupDevEnv() 
+						{
 							this.gui = new lil.GUI();
 							const contorolsGUI = new ControlsGUI(
 								this.allScenesManager.effectsScene.scene, 
@@ -66,7 +73,6 @@ class PongApp {
 							);
 							contorolsGUI.setupControlsGUI();
 						}
-
 }
 
 export default PongApp;

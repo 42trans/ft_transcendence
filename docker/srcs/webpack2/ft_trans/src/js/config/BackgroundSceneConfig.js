@@ -97,39 +97,33 @@ class BackgroundSceneConfig extends BaseSceneConfig
 
 			// 	}
 			// },
-			{
-				path: 'assets/vespa_mandarinia/scene.gltf',
-				initialPosition: new THREE.Vector3(-2, -15, -1),
-				initialScale: new THREE.Vector3(10, 10, 10),
-				initialRotation: new THREE.Euler(0, 1, 0),
-				name: 'hachi',
-				defaultAnimation: 'fly',
-				textures: {
-					baseColor: 'assets/vespa_mandarinia/textures/material_baseColor.png',
-					normalMap: 'assets/vespa_mandarinia/textures/material_clearcoat_normal.png',
-					roughnessMap: 'assets/vespa_mandarinia/textures/material_metallicRoughness.png',
-					specularMap: 'assets/vespa_mandarinia/textures/material_specularf0.png',
-				}
-			},
+			// {
+			// 	path: 'assets/vespa_mandarinia/scene.gltf',
+			// 	initialPosition: new THREE.Vector3(-2, -15, -1),
+			// 	initialScale: new THREE.Vector3(10, 10, 10),
+			// 	initialRotation: new THREE.Euler(0, 1, 0),
+			// 	name: 'hachi',
+			// 	defaultAnimation: 'fly',
+			// 	textures: {
+			// 		baseColor: 'assets/vespa_mandarinia/textures/material_baseColor.png',
+			// 		normalMap: 'assets/vespa_mandarinia/textures/material_clearcoat_normal.png',
+			// 		roughnessMap: 'assets/vespa_mandarinia/textures/material_metallicRoughness.png',
+			// 		specularMap: 'assets/vespa_mandarinia/textures/material_specularf0.png',
+			// 	}
+			// },
 
-			{
-				path: '../assets/animated_butterfly/scene.gltf',
-				initialPosition: new THREE.Vector3(0, 0, -15),
-				initialScale: new THREE.Vector3(1, 1, 1),
-				// initialRotation: new THREE.Euler(0.8, -2, 1),
-				initialRotation: new THREE.Euler(-0.8, 0, 0),
+			// {
+			// 	path: '../assets/animated_butterfly/scene.gltf',
+			// 	initialPosition: new THREE.Vector3(0, 0, -15),
+			// 	initialScale: new THREE.Vector3(1, 1, 1),
+			// 	initialRotation: new THREE.Euler(-0.8, 0, 0),
 
-				name: 'tyou',
-				// defaultAnimation: 'Hover',
-				textures: {
-							baseColor: '../assets/animated_butterfly/textures/Wings_baseColor.png',
-							// roughnessMap: '../assets/animated_butterfly/textures/mat1_baseColor.png',
-							// specularMap: '../assets/animated_butterfly/textures/mat1_baseColor.png',
-					// 		normalMap: 'assets/vespa_mandarinia/textures/material_clearcoat_normal.png',
-					// 		roughnessMap: 'assets/vespa_mandarinia/textures/material_metallicRoughness.png',
-					// 		specularMap: 'assets/vespa_mandarinia/textures/material_specularf0.png',
-						}
-			},
+			// 	name: 'tyou',
+			// 	// defaultAnimation: 'Hover',
+			// 	textures: {
+			// 				baseColor: '../assets/animated_butterfly/textures/Wings_baseColor.png',
+			// 			}
+			// },
 		];
 
 		this.animationsConfig = [
@@ -137,14 +131,14 @@ class BackgroundSceneConfig extends BaseSceneConfig
 			// 	model: 'kame',
 			// 	autoplay: true
 			// },
-			{
-				model: 'hachi',
-				autoplay: true
-			},
-			{
-				model: 'tyou',
-				autoplay: true
-			},
+			// {
+			// 	model: 'hachi',
+			// 	autoplay: true
+			// },
+			// {
+			// 	model: 'tyou',
+			// 	autoplay: true
+			// },
 
 		];
 	}

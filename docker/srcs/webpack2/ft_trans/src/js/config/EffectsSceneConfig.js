@@ -56,13 +56,6 @@ class EffectsSceneConfig extends BaseSceneConfig
 
 		/** @type {Array<{path: string, initialPosition: THREE.Vector3, initialScale: THREE.Vector3, initialRotation: THREE.Euler, name: string, defaultAnimation: string, textures: {baseColor: string, normalMap: string, specularMap: string}}>} */
 		this.modelsConfig = [
-			// {
-			// 	path: '../assets/vespa_mandarinia/scene.gltf',
-			// 	initialPosition: new THREE.Vector3(0, 2, 0),
-			// 	initialScale: new THREE.Vector3(1.1, 1.1, 1.1),
-			// 	name: 'suzumebachi',
-			// 	defaultAnimation: 'Hover',
-			// },
 			{
 				path: '../assets/animated_butterfly/scene.gltf',
 				initialPosition: new THREE.Vector3(0, 1.3, -1.6),
@@ -70,23 +63,16 @@ class EffectsSceneConfig extends BaseSceneConfig
 				initialRotation: new THREE.Euler(-0.8, 0, 0),
 				name: 'tyou',
 				// defaultAnimation: 'Hover',
-				textures: {
-							baseColor: '../assets/animated_butterfly/textures/Wings_baseColor.png',
-							// roughnessMap: '../assets/animated_butterfly/textures/mat1_baseColor.png',
-							// specularMap: '../assets/animated_butterfly/textures/mat1_baseColor.png',
-					// 		normalMap: 'assets/vespa_mandarinia/textures/material_clearcoat_normal.png',
-					// 		roughnessMap: 'assets/vespa_mandarinia/textures/material_metallicRoughness.png',
-					// 		specularMap: 'assets/vespa_mandarinia/textures/material_specularf0.png',
-						}
+				textures: 
+				{
+					baseColor: '../assets/animated_butterfly/textures/Wings_baseColor.png',
+				}
 			},		
 		];
 
 		/** @type {Array<{model: string, autoplay: boolean}>} */
 		this.animationsConfig = [
-			// {
-			// 	model: 'suzumebachi',
-			// 	autoplay: true
-			// },
+
 			{
 				model: 'tyou',
 				autoplay: true

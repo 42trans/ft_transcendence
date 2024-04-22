@@ -1,5 +1,3 @@
-// docker/srcs/webpack2/ft_trans/src/ts/GLTFModelsLoader.ts
-
 import * as THREE from 'three';
 // GLTFフォーマットの3Dモデルをロードするための特定のローダーをインポート。
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -64,7 +62,6 @@ class GLTFModelsLoader
 			this.loadModel(
 				modelsConfig,
 				defaultAnimation, 
-				autoplay
 			)
 		})
 	}
@@ -85,7 +82,6 @@ class GLTFModelsLoader
 	loadModel(
 		modelsConfig,
 		defaultAnimation,
-		autoplay
 	) {
 		/**
 		 * GLTFモデルを非同期でロード。
@@ -94,11 +90,9 @@ class GLTFModelsLoader
 		this.loader.load(modelsConfig.path, (gltf) => 
 		{
 			let model;
-			let animations;
 
 			// // 新たにモデルを取得（毎回新しいインスタンスを使用）
 			model = gltf.scene;
-			animations = gltf.animations;
 			
 			// 3Dモデルを配置
 			this.setupModel(

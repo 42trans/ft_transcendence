@@ -8,7 +8,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GLTFModelsLoader from './GLTFModelsLoader';
 
-class SceneUnit{
+class SceneUnit
+{
 	/**
 	* @param {THREE.WebGLRenderer} renderer - 計算された画像（3Dを2Dに投影）を画面に出力・描画するインスタンス。
 	* @param {THREE.Scene} scene - 描画操作が行われる空間・ワールド。
@@ -17,8 +18,8 @@ class SceneUnit{
 		sceneConfig, 
 		renderer, 
 		type, 
-		animationMixersManager
-	) {
+		animationMixersManager) 
+	{
 		this.sceneConfig = sceneConfig;
 		this.renderer = renderer;
 		this.scene = new THREE.Scene();
@@ -26,48 +27,62 @@ class SceneUnit{
 		this.modelsLoaded = false;
 		this.initializeScene();
 		// シーンのタイプ（'game', 'effects', 'background'）
-		// this.type = type; 
+		this.type = type; 
 		
 	}
 
 
-	update() {
+	update() 
+	{
 		// 例えば、シーン内のすべての子オブジェクトに対して update メソッドがあれば呼び出す
-		this.scene.traverse((object) => {
-			if (object.update instanceof Function) {
+		this.scene.traverse((object) => 
+		{
+			if (object.update instanceof Function) 
+			{
 				object.update();
 			}
 		});
-		if (this.controls) {
+		if (this.controls) 
+		{
 			this.controls.update();
 		}
 	}
 
-	clearScene() {
-		while (this.scene.children.length > 0) {
+	clearScene() 
+	{
+		while (this.scene.children.length > 0) 
+		{
 			const object = this.scene.children.pop();
 			console.log(`Removing object: `, object);
 
 			// ミキサーの削除とアニメーションの停止
 			const mixer = this.animationMixersManager.mixersMap.get(object.uuid);
-			if (mixer) {
+			if (mixer) 
+			{
 				mixer.stopAllAction(); // すべてのアニメーションアクションを停止
 				this.animationMixersManager.removeMixer(object); // ミキサーを削除
 			}
 			
-			if (object instanceof THREE.Mesh) {
-				if (object.geometry) {
+			if (object instanceof THREE.Mesh) 
+			{
+				if (object.geometry) 
+				{
 					object.geometry.dispose();
 				}
-				if (object.material) {
-					if (Array.isArray(object.material)) {
+				if (object.material) 
+				{
+					if (Array.isArray(object.material)) 
+					{
 						object.material.forEach(material => material.dispose());
-					} else {
+					} 
+					else 
+					{
 						object.material.dispose();
 					}
 				}
 			}
-			if (object.dispose) {
+			if (object.dispose) 
+			{
 				object.dispose();
 			}
 			this.scene.remove(object);
@@ -78,11 +93,11 @@ class SceneUnit{
 	 * Private method
 	 * インスタンスの作成を担当
 	 */
-	initializeScene() {
+	initializeScene() 
+	{
 		this.camera = this.setupCamera(this.sceneConfig.cameraConfig);
 		this.controls = this.setupControls(this.camera, this.renderer, this.sceneConfig.controlsConfig);
 		this.lights = [];
-		// this.setupLights(this.sceneConfig.lightsConfig);
 		this.gLTFModelsLoader = new GLTFModelsLoader(this.scene, this.sceneConfig, this.animationMixersManager);
 	}
 
@@ -90,8 +105,10 @@ class SceneUnit{
 	 * Public mehod
 	 * 既存インスタンスの値のみを変更
 	 */
-	refreshScene(newConfig) {
-		if (!newConfig || !newConfig.cameraConfig) {
+	refreshScene(newConfig) 
+	{
+		if (!newConfig || !newConfig.cameraConfig) 
+		{
 			console.error("Invalid or incomplete configuration provided:", newConfig);
 			return;
 		}
@@ -100,7 +117,8 @@ class SceneUnit{
 		this.sceneConfig = newConfig;
 		this.camera = this.setupCamera(this.sceneConfig.cameraConfig);
 		this.controls = this.setupControls(this.camera, this.renderer, this.sceneConfig.controlsConfig);
-		this.lights.forEach(light => {
+		this.lights.forEach(light => 
+		{
 			this.scene.remove(light);
 		});
 		this.lights = [];
@@ -111,8 +129,10 @@ class SceneUnit{
 	/**
 	 * @returns {THREE.PerspectiveCamera}
 	 */
-	setupCamera(cameraConfig) {
-		if (!cameraConfig) {
+	setupCamera(cameraConfig) 
+	{
+		if (!cameraConfig) 
+		{
 			console.error("No camera configuration provided");
 			return;
 		}
@@ -134,8 +154,10 @@ class SceneUnit{
 	 * @param {THREE.Renderer} renderer
 	 * @returns {OrbitControls}
 	 */
-	setupControls(camera, renderer, controlsConfig) {
-		if (!controlsConfig) {
+	setupControls(camera, renderer, controlsConfig) 
+	{
+		if (!controlsConfig) 
+		{
 			console.error("No controlsConfig provided");
 			return;
 		}
@@ -145,16 +167,20 @@ class SceneUnit{
 		return controls;
 	}
 
-	setupLights(lightsConfig) {
-		if (!lightsConfig || lightsConfig.length === 0) {
+	setupLights(lightsConfig) 
+	{
+		if (!lightsConfig || lightsConfig.length === 0) 
+		{
 			// console.log("No lights configuration provided.");
 			return;
 		}
-		lightsConfig.forEach((config) => {
+		lightsConfig.forEach((config) => 
+		{
 			/** @type {THREE.Light} */
 			let light = null;
 
-			switch (config.type) {
+			switch (config.type) 
+			{
 				case 'AmbientLight':
 					light = new THREE.AmbientLight(config.color, config.intensity);
 					break;
@@ -180,7 +206,8 @@ class SceneUnit{
 					break;
 			}
 
-			if (light) {
+			if (light) 
+			{
 				light.name = config.name;
 				this.lights.push(light);
 				this.scene.add(light);

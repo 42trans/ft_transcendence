@@ -8,16 +8,19 @@ import GameSceneConfig from '../config/GameSceneConfig';
 import ZoomBall from '../effect/ZoomBall';
 import AllScenesManager from '../manager/AllScenesManager';
 
-class EntryGameState extends BaseGameState {
+class EntryGameState extends BaseGameState 
+{
+	static zoomInDistance = 3; // ズームイン後の目的の距離
+	static zoomOutDistance = 100; // ズームアウト後の目的の距離
+	static duration = 2000; // アニメーションの持続時間 (ミリ秒)
+	static pauseDuration = 500; // ズームインとズームアウトの間の遅延 (ミリ秒)
+
 	constructor (PongApp)
 	{
 		super(PongApp);
 		this.scenesMgr = AllScenesManager.getInstance();
 		this.magmaFlare = new MagmaFlare();
-		this.zoomInDistance = 3; // ズームイン後の目的の距離
-		this.zoomOutDistance = 100; // ズームアウト後の目的の距離
-		this.duration = 2000; // アニメーションの持続時間 (ミリ秒)
-		this.pauseDuration = 500; // ズームインとズームアウトの間の遅延 (ミリ秒)
+		
 	}
 
 	enter() 
@@ -50,15 +53,16 @@ class EntryGameState extends BaseGameState {
 		this.zoomBall.zoomToBall(
 			targetPosition, 
 			this.startDistance, 
-			this.zoomInDistance, 
-			this.zoomOutDistance, 
-			this.duration, 
-			this.pauseDuration,
+			EntryGameState.zoomInDistance, 
+			EntryGameState.zoomOutDistance, 
+			EntryGameState.duration, 
+			EntryGameState.pauseDuration,
 		);
 		this.scenesMgr.backgroundScene.clearScene();
 	}
 
-	displayEnterGameButton() {
+	displayEnterGameButton() 
+	{
 		let button = document.getElementById('sButton');
 		if (!button) {
 			button = document.createElement('button');
@@ -77,7 +81,6 @@ class EntryGameState extends BaseGameState {
 		};
 		button.addEventListener('click', this.handleButtonClick);
 	}
-	
 }
 
 export default EntryGameState;
