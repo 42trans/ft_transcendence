@@ -23,7 +23,7 @@ class GameStateManager
 			// this.currentState = this.states.gamePlay;
 			this.currentState.enter();
 			// Dev用　resetButtonなどのUI設定
-			this.devSetupUI();
+			// this.devSetupUI();
 			GameStateManager.instance = this;
 		}
 		return GameStateManager.instance;
@@ -39,11 +39,11 @@ class GameStateManager
 	}
 
 	// dev用
-	devSetupUI() 
-	{
-		const entryButton = document.getElementById('devEntryButton');
-		entryButton.addEventListener('click', () => this.changeState('entry'));
-	}
+	// devSetupUI() 
+	// {
+		// const entryButton = document.getElementById('devEntryButton');
+		// entryButton.addEventListener('click', () => this.changeState('entry'));
+	// }
 
 	changeState(newState) 
 	{

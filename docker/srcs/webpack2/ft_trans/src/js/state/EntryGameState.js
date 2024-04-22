@@ -73,11 +73,11 @@ class EntryGameState extends BaseGameState
 		}
 	
 		// イベントリスナーを一度だけ追加する
-		button.removeEventListener('click', this.handleButtonClick);
+		// button.removeEventListener('click', this.handleButtonClick);
 		this.handleButtonClick = () => {
 			this.PongApp.gameStateManager.changeState('gamePlay');
 			button.style.display = 'none';
-			console.log('State changed to gamePlay');
+			// console.log('State changed to gamePlay');
 		};
 		button.addEventListener('click', this.handleButtonClick);
 	}
