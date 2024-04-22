@@ -8,18 +8,23 @@ class Flare extends THREE.Object3D
 	{
 		super();
 		const geometry = new THREE.CylinderGeometry(6, 2, 0, 30, 3, true);
+		this._randomRatio = Math.random();
+
 		textureCache.getTexture(flareTexture).then(texture => 
 		{
+			this._map = texture;
+			const uniforms = {
+				map: { type: "t", value: texture },
+				offset: { type: "v2", value: new THREE.Vector2(0, 0) },
+				opacity: { type: "f", value: 0.15 },
+				innerRadius: { type: "f", value: 2 },
+				diameter: { type: "f", value: 4 }
+			};
+			this._offset = uniforms.offset.value;  // オフセットの参照を保存
+
 			const material = new THREE.ShaderMaterial(
 			{
-				uniforms: 
-				{
-					map: { type: "t", value: texture },
-					offset: { type: "v2", value: new THREE.Vector2(0, 0) },
-					opacity: { type: "f", value: 0.15 },
-					innerRadius: { type: "f", value: 2 },
-					diameter: { type: "f", value: 4 }
-				},
+				uniforms: uniforms,			
 				vertexShader: `
 					varying vec2 vUv;
 					varying float radius;

@@ -28,7 +28,7 @@ class Aura extends THREE.Object3D
 
 	update() 
 	{
-		console.log("Aura updated");
+		// console.log("Aura updated");
 		if (!this.textureLoaded) return;
 		this.mesh.material.map.offset.x = -performance.now() / 1000 / 4;
 		this.mesh.material.map.offset.y = -performance.now() / 1000 / 4;
