@@ -3,17 +3,24 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>DM with {{ nickname }}</title>
+    <title>DM Room</title>
 </head>
 <body>
 <h1>DM with [{{ nickname }}]</h1>
+<!--<h1>{{ sender }} DM with [{{ nickname }}]</h1>-->
 <textarea id="chat-log" cols="100" rows="20"></textarea><br>
 <input id="chat-message-input" type="text" size="100"><br>
 <input id="chat-message-submit" type="button" value="Send">
+
+<!-- senderとnicknameの値をJavaScriptに渡す -->
+<!--{{ sender|json_script:"sender" }}-->
 {{ nickname|json_script:"nickname" }}
+
 <script>
+    // const sender = JSON.parse(document.getElementById('sender').textContent);
     const dmTo = JSON.parse(document.getElementById('nickname').textContent);
 
+    // const websocketUrl = 'wss://' + window.location.host + '/ws/dm/' + sender + '/' + dmTo + '/';
     const websocketUrl = 'wss://' + window.location.host + '/ws/dm/' + dmTo + '/';
     console.log('Attempting to connect to WebSocket at:', websocketUrl);
     const dmSocket = new WebSocket(websocketUrl);
@@ -45,7 +52,9 @@
 
     dmSocket.onerror = function(event) {
         console.error('WebSocket error observed:', event);
+        console.error(`ReadyState: ${dmSocket.readyState}`);
     };
+
 
     dmSocket.onclose = function(event) {
         console.error('Chat socket closed unexpectedly:', event);

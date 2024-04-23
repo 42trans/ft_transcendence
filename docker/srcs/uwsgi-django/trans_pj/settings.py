@@ -86,7 +86,7 @@ MIDDLEWARE = [
 	'django_prometheus.middleware.PrometheusAfterMiddleware',
 	# --------------------
 	'django_otp.middleware.OTPMiddleware',  # 2fa
-	'accounts.middleware.JWTAuthenticationMiddleware',  # jwt
+	'accounts.middleware.JWTAuthenticationMiddleware',	# jwt
 ]
 
 

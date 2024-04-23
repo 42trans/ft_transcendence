@@ -10,6 +10,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 

@@ -20,7 +20,7 @@ def index(request):
     return render(request, "chat/index.html", data)
 
 
-def room(request, room_name):
+def chat_room(request, room_name):
     if not request.user.is_authenticated:
         return redirect("accounts:login")
 
@@ -30,7 +30,8 @@ def room(request, room_name):
     return render(request, "chat/room.html", data)
 
 
-def dm_view(request, nickname):
+# def dm_room(request, sender, nickname):
+def dm_room(request, nickname):
     print(f'dm_view 1')
     if not request.user.is_authenticated:
         return redirect("accounts:login")
@@ -53,7 +54,11 @@ def dm_view(request, nickname):
 
     print(f'dm_view 4 dm_from: {user_nickname}, dm_to: {nickname}')
     data = {
-        'dm_from'   : user_nickname,
+        'sender'    : user_nickname,
         'nickname'  : nickname
     }
     return render(request, 'chat/dm.html', data)
+
+
+def test(request):
+    return render(request, "chat/tmp.html")

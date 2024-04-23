@@ -8,5 +8,5 @@ from . import views, consumers
 app_name = 'chat'
 
 urlpatterns = [
-    path('api/dm/<str:nickname>/', views.dm_view, name='api_dm'),
+    path('api/dm/<str:nickname>/', views.dm_room, name='api_dm'),
 ]

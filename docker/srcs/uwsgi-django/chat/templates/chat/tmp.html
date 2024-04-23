@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Test</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ws = new WebSocket('wss://localhost/ws/dm/user2/');
+
+            ws.onopen = function() {
+                console.log('Connection opened');
+            };
+            ws.onerror = function(event) {
+                console.error('WebSocket error observed:', event);
+                console.error(`ReadyState: ${ws.readyState}`);
+
+            };
+            ws.onmessage = function(event) {
+                console.log('Message from server ', event.data);
+            };
+            ws.onclose = function(event) {
+                console.log('Connection closed', event);
+            };
+        });
+    </script>
+</head>
+<body>
+<h1>WebSocket Test Page</h1>
+</body>
+</html>
