@@ -18,29 +18,25 @@ class DMConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         print_mazenta(f'[DMConsumer]: Connect 1')
 
-        if hasattr(self.scope['user'], 'nickname'):
-            self.user = self.scope['user']
-            self.user_nickname = self.user.nickname
-        else:
-            print_mazenta(f'[DMConsumer]: Unauthorized user attempt to connect')
-            await self.close()
-            return
+        # if hasattr(self.scope['user'], 'nickname'):
+        #     self.user = self.scope['user']
+        #     self.user_nickname = self.user.nickname
+        # else:
+        #     print_mazenta(f'[DMConsumer]: Unauthorized user attempt to connect')
+        #     await self.close()
+        #     return
 
-        # self.user = self.scope['user']
-        # self.user_nickname = self.user.nickname
-        # self.user_nickname = self.scope['url_route']['kwargs']['sender']
+        self.user = self.scope['user']
+        self.user_nickname = self.user.nickname
         self.other_user_nickname = self.scope['url_route']['kwargs']['nickname']
         print_mazenta(f'[DMConsumer]: Connect 2 other_user_nickname: {self.other_user_nickname}')
-        # print_mazenta(f'[DMConsumer]: Connect 2 sender: {self.user_nickname}')
 
-        # ニックネームから対象のユーザーオブジェクトを取得
         if not await self.user_exists(self.other_user_nickname):
             print_mazenta(f'[DMConsumer]: user not exist')
             await self.close()  # ユーザーが存在しない場合は接続を閉じる
             return
 
         print_mazenta(f'[DMConsumer]: 3')
-        # 両ユーザーのIDをソートして一意のグループ名を生成
         sorted_user_ids = sorted([self.user_nickname, self.other_user_nickname])
         self.room_group_name = f"dm_{sorted_user_ids[0]}_{sorted_user_ids[1]}"
 
@@ -72,17 +68,20 @@ class DMConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             {
                 'type': 'dm_message',
-                'message': message
+                'sender': self.user_nickname,
+                'message': message,
             }
         )
 
     async def dm_message(self, event):
         print_mazenta(f'[DMConsumer]: Message')
         message = event['message']
+        sender = event['sender']
 
         # WebSocketにメッセージを送信
         await self.send(text_data=json.dumps({
-            'message': message
+            'sender': sender,
+            'message': message,
         }))
 
 

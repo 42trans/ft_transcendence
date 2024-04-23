@@ -7,27 +7,23 @@
 </head>
 <body>
 <h1>DM with [{{ nickname }}]</h1>
-<!--<h1>{{ sender }} DM with [{{ nickname }}]</h1>-->
 <textarea id="chat-log" cols="100" rows="20"></textarea><br>
 <input id="chat-message-input" type="text" size="100"><br>
 <input id="chat-message-submit" type="button" value="Send">
 
-<!-- senderとnicknameの値をJavaScriptに渡す -->
-<!--{{ sender|json_script:"sender" }}-->
 {{ nickname|json_script:"nickname" }}
 
 <script>
-    // const sender = JSON.parse(document.getElementById('sender').textContent);
     const dmTo = JSON.parse(document.getElementById('nickname').textContent);
 
-    // const websocketUrl = 'wss://' + window.location.host + '/ws/dm/' + sender + '/' + dmTo + '/';
     const websocketUrl = 'wss://' + window.location.host + '/ws/dm/' + dmTo + '/';
     console.log('Attempting to connect to WebSocket at:', websocketUrl);
     const dmSocket = new WebSocket(websocketUrl);
 
     dmSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        document.querySelector('#chat-log').value += (data.message + '\n');
+        let senderName = data.sender; // 送信者名を取得
+        document.querySelector('#chat-log').value += (senderName + ":" + data.message + '\n');
     };
 
     document.querySelector('#chat-message-input').focus();
