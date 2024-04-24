@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from accounts.models import CustomUser
+from chat.models import DMSession, Message
 
 
 def index(request):
@@ -30,7 +31,6 @@ def chat_room(request, room_name):
     return render(request, "chat/room.html", data)
 
 
-# def dm_room(request, sender, nickname):
 def dm_room(request, nickname):
     print(f'dm_view 1')
     if not request.user.is_authenticated:
@@ -58,6 +58,24 @@ def dm_room(request, nickname):
         'nickname'  : nickname
     }
     return render(request, 'chat/dm.html', data)
+
+
+def dm_list(request):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect('accounts:login')
+
+    sessions = DMSession.objects.filter(member=user).prefetch_related('member')
+    data = []
+    for session in sessions:
+        other_user = [member for member in session.member.all() if member != user]
+        for other in other_user:
+            data.append({
+                'user_id': other.id,
+                'nickname': other.username
+            })
+
+    return JsonResponse(data, safe=False)
 
 
 def test(request):

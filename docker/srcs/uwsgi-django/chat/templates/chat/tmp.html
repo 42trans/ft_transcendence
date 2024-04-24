@@ -1,30 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>WebSocket Test</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const ws = new WebSocket('wss://localhost/ws/dm/user2/');
-
-            ws.onopen = function() {
-                console.log('Connection opened');
-            };
-            ws.onerror = function(event) {
-                console.error('WebSocket error observed:', event);
-                console.error(`ReadyState: ${ws.readyState}`);
-
-            };
-            ws.onmessage = function(event) {
-                console.log('Message from server ', event.data);
-            };
-            ws.onclose = function(event) {
-                console.log('Connection closed', event);
-            };
-        });
-    </script>
+    <meta charset="utf-8"/>
+    <title>DM Room</title>
+    <style>
+        body { display: flex; }
+        #dm-list { width: 20%; height: 100vh; overflow-y: auto; border-right: 1px solid #ccc; padding: 10px; }
+        #chat-area { flex-grow: 1; padding: 10px; }
+        #chat-log { width: 100%; height: 300px; }
+    </style>
 </head>
 <body>
-<h1>WebSocket Test Page</h1>
+<div id="dm-list">
+    <!-- DMリストがここに挿入される -->
+</div>
+
+<div id="chat-area">
+    <!-- Message一覧 & 送信フォーム -->
+    <h1>DM with <span id="current-nickname">[Select a user]</span></h1>
+    <textarea id="chat-log" disabled></textarea><br>
+    <input id="chat-message-input" type="text" size="100"><br>
+    <input id="chat-message-submit" type="button" value="Send">
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/api/dm-list/')
+            .then(response => response.json())
+            .then(data => {
+                const listContainer = document.getElementById('dm-list');
+                data.forEach(dm => {
+                    const userLink = document.createElement('a');
+                    userLink.href = '#';
+                    userLink.textContent = dm.nickname;
+                    userLink.onclick = () => loadChat(dm.nickname);
+                    listContainer.appendChild(userLink);
+                    listContainer.appendChild(document.createElement('br'));
+                });
+            });
+    });
+
+    function loadChat(nickname) {
+        document.getElementById('current-nickname').textContent = `[${nickname}]`;
+        const websocketUrl = `wss://${window.location.host}/ws/dm/${nickname}/`;
+        console.log('Attempting to connect to WebSocket at:', websocketUrl);
+        const dmSocket = new WebSocket(websocketUrl);
+
+        dmSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const chatLog = document.getElementById('chat-log');
+            chatLog.value += `${data.sender}: ${data.message}\n`;
+        };
+
+        document.getElementById('chat-message-submit').onclick = function() {
+            const messageInputDom = document.getElementById('chat-message-input');
+            const message = messageInputDom.value;
+            dmSocket.send(JSON.stringify({'message': message}));
+            messageInputDom.value = '';
+        };
+    }
+</script>
 </body>
 </html>
