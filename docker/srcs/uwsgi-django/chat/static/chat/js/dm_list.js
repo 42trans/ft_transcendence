@@ -31,7 +31,7 @@ function updateDOM(other_user) {
         // リンク要素を作成
         const link = document.createElement('a');
         link.href = `/chat/dm/${other.nickname}/`; // リンクの設定
-        link.textContent = `${other.nickname} (Session ID: ${other.session_id})`;
+        link.textContent = `${other.nickname} (DMSession.id: ${other.session_id})`;
 
         // リストアイテムにリンクを追加
         item.appendChild(link);

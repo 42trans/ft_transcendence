@@ -1,36 +1,107 @@
-<!-- tmp.html -->
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <title>dm page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DM Chat</title>
+    <style>
+        .chat-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .dm-list {
+            width: 30%;
+            background-color: #f4f4f4;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .dm-messages {
+            width: 70%;
+            padding: 20px;
+            overflow-y: auto;
+        }
+    </style>
+    <script src="{% static 'chat/js/dm_list.js' %}"></script>
 </head>
 <body>
+<div class="chat-container">
+    <div class="dm-list">
+        <h1>DM List</h1>
+        <input id="nickname-input" type="text" size="20">
+        <input id="nickname-submit" type="button" value="Enter">
+        <hr>
+        <ul id="dm-list"></ul>
+        <hr>
+        <p><a href="{% url 'accounts:user' %}">Return to user page</a></p>
+        <hr>
+        <script>
+            document.querySelector('#nickname-input').focus();
+            document.querySelector('#nickname-input').onkeyup = function(e) {
+                if (e.keyCode === 13) {  // enter, return
+                    document.querySelector('#nickname-submit').click();
+                }
+            };
 
-<h2>user nickname: {{ user.nickname }}</h2>
-<!-- ニックネームをJavaScriptに渡すための隠れた要素を追加 -->
-<span id="user_nickname" style="display: none;">{{ user.nickname|safe }}</span>
+            document.querySelector('#nickname-submit').onclick = function(e) {
+                var nickname = document.querySelector('#nickname-input').value;
+                window.location.pathname = '/chat/dm/' + nickname + '/';
+            };
+        </script>
+    </div>
+    <div class="dm-messages">
+        <h1>DM with [{{ nickname }}]</h1>
+        <textarea id="chat-log" cols="100" rows="20" readonly>
+            {% for message in messages %}
+            {{ message.sender.nickname }}: {{ message.message|safe }}
+            {% endfor %}
+            </textarea>
+        <input id="chat-message-input" type="text" size="100"><br>
+        <input id="chat-message-submit" type="button" value="Send">
+        <hr>
+        <p><a href="{% url 'chat:dm_list' %}">DM List</a></p>
+        <script>
+            const dmTo = JSON.parse(document.getElementById('nickname').textContent);
 
-<hr>
+            const websocketUrl = 'wss://' + window.location.host + '/ws/dm/' + dmTo + '/';
+            console.log('Attempting to connect to WebSocket at:', websocketUrl);
+            const dmSocket = new WebSocket(websocketUrl);
 
-DM with
-<input id="nickname-input" type="text" placeholder="nickname" size="20">
-<input id="nickname-submit" type="button" value="Enter">
+            dmSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                let senderName = data.sender; // 送信者名を取得
+                document.querySelector('#chat-log').value += (senderName + ": " + data.message + '\n');
+            };
 
-<hr>
+            document.querySelector('#chat-message-input').focus();
+            document.querySelector('#chat-message-input').onkeyup = function(e) {
+                if (e.keyCode === 13) {  // enter, return
+                    document.querySelector('#chat-message-submit').click();
+                }
+            };
 
-<!-- DMリスト表示部 -->
-<div id="dm-list" style="float: left; width: 30%; height: 90vh; overflow: auto;">
-    <!-- DMリストが動的にここに挿入される -->
+            document.querySelector('#chat-message-submit').onclick = function(e) {
+                const messageInputDom = document.querySelector('#chat-message-input');
+                const message = messageInputDom.value;
+                dmSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                messageInputDom.value = '';
+            };
+
+            dmSocket.onopen = function(event) {
+                console.log('WebSocket connection established with', dmTo);
+            };
+
+            dmSocket.onerror = function(event) {
+                console.error('WebSocket error observed:', event);
+            };
+
+            dmSocket.onclose = function(event) {
+                console.error('Chat socket closed unexpectedly:', event);
+            };
+        </script>
+    </div>
 </div>
-
-<!-- DM詳細表示部 -->
-<div id="dm-detail" style="float: right; width: 70%; height: 90vh;">
-    <!-- DM詳細がここに表示される -->
-</div>
-
-
-<script src="{% static 'chat/js/dm_page.js' %}"></script>
 </body>
 </html>

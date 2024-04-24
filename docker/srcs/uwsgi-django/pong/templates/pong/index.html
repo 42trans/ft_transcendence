@@ -14,7 +14,8 @@
         <h1>welcome, [{{ nickname }}]</h1>
         <ul>
             <p><a href="{% url 'accounts:user' %}">user information</a></p>
-            <p><a href="{% url 'chat:index' %}">chat / dm</a></p>
+            <p><a href="{% url 'chat:dm_list' %}">DM</a></p>
+            <p><a href="{% url 'chat:test' %}">DM test</a></p>
             <p><button onclick="handleLogout()">Logout</button></p>
         </ul>
 
