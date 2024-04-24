@@ -1,0 +1,23 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>user info</title>
+</head>
+<body>
+<h1>user page</h1>
+<ul>
+    <li>email: {{email}}</li>
+    <li>nickname: {{nickname}}</li>
+    <li><a href="{% url 'accounts:edit' %}">edit profile</a></li>
+    <li><a href="{% url 'accounts:logout' %}">logout</a></li>
+</ul>
+
+<hr>
+<br>
+<a href="/pong/">🏓 pong index page</a>
+
+</body>
+
+</html>

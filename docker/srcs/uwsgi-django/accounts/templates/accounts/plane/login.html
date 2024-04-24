@@ -1,0 +1,25 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>ログイン</title>
+</head>
+<body>
+<h1>ログイン</h1>
+<p>{{message}}</p>
+<form action="{% url 'accounts:login'%}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p><input type="hidden" name="next" value="{{next}}"></p>
+    <p><input type="submit" value="ログイン"></p>
+</form>
+
+<hr>
+<a href="{% url 'accounts:oauth_ft' %}">login with 42</a>
+<hr>
+<a href="{% url 'accounts:signup'%}">ユーザー登録</a>
+<hr>
+<a href="/pong/">🏓 return to pong</a></li>
+</body>
+</html>
