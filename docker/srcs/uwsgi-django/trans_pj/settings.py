@@ -61,8 +61,8 @@ INSTALLED_APPS = [
 	# 'allauth.account',  # allauth
 	# 'allauth.socialaccount',  # allauth
 	# 'socialaccount.providers.ft',  # 42auth with allauth
-	'share_webpack',
-	'share_webpack2'
+	# 'share_webpack',
+	# 'share_webpack2'
 ]
 
 

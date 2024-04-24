@@ -28,20 +28,20 @@ services:
       - uwsgi-django
     init: true
 
-  frontend:
-    container_name: frontend
-    build: ./frontend
-    image: frontend
-    env_file:
-      - .env
-    networks:
-      - web_transcendence
-      # - monitor_transcendence
-    ports:
-      - "${FRONTEND_PORT:?}:3000"
-      - "3090:3001"
-    restart: unless-stopped
-    init: true
+  # frontend:
+  #   container_name: frontend
+  #   build: ./frontend
+  #   image: frontend
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - web_transcendence
+  #     # - monitor_transcendence
+  #   ports:
+  #     - "${FRONTEND_PORT:?}:3000"
+  #     - "3090:3001"
+  #   restart: unless-stopped
+  #   init: true
 
   uwsgi-django:
     container_name: uwsgi-django
@@ -70,9 +70,10 @@ services:
     volumes:
       - '${VOLUME_PATH:?}/log_django_vol:/src/logs'
       - ./uwsgi-django/:/code/
-      - ./uwsgi-django/static/:/var/trans/static/
+      # - ./uwsgi-django/static/:/var/trans/static/
       - ./hardhat/hardhat_pj/share/:/code/share_hardhat/
-      - ./webpack2/ft_trans/public/:/var/trans/static/share_webpack2/
+      # - ./webpack2/ft_trans/public/:/var/trans/static/share_webpack2/
+      - ./vite/pong-three/public/static/pong/three:/code/pong/static/pong/three/
       # - logs_volume:/src/logs
       # - ${VOLUME_PATH:?}/django/code:/code
   #     - ${VOLUME_PATH:?}/ft_django/uwsgi:/etc/uwsgi
@@ -142,23 +143,23 @@ services:
   #     - ./pythontest/mysite/:/code/mysite/
   #     - ./pythontest/polls/:/code/polls/
 
-  # vite:
-  #   build: ./vite
-  #   container_name: vite
-  #   image: vite
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - web_transcendence
-  #   volumes:
-  #     - ./vite/ft_trans:/app
-  #     # - /app/node_modules
-  #   ports:
-  #     - "5184:5173"
-  #   environment:
-  #     - NODE_ENV=development
-  #   profiles:
-  #     - three
+  vite:
+    build: ./vite
+    container_name: vite
+    image: vite
+    env_file:
+      - .env
+    networks:
+      - web_transcendence
+    volumes:
+      - ./vite/pong-three:/app
+      - /app/node_modules
+    ports:
+      - "5184:5173"
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - three
       
   # webpack:
   #   build: ./webpack
@@ -175,17 +176,19 @@ services:
   #   profiles:
   #     - three
       
-  webpack2:
-    build: ./webpack2
-    container_name: webpack2
-    image: webpack2
-    env_file:
-      - .env
-    networks:
-      - web_transcendence
-    volumes:
-      - ./webpack2/ft_trans:/app
-    ports:
-      - "8181:8080"
-    profiles:
-      - three
+  # webpack2:
+  #   build: ./webpack2
+  #   container_name: webpack2
+  #   image: webpack2
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - web_transcendence
+  #   volumes:
+  #     - ./webpack2/ft_trans:/app
+  #   ports:
+  #     - "8181:8080"
+  #   profiles:
+  #     - three
+
+  

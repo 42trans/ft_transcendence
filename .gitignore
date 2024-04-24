@@ -31,6 +31,7 @@ docker/srcs/pgadmin
 docker/srcs/webpack/ft_trans/public
 docker/srcs/webpack2/ft_trans/public
 docker/srcs/webpack2/ft_trans/docs
+docker/srcs/vite/pong-three/public
 
 #### init/ #####
 

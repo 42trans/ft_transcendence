@@ -1,0 +1,60 @@
+/* 3d.css */
+
+body { 
+	margin: 0;
+}
+
+#threejs-canvas-container {
+	position: absolute;
+	background: transparent;
+	background-image: url('../assets/img/bg.png');
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	overflow: hidden; 
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-size: cover;
+	position: relative;
+}
+
+#info {
+	position: absolute;
+	top: 100px;
+	color: blueviolet;
+	z-index: 1;
+}
+
+#ui-layer {
+	position: absolute;
+	top: 95%;
+	left: 70%;
+	z-index: 1;
+}
+
+.game-button {
+	top: 95%;
+	left: 50%;
+	position: absolute;
+	z-index: 1;
+	transform: translate(-50%, -50%);
+	display: inline-block;
+	text-align: center;
+	font-size: 15px;
+	color: #131313;
+	padding: 16px 30px;
+	min-width: 153px;
+	border-radius: 50px;
+	font-weight: 500;
+	border: none;
+	background: #ffb320;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.game-button:hover {
+	background: #131313;
+	color: #ffb320;
+}
