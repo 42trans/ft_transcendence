@@ -1,24 +1,25 @@
-{% extends 'base.html' %}
 {% load static %}
-{% block title %}Home - hth Pong{% endblock title %}
-{% block head %}
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta charset="UTF-8">
+	<title>game ft_trans three.js app</title>
+<!-- <script defer src="{% static 'share_webpack2/bundle.js' %}"></script> -->
 <script type="module" crossorigin src="{% static 'pong/three/assets/index.js' %}"></script>
 <link rel="stylesheet" crossorigin href="{% static 'pong/three/assets/index.css' %}">
-{% endblock head %}
-{% block content %}
+<link rel="stylesheet" href="{% static 'pong/css/pong.css' %}">
+</head>
 
-<!-- <div class="canvas-container"> -->
-	<div class="hs-text">
-		<!-- <div class="container"> -->
-			<!-- <div id="info">
-				<p>
-				</p>
-			</div> -->
-			
-			<canvas id="threejs-canvas-container"></canvas>
-
-		<!-- </div> -->
+<body>
+	<div class="canvas-container">
+		<div class="hs-text">
+			<div class="container">
+				<canvas id="threejs-canvas-container"></canvas>
+			</div>
+		</div>
 	</div>
-<!-- </div> -->
 
-{% endblock %}
+</body>
+</html>

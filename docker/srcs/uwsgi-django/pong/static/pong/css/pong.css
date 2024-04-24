@@ -2,7 +2,8 @@
 /* Canvasのスタイリング */
 .canvas-container {
 	width: 100%; /* コンテナの幅 */
-	height: 900px;
+	/* height: 900px; */
+	height: 100vh;
 	display: flex; /* Flexboxを使用 */
 	justify-content: center; /* 水平方向中央揃え */
 	align-items: center; /* 垂直方向中央揃え */
@@ -86,7 +87,8 @@ Commom elements
 }
 
 .site-btn:hover {
-	color: #fff;
+	color: #ffb320;
+	background: #000;
 }
 
 .cata {

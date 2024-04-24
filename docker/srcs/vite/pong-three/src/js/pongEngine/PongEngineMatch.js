@@ -140,7 +140,7 @@ class PongEngineMatch
 		button.textContent = 'End Game';
 		button.className = 'game-button';
 		button.onclick = function() {
-			window.location.href = '/';
+			window.location.href = '/pong/';
 		};
 		// ボタンをページに追加
 		document.body.appendChild(button);
