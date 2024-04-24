@@ -9,10 +9,11 @@ Header section
 	overflow: hidden;
 	padding: 18px 0;
 	border-bottom: 1px solid #ffb320;
+	
 }
 
 .site-logo {
-	display: inline-block;
+	display: block;
 	float: left;
 	padding-top: 6px;
 }
@@ -30,6 +31,7 @@ Header section
 .user-panel a {
 	color: #131313;
 	text-decoration: none;
+	text-shadow: 0px 0px 0px #fff; 
 }
 
 .main-menu {
@@ -52,6 +54,8 @@ Header section
 	font-weight: 500;
 	padding: 10px 5px;
 	text-decoration: none;
+	
+	
 }
 
 .main-menu ul li a:hover {

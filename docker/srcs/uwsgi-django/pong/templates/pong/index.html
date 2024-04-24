@@ -1,48 +1,41 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>pong index</title>
-</head>
-<body>
-    <h1>🏓 pong 🏓</h1>
-    <br>
+{% block title %}Home - hth Pong{% endblock title %}
+{% block content %}
+<div class="canvas-container">
+	<div class="hs-text">
+		<div class="container">
+			<h2>Unrivaled <span>hth Pong</span> Experience</h2>
+			<!-- <h2 class="slideup-text">Unrivaled <span>hth Pong</span> Experience</h2> -->
+			<p class="slideup-text">This project is about doing something you’ve never done before. Remind yourself the beginning of your journey in computer science. Look at you now. Time to shine!</p>
+			<!-- <h2>🏓 pong 🏓</h2> -->
+			{% if nickname %}
+			<h3 class="slideup-text">welcome, [{{ nickname }}]</h3>
+			<ul>
+				<p class="slideup-text"><a href="{% url 'accounts:user' %}">user information</a></p>
+				<p><button class="slideup-text site-btn" onclick="handleLogout()">Logout</button></p>
+			</ul>
+			{% else %}
+			<h3 class="slideup-text">welcome, Guest</h3>
+			<p class="slideup-text">For a happier life, let's play the pong game!</p>
+			<ul>
+				<li><a href="{% url 'accounts:signup' %}">sign-up</a></li>
+				<li><a href="{% url 'accounts:login' %}">login</a></li>
+			</ul>
+			{% endif %}
+			<hr>
+			<h4>incomplete / test</h4>
+			<ul>
+				<!-- <li><a href="{% url 'accounts:oauth_ft' %}">[test] sign-up/login with 42</a></li> -->
+				<!-- <li><a href="/accounts/oauth-ft/">[test] sign-up/login with 42</a></li> -->
+				<li><a href="/pong/bootstrap_index/">[test] index(bootstrap)</a></li>
+				<li><a href="/pong/bootstrap_sign-in/">[test] sign-in(bootstrap)</a></li>
+				<li><a href="http://localhost:5184/">vite dev-server</a></li>
+			</ul>
+			<!-- <a href="#" class="site-btn">Read More</a> -->
+			<script src="{% static 'accounts/js/logout.js' %}"></script>
+		</div>
+	</div>
+</div>
+{% endblock %}
 
-    {% if nickname %}
-
-        <h1>welcome, [{{ nickname }}]</h1>
-        <ul>
-            <p><a href="{% url 'accounts:user' %}">user information</a></p>
-            <p><button onclick="handleLogout()">Logout</button></p>
-        </ul>
-
-    {% else %}
-
-        <h1>welcome, Guest</h1>
-        <h2>For a happier life, let's play the pong game!</h2>
-        <ul>
-            <li><a href="{% url 'accounts:signup' %}">sign-up</a></li>
-            <li><a href="{% url 'accounts:login' %}">login</a></li>
-        </ul>
-
-    {% endif %}
-
-    <br>
-    <hr>
-    <br>
-
-    <h1>incomplete / test</h1>
-    <ul>
-<!--        <li><a href="{% url 'accounts:oauth_ft' %}">[test] sign-up/login with 42</a></li>-->
-<!--        <li><a href="/accounts/oauth-ft/">[test] sign-up/login with 42</a></li>-->
-        <br>
-        <li><a href="/pong/bootstrap_index/">[test] index(bootstrap)</a></li>
-        <li><a href="/pong/bootstrap_sign-in/">[test] sign-in(bootstrap)</a></li>
-    </ul>
-
-
-    <script src="{% static 'accounts/js/logout.js' %}"></script>
-
-</body>
-</html>

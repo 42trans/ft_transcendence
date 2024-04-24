@@ -4,7 +4,7 @@ body {
 	height: 100%;
 	font-family: 'Roboto', sans-serif;
 	-webkit-font-smoothing: antialiased;
-	font-smoothing: antialiased;
+	font-smooth: antialiased;
 }
 
 h1,
@@ -15,11 +15,11 @@ h5,
 h6 {
 	margin: 0;
 	font-weight: 500;
-	color: #131313;
+	/* color: #131313; */
 }
 
 p {
-	color: #fff;
+	/* color: #fff; */
 }
 
 img {
@@ -57,31 +57,41 @@ ol {
 	background: url('../img/bg.png') no-repeat center center; /* 背景画像の設定 */
 	background-size: cover; /* 背景画像をカバーとして設定 */
 	position: relative;
-	color: #fff;
-	text-shadow: 0px 0px 20px #000; /* テキストに影を付ける */
-}
-
-.canvas-container a {
-    color: #ffb320; /* リンクのテキスト色 */
-    text-decoration: none; /* 下線を削除 */
-    text-shadow: 0px 0px 20px #000; /* テキストに影を付ける */
-}
-
-.canvas-container p {
 	color: #ffb320;
-	text-shadow: 0px 0px 20px #000; /* テキストに影を付ける */
+	text-shadow: 1px 1px 5px #000; 
 }
 
-.hs-text h2{
-	font-size: 4rem;
-	color: #fff;
-	text-shadow: 0px 0px 20px #000; /* テキストに影を付ける */
-}
-
-.hs-text h3{
+.container h2{
 	font-size: 3rem;
+	color: #ffb320;
+	text-shadow: 0px 0px 10px #000; 
+}
+
+.container h3{
+	font-size: 2rem;
+	color: #ffb320;
+	text-shadow: 0px 0px 10px #000; 
+}
+.container h4{
+	/* font-size: 2rem; */
+	color: #ffb320;
+	text-shadow: 0px 0px 10px #000; 
+}
+.container div{
+	/* font-size: 2rem; */
+	color: #ffb320;
+	text-shadow: 0px 0px 10px #000; 
+}
+
+.container a {
+	color: #fff; 
+	text-decoration: none; 
+	text-shadow: 1px 1px 5px #000; 
+}
+
+.container p {
 	color: #fff;
-	text-shadow: 0px 0px 20px #000; /* テキストに影を付ける */
+	text-shadow: 1px 1px 5px #000; 
 }
 
 .text-overlay {
@@ -96,7 +106,7 @@ ol {
 }
 
 .gw_results-title{
-	color: #ffb320;
+	color: #fff;
 }
 
 .gw_results-ul{
@@ -122,6 +132,8 @@ Commom elements
 	background: #ffb320;
 	cursor: pointer;
 	text-decoration: none;
+	z-index: 100;
+	text-shadow: 0px 0px 0px #fff; 
 }
 
 .site-btn.btn-sm {
@@ -130,7 +142,8 @@ Commom elements
 }
 
 .canvas-container .site-btn {
-    color: #131313; /* 白い文字色 */
+	color: #131313;
+	text-shadow: 0px 0px 0px #fff; 
 }
 
 .site-btn:hover {
@@ -138,10 +151,21 @@ Commom elements
 	background: #000;
 }
 
+#game-home-btn{
+	top: 95%;
+	left: 80%;
+	position: absolute;
+	z-index: 101;
+	transform: translate(-50%, -50%);
+	text-shadow: 0px 0px 0px #fff; 
+}
+
+
+/* 
 .cata {
 	display: inline-block;
 	text-transform: uppercase;
-	/* font-size: 12px; */
+	font-size: 12px;
 	font-weight: 500;
 	color: #fff;
 	padding: 6px 25px;
@@ -161,4 +185,4 @@ Commom elements
 
 .cata.adventure {
 	background: #40abf5;
-}
+} */
