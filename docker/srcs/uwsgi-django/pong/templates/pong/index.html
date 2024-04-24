@@ -24,15 +24,29 @@
 			</ul>
 			{% endif %}
 			<hr>
-			<h4>incomplete / test</h4>
+			<h4>Server/pong</h4>
+			<ul>
+				<li><a href="https://localhost/pong">Nginx https</a></li>
+				<li><a href="http://localhost:8002/pong/">Django dev-server</a></li>
+				<li><a href="http://localhost:5184/pong/">Vite dev-server</a></li>
+			</ul>
+			<h4>Incomplete / test</h4>
 			<ul>
 				<!-- <li><a href="{% url 'accounts:oauth_ft' %}">[test] sign-up/login with 42</a></li> -->
 				<!-- <li><a href="/accounts/oauth-ft/">[test] sign-up/login with 42</a></li> -->
-				<li><a href="/pong/bootstrap_index/">[test] index(bootstrap)</a></li>
-				<li><a href="/pong/bootstrap_sign-in/">[test] sign-in(bootstrap)</a></li>
-				<li><a href="http://localhost:5184/">vite dev-server</a></li>
+				<!-- <li><a href="/pong/bootstrap_index/">[test] index(bootstrap)</a></li> -->
+				<!-- <li><a href="/pong/bootstrap_sign-in/">[test] sign-in(bootstrap)</a></li> -->
+				<li><a href="/accounts/signup/">accounts/signup/</a></li>
+				<li><a href="/accounts/login/">accounts/login/</a></li>
+				<li><a href="/accounts/oauth-ft/">accounts/oauth-ft/</a></li>
+				<li><a href="/accounts/logout/">accounts/logout/</a></li>
+				<li><a href="/accounts/user/">accounts/user/</a></li>
+				<li><a href="/accounts/edit/">accounts/edit/</a></li>
+				<li><a href="/accounts/verify/disable_2fa/">accounts/verify/disable_2fa/</a></li>
+				<li><a href="/accounts/verify/enable_2fa/">accounts/verify/enable_2fa/</a></li>
+				<li><a href="/accounts/verify/verify_2fa/">accounts/verify/verify_2fa/</a></li>
 			</ul>
-			<!-- <a href="#" class="site-btn">Read More</a> -->
+		
 			<script src="{% static 'accounts/js/logout.js' %}"></script>
 		</div>
 	</div>
