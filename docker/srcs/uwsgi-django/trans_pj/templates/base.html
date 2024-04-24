@@ -9,10 +9,16 @@
 	<link href="{% static 'pong/gw/img/favicon.ico' %}" rel="shortcut icon"/>
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
 	<!-- Stylesheets -->
-	<link rel="stylesheet" href="{% static 'pong/gw/css/bootstrap.min.css' %}"/>
-	<link rel="stylesheet" href="{% static 'pong/gw/css/custom.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/gw/css/animation.css' %}" >
+	<link rel="stylesheet" href="{% static 'pong/css/bootstrap.min.css' %}"/>
+	<link rel="stylesheet" href="{% static 'pong/css/animation.css' %}" >
+	<link rel="stylesheet" href="{% static 'pong/css/custom.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+	<link rel="stylesheet" href="{% static 'pong/css/style.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/pong.css' %}">
+
+	{% block head %}
+	{% endblock head %}
+
 </head>
 <body>
 	<!-- Header section -->
@@ -29,10 +35,10 @@
 			<!-- site menu -->
 			<nav class="main-menu">
 				<ul>
-					<li><a href="/pong/gw/">Home</a></li>
-					<li><a href="/pong/gw/game/">Pong</a></li>
-					<li><a href="/pong/gw/tournament">Tournament</a></li>
-					<li><a href="/pong/gw/results">results</a></li>
+					<li><a href="/pong/">Home</a></li>
+					<li><a href="/pong/game/">Pong</a></li>
+					<li><a href="/pong/tournament">Tournament</a></li>
+					<li><a href="/pong/results">results</a></li>
 				</ul>
 			</nav>
 		</div>
@@ -49,10 +55,10 @@
 	<footer class="footer-section">
 		<div class="container">
 			<ul class="footer-menu">
-				<li><a href="/pong/gw/">Home</a></li>
-				<li><a href="/pong/gw/game/">Pong</a></li>
-				<li><a href="/pong/gw/tournament/">Tournament</a></li>
-				<li><a href="/pong/gw/results">results</a></li>
+				<li><a href="/pong/">Home</a></li>
+				<li><a href="/pong/game/">Pong</a></li>
+				<li><a href="/pong/tournament/">Tournament</a></li>
+				<li><a href="/pong/results">results</a></li>
 			</ul>
 		</div>
 	</footer>

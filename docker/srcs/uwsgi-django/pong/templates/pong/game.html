@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home - hth Pong{% endblock title %}
+{% block head %}
+<script type="module" crossorigin src="{% static 'pong/three/assets/index.js' %}"></script>
+<link rel="stylesheet" crossorigin href="{% static 'pong/three/assets/index.css' %}">
+{% endblock head %}
+{% block content %}
+
+<!-- <div class="canvas-container"> -->
+	<div class="hs-text">
+		<!-- <div class="container"> -->
+			<!-- <div id="info">
+				<p>
+				</p>
+			</div> -->
+			
+			<canvas id="threejs-canvas-container"></canvas>
+
+		<!-- </div> -->
+	</div>
+<!-- </div> -->
+
+{% endblock %}

@@ -1,0 +1,115 @@
+
+/* Canvasのスタイリング */
+.canvas-container {
+	width: 100%; /* コンテナの幅 */
+	height: 900px;
+	display: flex; /* Flexboxを使用 */
+	justify-content: center; /* 水平方向中央揃え */
+	align-items: center; /* 垂直方向中央揃え */
+	background: url('../img/bg.png') no-repeat center center; /* 背景画像の設定 */
+	background-size: cover; /* 背景画像をカバーとして設定 */
+	position: relative;
+	color: #fff;
+	text-shadow: 0px 0px 20px #000; /* テキストに影を付ける */
+}
+
+.canvas-container a {
+    color: #ffb320; /* リンクのテキスト色 */
+    text-decoration: none; /* 下線を削除 */
+    text-shadow: 0px 0px 20px #000; /* テキストに影を付ける */
+}
+
+.canvas-container p {
+	color: #ffb320;
+	text-shadow: 0px 0px 20px #000; /* テキストに影を付ける */
+}
+
+.hs-text h2{
+	font-size: 4rem;
+	color: #fff;
+	text-shadow: 0px 0px 20px #000; /* テキストに影を付ける */
+}
+
+.hs-text h3{
+	font-size: 3rem;
+	color: #fff;
+	text-shadow: 0px 0px 20px #000; /* テキストに影を付ける */
+}
+
+.text-overlay {
+	position: absolute;
+	bottom: 20px; /* 下部からの距離を調整 */
+	left: 50%; /* 横方向中央揃え */
+	transform: translateX(-50%); /* 横方向中央揃え */
+}
+
+.gw_results-container{
+	background: #131313;
+}
+
+.gw_results-title{
+	color: #ffb320;
+}
+
+.gw_results-ul{
+	list-style-type: none;
+	color: #fff;
+}
+
+
+/*---------------------
+Commom elements
+-----------------------*/
+
+/* buttons */
+.site-btn {
+	display: inline-block;
+	text-align: center;
+	font-size: 15px;
+	padding: 16px 30px;
+	min-width: 153px;
+	border-radius: 50px;
+	font-weight: 500;
+	border: none;
+	background: #ffb320;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.site-btn.btn-sm {
+	padding: 10px 30px;
+	min-width: 163px;
+}
+
+.canvas-container .site-btn {
+    color: #131313; /* 白い文字色 */
+}
+
+.site-btn:hover {
+	color: #fff;
+}
+
+.cata {
+	display: inline-block;
+	text-transform: uppercase;
+	font-size: 12px;
+	font-weight: 500;
+	color: #fff;
+	padding: 6px 25px;
+}
+
+.cata.new {
+	background: #ff205f;
+}
+
+.cata.strategy {
+	background: #4eae60;
+}
+
+.cata.racing {
+	background: #694eae;
+}
+
+.cata.adventure {
+	background: #40abf5;
+}

@@ -7,7 +7,7 @@ body {
 #threejs-canvas-container {
 	position: absolute;
 	background: transparent;
-	background-image: url('../assets/img/bg.png');
+	/* background-image: url('../assets/img/bg.png'); */
 	top: 0;
 	left: 0;
 	width: 100%;

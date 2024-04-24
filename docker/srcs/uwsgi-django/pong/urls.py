@@ -36,15 +36,16 @@ urlpatterns = [
 
 	# custom template hth pong
 	path("gw/", views.gw_index, name="gw_index"),
-	path("gw/game/", views.gw_game, name="gw_game"),
 	path("gw/tournament/", views.gw_tournament, name="gw_tournament"),
 	path("gw/sign-in/", views.gw_sign_in, name="gw_sign_in"),  # test
 	path("gw/sign-in42/", views.gw_sign_in42, name="gw_sign_in42"),  # test
 	path('gw/sign-in-redirect42/', views.gw_sign_in_redirect42, name='gw_sign_in_redirect42'),
 	path('gw/results/', views.gw_results, name='gw_results'),
 	path('gw/game2/', views.gw_game2, name='gw_game2'),
+	
 	path('three/', views.three, name='three'),
 
+	path("game/", views.game, name="game"),
 	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://example.com/
 	path("", views.pong_view, name="index"),
 ]
