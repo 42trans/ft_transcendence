@@ -21,13 +21,20 @@ function fetchPartners() {
         .catch(error => console.error('There has been a problem with your fetch operation:', error));
 }
 
-function updateDOM(partners) {
+function updateDOM(other_user) {
     const list = document.getElementById('dm-list');
     list.innerHTML = ''; // リストをクリア
 
-    partners.forEach(partner => {
+    other_user.forEach(other => {
         const item = document.createElement('li');
-        item.textContent = `${partner.partner_nickname} (Session ID: ${partner.session_id})`;
+
+        // リンク要素を作成
+        const link = document.createElement('a');
+        link.href = `/chat/dm/${other.nickname}/`; // リンクの設定
+        link.textContent = `${other.nickname} (Session ID: ${other.session_id})`;
+
+        // リストアイテムにリンクを追加
+        item.appendChild(link);
         list.appendChild(item);
     });
 }

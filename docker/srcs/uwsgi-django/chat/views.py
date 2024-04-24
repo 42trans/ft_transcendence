@@ -82,12 +82,12 @@ class DMListAPI(APIView):
             other_users = session.member.exclude(id=user.id)
             for other_user in other_users:
                 other_user_list.append({
-                    'partner_id': other_user.id,
-                    'partner_nickname': other_user.nickname,
+                    'id': other_user.id,
+                    'nickname': other_user.nickname,
                     'session_id': session.sessionId
                 })
 
-        unique_partners = {other['partner_id']: other for other in other_user_list}.values()
+        unique_partners = {other['id']: other for other in other_user_list}.values()
         return JsonResponse(list(unique_partners), safe=False, status=200)
 
 
