@@ -7,7 +7,12 @@
 </head>
 <body>
 <h1>DM with [{{ nickname }}]</h1>
-<textarea id="chat-log" cols="100" rows="20"></textarea><br>
+
+<!-- DMより取得したlogを表示 -->
+<textarea id="chat-log" cols="100" rows="20" readonly>
+{% for message in messages %}{{ message.sender.nickname }}: {{ message.message|safe }}{% endfor %}
+</textarea>
+
 <input id="chat-message-input" type="text" size="100"><br>
 <input id="chat-message-submit" type="button" value="Send">
 
@@ -23,7 +28,7 @@
     dmSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
         let senderName = data.sender; // 送信者名を取得
-        document.querySelector('#chat-log').value += (senderName + ":" + data.message + '\n');
+        document.querySelector('#chat-log').value += (senderName + ": " + data.message + '\n');
     };
 
     document.querySelector('#chat-message-input').focus();

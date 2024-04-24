@@ -37,10 +37,7 @@ def dm_room(request, nickname):
         return redirect("accounts:login")
 
     user = request.user
-    user_nickname = user.nickname
-    print(f'dm_view 2 user: {user_nickname}')
-
-    if nickname == user_nickname:
+    if nickname == user.nickname:
         messages.error(request, "You cannot send a message to yourself.")
         return redirect('chat:index')
 
@@ -52,10 +49,16 @@ def dm_room(request, nickname):
         messages.error(request, "The specified user does not exist.")
         return redirect('chat:index')
 
-    print(f'dm_view 4 dm_from: {user_nickname}, dm_to: {nickname}')
+    # DMからログを取得
+    other_user = CustomUser.objects.get(id=target_user.id)
+    messages = Message.objects.filter(
+        sender__in=[user, other_user],
+        receiver__in=[user, other_user]
+    ).order_by('timestamp')
+
     data = {
-        'sender'    : user_nickname,
-        'nickname'  : nickname
+        'nickname': other_user.nickname,
+        'messages': messages
     }
     return render(request, 'chat/dm.html', data)
 
