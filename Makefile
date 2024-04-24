@@ -146,20 +146,20 @@ reset_logstash:
 # -----------------------------------------------
 .PHONY: docker_rm
 docker_rm:
-	@if [ -n "$$(docker ps -qa)" ]; then docker stop $$(docker ps -qa); fi
-	@if [ -n "$$(docker ps -qa)" ]; then docker rm -f $$(docker ps -qa); fi
-	@if [ -n "$$(docker images -qa)" ]; then docker rmi -f $$(docker images -qa); fi
-	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
-	@docker network rm $$(docker network ls -q) 2>/dev/null || true
-	@docker volume prune -f
+	-@docker stop $$(docker ps -qa) 2>/dev/null
+	-@docker rm -f $$(docker ps -qa) 2>/dev/null
+	-@docker rmi -f $$(docker images -qa) 2>/dev/null
+	-@docker network rm $$(docker network ls -q) 2>/dev/null
+	-@docker volume rm $$(docker volume ls -q) 2>/dev/null
+	-@docker system prune -af --volumes
 
-.PHONY: remove_mount_volume_mac
-remove_mount_volume_mac:
-	rm -rf mount_volume
+.PHONY: remove_mount_volume
+remove_mount_volume:
+	sudo rm -rf mount_volume
 
 .PHONY: rm
 rm:
-	make remove_mount_volume_mac
+	make remove_mount_volume
 
 .PYHONY: ps
 ps:
@@ -174,6 +174,8 @@ ps_a:
 logs:
 	docker-compose $(COMPOSE_FILES_ARGS) logs
 
+.PHONY: fclean
+fclean: down docker_rm remove_mount_volume
 
 # -----------------------------------------------
 #  init
@@ -182,6 +184,7 @@ logs:
 .PHONY: init
 init: env cert_key
 	@chmod +x init/add_host.sh && ./init/add_host.sh init/.os_env
+	@chmod +x init/make_dir.sh && ./init/make_dir.sh init/.os_env
 
 .PHONY: env
 env:
@@ -283,6 +286,9 @@ Re-setup:
 # Django開発サーバー　localhost:8002
 run_django_server:
 	docker exec -it uwsgi-django bash -c "python manage.py runserver 0.0.0.0:8002"
+# DBのフィールド変更時に毎回必要
+migrate_Django_db:
+	docker exec -it uwsgi-django bash -c "python manage.py migrate --noinput"
 
 # -----------------------------------------------
 # インクルードしたいファイルのリスト

@@ -18,16 +18,25 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from trans_pj.views import main_views  
-
-# from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.i18n import i18n_patterns
+import accounts.urls, accounts.urls_api
 
 urlpatterns = [
+	path("i18n/", include("django.conf.urls.i18n")),
+]
+
+# API
+urlpatterns += [
+	path('accounts/', include(accounts.urls_api)),
+]
+
+# 国際化対象のURLパターン
+urlpatterns += i18n_patterns(
 	path('pong/', include('pong.urls')),
 	path('', include('django_prometheus.urls')),
 	path('admin/', admin.site.urls),
 	path('api/status/', main_views.api_status, name='api_status'),
+	path('accounts/', include(accounts.urls)),
 	path('', main_views.index, name='index'),
-	path('accounts/', include('accounts.urls')),
-]
-
-# urlpatterns += staticfiles_urlpatterns()
+	prefix_default_language=True
+)

@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
@@ -13,9 +14,6 @@
     <title>Signin Template · Bootstrap v5.3</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
-
-    
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
     <link href="{% static 'assets/dist/css/bootstrap.min.css' %}" rel="stylesheet">  
@@ -161,7 +159,7 @@
 <main class="form-signin w-100 m-auto">
   <form>
     <img class="mb-4" src="{% static 'assets/brand/bootstrap-logo.svg' %}" alt="" width="72" height="57">
-    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    <h1 class="h3 mb-3 fw-normal">{% trans "PleaseSignIn" %}</h1>
 
     <div class="form-floating">
       <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
@@ -175,12 +173,24 @@
     <div class="form-check text-start my-3">
       <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
       <label class="form-check-label" for="flexCheckDefault">
-        Remember me
+        {% trans "RememberMe" %}
       </label>
+      <div id="language-switcher">
+</div>
     </div>
     <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
     <p class="mt-5 mb-3 text-body-secondary">&copy; 2017–2024</p>
   </form>
+      <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ redirect_to }}" />
+        <select name="language">
+            <option value="ja">日本語</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+        </select>
+        <input type="submit" value="Change Language">
+    </form>
 </main>
 <script src="{% static 'assets/js/color-modes.js' %}"></script>
 

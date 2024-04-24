@@ -1,11 +1,14 @@
 from django.db import models
 from django.contrib import auth
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import PermissionsMixin
-
+from django.utils.translation import gettext_lazy as _
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -14,17 +17,79 @@ class UserManager(BaseUserManager):
         """
         Create and save a user with the given email, password, and nickname.
         """
-        if not email:
-            raise ValueError("The given email must be set")
         email = self.normalize_email(email)
-        # Lookup the real model class from the global app registry so this
-        # manager method can be used in migrations. This is fine because
-        # managers are by definition working on the real model.
+        nickname = extra_fields.get("nickname")
+        ok, err = self._is_valid_user_field(email, nickname, password)
+        if not ok:
+            raise ValueError(err)
+
         user = self.model(email=email, **extra_fields)
-        # user.password = make_password(password)
-        user.set_password(password)  # make_password -> set_password
+        user.set_password(password)
+
         user.save(using=self._db)
         return user
+
+    @classmethod
+    def _is_valid_user_field(self, email, nickname, password):
+        ok, err = self._is_valid_email(email)
+        if not ok:
+            return False, err
+
+        ok, err = self._is_valid_nickname(nickname)
+        if not ok:
+            return False, err
+
+        tmp_user = CustomUser(email=email, nickname=nickname)
+        ok, err = self._is_valid_password(password, tmp_user)
+        if not ok:
+            return False, err
+
+        return True, None
+
+
+    @classmethod
+    def _is_valid_email(self, email):
+        if not email:
+            return False, "The given email must be set"
+
+        if CustomUser.objects.filter(email=email).exists():
+            return False, "This email is already in use"
+
+        try:
+            validate_email(email)
+            return True, None
+        except ValidationError as e:
+            return False, ". ".join(e.messages)
+
+
+    @classmethod
+    def _is_valid_nickname(self, nickname):
+        if not nickname:
+            return False, "The given nickname must be set"
+        if CustomUser.kNICKNAME_MAX_LENGTH < len(nickname):
+            err = f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"
+            return False, err
+        if not nickname.isalnum():
+            return False, "Invalid nickname format"
+
+        if CustomUser.objects.filter(nickname=nickname).exists():
+            return False, "This nickname is already in use"
+
+        return True, None
+
+
+    @classmethod
+    def _is_valid_password(self, password, tmp_user):
+        if password is None:
+            return False, "The password cannot be None"
+        if not password:
+            return False, "The password cannot be set"
+        try:
+            validate_password(password, user=tmp_user)
+            return True, None
+        except ValidationError as e:
+            return False, ". ".join(e.messages)
+
 
     def create_user(self, email=None, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", False)
@@ -78,8 +143,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     - email: Email address of the user. 42 email if OAuth with 42 used.
     - nickname: A unique nickname for the user. if OAuth with 42 used, 42-login by default.
     """
+    kNICKNAME_MAX_LENGTH = 30
     email = models.EmailField(_("email address"), unique=True)
-    nickname = models.CharField(_("nickname"), max_length=30, unique=True)
+    nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
+    enable_2fa = models.BooleanField(_("enable 2fa"), default=False)
 
     is_staff = models.BooleanField(
         _("staff status"),
@@ -105,3 +172,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    devices = models.ManyToManyField(TOTPDevice)

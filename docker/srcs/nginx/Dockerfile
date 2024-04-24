@@ -1,14 +1,9 @@
-FROM debian:bullseye
-RUN apt-get update && \
-	apt-get install -y \
-	nginx \
-	gettext-base \
-	curl \
-	uwsgi \
-	telnet \
-	inetutils-ping \
-	&& \
-	rm -rf /var/lib/apt/lists/*
+FROM alpine:3.18
+RUN apk update && apk add --no-cache \
+    nginx \
+    gettext \
+    curl
+
 # SSL用ディレクトリ
 RUN mkdir -p /etc/nginx/ssl
 # 静的ファイル
