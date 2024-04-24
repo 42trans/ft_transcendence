@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta charset="UTF-8">
+	<title>game ft_trans three.js app</title>
+<script defer src="{% static 'share_webpack2/bundle.js' %}"></script>
+</head>
+
+<body>
+	<div id="info">
+		<p>
+			<!-- BackgroundScene: 🐢カメ🐝ハチ camera autoRotation: false<br> -->
+			<!-- GameScene: 🏓PongPlay maxScore: 2, camera autoRotation: false, manual zoom: true<br> -->
+			<!-- EffectsScene: 🟠オーラ球 camera autoRotation: true<br> -->
+		</p>
+	</div>
+	<div id="ui-layer">
+		<!-- <button id="devEntryButton">(dev)起動時に戻る</button> -->
+	</div>
+		<canvas id="threejs-canvas-container"></canvas>
+</body>
+</html>

@@ -175,6 +175,9 @@ def save_game_result(request):
 			return JsonResponse({'status': 'error', 'message': str(e)})
 	return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
+# 3D
+def three(request):
+	return render(request, 'pong/three/index.html')
 # custom template hth pong
 def gw_index(request):
 	return render(request, 'pong/gw/index.html')

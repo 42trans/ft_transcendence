@@ -72,8 +72,7 @@ services:
       - ./uwsgi-django/:/code/
       - ./uwsgi-django/static/:/var/trans/static/
       - ./hardhat/hardhat_pj/share/:/code/share_hardhat/
-      - ./webpack/ft_trans/public/:/code/share_webpack/static/share_webpack/
-      - ./webpack2/ft_trans/public/:/code/share_webpack2/static/share_webpack2/
+      - ./webpack2/ft_trans/public/:/var/trans/static/share_webpack2/
       # - logs_volume:/src/logs
       # - ${VOLUME_PATH:?}/django/code:/code
   #     - ${VOLUME_PATH:?}/ft_django/uwsgi:/etc/uwsgi
@@ -142,39 +141,6 @@ services:
   #   volumes:
   #     - ./pythontest/mysite/:/code/mysite/
   #     - ./pythontest/polls/:/code/polls/
-
-  # vite:
-  #   build: ./vite
-  #   container_name: vite
-  #   image: vite
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - web_transcendence
-  #   volumes:
-  #     - ./vite/ft_trans:/app
-  #     # - /app/node_modules
-  #   ports:
-  #     - "5184:5173"
-  #   environment:
-  #     - NODE_ENV=development
-  #   profiles:
-  #     - three
-      
-  webpack:
-    build: ./webpack
-    container_name: webpack
-    image: webpack
-    env_file:
-      - .env
-    networks:
-      - web_transcendence
-    volumes:
-      - ./webpack/ft_trans:/app
-    ports:
-      - "8180:8080"
-    profiles:
-      - three
       
   webpack2:
     build: ./webpack2
