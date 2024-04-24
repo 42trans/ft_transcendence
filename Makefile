@@ -289,7 +289,16 @@ run_django_server:
 # DBのフィールド変更時に毎回必要
 migrate_Django_db:
 	docker exec -it uwsgi-django bash -c "python manage.py migrate --noinput"
+# Django staticファイル収集
+django_collectstatic:
+	docker exec -it uwsgi-django bash -c "python manage.py collectstatic --noinput"
 
+# vite build for public
+vite_npm_run_build:
+	docker exec -it vite bash -c "npm run build"
+# vite 開発サーバー
+vite_npm_run_dev:
+	docker exec -it vite bash -c "npm run dev"
 # -----------------------------------------------
 # インクルードしたいファイルのリスト
 # -----------------------------------------------
