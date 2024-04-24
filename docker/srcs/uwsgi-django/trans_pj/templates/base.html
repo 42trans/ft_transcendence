@@ -6,16 +6,17 @@
 	<meta charset="UTF-8">
 	<meta name="description" content="hth Pong">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="{% static 'pong/gw/img/favicon.ico' %}" rel="shortcut icon"/>
+	<link href="{% static 'pong/img/favicon.ico' %}" rel="shortcut icon"/>
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
 	<!-- Stylesheets -->
 	<link rel="stylesheet" href="{% static 'pong/css/bootstrap.min.css' %}"/>
 	<link rel="stylesheet" href="{% static 'pong/css/animation.css' %}" >
-	<link rel="stylesheet" href="{% static 'pong/css/custom.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-	<link rel="stylesheet" href="{% static 'pong/css/style.css' %}">
+	<!-- <link rel="stylesheet" href="{% static 'pong/css/style.css' %}"> -->
+	<link rel="stylesheet" href="{% static 'pong/css/custom-responsive.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/pong.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/navi.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/custom-contents.css' %}">
 
 	{% block head %}
 	{% endblock head %}
@@ -27,7 +28,7 @@
 		<div class="container">
 			<!-- logo -->
 			<a class="site-logo" href="/pong/">
-				<img src="{% static 'pong/gw/img/logo.png' %}" alt="">
+				<img src="{% static 'pong/img/logo.png' %}" alt="">
 			</a>
 			<div class="user-panel">
 				<a href="/accounts/signup/">Log in</a>
@@ -66,7 +67,7 @@
 	<!-- Footer section end -->
 
 	<!--====== Javascripts & Jquery ======-->
-	<script src="{% static 'pong/gw/js/color-modes.js' %}"></script>
-	<script src="{% static 'pong/gw/js/bootstrap.bundle.min.js' %}"></script>
+	<!-- <script src="{% static 'pong/gw/js/color-modes.js' %}"></script> -->
+	<script src="{% static 'pong/js-bootstarp/bootstrap.bundle.min.js' %}"></script>
 </body>
 </html>
