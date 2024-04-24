@@ -1,4 +1,3 @@
-{% load static %}
 <!doctype html>
 <html lang="ja">
 <head>
@@ -7,16 +6,61 @@
 </head>
 <body>
 <h1>ユーザー登録</h1>
-<form action="{% url 'accounts:signup' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <p><input type="submit" value="登録"></p>
+<p id="message-area"></p>
+<form id="login-form" onsubmit="signupUser(event)">
+    <p>email: <input type="text" id="email" placeholder="E-mail" required></p>
+    <p>nickname: <input type="text" id="nickname" placeholder="nickname" required></p>
+    <p>password: <input type="password" id="password1" placeholder="password"></p>
+    <p>password confirm: <input type="password" id="password2" placeholder="password confirmation"></p>
+    <div id="password-requirements">
+        パスワード要件:
+        <ul>
+            <li>8文字以上</li>
+            <li>一般的によく使われるパスワードは使用不可</li>
+            <li>数字のみのパスワードは使用不可</li>
+        </ul>
+    </div>
+    <button type="submit">Signup</button>
 </form>
 
-<hr>
-<a href="{% url 'accounts:oauth_ft' %}">sign-up with 42</a>
-<hr>
-<a href="/pong/">🏓 return to pong</a></li>
+<script>
+    function signupUser(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const nickname = document.getElementById('nickname').value;
+        const password1 = document.getElementById('password1').value;
+        const password2 = document.getElementById('password2').value;
 
+        fetch('/accounts/api/signup/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email: email, nickname: nickname, password1: password1, password2: password2})
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    // Error
+                    document.getElementById('message-area').textContent = data.error;
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        console.error('Error:', data.error);
+                    }
+                } else if (data.message) {
+                    // Verified
+                    console.log(data.message);
+                    window.location.href = data.redirect;  // Redirect on successful verification
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+
+<hr>
+<a href="{% url 'accounts:oauth_ft' %}">Signup with 42</a>
+<hr>
+<a href="/pong/">🏓 return to pong</a>
 </body>
 </html>
