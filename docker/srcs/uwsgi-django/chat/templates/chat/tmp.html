@@ -1,64 +1,36 @@
+<!-- tmp.html -->
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>DM Room</title>
-    <style>
-        body { display: flex; }
-        #dm-list { width: 20%; height: 100vh; overflow-y: auto; border-right: 1px solid #ccc; padding: 10px; }
-        #chat-area { flex-grow: 1; padding: 10px; }
-        #chat-log { width: 100%; height: 300px; }
-    </style>
+    <title>dm page</title>
 </head>
 <body>
-<div id="dm-list">
-    <!-- DMリストがここに挿入される -->
+
+<h2>user nickname: {{ user.nickname }}</h2>
+<!-- ニックネームをJavaScriptに渡すための隠れた要素を追加 -->
+<span id="user_nickname" style="display: none;">{{ user.nickname|safe }}</span>
+
+<hr>
+
+DM with
+<input id="nickname-input" type="text" placeholder="nickname" size="20">
+<input id="nickname-submit" type="button" value="Enter">
+
+<hr>
+
+<!-- DMリスト表示部 -->
+<div id="dm-list" style="float: left; width: 30%; height: 90vh; overflow: auto;">
+    <!-- DMリストが動的にここに挿入される -->
 </div>
 
-<div id="chat-area">
-    <!-- Message一覧 & 送信フォーム -->
-    <h1>DM with <span id="current-nickname">[Select a user]</span></h1>
-    <textarea id="chat-log" disabled></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+<!-- DM詳細表示部 -->
+<div id="dm-detail" style="float: right; width: 70%; height: 90vh;">
+    <!-- DM詳細がここに表示される -->
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('/api/dm-list/')
-            .then(response => response.json())
-            .then(data => {
-                const listContainer = document.getElementById('dm-list');
-                data.forEach(dm => {
-                    const userLink = document.createElement('a');
-                    userLink.href = '#';
-                    userLink.textContent = dm.nickname;
-                    userLink.onclick = () => loadChat(dm.nickname);
-                    listContainer.appendChild(userLink);
-                    listContainer.appendChild(document.createElement('br'));
-                });
-            });
-    });
 
-    function loadChat(nickname) {
-        document.getElementById('current-nickname').textContent = `[${nickname}]`;
-        const websocketUrl = `wss://${window.location.host}/ws/dm/${nickname}/`;
-        console.log('Attempting to connect to WebSocket at:', websocketUrl);
-        const dmSocket = new WebSocket(websocketUrl);
-
-        dmSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            const chatLog = document.getElementById('chat-log');
-            chatLog.value += `${data.sender}: ${data.message}\n`;
-        };
-
-        document.getElementById('chat-message-submit').onclick = function() {
-            const messageInputDom = document.getElementById('chat-message-input');
-            const message = messageInputDom.value;
-            dmSocket.send(JSON.stringify({'message': message}));
-            messageInputDom.value = '';
-        };
-    }
-</script>
+<script src="{% static 'chat/js/dm_page.js' %}"></script>
 </body>
 </html>

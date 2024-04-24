@@ -3,11 +3,18 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from accounts.models import CustomUser
 from chat.models import DMSession, Message
+
+
+def print_blue(text):
+    print(f"\033[34m[DEBUG] {text}\033[0m")
 
 
 def index(request):
@@ -51,35 +58,60 @@ def dm_room(request, nickname):
 
     # DMからログを取得
     other_user = CustomUser.objects.get(id=target_user.id)
-    messages = Message.objects.filter(
+    message_log = Message.objects.filter(
         sender__in=[user, other_user],
         receiver__in=[user, other_user]
     ).order_by('timestamp')
 
     data = {
         'nickname': other_user.nickname,
-        'messages': messages
+        'messages': message_log
     }
     return render(request, 'chat/dm.html', data)
 
 
-def dm_list(request):
-    user = request.user
-    if not user.is_authenticated:
-        return redirect('accounts:login')
+class DMListAPI(APIView):
+    permission_classes = [IsAuthenticated]
 
-    sessions = DMSession.objects.filter(member=user).prefetch_related('member')
-    data = []
-    for session in sessions:
-        other_user = [member for member in session.member.all() if member != user]
-        for other in other_user:
-            data.append({
-                'user_id': other.id,
-                'nickname': other.username
-            })
+    def get(self, request, *args, **kwargs):
+        user = request.user
 
-    return JsonResponse(data, safe=False)
+        sessions = DMSession.objects.filter(member=user)
+        other_user_list = []
+        for session in sessions:
+            other_users = session.member.exclude(id=user.id)
+            for other_user in other_users:
+                other_user_list.append({
+                    'partner_id': other_user.id,
+                    'partner_nickname': other_user.nickname,
+                    'session_id': session.sessionId
+                })
+
+        unique_partners = {other['partner_id']: other for other in other_user_list}.values()
+        return JsonResponse(list(unique_partners), safe=False, status=200)
 
 
+class MessagesAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs) -> JsonResponse:
+        nickname = request.data.get('nickname')
+
+        dm_session = DMSession.objects.get(member__nickname=nickname)
+        messages = Message.objects.filter(session=dm_session)
+        params = {
+            'nickname': nickname,
+            'sessionId': dm_session.id,
+            'messages': [{'sender': msg.sender.nickname, 'message': msg.message} for msg in messages]
+        }
+        return JsonResponse(params, status=200)
+
+
+# test page
 def test(request):
     return render(request, "chat/tmp.html")
+
+
+# test page
+def dm_list(request):
+    return render(request, "chat/dm_list.html")
