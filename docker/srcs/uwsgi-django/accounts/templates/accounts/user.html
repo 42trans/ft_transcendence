@@ -1,16 +1,27 @@
+{% extends 'base.html' %}
 {% load static %}
-<!doctype html>
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <title>User Info</title>
-</head>
-<body>
-<h1>User Page</h1>
-<ul id="user-info">
-    <!-- JavaScriptで動的に内容が生成される -->
-</ul>
+{% block title %}User profile - hth Pong{% endblock title %}
+{% block content %}
+<div class="canvas-container">
+	<div class="hs-text">
+		<div class="container " >
 
+			<div class="user-info-container">
+				<h1>User Page</h1>
+				<ul id="user-info">
+					<!-- JavaScriptで動的に内容が生成される -->
+				</ul>
+			</div>
+
+		</div>
+	</div>
+</div>
+<script src="{% static 'accounts/js/userProfile.js' %}"></script>
+<script src="{% static 'accounts/js/logout.js' %}"></script>
+{% endblock %}
+
+
+<!-- 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         fetch("/accounts/api/user/profile/")
@@ -32,12 +43,4 @@
             })
             .catch(error => console.error("Error:", error));
     });
-</script>
-
-<script src="{% static 'js/logout.js' %}"></script>
-
-<hr>
-<br>
-<a href="/pong/">🏓 Pong Index Page</a>
-</body>
-</html>
+</script> -->

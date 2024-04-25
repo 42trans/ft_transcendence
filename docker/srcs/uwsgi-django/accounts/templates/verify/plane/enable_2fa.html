@@ -1,36 +1,20 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block title %}Log in - hth Pong{% endblock title %}
-{% block content %}
-<div class="canvas-container">
-	<div class="hs-text">
-		<div class="container">
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Enable 2FA</title>
+</head>
+<body>
+<h2>Enable Two-Factor Authentication (2FA)</h2>
 
-			<div class="user-info-container">
+<div id="qrCodeContainer" style="margin-bottom: 20px;"></div>
+<div id="error-message" style="color: red;"></div>
 
-				<h2>Enable Two-Factor Authentication (2FA)</h2>
-
-				<div id="qrCodeContainer" style="margin-bottom: 20px;"></div>
-				<div id="error-message" style="color: red;"></div>
-
-				<form id="enableForm">
-					<div>
-						<label for="token">Verification Code:</label>
-						<input type="text" id="token" name="token" required>
-					</div>
-					<button type="button" onclick="verifyToken()">Enable 2FA</button>
-				</form>
-
-				<hr>
-				<a href="/accounts/user/">Return to user page</a>
-				<br>
-				<!-- <a href="/pong/">🏓 Return to pong</a> -->
-
-			</div>
-
-		</div>
-	</div>
-</div>
+<form id="enableForm">
+  <label for="token">Verification Code:</label>
+  <input type="text" id="token" name="token" required>
+  <button type="button" onclick="verifyToken()">Enable 2FA</button>
+</form>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -92,7 +76,12 @@
   }
 </script>
 
-{% endblock %}
+<hr>
+<a href="/accounts/user/">Return to user page</a>
+<br>
+<a href="/pong/">🏓 Return to pong</a>
+</body>
+</html>
 
 <!--{% load static %}-->
 <!--<!doctype html>-->
