@@ -4,21 +4,16 @@ FROM node:20-buster
 # アプリケーションディレクトリを設定
 WORKDIR /app
 
-# RUN npm cache clean --force && npm cache verify
-
 # package.jsonとpackage-lock.jsonをコピー
 COPY pong-three/package*.json /app/
 
 # 依存関係をインストール
-# RUN npm install --force
 RUN npm install
-# RUN npm install --verbose
 
 # プロジェクトのファイルをコピー
 COPY pong-three/ /app/
 
 # 環境変数PATHにnode_modules/.binを追加
-# ENV PATH="./node_modules/.bin:$PATH"
 # ENV PATH="/app/node_modules/.bin:$PATH"
 
 # Vite開発サーバーを起動
