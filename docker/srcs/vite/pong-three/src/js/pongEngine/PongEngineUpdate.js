@@ -85,7 +85,7 @@ class PongEngineUpdate
 	// 特定のキー入力に基づいてパドルを動かす
 	updatePaddlePosition(paddle, keyUp, keyDown) 
 	{
-		if (PongEngineKey.isDown(keyUp) 
+		if (PongEngineKey.isDown(keyDown) 
 			&& paddle.position.y < this.field.height / 2 - paddle.height / 2) 
 		{
 			paddle.dirY = paddle.speed;
