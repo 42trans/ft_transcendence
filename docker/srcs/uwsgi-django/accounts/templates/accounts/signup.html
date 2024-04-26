@@ -33,6 +33,11 @@
 				<hr>
 				<!-- button 42 auth -->
 				<a href="{% url 'accounts:oauth_ft' %}" class="slideup-text sign_btn sign_btn-primary w-100 py-2" role="button">Signing up for a 42 account</a>
+				<!-- login -->
+				<div class="slideup-text form-sign-text pt-4" >
+					<a href="{% url 'accounts:login'%}">Login here</a>
+					<!-- <a href="{% url 'accounts:login'%}">ログインはこちら</a> -->
+				</div>
 				<!-- Password requirements -->
 				<div class="slideup-text form-sign-text py-2" id="password-requirements">Password requirements:</div>
 				<ul class="form-sign-text">
@@ -50,61 +55,6 @@
 </div>
 
 <script src="{% static 'accounts/js/signup.js' %}"></script>
+
 {% endblock %}
 
-
-<!-- 以前のコード -->
-
-<!--     
-<h1>ユーザー登録</h1>
-<p id="message-area"></p>
-<form id="login-form" onsubmit="signupUser(event)">
-	<p>email: <input type="text" id="email" placeholder="E-mail" required></p>
-	<p>nickname: <input type="text" id="nickname" placeholder="nickname" required></p>
-	<p>password: <input type="password" id="password1" placeholder="password"></p>
-	<p>password confirm: <input type="password" id="password2" placeholder="password confirmation"></p>
-	<div id="password-requirements">
-		パスワード要件:
-		<ul>
-			<li>8文字以上</li>
-			<li>一般的によく使われるパスワードは使用不可</li>
-			<li>数字のみのパスワードは使用不可</li>
-		</ul>
-	</div>
-	<button type="submit">Signup</button>
-</form> -->
-
-<!-- <script>
-	function signupUser(event) {
-		event.preventDefault();
-		const email = document.getElementById('email').value;
-		const nickname = document.getElementById('nickname').value;
-		const password1 = document.getElementById('password1').value;
-		const password2 = document.getElementById('password2').value;
-
-		fetch('/accounts/api/signup/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({email: email, nickname: nickname, password1: password1, password2: password2})
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.error) {
-					// Error
-					document.getElementById('message-area').textContent = data.error;
-					if (data.redirect) {
-						window.location.href = data.redirect;
-					} else {
-						console.error('Error:', data.error);
-					}
-				} else if (data.message) {
-					// Verified
-					console.log(data.message);
-					window.location.href = data.redirect;  // Redirect on successful verification
-				}
-			})
-			.catch(error => console.error('Error:', error));
-	}
-</script> -->
