@@ -1,7 +1,35 @@
 # docker/srcs/uwsgi-django/pong/models.py
 from django.db import models
 from django.utils import timezone
-# Databaseのフィールドの定義するファイル 
+from django.contrib.postgres.fields import ArrayField 
+
+
+class Tournament(models.Model):
+	name = models.CharField(max_length=100)
+	date = models.DateTimeField(default=timezone.now())
+	# ニックネームを配列として保存
+	player_nicknames = ArrayField(models.CharField(max_length=100), default=list) 
+	# オブジェクトを人間が読める文字列形式で表現するために使用
+	# def __str__(self):
+	# 	return self.name
+
+class Match(models.Model):
+	tournament = models.ForeignKey(Tournament, related_name='matches', on_delete=models.CASCADE)
+	# トーナメントの1回線、準決勝などのラウンド番号
+	round_number = models.IntegerField()
+	# ラウンド内の試合番号
+	match_number = models.IntegerField()
+	# TounamentTableのニックネーム配列から文字列を直接保存
+	player1 = models.CharField(max_length=100)
+	player2 = models.CharField(max_length=100)
+	winner = models.CharField(max_length=100, blank=True, null=True)
+	date = models.DateTimeField(default=timezone.now)
+	# 文字列で複雑なスコアを管理する場合 : score = models.CharField(max_length=50, blank=True, null=True)
+	player1_score = models.IntegerField(default=0)
+	player2_score = models.IntegerField(default=0)
+	# def __str__(self):
+	# 	return f"Round {self.round_number} Match {self.match_number}: {self.player1.nickname} vs {self.player2.nickname}"
+
 class PongGameResult(models.Model):
 	""" 
 	pongゲームの結果を保存するモデル。
@@ -47,4 +75,3 @@ class PongGameResult(models.Model):
 	# ## 関連:
 	# - .urls.py: API URL設定 
 	# - .views.py, .urls.pyで定義したファイル: API関数 
-

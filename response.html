@@ -1,16 +1,62 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block title %}Tournament - hth Pong{% endblock title %}
 
-{% block content %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<title>Tournament - hth Pong</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="hth Pong">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/static/pong/img/favicon.ico" rel="shortcut icon"/>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="/static/pong/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="/static/pong/css/animation.css" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+	<!-- <link rel="stylesheet" href="/static/pong/css/style.css"> -->
+	<link rel="stylesheet" href="/static/pong/css/custom-responsive.css">
+	<link rel="stylesheet" href="/static/pong/css/pong.css">
+	<link rel="stylesheet" href="/static/pong/css/navi.css">
+	<link rel="stylesheet" href="/static/pong/css/custom-contents.css">
+	<link rel="stylesheet" href="/static/pong/css/sign.css">
+
+	
+	
+
+</head>
+<body>
+	<!-- Header section -->
+	<header class="header-section">
+		<div class="container">
+			<!-- logo -->
+			<a class="site-logo" href="/pong/">
+				<img src="/static/pong/img/logo.png" alt="">
+			</a>
+			<div class="user-panel">
+				<a href="/accounts/signup/">Sign up</a> / <a href="/accounts/login/">Log in</a>
+			</div>
+			<!-- site menu -->
+			<nav class="main-menu">
+				<ul>
+					<li><a href="/pong/">Home</a></li>
+					<li><a href="/pong/game/">Pong</a></li>
+					<li><a href="/pong/tournament">Tournament</a></li>
+					<li><a href="/pong/results">results</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+	<!-- Header section end -->
+	
+	<!-- Content section -->
+	
 
 	<div class="canvas-container">
 
 		<div class="container tournament-container">
 			<h2 class="slideup-text">Create Tournament</h2>
 			<p id="error-message" style="color: red;"></p>
-			<form id="tournamentForm" method="post" action="{% url 'tournament' %}">
-				{% csrf_token %}
+			<form id="tournamentForm" method="post" action="/ja/pong/tournament/">
+				<input type="hidden" name="csrfmiddlewaretoken" value="9SnEj6OlLepqJq0kXUqHC6FnX5xuC44xgec2BvIjRvx1DLgGi7ANZNJnwlleO3l5">
 				<input type="text" id="name" name="name" placeholder="Tournament Name" value="My Tournament">
 				<input type="datetime-local" id="date" name="date" readonly>
 				<!-- <input type="text" id="date" name="date" placeholder="Tournament Date"> -->
@@ -26,34 +72,6 @@
 				<button type="submit">Submit</button>
 			</form>
 			
-			<ul class="dev-link">
-				<li><a href="http://localhost:8002/pong/api/tournament/data/"> (dev)tournament/data/</a></li>
-			</ul>
-			
-			<ul>
-				<li id="latest-tournament"></li>
-			</ul>
-
-			<script>
-				document.addEventListener('DOMContentLoaded', function() {
-					// Fetch latest tournament data from the API
-					fetch('http://localhost:8002/pong/api/tournament/data/')
-					.then(response => response.json())
-					.then(data => {
-						const latestTournament = data.data.sort((a, b) => new Date(b.fields.date) - new Date(a.fields.date))[0];
-						if (latestTournament) {
-							const nicknames = JSON.parse(latestTournament.fields.player_nicknames).join('<br>');  // Nicknames separated by line breaks
-							document.getElementById('latest-tournament').innerHTML = 
-								`Latest Tournament: <strong>${latestTournament.fields.name}</strong> on <strong>${new Date(latestTournament.fields.date).toLocaleString()}</strong><br>Nicknames:<br>${nicknames}`;
-						} else {
-							document.getElementById('latest-tournament').textContent = 'No tournaments found.';
-						}
-					})
-					.catch(error => console.error('Error loading tournament data:', error));
-				});
-				</script>
-
-
 			<script>
 				document.addEventListener('DOMContentLoaded', function() {
 					var now = new Date().toISOString();
@@ -106,4 +124,24 @@
 		</div>
 	</div>
 
-{% endblock %}
+
+	<!-- Content section end-->
+
+	<!-- Footer section -->
+	<footer class="footer-section">
+		<div class="container">
+			<ul class="footer-menu">
+				<li><a href="/pong/">Home</a></li>
+				<li><a href="/pong/game/">Pong</a></li>
+				<li><a href="/pong/tournament/">Tournament</a></li>
+				<li><a href="/pong/results">results</a></li>
+			</ul>
+		</div>
+	</footer>
+	<!-- Footer section end -->
+
+	<!--====== Javascripts & Jquery ======-->
+	<!-- <script src="/static/pong/gw/js/color-modes.js"></script> -->
+	<script src="/static/pong/js-bootstarp/bootstrap.bundle.min.js"></script>
+</body>
+</html>
