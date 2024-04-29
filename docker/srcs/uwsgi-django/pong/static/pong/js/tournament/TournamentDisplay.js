@@ -1,9 +1,9 @@
 class TournamentDisplay 
 {
-	constructor(tournamentDetailsId, latestTournamentId) 
+	constructor(tournamentDetailsId, ongoingTournamentId) 
 	{
 		this.tournamentDetails = document.getElementById(tournamentDetailsId);
-		this.latestTournamentDisplay = document.getElementById(latestTournamentId);
+		this.latestTournamentDisplay = document.getElementById(ongoingTournamentId);
 	}
 
 	DisplayTournament() 

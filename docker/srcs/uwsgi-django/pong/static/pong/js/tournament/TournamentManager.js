@@ -1,17 +1,26 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/TournamentManager.js
 import TournamentDisplay from './TournamentDisplay.js';
 import TournamentCreator from './TournamentCreator.js';
+import RoundsManager from './RoundsManager.js';
 
 class TournamentManager 
 {
-	constructor() 
+	constructor(settings) 
 	{
-		console.log("TournamentManager is being instantiated");
-		this.display = new TournamentDisplay('tournament-details', 'latest-tournament');
-		this.creator = new TournamentCreator('tournament-form', 'error-message', 'submit-message', 'back-home');
-		// 情報を表示するコンテナ
-		this.tournamentFormContainer = document.getElementById('tournament-form');
-		this.userInfoContainer = document.getElementById('user-info');
+		this.display = new TournamentDisplay(
+			settings.tournamentDetailsId, 
+			settings.ongoingTournamentId);
+		this.creator = new TournamentCreator(
+			settings.tournamentFormId, 
+			settings.errorMessageId, 
+			settings.submitMessageId, 
+			settings.backHomeButtonId);
+		// this.roundsMgr = new RoundsManager(
+		// 	settings.tournamentRoundId);
+		
+		// 情報を表示するコンテナのIDを設定から取得
+		this.tournamentFormContainer = document.getElementById(settings.tournamentFormId);
+		this.userInfoContainer = document.getElementById(settings.userInfoId);
 	}
 
 	init() 
@@ -33,6 +42,7 @@ class TournamentManager
 				console.log('response.ok', response);
 				return response.json();
 			} else {
+				console.log('response.no handleGuestUser', response);
 				this.handleGuestUser();
 				return null;
 			}
@@ -104,13 +114,14 @@ class TournamentManager
 				message.textContent = 'Tournament is in progress.';
 
 				// 「Delete Tournament」ボタンを追加
+				// const deleteButton = document.createElement('a');
 				const deleteButton = document.createElement('button');
 				deleteButton.textContent = 'Delete Tournament';
-				message.appendChild(deleteButton);
 				// ボタンクリックされた場合にトーナメントをdeleteする
 				deleteButton.onclick = () => this.deleteTournament(ongoingTournament.id);
 
 				// 選択した要素の子要素の先頭に追加
+				document.getElementById('tournament-container').prepend(deleteButton);
 				document.getElementById('tournament-container').prepend(message);
 			} else {
 				this.display.DisplayTournament();
@@ -154,6 +165,10 @@ class TournamentManager
 			// console.log('Response data:', data);
 			if (data.status === 'success') 
 			{
+				this.creator.handleSuccess(
+					data,
+					'Tournament deleted successfully',
+					'/pong/')
 				// console.log('Tournament deleted successfully');
 			} else {
 				console.error('Failed to delete tournament:', data.message);
