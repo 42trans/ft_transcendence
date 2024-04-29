@@ -1,109 +1,41 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Tournament - hth Pong{% endblock title %}
-
 {% block content %}
-
+	{% csrf_token %}
 	<div class="canvas-container">
 
-		<div class="container tournament-container">
-			<h2 class="slideup-text">Create Tournament</h2>
+		<div class="container" id="tournament-container">
+
+			<div class="user-info-container">
+				<h1>User</h1>
+				<ul id="user-info">
+					<!-- JavaScriptで動的に内容が生成される -->
+				</ul>
+			</div>
+
+			<div id="latest-tournament">
+				<!-- JavaScriptで動的に内容が生成される -->
+			</div>
+
 			<p id="error-message" style="color: red;"></p>
-			<form id="tournamentForm" method="post" action="{% url 'tournament' %}">
-				{% csrf_token %}
-				<input type="text" id="name" name="name" placeholder="Tournament Name" value="My Tournament">
-				<input type="datetime-local" id="date" name="date" readonly>
-				<!-- <input type="text" id="date" name="date" placeholder="Tournament Date"> -->
-				<input type="text" name="nickname" placeholder="Nickname 1" value="Nickname1">
-				<input type="text" name="nickname" placeholder="Nickname 2" value="Nickname2">
-				<input type="text" name="nickname" placeholder="Nickname 3" value="Nickname3">
-				<input type="text" name="nickname" placeholder="Nickname 4" value="Nickname4">
-				<input type="text" name="nickname" placeholder="Nickname 5" value="Nickname5">
-				<input type="text" name="nickname" placeholder="Nickname 6" value="Nickname6">
-				<input type="text" name="nickname" placeholder="Nickname 7" value="Nickname7">
-				<input type="text" name="nickname" placeholder="Nickname 8" value="Nickname8">
-				<input type="hidden" name="player_nicknames" id="playerNicknames">
-				<button type="submit">Submit</button>
-			</form>
+
+			<div id="tournament-form">	
+				<!-- JavaScriptで動的に内容が生成される -->
+			</div>
 			
-			<ul class="dev-link">
+			<p id="submit-message" style="color: green;"></p>
+			<button id="back-home" style="display: none;">Back to Home</button>
+			
+			<ul class="dev-link my-4">
+				<h4>dev用</h4>
 				<li><a href="http://localhost:8002/pong/api/tournament/data/"> (dev)tournament/data/</a></li>
 			</ul>
-			
-			<ul>
-				<li id="latest-tournament"></li>
-			</ul>
 
-			<script>
-				document.addEventListener('DOMContentLoaded', function() {
-					// Fetch latest tournament data from the API
-					fetch('http://localhost:8002/pong/api/tournament/data/')
-					.then(response => response.json())
-					.then(data => {
-						const latestTournament = data.data.sort((a, b) => new Date(b.fields.date) - new Date(a.fields.date))[0];
-						if (latestTournament) {
-							const nicknames = JSON.parse(latestTournament.fields.player_nicknames).join('<br>');  // Nicknames separated by line breaks
-							document.getElementById('latest-tournament').innerHTML = 
-								`Latest Tournament: <strong>${latestTournament.fields.name}</strong> on <strong>${new Date(latestTournament.fields.date).toLocaleString()}</strong><br>Nicknames:<br>${nicknames}`;
-						} else {
-							document.getElementById('latest-tournament').textContent = 'No tournaments found.';
-						}
-					})
-					.catch(error => console.error('Error loading tournament data:', error));
-				});
-				</script>
-
-
-			<script>
-				document.addEventListener('DOMContentLoaded', function() {
-					var now = new Date().toISOString();
-					var localDateTime = now.substring(0, now.length - 8); // ISO形式から秒以下を削除
-					document.getElementById('date').value = localDateTime;
-				});
-			</script>
-
-			<script>
-				document.getElementById('tournamentForm').addEventListener('submit', function(event) {
-					event.preventDefault(); 
-					console.log('Form submission prevented.'); 
-
-					var errorElement = document.getElementById('error-message');
-					errorElement.textContent = '';  // エラーメッセージをクリア
-
-					var name = document.getElementById('name').value;
-					if (!name) {
-						errorElement.textContent = 'Tournament name is required.';
-						return;
-					}
-					
-					var nicknames = Array.from(document.querySelectorAll('input[name="nickname"]'))
-										.map(input => input.value.trim());
-					
-					if (nicknames.length < 8 || nicknames.includes('')) {
-						errorElement.textContent = 'All 8 nicknames are required.';
-						return;
-					}
-					document.getElementById('playerNicknames').value = JSON.stringify(nicknames);
-
-					// フォームデータを送信するための新しい FormData オブジェクトを作成
-					var formData = new FormData(this);
-					formData.append('player_nicknames', JSON.stringify(nicknames));
-
-					// FormData オブジェクトを使用してデータを送信
-					fetch(this.action, {
-						method: 'POST',
-						body: formData,
-						headers: {
-							'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-						}					
-					}).then(response => response.json())
-					.then(data => console.log('Success:', data))
-					.catch(error => console.error('Error:', error));
-
-				});
-			</script>
-				
 		</div>
+
 	</div>
+
+<script type="module" src='{% static "pong/js/tournament/tournamentMain.js" %}'></script>
 
 {% endblock %}

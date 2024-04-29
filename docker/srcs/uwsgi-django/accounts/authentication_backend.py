@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth import get_user_model
 
-
+# AbstractBaseUserを継承: user.is_authenticatedが使用可能
 class JWTAuthenticationBackend(BaseBackend):
     def authenticate(self, request, token=None):
         User = get_user_model()

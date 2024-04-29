@@ -7,12 +7,9 @@ from pong.blockchain import fetch_testnet
 from pong.blockchain import fetch_testnet
 from pong.blockchain import record_game_result
 
-urlpatterns = [
-	# testnetを指定する（DB保存なし）
-	path('api/save_testnet/<str:testnet_name>/', save_testnet.save_testnet, name='save_testnet'),
-	path('api/fetch_testnet/<str:testnet_name>/', fetch_testnet.fetch_testnet, name='fetch_testnet'),
+# api/をurls_api.pyに移動(国際化・多言語対応のため)
 
-	path("api/tournament/data/", views.tournament_data, name="tournament_data"),
+urlpatterns = [
 	path("tournament/", views.tournament, name="tournament"),
 	path('results/', views.results, name='results'),
 	path("game/", views.game, name="game"),

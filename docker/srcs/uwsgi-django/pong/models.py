@@ -2,13 +2,17 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField 
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class Tournament(models.Model):
 	name = models.CharField(max_length=100)
-	date = models.DateTimeField(default=timezone.now())
+	date = models.DateTimeField(default=timezone.now)
 	# ニックネームを配列として保存
 	player_nicknames = ArrayField(models.CharField(max_length=100), default=list) 
+	organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tournaments')
+	is_finished = models.BooleanField(default=False)
 	# オブジェクトを人間が読める文字列形式で表現するために使用
 	# def __str__(self):
 	# 	return self.name

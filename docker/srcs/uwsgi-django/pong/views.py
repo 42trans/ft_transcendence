@@ -16,10 +16,33 @@ from .models import Tournament
 from django.utils import timezone
 from datetime import datetime
 from django.core import serializers
+from django.http import HttpResponseBadRequest
+from django.views.decorators.http import require_POST
 
 logger = logging.getLogger(__name__)
-	
 
+@login_required
+@require_POST
+def delete_tournament(request, tournament_id):
+	try:
+		tournament = Tournament.objects.get(id=tournament_id, organizer=request.user)
+		if not tournament.is_finished:
+			tournament.delete()
+			return JsonResponse({'status': 'success', 'message': 'Tournament deleted successfully.'})
+		else:
+			return JsonResponse({'status': 'error', 'message': 'Cannot delete finished tournaments.'}, status=400)
+	except Tournament.DoesNotExist:
+		return JsonResponse({'status': 'error', 'message': 'Tournament not found.'}, status=404)
+	
+# @login_required
+def user_ongoing(request):
+	if request.method == 'GET':
+		# ログインユーザーが主催するトーナメントを取得
+		tournaments = Tournament.objects.filter(organizer=request.user).values('id', 'name', 'is_finished', 'date')
+		return JsonResponse(list(tournaments), safe=False)
+	else:
+		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
+		
 def tournament_data(request):
 	if request.method == 'GET':
 		# トーナメントのデータを全て取得
@@ -32,35 +55,47 @@ def tournament_data(request):
 		# GETリクエスト以外の場合はエラーを返す
 		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
 
-
-
-
-
-def tournament(request):
+@login_required
+def tournament_create(request):
 	if request.method == 'POST':
 		name = request.POST.get('name')
 		date_str = request.POST.get('date')  # 'YYYY-MM-DDTHH:MM' 形式で受け取る
 		player_nicknames_json = request.POST.get('player_nicknames', '[]')
 		player_nicknames = json.loads(player_nicknames_json)
 
-		# ナイーブなdatetimeオブジェクトを作成
-		naive_datetime = datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
-		
-		# サーバーの現在のタイムゾーンに基づいてタイムゾーンを意識したdatetimeに変換
-		aware_datetime = timezone.make_aware(naive_datetime, timezone.get_current_timezone())
+		# 日付が空ではないことを確認
+		if not date_str:
+			return JsonResponse({'status': 'error', 'message': "Date is required."}, status=400)
 
-		# Tournamentオブジェクトを作成してDBに保存
-		tournament = Tournament(name=name, date=aware_datetime, player_nicknames=player_nicknames)
+		# 日付の形式を確認
+		try:
+			naive_datetime = datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
+			aware_datetime = timezone.make_aware(naive_datetime, timezone.get_current_timezone())
+		except ValueError:
+			return JsonResponse({'status': 'error', 'message': "Invalid date format. Please use YYYY-MM-DDTHH:MM format."}, status=400)
+
+		# 新しいTournamentオブジェクトを作成
+		tournament = Tournament(
+			name=name,
+			date=aware_datetime,
+			player_nicknames=player_nicknames,
+			organizer=request.user,  # ログインしているユーザーを主催者として設定
+			is_finished=False
+		)
 		tournament.save()
-		
-		return JsonResponse({'status': 'success'})
 
-	elif request.method == 'GET':
+		return JsonResponse({'status': 'success', 'message': 'Tournament successfully created.'})
+	else:
+		return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+	
+
+# @login_required
+def tournament(request):
+	if request.method == 'GET':
 		return render(request, 'pong/tournament.html')
-
-	return JsonResponse({'status': 'error'}, status=400)
-
-
+	else:
+		return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+	
 # --------------------------------
 def pong_view(request):
 	if request.user.is_authenticated:

@@ -28,6 +28,7 @@ urlpatterns = [
 # API
 urlpatterns += [
 	path('accounts/', include(accounts.urls_api)),
+	path('pong/api/', include('pong.urls_api')), 
 ]
 
 # 国際化対象のURLパターン

@@ -1,0 +1,84 @@
+
+/*----------------------
+Tournaments Section
+------------------------*/
+
+.tournament-message {
+	margin-bottom: 1rem;
+}
+
+/* from template */
+
+.tournaments-section {
+	background-image: url("../img/pattern.png");
+	background-repeat: repeat;
+}
+
+.tournament-title {
+	display: inline-block;
+	padding: 7px 25px;
+	font-size: 12px;
+	font-weight: 500;
+	color: #fff;
+	text-transform: uppercase;
+	background: #fb6e10;
+}
+
+.tournament-item {
+	background: #252525;
+}
+
+.tournament-item .ti-notic {
+	display: inline-block;
+	padding: 8px 21px;
+	font-size: 12px;
+	font-weight: 700;
+	color: #131313;
+	text-transform: uppercase;
+	background: #ffb320;
+}
+
+.tournament-item .ti-content {
+	padding: 38px 24px;
+	overflow: hidden;
+}
+
+.tournament-item .ti-thumb {
+	width: 168px;
+	height: 178px;
+	float: left;
+}
+
+.tournament-item .ti-text {
+	padding-left: 195px;
+}
+
+.tournament-item .ti-text h4 {
+	color: #ffb320;
+	margin-bottom: 20px;
+}
+
+.tournament-item .ti-text ul {
+	list-style: none;
+	margin-bottom: 20px;
+}
+
+.tournament-item .ti-text ul li {
+	color: #fff;
+	font-size: 12px;
+	margin-bottom: 6px;
+}
+
+.tournament-item .ti-text ul li span {
+	color: #9a9a9a;
+}
+
+.tournament-item .ti-text p {
+	font-size: 12px;
+	margin-bottom: 0;
+}
+
+.tournament-item .ti-text p span {
+	font-weight: 500;
+	color: #ffb320;
+}
