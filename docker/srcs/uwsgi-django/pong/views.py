@@ -18,9 +18,21 @@ from datetime import datetime
 from django.core import serializers
 from django.http import HttpResponseBadRequest
 from django.views.decorators.http import require_POST
+from django.contrib.auth import get_user_model
 
 logger = logging.getLogger(__name__)
 
+User = get_user_model()
+
+@login_required
+def user_ongoing_tournaments_by_nickname(request, nickname):
+    try:
+        user = User.objects.get(nickname=nickname)
+        tournaments = Tournament.objects.filter(organizer=user, is_finished=False)
+        return JsonResponse({"tournaments": list(tournaments.values("id", "name", "date"))}, safe=False)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+	
 @login_required
 @require_POST
 def delete_tournament(request, tournament_id):

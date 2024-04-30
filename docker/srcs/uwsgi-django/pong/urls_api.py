@@ -14,6 +14,7 @@ urlpatterns = [
 	path('tournament/delete/<int:tournament_id>/', views.delete_tournament, name='delete_tournament'),
 	path("tournament/data/", views.tournament_data, name="tournament_data"),
 	path("tournament/create/", views.tournament_create, name="tournament_create"),
+	path('tournament/user/ongoing/by_nickname/<str:nickname>/', views.user_ongoing_tournaments_by_nickname, name='user_ongoing_tournaments_by_nickname'),
 	path("tournament/user/ongoing/", views.user_ongoing, name="user_ongoing"),
 ]
 

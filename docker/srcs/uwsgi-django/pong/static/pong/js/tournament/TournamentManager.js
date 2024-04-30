@@ -1,7 +1,7 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/TournamentManager.js
 import TournamentDisplay from './TournamentDisplay.js';
 import TournamentCreator from './TournamentCreator.js';
-import RoundsManager from './RoundsManager.js';
+// import RoundsManager from './RoundsManager.js';
 
 class TournamentManager 
 {
@@ -25,111 +25,108 @@ class TournamentManager
 
 	init() 
 	{
+		this.getUserProfile()
+			.then(userProfile => 
+				{
+					if (userProfile) 
+					{
+						// ログインユーザーのニックネームを表示
+						this.displayUserInfo(userProfile);
+						// トーナメント対戦表 or 作成form を表示
+						this.handleTournamentDisplay();
+					} else {
+						// ゲストユーザーへの表示
+						this.handleGuestUser();
+					}
+				})
+			.catch(error => 
+				{
+					console.error(`TournamentManager init() failed: ${error.message}`);
+					document.getElementById('tournament-container').textContent = 'Please log in to manage tournaments.';
+				});
+	}
+
+	/**トーナメント対戦表 or　作成form を表示 */
+	handleTournamentDisplay() 
+	{
+		this.hasOngoingTournaments()
+			.then(hasOngoing => 
+				{
+					const ongoingTournament = hasOngoing.find(tournament => !tournament.is_finished);
+					// 現在進行中のトーナメントがある場合
+					if (ongoingTournament) {
+						this.displayTournamentDetails(ongoingTournament);
+					} else {
+						this.display.DisplayTournament();
+						this.creator.createForm();
+					}
+				})
+			.catch(error => 
+				{
+					console.error('Error checking tournaments:', error);
+					document.getElementById('tournament-container').textContent = 'Error loading tournaments.';
+				});
+	}
+
+	// user profileを取得
+	getUserProfile() 
+	{
 		// fetch: HTTPリクエストを行うためのAPI
 		// header に Authorization を含めて GET リクエスト
-		fetch('/accounts/api/user/profile/', {
-			headers: {
-				// Bearer: HTTP認証スキームの一種.JWTトークンを含むAuthorizationヘッダーの値として使用
-				// localStorage.getItem: ブラウザのローカルストレージからJWTトークンを取得する
-				'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-			}
-		})
-		// .then()メソッド: Promiseが解決（成功）した場合に実行されるコールバック関数を指定
-		// 前の非同期操作（fetch HTTPリクエスト）が成功した後に実行
-		.then(response => {
-			if (response.ok) 
-			{
-				console.log('response.ok', response);
-				return response.json();
-			} else {
-				console.log('response.no handleGuestUser', response);
-				this.handleGuestUser();
-				return null;
-			}
-		})
-		.then(userProfile => {
-			console.log('Logged in user:', userProfile);
-			this.displayUserInfo(userProfile);
-			this.checkForOngoingTournaments();
-		})
-		.catch(error => {
-			console.error(`TournamentManager init() failed`, error);
-			document.getElementById('tournament-container').textContent = 'Please log in to manage tournaments.';
-		});
-	}
-
-	/** ゲストユーザーへ表示する内容 */
-	handleGuestUser() 
-	{
-		document.getElementById('tournament-container').innerHTML = `
-			<p>Please log in to manage or create tournaments.</p>
-			<p><a href="/accounts/login">Log in</a> or <a href="/accounts/signup">Sign up</a></p>
-		`;
-	}
-
-	/**
-	 * ユーザーのニックネームを取り出し、それをHTMLのリストアイテムとして表示
-	 * @param {*} userProfile 
-	 */
-	displayUserInfo(userProfile) 
-	{
-		if (userProfile && userProfile.nickname) 
+		return fetch('/accounts/api/user/profile/', 
 		{
-			const nicknameItem = document.createElement('li');
-			// ブラウザに表示する文字列を作成
-			nicknameItem.textContent = `Nickname: ${userProfile.nickname}`;
-			// htmlにあらかじめ用意した場所(userInfoContainer)に子要素としてついぁ
-			this.userInfoContainer.appendChild(nicknameItem);
-		} else {
-			console.error('displayUserInfo() failed');
-		}
+			// Bearer: HTTP認証スキームの一種.JWTトークンを含むAuthorizationヘッダーの値として使用
+			// localStorage.getItem: ブラウザのローカルストレージからJWTトークンを取得する
+			headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
+		})
+		.then(response => 
+			{
+				if (response.ok) {
+					return response.json();
+				} else {
+					return null;
+				}
+			});
 	}
-
-	/**
-	 * 現在進行中のトーナメントを取得して表示
-	 */
-	checkForOngoingTournaments() 
+	
+	// 未終了トーナメントが存在するかどうかのみを確認
+	hasOngoingTournaments() 
 	{
-		fetch('/pong/api/tournament/user/ongoing/')
-		// レスポンスデータをJSON形式に変換
+		return fetch('/pong/api/tournament/user/ongoing/', 
+		{
+			headers: { 'Authorization': `Bearer ${localStorage.getItem('jwtToken')}` }
+		})
 		.then(response => response.json())
-		.then(tournaments => 
-		{
-			// 取得したトーナメントデータが配列でない場合、またはトーナメントデータが存在しない場合は、エラー
-			if (!tournaments || !Array.isArray(tournaments)) 
+		.catch(error => 
 			{
-				throw new Error('Invalid tournament data');
-			}
-			// 進行中のトーナメントを示すフラグ（is_finishedがfalse）を持つトーナメントを検索
-			const ongoingTournament = tournaments.find(tournament => !tournament.is_finished);
-			if (ongoingTournament) 
-			{
-				this.display.DisplayTournament();
-				// トーナメント作成フォームを非表示
-				this.tournamentFormContainer.style.display = 'none';
-				
-				// トーナメントが進行中であることを通知するメッセージ（<h2>要素）
-				const message = document.createElement('h2');
-				message.classList.add('tournament-message');
-				message.textContent = 'Tournament is in progress.';
-
-				// 「Delete Tournament」ボタンを追加
-				// const deleteButton = document.createElement('a');
-				const deleteButton = document.createElement('button');
-				deleteButton.textContent = 'Delete Tournament';
-				// ボタンクリックされた場合にトーナメントをdeleteする
-				deleteButton.onclick = () => this.deleteTournament(ongoingTournament.id);
-
-				// 選択した要素の子要素の先頭に追加
-				document.getElementById('tournament-container').prepend(deleteButton);
-				document.getElementById('tournament-container').prepend(message);
-			} else {
-				this.display.DisplayTournament();
-				this.creator.createForm();
-			}
-		})
-		.catch(error => console.error('Error checking tournaments:', error));
+				console.error('hasOngoingTournaments() failed:', error);
+				return false;  // エラーが発生した場合は、安全を期してfalseを返す
+			});
 	}
+	
+	// トーナメントの表示ロジックを専用のメソッドに分離
+	displayTournamentDetails(ongoingTournament) 
+	{
+		this.display.DisplayTournament();
+
+		// トーナメント作成フォームを非表示
+		this.tournamentFormContainer.style.display = 'none';
+		
+		// トーナメントが進行中であることを通知するメッセージ（<h2>要素）
+		const message = document.createElement('h2');
+		message.classList.add('tournament-message');
+		message.textContent = 'Tournament is in progress.';
+		
+		// 「Delete Tournament」ボタンを追加
+		const deleteButton = document.createElement('button');
+		deleteButton.textContent = 'Delete Tournament';
+		deleteButton.onclick = () => this.deleteTournament(ongoingTournament.id);
+
+		// 選択した要素の子要素の先頭に追加
+		document.getElementById('tournament-container').prepend(deleteButton);
+		document.getElementById('tournament-container').prepend(message);
+	}
+
 	
 	deleteTournament(tournamentId) 
 	{
@@ -152,28 +149,28 @@ class TournamentManager
 			redirect: 'manual'
 		})
 		.then(response => 
-		{
-			// console.log('Response:', response); 
-			if (!response.ok) 
 			{
-				throw new Error('Failed to delete tournament');
-			}
-			return response.json();
-		})
+				// console.log('Response:', response); 
+				if (!response.ok) 
+				{
+					throw new Error('Failed to delete tournament');
+				}
+				return response.json();
+			})
 		.then(data => 
-		{
-			// console.log('Response data:', data);
-			if (data.status === 'success') 
 			{
-				this.creator.handleSuccess(
-					data,
-					'Tournament deleted successfully',
-					'/pong/')
-				// console.log('Tournament deleted successfully');
-			} else {
-				console.error('Failed to delete tournament:', data.message);
-			}
-		})
+				// console.log('Response data:', data);
+				if (data.status === 'success') 
+				{
+					this.creator.handleSuccess(
+						data,
+						'Tournament deleted successfully',
+						'/pong/')
+					// console.log('Tournament deleted successfully');
+				} else {
+					console.error('Failed to delete tournament:', data.message);
+				}
+			})
 		.catch(error => console.error('Error deleting tournament:', error));
 	}
 	
@@ -182,6 +179,33 @@ class TournamentManager
 		return document.querySelector('[name=csrfmiddlewaretoken]').value;
 	}
 
+	/** ゲストユーザーへ表示する内容 */
+	handleGuestUser() 
+	{
+		document.getElementById('tournament-container').innerHTML = `
+			<p>Please log in to manage or create tournaments.</p>
+			<p><a href="/accounts/login">Log in</a> or <a href="/accounts/signup">Sign up</a></p>
+		`;
+	}
+
+	/**
+	 * ユーザーのニックネームを取り出し、それをHTMLのリストアイテムとして表示
+	 * @param {*} userProfile 
+	 */
+	displayUserInfo(userProfile) 
+	{
+		// console.log('Logged in user:', userProfile);
+		if (userProfile && userProfile.nickname) 
+		{
+			const nicknameItem = document.createElement('li');
+			// ブラウザに表示する文字列を作成
+			nicknameItem.textContent = `Nickname: ${userProfile.nickname}`;
+			// htmlにあらかじめ用意した場所(userInfoContainer)に子要素としてついぁ
+			this.userInfoContainer.appendChild(nicknameItem);
+		} else {
+			console.error('displayUserInfo() failed');
+		}
+	}
 	
 }
 
