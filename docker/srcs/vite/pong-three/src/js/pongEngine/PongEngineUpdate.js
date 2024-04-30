@@ -90,7 +90,7 @@ class PongEngineUpdate
 		{
 			paddle.dirY = paddle.speed;
 		} 
-		else if (PongEngineKey.isDown(keyDown) 
+		else if (PongEngineKey.isDown(keyUp) 
 				&& paddle.position.y > -this.field.height / 2 + paddle.height / 2) 
 		{
 			paddle.dirY = -paddle.speed;
