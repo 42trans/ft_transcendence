@@ -42,6 +42,7 @@ class UserProfileAPIView(APIView):
     def get(self, request) -> JsonResponse:
         user = request.user
         params = {
+            'id': user.id,
             'email': user.email,
             'nickname': user.nickname,
             'enable_2fa': user.enable_2fa,

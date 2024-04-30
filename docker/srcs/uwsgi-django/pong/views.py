@@ -23,15 +23,6 @@ from django.contrib.auth import get_user_model
 logger = logging.getLogger(__name__)
 
 User = get_user_model()
-
-@login_required
-def user_ongoing_tournaments_by_nickname(request, nickname):
-    try:
-        user = User.objects.get(nickname=nickname)
-        tournaments = Tournament.objects.filter(organizer=user, is_finished=False)
-        return JsonResponse({"tournaments": list(tournaments.values("id", "name", "date"))}, safe=False)
-    except User.DoesNotExist:
-        return JsonResponse({"error": "User not found"}, status=404)
 	
 @login_required
 @require_POST
@@ -50,7 +41,7 @@ def delete_tournament(request, tournament_id):
 def user_ongoing(request):
 	if request.method == 'GET':
 		# ログインユーザーが主催するトーナメントを取得
-		tournaments = Tournament.objects.filter(organizer=request.user).values('id', 'name', 'is_finished', 'date')
+		tournaments = Tournament.objects.filter(organizer=request.user).values('id', 'name', 'is_finished', 'date', 'organizer')
 		return JsonResponse(list(tournaments), safe=False)
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)

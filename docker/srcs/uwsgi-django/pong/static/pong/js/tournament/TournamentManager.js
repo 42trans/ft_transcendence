@@ -15,12 +15,12 @@ class TournamentManager
 			settings.errorMessageId, 
 			settings.submitMessageId, 
 			settings.backHomeButtonId);
-		// this.roundsMgr = new RoundsManager(
-		// 	settings.tournamentRoundId);
-		
+		// this.roundsMgr = new RoundsManager(settings.tournamentRoundId);
 		// 情報を表示するコンテナのIDを設定から取得
 		this.tournamentFormContainer = document.getElementById(settings.tournamentFormId);
 		this.userInfoContainer = document.getElementById(settings.userInfoId);
+		this.userProfile = null;
+		this.csrfToken = null;
 	}
 
 	init() 
@@ -30,6 +30,7 @@ class TournamentManager
 				{
 					if (userProfile) 
 					{
+						console.log('profile:', userProfile);
 						// ログインユーザーのニックネームを表示
 						this.displayUserInfo(userProfile);
 						// トーナメント対戦表 or 作成form を表示
@@ -49,16 +50,16 @@ class TournamentManager
 	/**トーナメント対戦表 or　作成form を表示 */
 	handleTournamentDisplay() 
 	{
-		this.hasOngoingTournaments()
-			.then(hasOngoing => 
+		this.userHasOngoingOwnedTournaments()
+			.then(ongoingTournaments => 
 				{
-					const ongoingTournament = hasOngoing.find(tournament => !tournament.is_finished);
-					// 現在進行中のトーナメントがある場合
-					if (ongoingTournament) {
-						this.displayTournamentDetails(ongoingTournament);
+					// console.log('[ongoingTournaments[0]:', ongoingTournaments[0]);
+					if (ongoingTournaments.length > 0) {
+						// 現在進行中のトーナメントを表示
+						this.displayTournamentDetails(ongoingTournaments[0]);
 					} else {
-						this.display.DisplayTournament();
-						this.creator.createForm();
+						// トーナメント新規作成フォームを表示
+						this.creator.createForm(this.userProfile);
 					}
 				})
 			.catch(error => 
@@ -71,38 +72,68 @@ class TournamentManager
 	// user profileを取得
 	getUserProfile() 
 	{
-		// fetch: HTTPリクエストを行うためのAPI
-		// header に Authorization を含めて GET リクエスト
-		return fetch('/accounts/api/user/profile/', 
+		if (!this.userProfile) 
 		{
-			// Bearer: HTTP認証スキームの一種.JWTトークンを含むAuthorizationヘッダーの値として使用
-			// localStorage.getItem: ブラウザのローカルストレージからJWTトークンを取得する
-			headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
-		})
-		.then(response => 
+			// fetch: HTTPリクエストを行うためのAPI
+			// header に Authorization を含めて GET リクエスト
+			return fetch('/accounts/api/user/profile/', 
 			{
-				if (response.ok) {
-					return response.json();
-				} else {
-					return null;
-				}
-			});
+				// Bearer: HTTP認証スキームの一種.JWTトークンを含むAuthorizationヘッダーの値として使用
+				// localStorage.getItem: ブラウザのローカルストレージからJWTトークンを取得する
+				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
+			})
+			.then(response => 
+				{
+					if (response.ok) {
+						return response.json();
+					} else {
+						return null;
+					}
+				})
+			.then(profile => 
+				{
+					this.userProfile = profile;
+					return this.userProfile;
+				});
+		} else {
+			return Promise.resolve(this.userProfile);
+		}
 	}
-	
-	// 未終了トーナメントが存在するかどうかのみを確認
-	hasOngoingTournaments() 
-	{
-		return fetch('/pong/api/tournament/user/ongoing/', 
-		{
-			headers: { 'Authorization': `Bearer ${localStorage.getItem('jwtToken')}` }
-		})
-		.then(response => response.json())
-		.catch(error => 
-			{
-				console.error('hasOngoingTournaments() failed:', error);
-				return false;  // エラーが発生した場合は、安全を期してfalseを返す
-			});
+	/**
+	 * ユーザーが主催する未終了のトーナメントが存在するか確認
+	 */
+	userHasOngoingOwnedTournaments() {
+		return this.getUserProfile()
+			.then(userProfile => 
+				{
+					if (!userProfile) {
+						return [];
+					}
+
+					return fetch('/pong/api/tournament/user/ongoing/', 
+					{
+						headers: { 'Authorization': `Bearer ${localStorage.getItem('jwtToken')}` }
+					})
+					.then(response => response.json())
+					.then(tournaments => 
+						{
+							console.log('tournaments:', tournaments);
+							return tournaments.filter(tournament => 
+								!tournament.is_finished && tournament.organizer === userProfile.id);
+						})
+					.catch(error => 
+						{
+							console.error('Error checking user-owned ongoing tournaments:', error);
+							return [];
+						});
+				})
+			.catch(error => 
+				{
+					console.error('Error getting user profile:', error);
+					return [];
+				});
 	}
+
 	
 	// トーナメントの表示ロジックを専用のメソッドに分離
 	displayTournamentDetails(ongoingTournament) 
@@ -153,7 +184,7 @@ class TournamentManager
 				// console.log('Response:', response); 
 				if (!response.ok) 
 				{
-					throw new Error('Failed to delete tournament');
+					throw new Error('deleteTournament() failed');
 				}
 				return response.json();
 			})
@@ -168,7 +199,8 @@ class TournamentManager
 						'/pong/')
 					// console.log('Tournament deleted successfully');
 				} else {
-					console.error('Failed to delete tournament:', data.message);
+					console.error('deleteTournament() failed:', data.message);
+					throw new Error('deleteTournament() failed: ' + data.message);
 				}
 			})
 		.catch(error => console.error('Error deleting tournament:', error));
@@ -176,7 +208,11 @@ class TournamentManager
 	
 	getCSRFToken() 
 	{
-		return document.querySelector('[name=csrfmiddlewaretoken]').value;
+		if (!this.csrfToken) 
+		{
+			this.csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		}
+		return this.csrfToken;
 	}
 
 	/** ゲストユーザーへ表示する内容 */

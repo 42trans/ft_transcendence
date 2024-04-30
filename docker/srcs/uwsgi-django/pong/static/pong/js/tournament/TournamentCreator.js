@@ -32,8 +32,9 @@ class TournamentCreator
 
 
 	/** Public method: トーナメントの新規作成用フォームを作成 */
-	createForm() 
+	createForm(userProfile) 
 	{
+		this.userProfileId = userProfile.id;
 		// CSRFトークンを取得
 		const csrfToken		= document.querySelector('[name=csrfmiddlewaretoken]').value;
 		// フォーム要素を作成し、プロパティを設定
@@ -130,14 +131,12 @@ class TournamentCreator
 	
 	_processFormSubmission()
 	{
-		const name = this.form.elements['name'].value;
-		const date = this.form.elements['date'].value;
 		// フォームからすべてのニックネーム入力フィールドを取得し、それらを配列に変換
 		// .map(input => input.value.trim());: 各ニックネーム入力フィールドの値から前後の空白を取り除いた配列を作成
 		const nicknames = Array.from(this.form.querySelectorAll('input[name="nickname"]'))
 							.map(input => input.value.trim());
 
-		if (!name) 
+		if (!this.form.elements['name'].value) 
 		{
 			this.errorMessage.textContent = 'Tournament name is required.';
 			return;
@@ -154,6 +153,9 @@ class TournamentCreator
 		// player_nicknamesという名前でニックネームの配列をFormDataに追加
 		// ニックネームの配列はJSON形式に変換
 		formData.append('player_nicknames', JSON.stringify(nicknames));
+		// user.idをorganizerとして登録
+		formData.append('organizer', this.userProfileId);
+		console.log('formData',formData);
 		fetch(this.form.action, {
 			method: 'POST',
 			body: formData,
