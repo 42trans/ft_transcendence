@@ -1,9 +1,9 @@
 // chat/dm.js
-function classifyMessageSender(messageContent, senderName, dmTo) {
+function classifyMessageSender(messageElement, senderName, dmTo) {
     if (senderName === dmTo) {
-        messageContent.classList.add('dm-to');  // 他のユーザーからのメッセージ
+        messageElement.classList.add('dm-to');  // 他のユーザーからのメッセージ
     } else {
-        messageContent.classList.add('dm-from');  // 自分が送信したメッセージ
+        messageElement.classList.add('dm-from');  // 自分が送信したメッセージ
     }
 }
 
@@ -32,17 +32,24 @@ function initDM() {
         const timestamp = data.timestamp;
 
         let messageElement = document.createElement('li');
-        let messageContent = document.createElement('div'); // メッセージコンテンツ
-        let timestampContent = document.createElement('span'); // timestamp
-        classifyMessageSender(messageElement, senderName, dmTo)
+        let messageContent = document.createElement('div');  // メッセージコンテンツ
+        let timestampContent = document.createElement('span');  // timestamp
+        classifyMessageSender(messageElement, senderName, dmTo);
 
         messageContent.className = 'message-content';
         messageContent.textContent = senderName + ": " + data.message;
+
+        // 送信者の名前をリンク化
+        if (senderName === dmTo) {
+            messageContent.innerHTML = `<span><a href="/accounts/info/${senderName}/">${senderName}</a>: ${data.message}</span>`;
+        } else {
+            messageContent.textContent = `${senderName}: ${data.message}`;
+        }
         messageElement.appendChild(messageContent);
 
         timestampContent.className = 'timestamp';
         timestampContent.textContent = timestamp;
-        timestampContent.style.textAlign = 'right'; // 追加: タイムスタンプのスタイルを明示的に設定
+        timestampContent.style.textAlign = 'right'; // 追加: タイムスタンプのスタイルを設定
         messageElement.appendChild(timestampContent);
 
         document.querySelector('#dm-log').appendChild(messageElement);

@@ -70,18 +70,22 @@
 <body>
 <h1>DM with [{{ nickname }}]</h1>
 
-<!-- DBより取得したlogを表示 -->
+<!-- DM logを表示 -->
 <ul id="dm-log" style="list-style: none;">
     {% for message in messages %}
-    <li class="{{ message.sender.nickname|slugify }}">
+    <li class="{{ message.sender.nickname|slugify }}" data-sender-name="{{ message.sender.nickname }}">
         <div class="message-content">
+            <!-- 送信者がdm-toの場合にリンクを表示 -->
+            {% if message.sender.nickname == nickname %}
+            <span><a href="{% url 'accounts:info' message.sender.nickname %}">{{ message.sender.nickname }}</a>: {{ message.message|safe }}</span>
+            {% else %}
             <span>{{ message.sender.nickname }}: {{ message.message|safe }}</span>
+            {% endif %}
             <span class="timestamp">{{ message.timestamp|date:"Y-m-d H:i:s" }}</span>
         </div>
     </li>
     {% endfor %}
 </ul>
-
 <input id="message-input" type="text">
 <input id="message-submit" type="button" value="Send">
 
