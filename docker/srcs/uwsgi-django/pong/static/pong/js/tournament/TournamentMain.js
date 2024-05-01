@@ -10,12 +10,16 @@ const settings = {
 	backHomeButtonId: 		'back-home',
 	ongoingTournamentId: 	'ongoing-tournament',
 	tournamentRoundId: 		'tournament-round',
-	tournamentContainerId:	'tournament-container'
+	tournamentContainerId:	'tournament-container',
+	API_URLS: {
+		userProfile: '/accounts/api/user/profile/',
+		ongoingTournaments: '/pong/api/tournament/user/ongoing/'
+	}
 };
 
 // ドキュメントの完全な読み込みと解析が完了した時に実行されるイベントリスナー
 document.addEventListener('DOMContentLoaded', () => 
 {
 	const tournamentManager = new TournamentManager(settings);
-	tournamentManager.init();
+	tournamentManager.main();
 });

@@ -19,6 +19,8 @@ from django.core import serializers
 from django.http import HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 from django.contrib.auth import get_user_model
+from django.core.serializers import serialize
+from django.shortcuts import get_object_or_404
 
 logger = logging.getLogger(__name__)
 
@@ -45,18 +47,34 @@ def user_ongoing(request):
 		return JsonResponse(list(tournaments), safe=False)
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
-		
-def tournament_data(request):
+
+def tournament_data(request, tournament_id):
 	if request.method == 'GET':
-		# トーナメントのデータを全て取得
-		tournaments = Tournament.objects.all()
-		# Django の serializers を使って JSON 形式にシリアライズ
-		data = serializers.serialize('json', tournaments)
-		# JsonResponse を使ってクライアントに返す
-		return JsonResponse({'data': json.loads(data)}, safe=False)
+		# 指定されたIDのトーナメントを取得
+		tournament = get_object_or_404(Tournament, pk=tournament_id)
+		data = {
+			'id': tournament.id,
+			'name': tournament.name,
+			'date': tournament.date.isoformat(), 
+			'player_nicknames': list(tournament.player_nicknames),
+			'is_finished': tournament.is_finished,
+			'organizer': tournament.organizer_id
+		}
+		return JsonResponse(data, safe=False)
 	else:
-		# GETリクエスト以外の場合はエラーを返す
 		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
+	
+# def tournament_data_all(request):
+# 	if request.method == 'GET':
+# 		# トーナメントのデータを全て取得
+# 		tournaments = Tournament.objects.all()
+# 		# Django の serializers を使って JSON 形式にシリアライズ
+# 		data = serializers.serialize('json', tournaments)
+# 		# JsonResponse を使ってクライアントに返す
+# 		return JsonResponse({'data': json.loads(data)}, safe=False)
+# 	else:
+# 		# GETリクエスト以外の場合はエラーを返す
+# 		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
 
 @login_required
 def tournament_create(request):

@@ -1,13 +1,18 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/TournamentCreator.js
+import UIHelper from './UIHelper.js';
+
 class TournamentCreator 
 {
-	constructor(containerId, errorMessageId, successMessageId, backHomeButtonId, tournamentFormId) 
+	constructor(settings) 
 	{
-		this.container		= document.getElementById(containerId);
-		this.errorMessage	= document.getElementById(errorMessageId);
-		this.successMessage	= document.getElementById(successMessageId);
-		this.backHomeButton	= document.getElementById(backHomeButtonId);
-		this.tournamentForm	= document.getElementById(tournamentFormId);
+		this.tournamentForm				= document.getElementById(settings.tournamentFormId);
+		this.userInfoContainer			= document.getElementById(settings.userInfoId);
+		this.errorMessage				= document.getElementById(settings.errorMessageId);
+		this.submitMessage				= document.getElementById(settings.submitMessageId);
+		this.backHomeButton				= document.getElementById(settings.backHomeButtonId);
+		this.ongoingTournamentContainer	= document.getElementById(settings.ongoingTournamentId);
+		this.tournamentRoundContainer	= document.getElementById(settings.tournamentRoundId);
+		this.tournamentContainer		= document.getElementById(settings.tournamentContainerId);
 	}
 
 	// TODO_ft:msg or utilクラス
@@ -15,7 +20,7 @@ class TournamentCreator
 	{
 		if (data.status === 'success') 
 		{
-			this.successMessage.textContent = text;
+			this.submitMessage.textContent = text;
 			this.backHomeButton.style.display = 'block';
 			this.backHomeButton.onclick = () => window.location.href = href;
 		} else {
@@ -34,6 +39,8 @@ class TournamentCreator
 	/** Public method: トーナメントの新規作成用フォームを作成 */
 	createForm(userProfile) 
 	{
+		UIHelper.displayUserInfo(userProfile, this.userInfoContainer);
+
 		this.userProfileId = userProfile.id;
 		// CSRFトークンを取得
 		const csrfToken		= document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -46,7 +53,7 @@ class TournamentCreator
 		// フォームのHTML内容を生成して設定
 		this.form.innerHTML	= this._generateFormHTML(csrfToken);
 		// .htmlにフォームを追加
-		this.container.appendChild(this.form);
+		this.tournamentForm.appendChild(this.form);
 		// 分の単位までで現在の日時を設定
 		this.form.elements['date'].value = this._getDateTimeUpToMinutes();
 		// ボタンクリックでhandleSubmit()を呼び出す
@@ -109,7 +116,7 @@ class TournamentCreator
 	_clearMessages() 
 	{
 		this.errorMessage.textContent	= '';
-		this.successMessage.textContent	= '';
+		this.submitMessage.textContent	= '';
 	}
 	
 	// 進行中のトーナメントを確認する関数
@@ -131,6 +138,8 @@ class TournamentCreator
 	
 	_processFormSubmission()
 	{
+		// const name = this.form.elements['name'].value;
+		// const date = this.form.elements['date'].value;
 		// フォームからすべてのニックネーム入力フィールドを取得し、それらを配列に変換
 		// .map(input => input.value.trim());: 各ニックネーム入力フィールドの値から前後の空白を取り除いた配列を作成
 		const nicknames = Array.from(this.form.querySelectorAll('input[name="nickname"]'))

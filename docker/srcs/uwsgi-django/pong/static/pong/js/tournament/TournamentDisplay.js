@@ -1,38 +1,57 @@
-class TournamentDisplay 
-{
-	constructor(tournamentDetailsId, ongoingTournamentId) 
-	{
-		this.tournamentDetails = document.getElementById(tournamentDetailsId);
-		this.latestTournamentDisplay = document.getElementById(ongoingTournamentId);
-	}
+// class TournamentDisplay 
+// {
+// 	constructor(settings) 
+// 	{
+// 		this.tournamentForm				= document.getElementById(settings.tournamentFormId);
+// 		this.userInfoContainer			= document.getElementById(settings.userInfoId);
+// 		this.errorMessage				= document.getElementById(settings.errorMessageId);
+// 		this.submitMessage				= document.getElementById(settings.submitMessageId);
+// 		this.backHomeButton				= document.getElementById(settings.backHomeButtonId);
+// 		this.ongoingTournamentContainer	= document.getElementById(settings.ongoingTournamentId);
+// 		this.tournamentRoundContainer	= document.getElementById(settings.tournamentRoundId);
+// 		this.tournamentContainer		= document.getElementById(settings.tournamentContainerId);
+// 		this.userInfoContainer			= document.getElementById(settings.userInfoId);
+// 	}
 
-	DisplayTournament() 
-	{
-		fetch('/pong/api/tournament/data/')
-		.then(response => response.json())
-		.then(data => 
-		{
-			const latestTournament = data.data.sort((a, b) => new Date(b.fields.date) - new Date(a.fields.date))[0];
-			if (latestTournament) 
-			{
-				const nicknames = JSON.parse(latestTournament.fields.player_nicknames).join('<li>');
-				const tournamentDetailsHTML = `
-					<h3>Ongoing tournament:</h3>
-					<p>
-						<strong>${latestTournament.fields.name}</strong>
-						on <strong>${new Date(latestTournament.fields.date).toLocaleString()}</strong>
-					</p>
-					<ul>
-						<li>${nicknames}
-					</ul>
-				`;
-				this.latestTournamentDisplay.innerHTML = tournamentDetailsHTML;
-			} else {
-				this.latestTournamentDisplay.textContent = 'No tournaments found.';
-			}
-		})
-		.catch(error => console.error('Error loading tournament data:', error));
-	}
-}
+// 	async displayTournament(tournamentId) {
+// 		console.log("Displaying tournament:", tournamentId);  // トーナメントIDをログ
+        
+// 		try {
+// 			const response = await fetch(`/pong/api/tournament/data/${tournamentId}`, {
+// 				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
+// 			});
+// 			if (!response.ok) {
+// 				throw new Error('Failed to fetch tournament details');
+// 			}
+// 			const tournament = await response.json();
+// 			this.updateTournamentDisplay(tournament);
+// 		} catch (error) {
+// 			console.error('Error loading tournament details:', error);
+// 			this.ongoingTournamentContainer.textContent = 'Error loading tournament details.';
+// 		}
+// 	}
 
-export default TournamentDisplay;
+// 	updateTournamentDisplay(tournament) {
+// 		if (tournament) {
+// 			console.log("Updating display with:", tournament);  // 取得したトーナメントデータをログ
+            
+
+// 			const nicknamesList = tournament.player_nicknames.map(nickname => `<li>${nickname}</li>`).join('');
+// 			const tournamentDetailsHTML = `
+// 				<h3>Ongoing Tournament:</h3>
+// 				<p>
+// 					<strong>${tournament.name}</strong>
+// 					on <strong>${new Date(tournament.date).toLocaleString()}</strong>
+// 				</p>
+// 				<ul>${nicknamesList}</ul>
+// 			`;
+// 			this.ongoingTournamentContainer.innerHTML = tournamentDetailsHTML;
+// 			console.log(this.ongoingTournamentContainer.innerHTML);
+// 		} else {
+// 			this.ongoingTournamentContainer.textContent = 'No ongoing tournament found.';
+// 		}
+// 	}
+	
+// }
+
+// export default TournamentDisplay;
