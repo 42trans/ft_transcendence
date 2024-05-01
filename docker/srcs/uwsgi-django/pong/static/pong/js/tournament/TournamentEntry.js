@@ -20,7 +20,6 @@ class TournamentEntry {
 	async displayTournament(tournamentId) 
 	{
 		// console.log("Displaying tournament:", tournamentId);
-
 		try {
 			const response = await fetch(`/pong/api/tournament/data/${tournamentId}`, {
 				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
@@ -111,31 +110,23 @@ class TournamentEntry {
 
 			if (!response.ok) 
 			{
-				UIHelper.putError("No data returned. Please try again later.", errorMessage);
+				UIHelper.putError("No data returned. Please try again later.", this.errorMessage);
 				return;
 			}
 
 			const data = await response.json();
 			if (data.status === 'success') {
-				this.handleSuccess(data, 'Tournament deleted successfully', '/pong/');
+				UIHelper.handleSuccess('Tournament deleted successfully', '/pong/', this.submitMessage)
 			} else {
-				UIHelper.putError("No data returned. Please try again later.", errorMessage);
+				UIHelper.putError("No data returned. Please try again later.", this.errorMessage);
 			}
 		} catch (error) {
 			console.error('Error deleting tournament:', error);
-			UIHelper.putError("Failed to delete the tournament. Please try again.",errorMessage);
+			UIHelper.putError("Failed to delete the tournament. Please try again.", this.errorMessage);
 		}
 		
 	}
 
-	handleSuccess(data, message, redirectUrl) {
-		// 成功処理とリダイレクト
-		console.log(message);
-		window.location.href = redirectUrl;
-		// this.submitMessage.textContent = text;
-			// this.backHomeButton.style.display = 'block';
-			// this.backHomeButton.onclick = () => window.location.href = redirectUrl;
-	}	
 }
 
 export default TournamentEntry;

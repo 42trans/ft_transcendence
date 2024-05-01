@@ -1,8 +1,9 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/tournamentMain.js
 import TournamentManager from './TournamentManager.js';
 
-// htmlに挿入する場所の指定
+// define的な定数の設定
 const settings = {
+	// htmlに挿入する場所の指定
 	tournamentFormId: 		'tournament-form',
 	userInfoId: 			'user-info',
 	errorMessageId: 		'error-message',
@@ -11,9 +12,11 @@ const settings = {
 	ongoingTournamentId: 	'ongoing-tournament',
 	tournamentRoundId: 		'tournament-round',
 	tournamentContainerId:	'tournament-container',
+	// API
 	API_URLS: {
-		userProfile: '/accounts/api/user/profile/',
-		ongoingTournaments: '/pong/api/tournament/user/ongoing/'
+		userProfile:		'/accounts/api/user/profile/',
+		tournamentCreate: 	'/pong/api/tournament/create/',
+		ongoingTournaments:	'/pong/api/tournament/user/ongoing/'
 	}
 };
 

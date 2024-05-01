@@ -16,6 +16,15 @@ class UIHelper
 		}
 	}
 
+
+	static handleSuccess(message, href, submitMessage) {
+		submitMessage.textContent = message;
+		const backHomeButton = document.createElement('button');
+		backHomeButton.textContent = 'Back Home';
+		backHomeButton.style.display = 'block';
+		backHomeButton.onclick = () => window.location.href = href;
+	}
+
 	static putError(message, container) 
 	{
 		if (!container) {

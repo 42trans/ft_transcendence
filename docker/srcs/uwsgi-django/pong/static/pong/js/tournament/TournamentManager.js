@@ -8,12 +8,13 @@ class TournamentManager
 {
 	constructor(settings) 
 	{
-		this.userProfile	= null;
-		this.csrfToken		= null;
-		this.API_URLS 		= settings.API_URLS;
-		this.userManagement = new UserManagement(settings);
-		this.creator 		= new TournamentCreator(settings);
-		this.tournamentEntry = new TournamentEntry(settings, this);
+		this.userProfile		= null;
+		this.csrfToken			= null;
+		this.API_URLS 			= settings.API_URLS;
+		this.userManagement 	= new UserManagement(settings);
+		this.creator 			= new TournamentCreator(settings);
+		this.tournamentEntry	= new TournamentEntry(settings, this);
+
 		// 情報を表示するコンテナのIDを設定から取得
 		this.tournamentForm				= document.getElementById(settings.tournamentFormId);
 		this.userInfoContainer			= document.getElementById(settings.userInfoId);
@@ -26,7 +27,7 @@ class TournamentManager
 	}
 
 	/**
-	 * 処理フロー: まずログイン状態で分岐し、次に未終了の主催トーナメントの有無で分岐
+	 * 処理フロー: まずログイン状態で分岐
 	 */
 	async main() 
 	{
@@ -43,7 +44,9 @@ class TournamentManager
 		}
 	}
 
-	/** 主催トーナメントの開催状態で分岐:トーナメント対戦表 or　作成form を表示 */
+	/** 
+	 * 処理フロー： 次に、主催トーナメントの開催状態で分岐:トーナメント対戦表 or　作成form を表示 
+	 * */
 	async handleLoggedInUser() 
 	{
 		// console.log('profile:', this.userProfile);
@@ -74,7 +77,8 @@ class TournamentManager
 			return [];
 		}
 		try {
-			const response = await fetch('/pong/api/tournament/user/ongoing/', {
+			const response = await fetch(this.API_URLS.ongoingTournaments, {
+			// const response = await fetch('/pong/api/tournament/user/ongoing/', {
 				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
 			});
 			const tournaments = await response.json();
