@@ -11,6 +11,10 @@ def print_blue(text):
 
 
 class DMSession(models.Model):
+    """
+    user間のDMSessionの定義
+    sessionは、DMをやり取りするuser1, user2のobjectをkeyとする
+    """
     sessionId = ShortUUIDField()
     member = models.ManyToManyField(CustomUser, related_name='chat_sessions')
 
@@ -40,6 +44,13 @@ class DMSession(models.Model):
 
 
 class Message(models.Model):
+    """
+    DBに保存するDMの定義
+    sender    : send userのobject
+    receiver  : receive userのobject
+    message   : 1送信分のmessage text
+    timestamp : messageを送信した日時情報
+    """
     sender = models.ForeignKey(CustomUser,
                                related_name='sent_dm',
                                on_delete=models.CASCADE)
@@ -50,6 +61,6 @@ class Message(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return (f"Message from {self.sender_id}"
-                f" to {self.receiver_id}"
+        return (f"Message from {self.sender}"
+                f" to {self.receiver}"
                 f" at {self.timestamp}")

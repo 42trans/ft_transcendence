@@ -19,36 +19,25 @@ class DMConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         print_mazenta(f'[DMConsumer]: Connect 1')
 
-        user_nickname = self.scope['user'].nickname
-        other_user_nickname = self.scope['url_route']['kwargs']['nickname']
-        print_mazenta(f'[DMConsumer]: Connect 2 other_user_nickname: {other_user_nickname}')
-
-        self.user = await self.get_user_by_nickname(user_nickname)
-        self.other_user = await self.get_user_by_nickname(other_user_nickname)
-
+        self.user, self.other_user = await self.get_users()
         if self.other_user is None:
             print_mazenta(f'[DMConsumer]: other user not exist')
             await self.close()  # ユーザーが存在しない場合は接続を閉じる
             return
 
         print_mazenta(f'[DMConsumer]: 3')
-
         # ChatSession を取得または作成
         self.chat_session = await self.get_dm_session(self.user.id, self.other_user.id)
-
         print_mazenta(f'[DMConsumer]: 4')
 
         # グループ名をセッションIDを使用して設定
         self.room_group_name = f"chat_{self.chat_session.id}"
-
         print_mazenta(f'[DMConsumer]: 5, group_name: {self.room_group_name}')
-
         # 同じグループ名に参加
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
-
         print_mazenta(f'[DMConsumer]: 6')
         await self.accept()
 
@@ -71,15 +60,13 @@ class DMConsumer(AsyncWebsocketConsumer):
                                  receiver_id=self.other_user.id,
                                  message=message)
 
+        message_param = {
+            'type': 'dm_message',
+            'sender': self.user.nickname,
+            'message': message,
+        }
         # グループにメッセージを送信
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'dm_message',
-                'sender': self.user.nickname,
-                'message': message,
-            }
-        )
+        await self.channel_layer.group_send(self.room_group_name, message_param)
 
     async def dm_message(self, event):
         print_mazenta(f'[DMConsumer]: Message')
@@ -87,10 +74,21 @@ class DMConsumer(AsyncWebsocketConsumer):
         sender = event['sender']
 
         # WebSocketにメッセージを送信
-        await self.send(text_data=json.dumps({
+        message_data = {
             'sender': sender,
             'message': message,
-        }))
+        }
+        await self.send(text_data=json.dumps(message_data))
+
+    async def get_users(self):
+        user_nickname = self.scope['user'].nickname
+        other_user_nickname = self.scope['url_route']['kwargs']['nickname']
+        print_mazenta(f'[DMConsumer]: Connect 2 other_user_nickname: {other_user_nickname}')
+
+        # DM送受信者のuser objectをnickanmeから取得
+        user = await self.get_user_by_nickname(user_nickname)
+        other_user = await self.get_user_by_nickname(other_user_nickname)
+        return user, other_user
 
 
     @database_sync_to_async
@@ -120,11 +118,11 @@ class DMConsumer(AsyncWebsocketConsumer):
         print_mazenta(f'[DMConsumer] store_message: sender_id: {sender_id}, receiver_id: {receiver_id}, message: {message}')
         try:
             print_mazenta(f'[DMConsumer]store_message 1')
-            sender = CustomUser.objects.get(id=sender_id)
+            sender_id = CustomUser.objects.get(id=sender_id)
             print_mazenta(f'[DMConsumer]store_message 2')
-            receiver = CustomUser.objects.get(id=receiver_id)
+            receiver_id = CustomUser.objects.get(id=receiver_id)
             print_mazenta(f'[DMConsumer]store_message 3')
-            Message.objects.create(sender=sender, receiver=receiver, message=message)
+            Message.objects.create(sender=sender_id, receiver=receiver_id, message=message)
             print_mazenta(f'[DMConsumer]store_message 4')
         except Exception as e:
             print_mazenta(f'[DMConsumer]: Error storing message: {str(e)}')

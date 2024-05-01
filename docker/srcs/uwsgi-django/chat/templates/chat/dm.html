@@ -5,18 +5,61 @@
 <head>
     <meta charset="utf-8"/>
     <title>DM Room</title>
+
+    <!-- メッセージのスタイル（仮仕様） -->
+    <style>
+        /* DM表示領域 */
+        #dm-log {
+            width: 600px; /* メッセージログの幅を入力フィールドと同じにする */
+            max-height: 400px; /* メッセージログの最大高さを設定 */
+            overflow-y: auto; /* 縦方向にスクロールバーを表示 */
+            padding: 10px; /* 内側に余白を設定 */
+            box-sizing: border-box; /* paddingを含む全体のwidthとheightが600pxと400pxになるように設定 */
+        }
+
+        /* DM送信フォーム */
+        #message-input {
+            width: 600px; /* 幅を600pxに設定 */
+        }
+
+        /* メッセージ共通 */
+        #dm-log li {
+            margin-bottom: 1.3em; /* メッセージ間の間隔を1.5倍に設定 */
+            padding: 5px; /* 内側の余白を設定 */
+            display: block; /* メッセージを縦に並べる */
+            clear: both; /* 他の要素との重なりを防ぐ */
+        }
+
+        /* 受信者側のメッセージ */
+        #dm-log li.dm-to {
+            text-align: left; /* dmToのメッセージを左詰め */
+            float: left; /* 左側に配置 */
+            background-color: #808080; /* 背景色 */
+            color: white; /* 文字色 */
+        }
+
+        /* 送信者側のメッセージ */
+        #dm-log li.dm-from {
+            text-align: right; /* 自分のメッセージを右詰め */
+            float: right; /* 右側に配置 */
+            background-color: #b0c4de; /* 背景色 */
+            color: black; /* 文字色 */
+        }
+    </style>
+
 </head>
 <body>
 <h1>DM with [{{ nickname }}]</h1>
 
 <!-- DMより取得したlogを表示 -->
-<textarea id="chat-log" cols="100" rows="20" readonly>
-{% for message in messages %}{{ message.sender.nickname }}: {{ message.message|safe }}
-{% endfor %}
-</textarea>
+<ul id="dm-log" style="list-style: none;">
+    {% for message in messages %}
+    <li class="{{ message.sender.nickname|slugify }}">{{ message.sender.nickname }}: {{ message.message|safe }}</li><br>
+    {% endfor %}
+</ul>
 
-<input id="chat-message-input" type="text" size="100"><br>
-<input id="chat-message-submit" type="button" value="Send">
+<input id="message-input" type="text">
+<input id="message-submit" type="button" value="Send">
 
 <hr>
 
@@ -24,48 +67,16 @@
 
 {{ nickname|json_script:"nickname" }}
 
+<script src="{% static 'chat/js/dm.js' %}"></script>
+
+
+<!-- DOM更新後、dm-logのスクロール位置を最下部に調整 -->
 <script>
-    const dmTo = JSON.parse(document.getElementById('nickname').textContent);
-
-    const websocketUrl = 'wss://' + window.location.host + '/ws/dm/' + dmTo + '/';
-    console.log('Attempting to connect to WebSocket at:', websocketUrl);
-    const dmSocket = new WebSocket(websocketUrl);
-
-    dmSocket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        let senderName = data.sender; // 送信者名を取得
-        document.querySelector('#chat-log').value += (senderName + ": " + data.message + '\n');
-    };
-
-    document.querySelector('#chat-message-input').focus();
-    document.querySelector('#chat-message-input').onkeyup = function(e) {
-        if (e.keyCode === 13) {  // enter, return
-            document.querySelector('#chat-message-submit').click();
-        }
-    };
-
-    document.querySelector('#chat-message-submit').onclick = function(e) {
-        const messageInputDom = document.querySelector('#chat-message-input');
-        const message = messageInputDom.value;
-        dmSocket.send(JSON.stringify({
-            'message': message
-        }));
-        messageInputDom.value = '';
-    };
-
-    dmSocket.onopen = function(event) {
-        console.log('WebSocket connection established with', dmTo);
-    };
-
-    dmSocket.onerror = function(event) {
-        console.error('WebSocket error observed:', event);
-        console.error(`ReadyState: ${dmSocket.readyState}`);
-    };
-
-
-    dmSocket.onclose = function(event) {
-        console.error('Chat socket closed unexpectedly:', event);
-    };
+    document.addEventListener('DOMContentLoaded', function() {
+        const dmLog = document.getElementById('dm-log');
+        dmLog.scrollTop = dmLog.scrollHeight;
+    });
 </script>
+
 </body>
 </html>

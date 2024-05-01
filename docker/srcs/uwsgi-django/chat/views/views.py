@@ -70,43 +70,6 @@ def dm_room(request, nickname):
     return render(request, 'chat/dm.html', data)
 
 
-class DMListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        user = request.user
-
-        sessions = DMSession.objects.filter(member=user)
-        other_user_list = []
-        for session in sessions:
-            other_users = session.member.exclude(id=user.id)
-            for other_user in other_users:
-                other_user_list.append({
-                    'id': other_user.id,
-                    'nickname': other_user.nickname,
-                    'session_id': session.sessionId
-                })
-
-        unique_partners = {other['id']: other for other in other_user_list}.values()
-        return JsonResponse(list(unique_partners), safe=False, status=200)
-
-
-class MessagesAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs) -> JsonResponse:
-        nickname = request.data.get('nickname')
-
-        dm_session = DMSession.objects.get(member__nickname=nickname)
-        messages = Message.objects.filter(session=dm_session)
-        params = {
-            'nickname': nickname,
-            'sessionId': dm_session.id,
-            'messages': [{'sender': msg.sender.nickname, 'message': msg.message} for msg in messages]
-        }
-        return JsonResponse(params, status=200)
-
-
 # test page
 def test(request):
     return render(request, "chat/tmp.html")

@@ -8,42 +8,16 @@
     <title>DM Partner List</title>
 </head>
 <body>
-<h1>DM List</h1>
+<h2>Start DM</h2>
 dm with
 <input id="nickname-input" type="text" size="20">
 <input id="nickname-submit" type="button" value="Enter">
 <hr>
+<h2>DM List</h2>
 <ul id="dm-list"></ul>
-
-{% if messages %}
-<ul>
-    {% for message in messages %}
-    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-
 <hr>
 <p><a href="{% url 'accounts:user' %}">return to user page</a></p>
 <hr>
-
-
-<script>
-    document.querySelector('#nickname-input').focus();
-    document.querySelector('#nickname-input').onkeyup = function(e) {
-        if (e.keyCode === 13) {  // enter, return
-            document.querySelector('#nickname-submit').click();
-        }
-    };
-
-    // const sender = document.getElementById('nickname').textContent;
-    document.querySelector('#nickname-submit').onclick = function(e) {
-        var nickname = document.querySelector('#nickname-input').value;
-        // window.location.pathname = '/chat/dm/' + sender + '/' + nickname + '/';
-        window.location.pathname = '/chat/dm/' + nickname + '/';
-    };
-</script>
 
 <script src="{% static 'chat/js/dm_list.js' %}"></script>
 
