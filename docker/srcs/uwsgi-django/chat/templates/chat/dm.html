@@ -19,31 +19,50 @@
 
         /* DM送信フォーム */
         #message-input {
-            width: 600px; /* 幅を600pxに設定 */
+            width: 600px;               /* 幅を600pxに設定 */
+        }
+
+        /* メッセージコンテンツのスタイル */
+        .message-content {
+            display: flex;
+            flex-direction: column;
+            word-wrap: break-word;      /* 長い単語も適切に折り返す */
         }
 
         /* メッセージ共通 */
         #dm-log li {
-            margin-bottom: 1.3em; /* メッセージ間の間隔を1.5倍に設定 */
-            padding: 5px; /* 内側の余白を設定 */
-            display: block; /* メッセージを縦に並べる */
-            clear: both; /* 他の要素との重なりを防ぐ */
+            margin-bottom: 1.3em;       /* メッセージ間の間隔を1.5倍に設定 */
+            padding: 5px;               /* 内側の余白を設定 */
+            border-radius: 5px;        /* 角の丸みを10pxで設定 */
+            display: block;             /* メッセージを縦に並べる */
+            clear: both;                /* 他の要素との重なりを防ぐ */
         }
 
         /* 受信者側のメッセージ */
         #dm-log li.dm-to {
-            text-align: left; /* dmToのメッセージを左詰め */
-            float: left; /* 左側に配置 */
-            background-color: #808080; /* 背景色 */
-            color: white; /* 文字色 */
+            text-align: left;           /* dmToのメッセージを左詰め */
+            float: left;                /* 左側に配置 */
+            background-color: #808080;  /* 背景色 */
+            color: white;               /* 文字色 */
+            max-width: 80%;             /* DM表示領域の80%の幅 */
         }
 
         /* 送信者側のメッセージ */
         #dm-log li.dm-from {
-            text-align: right; /* 自分のメッセージを右詰め */
-            float: right; /* 右側に配置 */
-            background-color: #b0c4de; /* 背景色 */
-            color: black; /* 文字色 */
+            text-align: left;           /* 自分のメッセージを左詰め */
+            float: right;               /* 右側に配置 */
+            background-color: #b0c4de;  /* 背景色 */
+            color: white;               /* 文字色 */
+            max-width: 80%;             /* DM表示領域の80%の幅 */
+        }
+
+        /* 日時表示のスタイル */
+        .timestamp {
+            font-size: 0.5em;               /* 小さめのフォントサイズ */
+            color: #666;                    /* 色は暗めに設定 */
+            /*text-align: right;              !* 右揃えにする websocket経由だと右揃えにならない？*!*/
+            padding-top: 5px;               /* メッセージとの間隔を設定 */
+            background-color: transparent;  /* 背景色なし */
         }
     </style>
 
@@ -51,10 +70,15 @@
 <body>
 <h1>DM with [{{ nickname }}]</h1>
 
-<!-- DMより取得したlogを表示 -->
+<!-- DBより取得したlogを表示 -->
 <ul id="dm-log" style="list-style: none;">
     {% for message in messages %}
-    <li class="{{ message.sender.nickname|slugify }}">{{ message.sender.nickname }}: {{ message.message|safe }}</li><br>
+    <li class="{{ message.sender.nickname|slugify }}">
+        <div class="message-content">
+            <span>{{ message.sender.nickname }}: {{ message.message|safe }}</span>
+            <span class="timestamp">{{ message.timestamp|date:"Y-m-d H:i:s" }}</span>
+        </div>
+    </li>
     {% endfor %}
 </ul>
 
@@ -68,15 +92,6 @@
 {{ nickname|json_script:"nickname" }}
 
 <script src="{% static 'chat/js/dm.js' %}"></script>
-
-
-<!-- DOM更新後、dm-logのスクロール位置を最下部に調整 -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const dmLog = document.getElementById('dm-log');
-        dmLog.scrollTop = dmLog.scrollHeight;
-    });
-</script>
 
 </body>
 </html>

@@ -1,9 +1,9 @@
 // chat/dm.js
-function classifyMessageSender(messageElement, senderName, dmTo) {
+function classifyMessageSender(messageContent, senderName, dmTo) {
     if (senderName === dmTo) {
-        messageElement.classList.add('dm-to');  // 他のユーザーからのメッセージ
+        messageContent.classList.add('dm-to');  // 他のユーザーからのメッセージ
     } else {
-        messageElement.classList.add('dm-from');  // 自分が送信したメッセージ
+        messageContent.classList.add('dm-from');  // 自分が送信したメッセージ
     }
 }
 
@@ -28,10 +28,23 @@ function initDM() {
 
     dmSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        let senderName = data.sender;
+        const senderName = data.sender;
+        const timestamp = data.timestamp;
+
         let messageElement = document.createElement('li');
-        messageElement.textContent = senderName + ": " + data.message;
+        let messageContent = document.createElement('div'); // メッセージコンテンツ
+        let timestampContent = document.createElement('span'); // timestamp
         classifyMessageSender(messageElement, senderName, dmTo)
+
+        messageContent.className = 'message-content';
+        messageContent.textContent = senderName + ": " + data.message;
+        messageElement.appendChild(messageContent);
+
+        timestampContent.className = 'timestamp';
+        timestampContent.textContent = timestamp;
+        timestampContent.style.textAlign = 'right'; // 追加: タイムスタンプのスタイルを明示的に設定
+        messageElement.appendChild(timestampContent);
+
         document.querySelector('#dm-log').appendChild(messageElement);
         scrollToBottom();  // 受信時にスクロール位置を調整
     };
@@ -45,6 +58,7 @@ function initDM() {
     document.querySelector('#message-submit').onclick = function() {
         const messageInputDom = document.querySelector('#message-input');
         const message = messageInputDom.value;
+
         dmSocket.send(JSON.stringify({
             'message': message
         }));

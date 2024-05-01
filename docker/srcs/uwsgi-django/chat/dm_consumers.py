@@ -16,6 +16,7 @@ def print_mazenta(text):
 class DMConsumer(AsyncWebsocketConsumer):
     permission_classes = [IsAuthenticated]
 
+
     async def connect(self):
         print_mazenta(f'[DMConsumer]: Connect 1')
 
@@ -41,6 +42,7 @@ class DMConsumer(AsyncWebsocketConsumer):
         print_mazenta(f'[DMConsumer]: 6')
         await self.accept()
 
+
     async def disconnect(self, close_code):
         print_mazenta(f'[DMConsumer]: Disconnect code: {close_code}')
         # グループから離脱
@@ -49,6 +51,7 @@ class DMConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
+
     async def receive(self, text_data):
         print_mazenta(f'[DMConsumer]: Receive')
 
@@ -56,29 +59,35 @@ class DMConsumer(AsyncWebsocketConsumer):
         message = text_data_json['message']
 
         # メッセージをデータベースに保存
-        await self.store_message(sender_id=self.user.id,
-                                 receiver_id=self.other_user.id,
-                                 message=message)
+        message_instance = await self.store_message(sender_id=self.user.id,
+                                                    receiver_id=self.other_user.id,
+                                                    message=message)
+        timestamp = message_instance.timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
         message_param = {
             'type': 'dm_message',
             'sender': self.user.nickname,
             'message': message,
+            'timestamp': timestamp
         }
         # グループにメッセージを送信
         await self.channel_layer.group_send(self.room_group_name, message_param)
+
 
     async def dm_message(self, event):
         print_mazenta(f'[DMConsumer]: Message')
         message = event['message']
         sender = event['sender']
+        timestamp = event['timestamp']
 
         # WebSocketにメッセージを送信
         message_data = {
             'sender': sender,
             'message': message,
+            'timestamp': timestamp
         }
         await self.send(text_data=json.dumps(message_data))
+
 
     async def get_users(self):
         user_nickname = self.scope['user'].nickname
@@ -102,6 +111,7 @@ class DMConsumer(AsyncWebsocketConsumer):
             print_mazenta(f'[DMConsumer]: Error in get_dm_session: {str(e)}')
             return None
 
+
     @database_sync_to_async
     def user_exists(self, nickname):
         """Check if a user with the given nickname exists."""
@@ -122,8 +132,11 @@ class DMConsumer(AsyncWebsocketConsumer):
             print_mazenta(f'[DMConsumer]store_message 2')
             receiver_id = CustomUser.objects.get(id=receiver_id)
             print_mazenta(f'[DMConsumer]store_message 3')
-            Message.objects.create(sender=sender_id, receiver=receiver_id, message=message)
+            message_instance = Message.objects.create(sender=sender_id,
+                                                      receiver=receiver_id,
+                                                      message=message)
             print_mazenta(f'[DMConsumer]store_message 4')
+            return message_instance
         except Exception as e:
             print_mazenta(f'[DMConsumer]: Error storing message: {str(e)}')
             raise e
