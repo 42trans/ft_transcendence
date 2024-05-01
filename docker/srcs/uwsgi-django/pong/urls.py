@@ -6,15 +6,16 @@ from pong.blockchain import save_testnet
 from pong.blockchain import fetch_testnet
 from pong.blockchain import fetch_testnet
 from pong.blockchain import record_game_result
+from .views.navi_views import tournament, results, game, pong_view
 
 # api/をurls_api.pyに移動(国際化・多言語対応のため)
 
 urlpatterns = [
-	path("tournament/", views.tournament, name="tournament"),
-	path('results/', views.results, name='results'),
-	path("game/", views.game, name="game"),
+	path("tournament/", tournament, name="tournament"),
+	path('results/', results, name='results'),
+	path("game/", game, name="game"),
 	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://localhost/pong/
-	path("", views.pong_view, name="index"),
+	path("", pong_view, name="index"),
 ]
 
 	# DBとtestnetの同時記録

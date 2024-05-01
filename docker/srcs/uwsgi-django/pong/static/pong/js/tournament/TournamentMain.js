@@ -16,6 +16,7 @@ const settings = {
 	API_URLS: {
 		userProfile:		'/accounts/api/user/profile/',
 		tournamentCreate: 	'/pong/api/tournament/create/',
+		matchesCreate: '',
 		ongoingTournaments:	'/pong/api/tournament/user/ongoing/'
 	}
 };

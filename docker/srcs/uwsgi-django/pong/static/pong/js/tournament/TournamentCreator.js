@@ -160,6 +160,7 @@ class TournamentCreator
 			UIHelper.putError(error, this.errorMessage);
 		}
 	}
+
 }
 
 export default TournamentCreator;
