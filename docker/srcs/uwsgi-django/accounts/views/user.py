@@ -142,12 +142,17 @@ def get_user_info(request, nickname):
         }
         return redirect('/pong/')
 
+
     try:
-        user = CustomUser.objects.get(nickname=nickname)
+        info_user = CustomUser.objects.get(nickname=nickname)
+        is_blocking_user = request.user.blocking_users.filter(id=info_user.id).exists()
+
         user_data = {
-            'email': user.email,
-            'nickname': user.nickname,
-            'enable_2fa': user.enable_2fa,
+            'id': info_user.id,
+            'email': info_user.email,
+            'nickname': info_user.nickname,
+            'enable_2fa': info_user.enable_2fa,
+            'isBlockingUser': is_blocking_user
         }
         return render(request, 'accounts/user_info.html', {'user_data': user_data})
     except Exception as e:

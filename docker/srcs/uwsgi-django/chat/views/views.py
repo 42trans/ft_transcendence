@@ -12,6 +12,15 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from accounts.models import CustomUser
 from chat.models import DMSession, Message
 
+import logging
+
+
+logging.basicConfig(
+    level=logging.ERROR,
+    format='%(asctime)s - %(levelname)s - %(message)s - [in %(funcName)s: %(lineno)d]',
+)
+logger = logging.getLogger(__name__)
+
 
 def print_blue(text):
     print(f"\033[34m[DEBUG] {text}\033[0m")
@@ -39,7 +48,6 @@ def chat_room(request, room_name):
 
 
 def dm_room(request, nickname):
-    print(f'dm_view 1')
     if not request.user.is_authenticated:
         return redirect("accounts:login")
 
@@ -47,8 +55,6 @@ def dm_room(request, nickname):
     if nickname == user.nickname:
         messages.error(request, "You cannot send a message to yourself.")
         return redirect('chat:index')
-
-    print(f'dm_view 3')
 
     try:
         target_user = CustomUser.objects.get(nickname=nickname)
@@ -62,11 +68,14 @@ def dm_room(request, nickname):
         sender__in=[user, other_user],
         receiver__in=[user, other_user]
     ).order_by('timestamp')
+    is_blocking_user = user.blocking_users.filter(id=target_user.id).exists()
 
     data = {
         'nickname': other_user.nickname,
-        'messages': message_log
+        'messages': message_log,
+        'isBlockingUser': is_blocking_user
     }
+    logging.error(f'dm_room: user: {user.nickname}, dm_to: {nickname}, blocking: {is_blocking_user}')
     return render(request, 'chat/dm.html', data)
 
 
