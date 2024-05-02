@@ -8,8 +8,70 @@ from django.db import transaction
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
 from django.utils.dateparse import parse_datetime
+from django.forms.models import model_to_dict
 
 User = get_user_model()
+
+@login_required
+def get_matches_by_round(request, round_number):
+	""" 指定されたラウンド番号の試合データを返すAPI """
+	if request.method == 'GET':
+		# ユーザーが主催する未終了のトーナメントに属する指定ラウンドの試合を取得
+		matches = Match.objects.filter(
+			tournament__organizer=request.user,
+			tournament__is_finished=False,
+			round_number=round_number
+		).order_by('match_number')
+
+		matches_data = [
+			{
+				'id': match.id,
+				'tournament_id': match.tournament.id,
+				'round_number': match.round_number,
+				'match_number': match.match_number,
+				'player1': match.player1,
+				'player2': match.player2,
+				'player1_score': match.player1_score,
+				'player2_score': match.player2_score,
+				'is_finished': match.winner is not None,
+				'date': match.date.isoformat(),
+				'tournament_name': match.tournament.name,
+			}
+			for match in matches
+		]
+		return JsonResponse({'matches': matches_data}, safe=False)
+	else:
+		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+
+@login_required
+def get_user_ongoing_matches(request):
+	""" 「ユーザーが主催する && 未終了のトーナメント」 に関する全試合のデータを全て取得する"""
+	if request.method == 'GET':
+		# ログインユーザーが主催していてまだ終了していないトーナメントを取得
+		tournaments = Tournament.objects.filter(organizer=request.user, is_finished=False)
+		# 上記トーナメントに属する全試合を取得
+		matches = Match.objects.filter(tournament__in=tournaments).order_by('round_number', 'match_number')
+		# 全試合に関する、全フィールドを取得
+		matches_data = [model_to_dict(match) for match in matches]
+		# Djangoの `model_to_dict` でフィールドを辞書形式で取得し、関連するトーナメントの名前も取得
+		matches_data = [
+			{
+				**model_to_dict(match),
+				# 関連するトーナメント名を追加
+				'tournament_name': match.tournament.name,
+				# 日付をISO 8601形式に変換
+				'date': match.date.isoformat() if match.date else None,
+				# 勝者の有無で完了状態を設定
+				'is_finished': match.winner is not None
+			}
+			for match in matches
+		]
+		return JsonResponse({'matches': matches_data}, safe=False)
+	else:
+		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+
 
 @login_required
 @require_POST
@@ -51,6 +113,8 @@ def tournament_data(request, tournament_id):
 
 @login_required
 def tournament_create(request):
+	""" トーナメントの新規作成。トーナメントの試合のデータも同時に作成する"""
+
 	if request.method != 'POST':
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
@@ -106,6 +170,7 @@ def schedule_matches(tournament, player_nicknames):
 		(3, 1, 'winner5', 'winner6')
 	]
 
+	# winnerは未入力
 	matches = [
 		Match.objects.create(
 			tournament=tournament,

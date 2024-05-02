@@ -3,6 +3,7 @@ import TournamentCreator from './TournamentCreator.js';
 import UserManagement from './UserManagement.js';
 import TournamentEntry from './TournamentEntry.js';
 import UIHelper from './UIHelper.js';
+import RoundManager from './RoundManager.js';
 
 class TournamentManager 
 {
@@ -10,8 +11,10 @@ class TournamentManager
 	{
 		this.userProfile		= null;
 		this.csrfToken			= null;
+		this.settings			= settings;
 		this.API_URLS 			= settings.API_URLS;
 		this.userManagement 	= new UserManagement(settings);
+		this.roundManager		= new RoundManager(this);
 		this.creator 			= new TournamentCreator(settings);
 		this.tournamentEntry	= new TournamentEntry(settings, this);
 
@@ -55,7 +58,8 @@ class TournamentManager
 			// 主催トーナメントの開催状態で分岐
 			if (ongoingTournaments.length > 0) {
 				// トーナメント情報の表示
-				this.tournamentEntry.display(ongoingTournaments[0]);
+				this.roundManager.changeState(this.roundManager.stateFirstRound);
+				// this.tournamentEntry.display(ongoingTournaments[0]);
 			} else {
 				// トーナメント新規作成フォームを表示
 				this.creator.createForm(this.userProfile);

@@ -14,10 +14,11 @@ const settings = {
 	tournamentContainerId:	'tournament-container',
 	// API
 	API_URLS: {
-		userProfile:		'/accounts/api/user/profile/',
-		tournamentCreate: 	'/pong/api/tournament/create/',
-		matchesCreate: '',
-		ongoingTournaments:	'/pong/api/tournament/user/ongoing/'
+		userProfile:			'/accounts/api/user/profile/',
+		tournamentCreate: 		'/pong/api/tournament/create/',
+		ongoingAllMatches:		'/pong/api/tournament/user/ongoing/all_matches/',
+		ongoingMatchesByRound:	'/pong/api/tournament/user/ongoing/matches/', 
+		ongoingTournaments:		'/pong/api/tournament/user/ongoing/'
 	}
 };
 

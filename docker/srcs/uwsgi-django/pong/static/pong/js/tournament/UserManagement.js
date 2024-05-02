@@ -1,4 +1,4 @@
-// UserManagement.js
+// docker/srcs/uwsgi-django/pong/static/pong/js/tournament/UserManagement.js
 class UserManagement 
 {
 	constructor(settings) 
