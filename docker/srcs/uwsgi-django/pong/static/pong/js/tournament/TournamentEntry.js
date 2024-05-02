@@ -11,10 +11,47 @@ class TournamentEntry {
 		this.ongoingTournamentContainer	= document.getElementById(settings.ongoingTournamentId);
 		this.tournamentRoundContainer	= document.getElementById(settings.tournamentRoundId);
 		this.tournamentContainer		= document.getElementById(settings.tournamentContainerId);
-		this.userInfoContainer			= document.getElementById(settings.userInfoId);
 
 		this.csrfToken				= UIHelper.getCSRFToken();
 		this.tournamentManager		= tmgr;
+	}
+
+
+	/** 注意: htmlの構造にかかわらず、appendChildの順番で出力される。 */
+	async display(ongoingTournament) 
+	{
+		await this.displayHeader();
+
+		const tournamentDetails = await this.displayTournament(ongoingTournament.id);
+		this.tournamentContainer.appendChild(tournamentDetails);
+
+		this.addNavigationLinks();
+		
+		await this.addAdditionalInfo(ongoingTournament.id);
+	}
+
+	// ナビゲーションリンクの追加とイベントハンドラの設定
+	addNavigationLinks() 
+	{
+		const container = document.createElement('div');
+		container.id = 'round-navigation';
+		container.innerHTML = `
+			<button id="next-round">next</button>
+		`;
+		this.tournamentContainer.appendChild(container);
+
+		document.getElementById('next-round').addEventListener('click', () => {
+			this.tournamentManager.roundManager.changeStateToRound(1);
+		});
+	}
+
+	async displayHeader() 
+	{
+		UIHelper.displayUserInfo(this.tournamentManager.userProfile, this.tournamentContainer);
+		// トーナメントが進行中であることを示す見出しを追加
+		const header = document.createElement('h2');
+		header.textContent = 'Tournament is in progress.';
+		this.tournamentContainer.appendChild(header);
 	}
 
 	async displayTournament(tournamentId) 
@@ -56,27 +93,6 @@ class TournamentEntry {
 			detailsContainer.textContent = 'No ongoing tournament found.';
 		}
 		return detailsContainer;
-	}
-	
-	/** 注意: htmlの構造にかかわらず、appendChildの順番で出力される。 */
-	async display(ongoingTournament) 
-	{
-		await this.displayHeader();
-		
-		const tournamentDetails = await this.displayTournament(ongoingTournament.id);
-		this.tournamentContainer.appendChild(tournamentDetails);
-		
-		await this.addAdditionalInfo(ongoingTournament.id);
-	}
-
-
-	async displayHeader() 
-	{
-		UIHelper.displayUserInfo(this.tournamentManager.userProfile, this.tournamentContainer);
-		// トーナメントが進行中であることを示す見出しを追加
-		const header = document.createElement('h2');
-		header.textContent = 'Tournament is in progress.';
-		this.tournamentContainer.appendChild(header);
 	}
 	
 	async addAdditionalInfo(tournamentId) 

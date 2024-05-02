@@ -1,8 +1,7 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/TournamentManager.js
 import TournamentCreator from './TournamentCreator.js';
 import UserManagement from './UserManagement.js';
-import TournamentEntry from './TournamentEntry.js';
-import UIHelper from './UIHelper.js';
+// import UIHelper from './UIHelper.js';
 import RoundManager from './RoundManager.js';
 
 class TournamentManager 
@@ -16,7 +15,6 @@ class TournamentManager
 		this.userManagement 	= new UserManagement(settings);
 		this.roundManager		= new RoundManager(this);
 		this.creator 			= new TournamentCreator(settings);
-		this.tournamentEntry	= new TournamentEntry(settings, this);
 
 		// 情報を表示するコンテナのIDを設定から取得
 		this.tournamentForm				= document.getElementById(settings.tournamentFormId);
@@ -54,12 +52,13 @@ class TournamentManager
 	{
 		// console.log('profile:', this.userProfile);
 		try {
-			const ongoingTournaments = await this.getFilteredUserTournaments();
+			const userTournaments = await this.getFilteredUserTournaments();
 			// 主催トーナメントの開催状態で分岐
-			if (ongoingTournaments.length > 0) {
+			if (userTournaments.length > 0) {
+				// 0の場合(over view)だけ特殊
+				this.roundManager.states[0].userTournaments = userTournaments;
 				// トーナメント情報の表示
-				this.roundManager.changeState(this.roundManager.stateFirstRound);
-				// this.tournamentEntry.display(ongoingTournaments[0]);
+				this.roundManager.changeStateToRound(1);
 			} else {
 				// トーナメント新規作成フォームを表示
 				this.creator.createForm(this.userProfile);
@@ -86,7 +85,7 @@ class TournamentManager
 				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
 			});
 			const tournaments = await response.json();
-			// console.log('tournaments:', tournaments);
+			console.log('tournaments:', tournaments);
 			return tournaments.filter(tournament => !tournament.is_finished && tournament.organizer === this.userProfile.id);
 		} catch (error) {
 			console.error('Error checking user-owned ongoing tournaments:', error);

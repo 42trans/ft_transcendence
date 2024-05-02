@@ -1,28 +1,40 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/RoundManager.js
 import StateFirstRound from './StateFirstRound.js'
+import StateSecondRound from './StateSecondRound.js'
+import StateFinalRound from './StateFinalRound.js'
+import StateOverView from './StateOverView.js';
 
-/**
- *  # RoundManager
- * - 目的: 現在のラウンドの状態を管理し、状態の変更を適切に処理します。
- * - 役割: 現在の状態（ラウンド）のオブジェクトを保持し、状態変更時に適切なenterとexit処理を行います。
- */
+/** ラウンドの切り替え */
 class RoundManager 
 {
 	constructor(tournamentManager) 
 	{
-		this.tournamentManager = tournamentManager;
-		this.settings		= tournamentManager.settings;
-		this.stateFirstRound = new StateFirstRound(this);
+		this.tournamentManager	= tournamentManager;
+		this.settings			= tournamentManager.settings;
+		this.userTournaments	= null;
+
+		this.states = {
+			0: new StateOverView(this),
+			1: new StateFirstRound(this),
+			2: new StateSecondRound(this),
+			3: new StateFinalRound(this),
+		}
 		this.currentState	= null;
+		this.currentRound	= 0;
 	}
 
-	changeState(newState) 
+	changeStateToRound(roundNumber) 
 	{
-		if (this.currentState) {
-			this.currentState.exit();
+		const newState = this.states[roundNumber];
+		if (newState && this.currentRound !== roundNumber) 
+		{
+			if (this.currentState) {
+				this.currentState.exit();
+			}
+			this.currentState = newState;
+			this.currentState.enter();
+			this.currentRound = roundNumber;
 		}
-		this.currentState = newState;
-		this.currentState.enter();
 	}
 }
 

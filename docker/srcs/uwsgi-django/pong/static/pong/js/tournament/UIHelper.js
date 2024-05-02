@@ -3,7 +3,7 @@ class UIHelper
 	static displayUserInfo(userProfile, container) 
 	{
 		if (!container) {
-			console.error(`UIHelper error: UserInfo container not found (${userInfoContainerId})`);
+			console.error(`UIHelper error: UserInfo container not found (${container})`);
 			return;
 		}
 
@@ -12,7 +12,7 @@ class UIHelper
 			nicknameItem.textContent = `Nickname: ${userProfile.nickname}`;
 			container.appendChild(nicknameItem);
 		} else {
-			UIHelper.putError('User profile data is incomplete or missing.', userInfoContainerId);
+			UIHelper.putError('User profile data is incomplete or missing.', container);
 		}
 	}
 
