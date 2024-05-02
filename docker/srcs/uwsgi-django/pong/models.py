@@ -8,6 +8,7 @@ User = get_user_model()
 
 class Tournament(models.Model):
 	name = models.CharField(max_length=100)
+	# settings.py で USE_TZ=True が設定されている。保存はUTC
 	date = models.DateTimeField(default=timezone.now)
 	# ニックネームを配列として保存
 	player_nicknames = ArrayField(models.CharField(max_length=100), default=list) 
@@ -27,6 +28,7 @@ class Match(models.Model):
 	player1 = models.CharField(max_length=100)
 	player2 = models.CharField(max_length=100)
 	winner = models.CharField(max_length=100, blank=True, null=True)
+	# settings.py で USE_TZ=True が設定されている。保存はUTC
 	date = models.DateTimeField(default=timezone.now)
 	# 文字列で複雑なスコアを管理する場合 : score = models.CharField(max_length=50, blank=True, null=True)
 	player1_score = models.IntegerField(default=0)

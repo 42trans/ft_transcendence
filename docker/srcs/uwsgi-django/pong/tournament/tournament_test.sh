@@ -12,6 +12,14 @@ if [ -z "$FUNC_SH" ]; then
 	FUNC_SH=true
 fi
 #=======================================================
+# python test
+# make test_tournament_django
+#=======================================================
+# TestTourCreate
+docker exec -it uwsgi-django bash -c "python manage.py test pong.tournament.tests.test_tour_create.TestTourCreate"
+#=======================================================
+# sh test
+#=======================================================
 # API URL設定
 API_URL="http://localhost:8002/ja/pong/api/tournament/data/"
 # GETリクエストでトーナメントデータを取得

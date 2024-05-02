@@ -21,32 +21,29 @@ class TournamentCreator
 	createForm(userProfile) 
 	{
 		UIHelper.displayUserInfo(userProfile, this.userInfoContainer);
-
-		this.userProfileId = userProfile.id;
-		
 		// フォーム要素を作成し、プロパティを設定
 		this.form			= document.createElement('form');
 		this.form.method	= 'post';
 		this.form.action	= this.API_URLS.tournamentCreate;
-		// this.form.action	= '/pong/api/tournament/create/';
+		this.form.organizer	= userProfile.id;
 		// フォームのHTML内容を生成して設定
 		this.form.innerHTML	= this._generateFormHTML(UIHelper.getCSRFToken());
-		// .htmlにフォームを追加
+		// .htmlの<div>にフォームを追加
 		this.tournamentForm.appendChild(this.form);
-		// 分の単位までで現在の日時を設定
-		this.form.elements['date'].value = this._getDateTimeUpToMinutes();
+		// UTC ISO8601:"YYYY-MM-DDTHH:MM:SS.sssZ"
+		this.form.elements['date'].value = new Date().toISOString();
 		// ボタンクリックでhandleSubmit()を呼び出す
 		this.form.addEventListener('submit', e => this._saveTournament(e));
 	}
 
-	/** form内容html*/
+	/** form部分のhtml*/
 	_generateFormHTML(csrfToken) 
 	{
 		return `
 			<h2 class="slideup-text">Create Tournament</h2>
 			<input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+			<input type="hidden" id="date" name="date" readonly>
 			<input type="text" id="name" name="name" placeholder="Tournament Name" value="My Tournament">
-			<input type="datetime-local" id="date" name="date" readonly>
 			<input type="text" name="nickname" placeholder="Nickname 1" value="Nickname1">
 			<input type="text" name="nickname" placeholder="Nickname 2" value="Nickname2">
 			<input type="text" name="nickname" placeholder="Nickname 3" value="Nickname3">
@@ -59,17 +56,44 @@ class TournamentCreator
 		`;
 	}
 
-	/** 現在の日時を 'YYYY-MM-DDTHH:MM' 形式で取得 */
-	_getDateTimeUpToMinutes() 
+	/** トーナメントを保存する */
+	async _saveTournament(event) 
 	{
-		const now	= new Date().toISOString();
-		// YYYY-MM-DDTHH:MM = 16文字
-		return	now.substring(0, 16);
-	}
+		// イベントのデフォルトの動作をキャンセル: フォームの送信によるページの再読み込みをキャンセルする
+		event.preventDefault();
+		// フォームに関連するメッセージをクリア
+		UIHelper.clearContainer(this.errorMessage);
+		UIHelper.clearContainer(this.submitMessage);
 
+		const nicknames			= this._getNicknames();
+		const validationResult	= this._validateFormInputs(nicknames);
+
+		if (!validationResult.isValid) 
+		{
+			UIHelper.putError(validationResult.errorMessage, this.errorMessage);
+			return;
+		}
+
+		try {
+			// 進行中のトーナメントの判定を行い、なければ作成する。二重登録防止
+			const isOngoing = await this._checkOngoingTournaments();
+			if (isOngoing) 
+			{
+				this.errorMessage.textContent = 'There is an ongoing tournament. You cannot create a new one.';
+				return;
+			} else {
+				await this._processFormSubmission(nicknames);
+			}
+		} catch (error) {
+			console.error('Error checking ongoing tournaments or processing form:', error);
+			UIHelper.putError('Error processing your request. Please try again.', this.errorMessage);
+		}
+	}
+	
 	// フォームからすべてのニックネーム入力フィールドを取得し、それらを配列に変換
 	// .map(input => input.value.trim());: 各ニックネーム入力フィールドの値から前後の空白を取り除いた配列を作成
-	_getNicknames() {
+	_getNicknames() 
+	{
 		return Array.from(this.form.querySelectorAll('input[name="nickname"]'))
 					.map(input => input.value.trim());
 	}
@@ -85,37 +109,6 @@ class TournamentCreator
 			return { isValid: false, errorMessage: 'All 8 nicknames are required.' };
 		}
 		return { isValid: true };
-	}
-	
-	/** トーナメントを保存する */
-	async _saveTournament(event) 
-	{
-		// イベントのデフォルトの動作をキャンセル: フォームの送信によるページの再読み込みをキャンセルする
-		event.preventDefault();
-		// フォームに関連するメッセージをクリア
-		UIHelper.clearContainer(this.errorMessage);
-		UIHelper.clearContainer(this.submitMessage);
-
-		const nicknames = this._getNicknames();
-		const validationResult = this._validateFormInputs(nicknames);
-		if (!validationResult.isValid) {
-			UIHelper.putError(validationResult.errorMessage, this.errorMessage);
-			return;
-		}
-
-		try {
-			// 進行中のトーナメントの判定を行い、なければ作成する。二重登録防止
-			const isOngoing = await this._checkOngoingTournaments();
-			if (isOngoing) {
-				this.errorMessage.textContent = 'There is an ongoing tournament. You cannot create a new one.';
-				return;
-			} else {
-				await this._processFormSubmission(nicknames);
-			}
-		} catch (error) {
-			console.error('Error checking ongoing tournaments or processing form:', error);
-			UIHelper.putError('Error processing your request. Please try again.', this.errorMessage);
-		}
 	}
 
 	// 進行中のトーナメントを確認する関数
@@ -138,11 +131,10 @@ class TournamentCreator
 	/** 入力フォームの値をAPIにPOST */
 	async _processFormSubmission(nicknames)
 	{
-		const formData = new FormData(this.form);
 		// player_nicknamesという名前でニックネームの配列をFormDataに追加
 		// ニックネームの配列はJSON形式に変換
+		const formData = new FormData(this.form);
 		formData.append('player_nicknames', JSON.stringify(nicknames));
-		formData.append('organizer', this.userProfileId);
 		try {
 			const response = await fetch(this.form.action, {
 				method: 'POST',

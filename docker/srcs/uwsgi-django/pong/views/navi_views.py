@@ -32,7 +32,6 @@ def tournament(request):
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 	
-# --------------------------------
 def pong_view(request):
 	if request.user.is_authenticated:
 		param = {
