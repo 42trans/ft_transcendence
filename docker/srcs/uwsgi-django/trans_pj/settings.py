@@ -278,11 +278,10 @@ LOGGING = {
 },
 }
 
-
-# JWT
+# 全てのAPIエンドポイントのデフォルト認証をJWTに設定 -> CSRFトークンのチェックは不要
 REST_FRAMEWORK = {
 	'DEFAULT_AUTHENTICATION_CLASSES': [
-		'rest_framework_simplejwt.authentication.JWTAuthentication',
+		'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT
 	],
 }
 

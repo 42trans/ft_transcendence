@@ -11,7 +11,7 @@ from accounts.views.oauth import OAuthWith42
 from accounts.views.two_factor_auth import Enable2FaAPIView
 from accounts.views.two_factor_auth import Verify2FaAPIView
 from accounts.views.jwt import JWTRefreshView
-
+from accounts.views.block import BlockUserAPI, UnblockUserAPI
 
 app_name = 'api_accounts'
 
@@ -28,4 +28,7 @@ urlpatterns = [
     path('api/token/refresh/', JWTRefreshView.as_view(), name='api_token_refresh'),
 
     path('oauth-ft/callback/', OAuthWith42.as_view(), name='oauth_ft_callback'),
+
+    path('api/block/<str:nickname>/', BlockUserAPI.as_view(), name='api_block'),
+    path('api/unblock/<str:nickname>/', UnblockUserAPI.as_view(), name='api_unblock'),
 ]

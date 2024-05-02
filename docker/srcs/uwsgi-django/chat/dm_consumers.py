@@ -128,12 +128,12 @@ class DMConsumer(AsyncWebsocketConsumer):
         print_mazenta(f'[DMConsumer] store_message: sender_id: {sender_id}, receiver_id: {receiver_id}, message: {message}')
         try:
             print_mazenta(f'[DMConsumer]store_message 1')
-            sender_id = CustomUser.objects.get(id=sender_id)
+            sender = CustomUser.objects.get(id=sender_id)
             print_mazenta(f'[DMConsumer]store_message 2')
-            receiver_id = CustomUser.objects.get(id=receiver_id)
+            receiver = CustomUser.objects.get(id=receiver_id)
             print_mazenta(f'[DMConsumer]store_message 3')
-            message_instance = Message.objects.create(sender=sender_id,
-                                                      receiver=receiver_id,
+            message_instance = Message.objects.create(sender=sender,
+                                                      receiver=receiver,
                                                       message=message)
             print_mazenta(f'[DMConsumer]store_message 4')
             return message_instance
