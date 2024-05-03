@@ -1,20 +1,16 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/TournamentCreator.js
-import UIHelper from './UIHelper.js';
+import UIHelper		from '../UIHelper.js';
+import { config }	from '../ConfigTournament.js';
 
 class TournamentCreator 
 {
-	constructor(settings) 
+	constructor() 
 	{
-		this.tournamentForm				= document.getElementById(settings.tournamentFormId);
-		this.userInfoContainer			= document.getElementById(settings.userInfoId);
-		this.errorMessage				= document.getElementById(settings.errorMessageId);
-		this.submitMessage				= document.getElementById(settings.submitMessageId);
-		this.backHomeButton				= document.getElementById(settings.backHomeButtonId);
-		this.ongoingTournamentContainer	= document.getElementById(settings.ongoingTournamentId);
-		this.tournamentRoundContainer	= document.getElementById(settings.tournamentRoundId);
-		this.tournamentContainer		= document.getElementById(settings.tournamentContainerId);
+		this.tournamentForm				= document.getElementById(config.tournamentFormId);
+		this.userInfoContainer			= document.getElementById(config.userInfoId);
+		this.errorMessage				= document.getElementById(config.errorMessageId);
+		this.submitMessage				= document.getElementById(config.submitMessageId);
 
-		this.API_URLS 		= settings.API_URLS;
 	}
 
 	/** Public method: トーナメントの新規作成用フォームを作成 */
@@ -24,7 +20,7 @@ class TournamentCreator
 		// フォーム要素を作成し、プロパティを設定
 		this.form			= document.createElement('form');
 		this.form.method	= 'post';
-		this.form.action	= this.API_URLS.tournamentCreate;
+		this.form.action	= config.API_URLS.tournamentCreate;
 		this.form.organizer	= userProfile.id;
 		// フォームのHTML内容を生成して設定
 		this.form.innerHTML	= this._generateFormHTML(UIHelper.getCSRFToken());

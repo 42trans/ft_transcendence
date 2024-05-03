@@ -14,6 +14,7 @@ class StateSecondRound extends StateBaseRound
 
 	exit() {
 		// console.log("Exiting Round 2");
+		this.tournamentContainer.innerHTML = ''; 
 	}
 }
 

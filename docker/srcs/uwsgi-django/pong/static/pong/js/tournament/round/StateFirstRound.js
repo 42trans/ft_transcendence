@@ -22,6 +22,7 @@ class StateFirstRound extends StateBaseRound
 
 	exit() {
 		// console.log("Exiting Round 1");
+		this.tournamentContainer.innerHTML = ''; 
 	}
 }
 

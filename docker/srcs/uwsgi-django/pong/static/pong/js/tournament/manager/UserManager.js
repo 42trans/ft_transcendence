@@ -1,9 +1,9 @@
-// docker/srcs/uwsgi-django/pong/static/pong/js/tournament/UserManagement.js
-class UserManagement 
+// docker/srcs/uwsgi-django/pong/static/pong/js/tournament/UserManager.js
+import { config }	from '../ConfigTournament.js';
+
+class UserManager 
 {
-	constructor(settings) 
-	{
-		this.API_URLS = settings.API_URLS;
+	constructor() {
 		this.userProfile = null;
 	}
 
@@ -12,7 +12,7 @@ class UserManagement
 		if (!this.userProfile) 
 		{
 			try {
-				const response = await fetch(this.API_URLS.userProfile, {
+				const response = await fetch(config.API_URLS.userProfile, {
 					headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
 				});
 				if (response.ok) 
@@ -28,4 +28,4 @@ class UserManagement
 	}
 }
 
-export default UserManagement;
+export default UserManager;

@@ -1,13 +1,21 @@
+/**
+ * メソッドのみのクラス
+ * # 呼び出し方:
+ * - importする: `import UIHelper from '../UIHelper.js'`;
+ * - `UIHelper.`でメソッドを呼び出す:  ex.`UIHelper.getCSRFToken()`;
+*/
 class UIHelper 
 {
 	static displayUserInfo(userProfile, container) 
 	{
-		if (!container) {
+		if (!container) 
+		{
 			console.error(`UIHelper error: UserInfo container not found (${container})`);
 			return;
 		}
 
-		if (userProfile && userProfile.nickname) {
+		if (userProfile && userProfile.nickname) 
+		{
 			const nicknameItem = document.createElement('li');
 			nicknameItem.textContent = `Nickname: ${userProfile.nickname}`;
 			container.appendChild(nicknameItem);
@@ -16,8 +24,8 @@ class UIHelper
 		}
 	}
 
-
-	static handleSuccess(message, href, submitMessage) {
+	static handleSuccess(message, href, submitMessage) 
+	{
 		submitMessage.textContent = message;
 		const backHomeButton = document.createElement('button');
 		backHomeButton.textContent = 'Back Home';
@@ -41,7 +49,8 @@ class UIHelper
 		}
 	}
 
-	static getCSRFToken() {
+	static getCSRFToken() 
+	{
 		const tokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
 		if (!tokenElement) {
 			console.error('CSRF token element not found');
@@ -49,7 +58,6 @@ class UIHelper
 		}
 		return tokenElement.value;
 	}
-	
 	
 	static clearError(container) 
 	{

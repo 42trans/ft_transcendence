@@ -14,6 +14,7 @@ class StateFinalRound extends StateBaseRound
 
 	exit() {
 		// console.log("Exiting Round 3");
+		this.tournamentContainer.innerHTML = ''; 
 	}
 }
 

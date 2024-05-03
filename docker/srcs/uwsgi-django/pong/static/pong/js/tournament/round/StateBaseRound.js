@@ -1,4 +1,5 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/StateBaseRound.js
+import { config }	from '../ConfigTournament.js';
 
 /**
  * # StateBaseRound
@@ -15,17 +16,16 @@ class StateBaseRound
 		}
 		// 子クラスでもthis.で使用可能にするために一括設定
 		this.roundManager		= roundManager;
-		this.settings			= roundManager.settings;
-		this.API_URLS			= roundManager.settings.API_URLS;
+		this.API_URLS			= config.API_URLS;
 		// 情報を表示するコンテナのIDを設定から取得
-		this.tournamentForm				= document.getElementById(this.settings.tournamentFormId);
-		this.userInfoContainer			= document.getElementById(this.settings.userInfoId);
-		this.errorMessage				= document.getElementById(this.settings.errorMessageId);
-		this.submitMessage				= document.getElementById(this.settings.submitMessageId);
-		this.backHomeButton				= document.getElementById(this.settings.backHomeButtonId);
-		this.ongoingTournamentContainer	= document.getElementById(this.settings.ongoingTournamentId);
-		this.tournamentRoundContainer	= document.getElementById(this.settings.tournamentRoundId);
-		this.tournamentContainer		= document.getElementById(this.settings.tournamentContainerId);
+		this.tournamentForm				= document.getElementById(config.tournamentFormId);
+		this.userInfoContainer			= document.getElementById(config.userInfoId);
+		this.errorMessage				= document.getElementById(config.errorMessageId);
+		this.submitMessage				= document.getElementById(config.submitMessageId);
+		this.backHomeButton				= document.getElementById(config.backHomeButtonId);
+		this.ongoingTournamentContainer	= document.getElementById(config.ongoingTournamentId);
+		this.tournamentRoundContainer	= document.getElementById(config.tournamentRoundId);
+		this.tournamentContainer		= document.getElementById(config.tournamentContainerId);
 	}
 	
 	enter()	{	console.error("method should be overridden.");	}
