@@ -27,8 +27,9 @@ urlpatterns = [
 	path("tournament/user/ongoing/all/", user_all_ongoing_tournament, name="user_all_ongoing_tournament"),
 	# ログイン中のユーザーが主催する未終了トーナメントのうち、「最新」のものを返す
 	path("tournament/user/ongoing/latest/", get_latest_ongoing_tournament, name="get_latest_ongoing_tournament"),
-
+	# 指定されたトーナメントIDのトーナメント情報を取得
 	path("tournament/data/<int:tournament_id>/", tournament_data_id, name="tournament_data_id"),
+	
 	path("tournament/user/all/", list_all_user_tournaments, name="list_all_user_tournaments"),
 	path('tournament/delete/<int:tournament_id>/', delete_tournament, name='delete_tournament'),
 ]

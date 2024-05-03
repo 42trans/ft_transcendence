@@ -113,7 +113,7 @@ def delete_tournament(request, tournament_id):
 def list_all_user_tournaments(request):
 	""" 
 	機能: 「ユーザーが主催する」トーナメント のデータを全て取得する
-	用途: 終了したトーナメントも含む過去情報全てを取得。
+	用途: 不要。終了したトーナメントも含む過去情報全てを取得。
 	"""
 	if request.method == 'GET':
 		# ログインユーザーが主催するトーナメントを取得
@@ -122,6 +122,10 @@ def list_all_user_tournaments(request):
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
 
+
+# ------------------------------
+# test 済み
+# ------------------------------
 def tournament_data_id(request, tournament_id):
 	if request.method == 'GET':
 		""" 機能: 指定されたトーナメントIDのトーナメント情報を取得"""
@@ -142,12 +146,10 @@ def tournament_data_id(request, tournament_id):
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
 
-# ------------------------------
-# test 済み
+
 # ------------------------------
 # ongoing latest
 # ------------------------------
-
 @login_required
 def get_latest_ongoing_tournament(request):
 	"""
