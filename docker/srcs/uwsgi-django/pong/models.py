@@ -33,6 +33,7 @@ class Match(models.Model):
 	# 文字列で複雑なスコアを管理する場合 : score = models.CharField(max_length=50, blank=True, null=True)
 	player1_score = models.IntegerField(default=0)
 	player2_score = models.IntegerField(default=0)
+	is_finished = models.BooleanField(default=False)
 	# def __str__(self):
 	# 	return f"Round {self.round_number} Match {self.match_number}: {self.player1.nickname} vs {self.player2.nickname}"
 

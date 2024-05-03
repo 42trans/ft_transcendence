@@ -17,7 +17,7 @@ class StateEntry extends StateBaseRound
 		// console.log("Entering Tournament entry");
 		// トーナメントの入り口を描画するクラスの呼び出し
 		this.tournamentEntry.display(
-			this.roundManager.userTournaments[0],
+			this.roundManager.userTournament,
 			this.roundManager.userProfile
 		);
 	}

@@ -6,10 +6,11 @@ class TournamentCreator
 {
 	constructor() 
 	{
-		this.tournamentForm				= document.getElementById(config.tournamentFormId);
-		this.userInfoContainer			= document.getElementById(config.userInfoId);
-		this.errorMessage				= document.getElementById(config.errorMessageId);
-		this.submitMessage				= document.getElementById(config.submitMessageId);
+		this.API_URLS			= config.API_URLS;
+		this.tournamentForm		= document.getElementById(config.tournamentFormId);
+		this.userInfoContainer	= document.getElementById(config.userInfoId);
+		this.errorMessage		= document.getElementById(config.errorMessageId);
+		this.submitMessage		= document.getElementById(config.submitMessageId);
 
 	}
 
@@ -72,7 +73,7 @@ class TournamentCreator
 
 		try {
 			// 進行中のトーナメントの判定を行い、なければ作成する。二重登録防止
-			const isOngoing = await this._checkOngoingTournaments();
+			const isOngoing = await this._isOngoingTournaments();
 			if (isOngoing) 
 			{
 				this.errorMessage.textContent = 'There is an ongoing tournament. You cannot create a new one.';
@@ -108,20 +109,25 @@ class TournamentCreator
 	}
 
 	// 進行中のトーナメントを確認する関数
-	async _checkOngoingTournaments() 
-	{
-		return fetch('/pong/api/tournament/user/ongoing/').then(response => 
-				{
-					if (!response.ok) 
-					{
-						throw new Error('Failed to fetch ongoing tournaments');
-					}
-					return response.json();
-				})
-			.then(tournaments => 
-				{
-					return tournaments.some(tournament => !tournament.is_finished);
-				});
+	async _isOngoingTournaments() {
+		try {
+			const response = await fetch(this.API_URLS.ongoingLatestTour, {
+				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
+			});
+
+			// 見つからない場合でも、viewは200を返す。ここはそれ以外のエラーの場合の判定
+			// 見つからない場合のviewの戻り値: return JsonResponse({'status': 'success', 'message': 'No ongoing tournaments found'}, status=200)
+			if (!response.ok) {
+				throw new Error(`Failed to fetch ongoing tournaments with status: ${response.status}`);
+			}
+
+			const result = await response.json();
+			// result.tournamentが存在する場合はtrueを、それ以外の場合はfalseを返す
+			return !!result.tournament;
+		} catch (error) {
+			console.error('Error checking ongoing tournaments:', error);
+			return false;
+		}
 	}
 	
 	/** 入力フォームの値をAPIにPOST */

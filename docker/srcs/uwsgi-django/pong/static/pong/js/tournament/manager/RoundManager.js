@@ -11,7 +11,7 @@ class RoundManager
 	constructor() 
 	{
 		this.API_URLS			= config.API_URLS;
-		this.userTournaments	= null;
+		this.userTournament		= null;
 		this.userProfile		= null;
 		this.currentState		= null;
 		// 開始時が0のため,0以外の仮の値

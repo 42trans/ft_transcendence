@@ -12,9 +12,28 @@ from django.forms.models import model_to_dict
 
 User = get_user_model()
 
+
+@login_required
+def user_all_ongoing_tournament(request):
+	""" 
+	機能: ログイン中のユーザーが主催する未終了のトーナメントのうち、「全て」のデータを返す
+	"""
+	if request.method == 'GET':
+		# ログインユーザーが主催していてまだ終了していないトーナメントを取得
+		tournaments = Tournament.objects.filter(organizer=request.user, is_finished=False)
+		# 各トーナメントオブジェクトを辞書に変換してリストに格納
+		tournaments_data = [model_to_dict(tournament) for tournament in tournaments]
+		return JsonResponse({'tournaments': tournaments_data}, safe=False)
+	else:
+		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+
 @login_required
 def get_matches_by_round(request, round_number):
-	""" 指定されたラウンド番号の試合データを返すAPI """
+	""" 
+	機能:指定されたラウンド番号の試合データを返す
+	用途:Round別のDisplay
+	"""
 	if request.method == 'GET':
 		# ユーザーが主催する未終了のトーナメントに属する指定ラウンドの試合を取得
 		matches = Match.objects.filter(
@@ -44,9 +63,12 @@ def get_matches_by_round(request, round_number):
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 
+# TODO_ft:未終了が複数あった場合のエラー処理方針を決める。最新のものを使用するよう修正
 @login_required
 def get_user_ongoing_matches(request):
-	""" 「ユーザーが主催する && 未終了のトーナメント」 に関する全試合のデータを全て取得する"""
+	""" 
+	機能:「ユーザーが主催する && 未終了のトーナメント」 に関する全7試合のデータを全て返す
+	"""
 	if request.method == 'GET':
 		# ログインユーザーが主催していてまだ終了していないトーナメントを取得
 		tournaments = Tournament.objects.filter(organizer=request.user, is_finished=False)
@@ -72,10 +94,11 @@ def get_user_ongoing_matches(request):
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 
-
+# TODO_ft:試合も削除するようcreateを参考に
 @login_required
 @require_POST
 def delete_tournament(request, tournament_id):
+	""" 機能: トーナメントを削除する。「ユーザーが主催する && 未終了のトーナメント」 のトーナメントを。 """
 	try:
 		tournament = Tournament.objects.get(id=tournament_id, organizer=request.user)
 		if not tournament.is_finished:
@@ -87,7 +110,11 @@ def delete_tournament(request, tournament_id):
 		return JsonResponse({'status': 'error', 'message': 'Tournament not found.'}, status=404)
 	
 # @login_required
-def user_ongoing(request):
+def list_all_user_tournaments(request):
+	""" 
+	機能: 「ユーザーが主催する」トーナメント のデータを全て取得する
+	用途: 終了したトーナメントも含む過去情報全てを取得。
+	"""
 	if request.method == 'GET':
 		# ログインユーザーが主催するトーナメントを取得
 		tournaments = Tournament.objects.filter(organizer=request.user).values('id', 'name', 'is_finished', 'date', 'organizer')
@@ -95,10 +122,14 @@ def user_ongoing(request):
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
 
-def tournament_data(request, tournament_id):
+def tournament_data_id(request, tournament_id):
 	if request.method == 'GET':
-		# 指定されたIDのトーナメントを取得
+		""" 機能: 指定されたトーナメントIDのトーナメント情報を取得"""
 		tournament = get_object_or_404(Tournament, pk=tournament_id)
+
+		print("Tournament:", tournament)
+		print("Organizer ID:", tournament.organizer_id)
+
 		data = {
 			'id': tournament.id,
 			'name': tournament.name,
@@ -111,6 +142,36 @@ def tournament_data(request, tournament_id):
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
 
+# ------------------------------
+# test 済み
+# ------------------------------
+# ongoing latest
+# ------------------------------
+
+@login_required
+def get_latest_ongoing_tournament(request):
+	"""
+	機能: ログイン中のユーザーが主催する未終了トーナメントのうち、「最新」のものを返す
+	"""
+	if request.method == 'GET':
+		# 最新の未終了トーナメントを取得
+		tournament = Tournament.objects.filter(
+			organizer=request.user, 
+			is_finished=False
+		).order_by('-date').first()
+
+		if tournament:
+			# トーナメントオブジェクトを辞書に変換して返す
+			tournament_data = model_to_dict(tournament)
+			return JsonResponse({'tournament': tournament_data}, safe=False)
+		else:
+			# 未終了のトーナメントがない場合は200と、エラーメッセージを返す
+			return JsonResponse({'status': 'success', 'message': 'No ongoing tournaments found'}, status=200)
+	else:
+		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+# ------------------------------
+# create
+# ------------------------------
 @login_required
 def tournament_create(request):
 	""" トーナメントの新規作成。トーナメントの試合のデータも同時に作成する"""

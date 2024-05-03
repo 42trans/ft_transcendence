@@ -34,7 +34,8 @@ class ConfigTournament
 			tournamentData:			'/pong/api/tournament/data/',
 			ongoingAllMatches:		'/pong/api/tournament/user/ongoing/all_matches/',
 			ongoingMatchesByRound:	'/pong/api/tournament/user/ongoing/matches/', 
-			ongoingTournaments:		'/pong/api/tournament/user/ongoing/'
+			ongoingTournaments:		'/pong/api/tournament/user/ongoing/all/',
+			ongoingLatestTour:		'/pong/api/tournament/user/ongoing/latest/'
 		};
 	}
 }

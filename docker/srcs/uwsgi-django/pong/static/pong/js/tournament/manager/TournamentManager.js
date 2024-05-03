@@ -38,17 +38,19 @@ class TournamentManager
 	 * */
 	async _handleLoggedInUser() 
 	{
-		// console.log('profile:', this.userProfile);
+		console.log('profile:', this.userProfile);
 		try {
-			const userTournaments = await this._getFilteredUserTournaments();
+			const latestTournament = await this._getFilteredUserTournaments();
 			// 主催トーナメントの開催状態で分岐
-			if (userTournaments.length > 0) {
+			if (latestTournament) {
+				console.log('latestTournament:', latestTournament);
 				// 必要な値を渡す
-				this.roundManager.userTournaments	= userTournaments;
+				this.roundManager.userTournament	= latestTournament;
 				this.roundManager.userProfile		= this.userProfile;
 				// トーナメント情報の表示
 				this.roundManager.changeStateToRound(0);
 			} else {
+				console.log('!latestTournament:', latestTournament);
 				// トーナメント新規作成フォームを表示
 				this.tournamentCreator.createForm(this.userProfile);
 			}
@@ -60,24 +62,39 @@ class TournamentManager
 
 	/**
 	 * ユーザーが主催する"未終了"のトーナメントのリストを取得
-	 * @returns {Promise<Array>} 未終了のトーナメントの配列
-	 */
+	 * @returns {Promise<Object|null>} 未終了のトーナメントオブジェクトまたはnull
+	 * */
 	async _getFilteredUserTournaments() 
 	{
-		// const userProfile = await this.getUserProfile();
 		if (!this.userProfile) {
-			return [];
+			return null;
 		}
 		try {
-			const response = await fetch(this.API_URLS.ongoingTournaments, {
+			const response = await fetch(this.API_URLS.ongoingLatestTour, {
 				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
 			});
-			const tournaments = await response.json();
-			console.log('tournaments:', tournaments);
-			return tournaments.filter(tournament => !tournament.is_finished && tournament.organizer === this.userProfile.id);
+
+			// ongoingが見つからない場合は200が返ってくるので、ここではそれ以外のエラーを処理する。
+			if (!response.ok) 
+			{
+				// 他のエラーの場合は、何かしらのエラー処理を行う
+				throw new Error(`Request failed with status ${response.status}`);
+			}
+			
+			const result = await response.json();
+			// console.log('Latest tournament:', result);
+
+			if (result && result.tournament) {
+				// ongoing が見つかった場合
+				return result.tournament;
+			} else {
+				// 見つからなかった場合
+				console.log('ongoing tournament not found:', result.message);
+				return null;
+			}
 		} catch (error) {
-			console.error('Error checking user-owned ongoing tournaments:', error);
-			return [];
+			console.error('Error checking user-owned ongoing tournament:', error);
+			return null;
 		}
 	}
 
