@@ -1,10 +1,8 @@
 # docker/srcs/uwsgi-django/pong/tournament/tests/get_latest_ongoing_tournament.py
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.contrib.auth.models import User
-from ...models import Tournament, Match
+from ...models import Tournament
 import json
-from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
@@ -53,9 +51,9 @@ class TestGetLatestOngoingTournament(TestCase):
 		# すべて終了状態に
 		Tournament.objects.all().update(is_finished=True) 
 		response = self.client.get(reverse('get_latest_ongoing_tournament'))
-		self.assertEqual(response.status_code, 404)
-		response_data = json.loads(response.content)
-		self.assertEqual(response_data['message'], 'No ongoing tournaments found')
+		self.assertEqual(response.status_code, 204)
+		# HTTP 204応答ではレスポンスボディが空であることを確認
+		self.assertEqual(response.content, b'')
 
 	def test_unauthenticated_access(self):
 		"""認証されていないアクセスが拒否されること"""
@@ -78,4 +76,4 @@ class TestGetLatestOngoingTournament(TestCase):
 			email='testuser2@example.com',
 			password='223alks;d;fjsakd45abcde')
 		response = self.client.get(reverse('get_latest_ongoing_tournament'))
-		self.assertEqual(response.status_code, 404)
+		self.assertEqual(response.status_code, 204)

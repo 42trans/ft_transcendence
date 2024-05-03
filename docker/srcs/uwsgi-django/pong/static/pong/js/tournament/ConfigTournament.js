@@ -32,10 +32,12 @@ class ConfigTournament
 			tournamentCreate:		'/pong/api/tournament/create/',
 			tournamentDelete:		'/pong/api/tournament/delete/',
 			tournamentData:			'/pong/api/tournament/data/',
-			ongoingAllMatches:		'/pong/api/tournament/user/ongoing/all_matches/',
 			ongoingMatchesByRound:	'/pong/api/tournament/user/ongoing/matches/', 
 			ongoingTournaments:		'/pong/api/tournament/user/ongoing/all/',
-			ongoingLatestTour:		'/pong/api/tournament/user/ongoing/latest/'
+			ongoingLatestTour:		'/pong/api/tournament/user/ongoing/latest/',
+			// 使用していない
+			ongoingAllMatches:		'/pong/api/tournament/user/ongoing/matches/all/',
+			// 
 		};
 	}
 }

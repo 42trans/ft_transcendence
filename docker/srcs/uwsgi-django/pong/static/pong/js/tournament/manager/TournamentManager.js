@@ -74,7 +74,7 @@ class TournamentManager
 				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
 			});
 
-			// ongoingが見つからない場合は200が返ってくるので、ここではそれ以外のエラーを処理する。
+			// ongoingが見つからない場合は204が返ってくるので、ここではそれ以外のエラーを処理する。
 			if (!response.ok) 
 			{
 				// 他のエラーの場合は、何かしらのエラー処理を行う

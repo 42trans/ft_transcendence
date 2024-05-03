@@ -2,10 +2,7 @@
 
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.contrib.auth.models import User
-from ...models import Tournament, Match
-import json
-from datetime import datetime
+from ...models import Tournament
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 

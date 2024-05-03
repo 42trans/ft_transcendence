@@ -115,7 +115,7 @@ class TournamentCreator
 				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
 			});
 
-			// 見つからない場合でも、viewは200を返す。ここはそれ以外のエラーの場合の判定
+			// 見つからない場合でも、viewは204を返す。ここはそれ以外のエラーの場合の判定
 			// 見つからない場合のviewの戻り値: return JsonResponse({'status': 'success', 'message': 'No ongoing tournaments found'}, status=200)
 			if (!response.ok) {
 				throw new Error(`Failed to fetch ongoing tournaments with status: ${response.status}`);
