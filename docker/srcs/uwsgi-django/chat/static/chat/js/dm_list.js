@@ -59,8 +59,15 @@ function updateDOM(other_user) {
         // リンク要素を作成
         const link = document.createElement('a');
         link.href = `/chat/dm/${dm_user.nickname}/`; // リンクの設定
+
         // link.textContent = `${dm_user.nickname} (DMSession.id: ${dm_user.session_id})`;
-        link.textContent = `${dm_user.nickname}`;
+        // link.textContent = `${dm_user.nickname}`;
+        // システムメッセージの場合は表示を変更
+        if (dm_user.is_system_message) {
+            link.textContent = `System Message to ${dm_user.nickname}`;
+        } else {
+            link.textContent = `${dm_user.nickname}`;
+        }
 
         // リストアイテムにリンクを追加
         item.appendChild(link);

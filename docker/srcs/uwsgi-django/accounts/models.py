@@ -160,6 +160,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     enable_2fa = models.BooleanField(_("enable 2fa"), default=False)
     blocking_users = models.ManyToManyField('self', symmetrical=False, related_name='blocking_me')
     # friends = ...
+    is_system = models.BooleanField(_("is_system"), default=False)
 
     is_staff = models.BooleanField(
         _("staff status"),

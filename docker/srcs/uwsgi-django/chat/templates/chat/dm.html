@@ -49,9 +49,18 @@
 
         /* 送信者側のメッセージ */
         #dm-log li.dm-from {
-            text-align: left;           /* 自分のメッセージを左詰め */
+            text-align: left;           /* 自分のメッセージを右詰め */
             float: right;               /* 右側に配置 */
             background-color: #b0c4de;  /* 背景色 */
+            color: white;               /* 文字色 */
+            max-width: 80%;             /* DM表示領域の80%の幅 */
+        }
+
+        /* 受信者側のメッセージ */
+        #dm-log li.system-message {
+            text-align: left;           /* dmToのメッセージを左詰め */
+            float: left;                /* 左側に配置 */
+            background-color: #483d8b;  /* 背景色 */
             color: white;               /* 文字色 */
             max-width: 80%;             /* DM表示領域の80%の幅 */
         }
@@ -68,7 +77,13 @@
 
 </head>
 <body>
+
+{% if not isSystemUser %}
 <h1>DM with [<a href="{% url 'accounts:info' nickname %}">{{ nickname }}</a>]</h1>
+{% else %}
+<h1>System Message</h1>
+{% endif %}
+
 
 {% if not isBlockingUser %}
     <!-- DM logを表示 -->
@@ -76,19 +91,19 @@
         {% for message in messages %}
         <li class="{{ message.sender.nickname|slugify }}" data-sender-name="{{ message.sender.nickname }}">
             <div class="message-content">
-                <!-- 送信者がdm-toの場合にリンクを表示 -->
-                {% if message.sender.nickname == nickname %}
-                <span><a href="{% url 'accounts:info' message.sender.nickname %}">{{ message.sender.nickname }}</a>: {{ message.message|safe }}</span>
-                {% else %}
-                <span>{{ message.sender.nickname }}: {{ message.message|safe }}</span>
-                {% endif %}
+                <span>[ {{ message.sender.nickname }} ]</span>
+                <span>{{ message.message|safe }}</span>
                 <span class="timestamp">{{ message.timestamp|date:"Y-m-d H:i:s" }}</span>
             </div>
         </li>
         {% endfor %}
     </ul>
+
+    {% if not isSystemUser %}
     <input id="message-input" type="text">
     <input id="message-submit" type="button" value="Send">
+    {% endif %}
+
 {% else %}
     <p>[blocking user]</p>
 {% endif %}

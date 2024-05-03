@@ -12,8 +12,8 @@ function applyStylesToInitialLoadMessages(dmTo) {
     const messageElements = document.querySelectorAll('#dm-log li');
 
     messageElements.forEach(function(messageElement) {
-        let senderName = messageElement.textContent.split(':')[0].trim();
-        classifyMessageSender(messageElement, senderName, dmTo)
+        let senderName = messageElement.getAttribute('data-sender-name');
+        classifyMessageSender(messageElement, senderName, dmTo);
     });
 }
 
@@ -30,21 +30,30 @@ function initDM() {
         const data = JSON.parse(e.data);
         const senderName = data.sender;
         const timestamp = data.timestamp;
+        const isSystemMessage = data.is_system_message;
 
         let messageElement = document.createElement('li');
         let messageContent = document.createElement('div');  // メッセージコンテンツ
         let timestampContent = document.createElement('span');  // timestamp
-        classifyMessageSender(messageElement, senderName, dmTo);
+
+        if (isSystemMessage) {
+            messageElement.classList.add('system-message');
+        } else {
+            classifyMessageSender(messageElement, senderName, dmTo);
+        }
 
         messageContent.className = 'message-content';
-        messageContent.textContent = senderName + ": " + data.message;
 
-        // 送信者の名前をリンク化
-        if (senderName === dmTo) {
-            messageContent.innerHTML = `<span><a href="/accounts/info/${senderName}/">${senderName}</a>: ${data.message}</span>`;
-        } else {
-            messageContent.textContent = `${senderName}: ${data.message}`;
-        }
+        // [ sender ] \n message
+        let senderElement = document.createElement('span');
+        senderElement.textContent = `[ ${senderName} ]`;
+
+        let messageTextElement = document.createElement('span');
+        messageTextElement.textContent = data.message;
+
+        messageContent.appendChild(senderElement);
+        // messageContent.appendChild(document.createElement('br'));
+        messageContent.appendChild(messageTextElement);
         messageElement.appendChild(messageContent);
 
         timestampContent.className = 'timestamp';

@@ -17,13 +17,17 @@ class DMSession(models.Model):
     """
     sessionId = ShortUUIDField()
     member = models.ManyToManyField(CustomUser, related_name='chat_sessions')
+    is_system_message = models.BooleanField(default=False)  # システムメッセージフラグ
 
     def __str__(self):
         members = ', '.join(user.nickname for user in self.member.all())
         return (f"DMSession {self.id} with memberes: {members}")
 
     @classmethod
-    def get_dm_session(cls, user_id: int, other_user_id: int):
+    def get_dm_session(cls,
+                       user_id: int,
+                       other_user_id: int,
+                       is_system_message: bool =False):
         print_blue("get_dm_session: 1")
         user = CustomUser.objects.get(id=user_id)
         other_user = CustomUser.objects.get(id=other_user_id)
@@ -31,11 +35,11 @@ class DMSession(models.Model):
         # 両方のユーザーが既に属しているセッションを検索
         sessions = cls.objects.filter(member=user).filter(member=other_user)
         if sessions.exists():
-            print_blue("get_dm_session: 2")
+            print_blue("get_dm_session: 2 (DM)")
             # 既存のセッションがあればそれを返す
             return sessions.first()
         else:
-            print_blue("get_dm_session: 3")
+            print_blue("get_dm_session: 3 (DM)")
             # セッションがなければ新規作成
             session = cls.objects.create()
             session.member.add(user, other_user)

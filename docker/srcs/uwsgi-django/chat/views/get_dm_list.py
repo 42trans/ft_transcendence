@@ -27,7 +27,8 @@ class GetDMList(APIView):
                 message_data = {
                     'user_id': other_user.id,
                     'nickname': other_user.nickname,
-                    'session_id': session.sessionId
+                    'session_id': session.sessionId,
+                    'is_system_message': session.is_system_message
                 }
                 other_user_list.append(message_data)
 
