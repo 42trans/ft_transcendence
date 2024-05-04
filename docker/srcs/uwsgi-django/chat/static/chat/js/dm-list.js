@@ -1,12 +1,4 @@
 // dm_list.js
-document.addEventListener('DOMContentLoaded', function() {
-    // DM Listの取得
-    fetchDMList();
-
-    // 入力したuserとのDMを開始
-    startDMwithUser();
-});
-
 
 function fetchDMList() {
     fetch('/chat/api/dm-list/', {
@@ -74,3 +66,12 @@ function updateDOM(other_user) {
         list.appendChild(item);
     });
 }
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // DM Listの取得
+    fetchDMList();
+
+    // 入力したuserとのDMを開始
+    startDMwithUser();
+});
