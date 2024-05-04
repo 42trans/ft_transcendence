@@ -1,0 +1,33 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>User Info</title>
+</head>
+<body>
+<h1>User Info</h1>
+<ul>
+    <li>Nickname: {{ user_data.nickname }}</li>
+    <li>History: history here</li>
+    <li>xxx: xxx</li>
+    <li>xxx: xxx</li>
+    <li><a href="{% url 'chat:dm' user_data.nickname%}">DM with {{ user_data.nickname }}</a></li>
+    <br>
+    {% if not user_data.isBlockingUser %}
+    <li><a href="#" onclick="blockUser('{{ user_data.nickname }}'); return false;">block</a></li>
+    {% else %}
+    <li><a href="#" onclick="unblockUser('{{ user_data.nickname }}'); return false;">unblock</a></li>
+    {% endif %}
+</ul>
+
+<hr>
+<br>
+<p><a href="{% url 'accounts:user' %}">user page</a></p>
+<p><a href="/pong/">🏓 Pong Index Page</a></p>
+
+<script src="{% static 'accounts/js/block-user.js' %}"></script>
+<script src="{% static 'accounts/js/unblock-user.js' %}"></script>
+
+</body>
+</html>

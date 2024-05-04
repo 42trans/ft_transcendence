@@ -48,4 +48,11 @@ _main() {
 
 
 _main
+
+# uWSGIを実行
+#uwsgi --ini /code/uwsgi.ini &
+
+# Daphneを実行
+#exec daphne -p 8003 trans_pj.asgi:application
+
 exec "$@"

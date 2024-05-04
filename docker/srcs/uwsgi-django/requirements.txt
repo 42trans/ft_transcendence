@@ -29,3 +29,8 @@ pyotp==2.9.0
 
 # JWT
 djangorestframework-simplejwt==5.3.1
+
+# chat
+channels==4.1.0
+daphne==4.1.2
+django-shortuuidfield==0.1.3

@@ -1,0 +1,120 @@
+<!-- chat/templates/chat/dm.html -->
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>DM Room</title>
+
+    <!-- メッセージのスタイル（仮仕様） -->
+    <style>
+        /* DM表示領域 */
+        #dm-log {
+            width: 600px; /* メッセージログの幅を入力フィールドと同じにする */
+            max-height: 400px; /* メッセージログの最大高さを設定 */
+            overflow-y: auto; /* 縦方向にスクロールバーを表示 */
+            padding: 10px; /* 内側に余白を設定 */
+            box-sizing: border-box; /* paddingを含む全体のwidthとheightが600pxと400pxになるように設定 */
+        }
+
+        /* DM送信フォーム */
+        #message-input {
+            width: 600px;               /* 幅を600pxに設定 */
+        }
+
+        /* メッセージコンテンツのスタイル */
+        .message-content {
+            display: flex;
+            flex-direction: column;
+            word-wrap: break-word;      /* 長い単語も適切に折り返す */
+        }
+
+        /* メッセージ共通 */
+        #dm-log li {
+            margin-bottom: 1.3em;       /* メッセージ間の間隔を1.5倍に設定 */
+            padding: 5px;               /* 内側の余白を設定 */
+            border-radius: 5px;        /* 角の丸みを10pxで設定 */
+            display: block;             /* メッセージを縦に並べる */
+            clear: both;                /* 他の要素との重なりを防ぐ */
+        }
+
+        /* 受信者側のメッセージ */
+        #dm-log li.dm-to {
+            text-align: left;           /* dmToのメッセージを左詰め */
+            float: left;                /* 左側に配置 */
+            background-color: #808080;  /* 背景色 */
+            color: white;               /* 文字色 */
+            max-width: 80%;             /* DM表示領域の80%の幅 */
+        }
+
+        /* 送信者側のメッセージ */
+        #dm-log li.dm-from {
+            text-align: left;           /* 自分のメッセージを右詰め */
+            float: right;               /* 右側に配置 */
+            background-color: #b0c4de;  /* 背景色 */
+            color: white;               /* 文字色 */
+            max-width: 80%;             /* DM表示領域の80%の幅 */
+        }
+
+        /* 受信者側のメッセージ */
+        #dm-log li.system-message {
+            text-align: left;           /* dmToのメッセージを左詰め */
+            float: left;                /* 左側に配置 */
+            background-color: #483d8b;  /* 背景色 */
+            color: white;               /* 文字色 */
+            max-width: 80%;             /* DM表示領域の80%の幅 */
+        }
+
+        /* 日時表示のスタイル */
+        .timestamp {
+            font-size: 0.5em;               /* 小さめのフォントサイズ */
+            color: #666;                    /* 色は暗めに設定 */
+            /*text-align: right;              !* 右揃えにする websocket経由だと右揃えにならない？*!*/
+            padding-top: 5px;               /* メッセージとの間隔を設定 */
+            background-color: transparent;  /* 背景色なし */
+        }
+    </style>
+
+</head>
+<body>
+
+{% if not isSystemUser %}
+<h1>DM with <a href="{% url 'accounts:info' nickname %}">{{ nickname }}</a></h1>
+{% else %}
+<h1>System Message</h1>
+{% endif %}
+
+
+{% if not isBlockingUser %}
+    <!-- DM logを表示 -->
+    <ul id="dm-log" style="list-style: none;">
+        {% for message in messages %}
+        <li class="{{ message.sender.nickname|slugify }}" data-sender-name="{{ message.sender.nickname }}">
+            <div class="message-content">
+                <span>[ {{ message.sender.nickname }} ]</span>
+                <span>{{ message.message|safe }}</span>
+                <span class="timestamp">{{ message.timestamp|date:"Y-m-d H:i:s" }}</span>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% if not isSystemUser %}
+    <input id="message-input" type="text">
+    <input id="message-submit" type="button" value="Send">
+    {% endif %}
+
+{% else %}
+    <p>[blocking user]</p>
+{% endif %}
+
+<hr>
+
+<p><a href="{% url 'chat:dm_list' %}">dm_list</a></p>
+
+{{ nickname|json_script:"nickname" }}
+
+<script type="module" src="{% static 'chat/js/dm.js' %}"></script>
+
+</body>
+</html>

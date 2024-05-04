@@ -64,6 +64,7 @@ services:
       - "8096:8001" # http
       - "${DJANGO_PORT:?}:8000"
       - "8002:8002"
+      - "8003:8003"  # wss
     depends_on:
       postgres:
         condition: service_healthy

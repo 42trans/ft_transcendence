@@ -10,11 +10,11 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import TemplateView
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -133,3 +133,29 @@ class EditUserProfileAPIView(APIView):
         update_session_auth_hash(request, user)  # password更新によるsessionを継続
         user.save()
         return True, "password updat successfully"
+
+
+# todo: tmp, API and FBV -> CBV
+def get_user_info(request, nickname):
+    if not nickname:
+        response = {
+            'error': 'Nickname required'
+        }
+        return redirect('/pong/')
+
+
+    try:
+        info_user = CustomUser.objects.get(nickname=nickname)
+        is_blocking_user = request.user.blocking_users.filter(id=info_user.id).exists()
+
+        user_data = {
+            'id': info_user.id,
+            'email': info_user.email,
+            'nickname': info_user.nickname,
+            'enable_2fa': info_user.enable_2fa,
+            'isBlockingUser': is_blocking_user
+        }
+        return render(request, 'accounts/user_info.html', {'user_data': user_data})
+    except Exception as e:
+        logging.error(f"API request failed: {e}")
+        return redirect('/pong/')
