@@ -91,7 +91,11 @@ class SystemMessageAPI(APIView):
                 'status': 'success',
                 'message': 'System message sent'
             }
+            return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(f'system message 5: err {str(e)}')
-
-        return Response(response, status=status.HTTP_200_OK)
+            response = {
+                'status': 'error',
+                'message': f'Error: {str(e)}'
+            }
+            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

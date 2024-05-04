@@ -1,4 +1,6 @@
 // chat/dm.js
+
+// WebSocketで受信したメッセージのクラス[dm-to / dm-from]を分類
 function classifyMessageSender(messageElement, senderName, dmTo) {
     if (senderName === dmTo) {
         messageElement.classList.add('dm-to');  // 他のユーザーからのメッセージ
@@ -8,6 +10,7 @@ function classifyMessageSender(messageElement, senderName, dmTo) {
 }
 
 
+// DBから取得したメッセージのクラス[dm-to / dm-from]を分類
 function applyStylesToInitialLoadMessages(dmTo) {
     const messageElements = document.querySelectorAll('#dm-log li');
 
@@ -20,7 +23,7 @@ function applyStylesToInitialLoadMessages(dmTo) {
 
 function initDM() {
     const dmTo = JSON.parse(document.getElementById('nickname').textContent);
-    const websocketUrl = 'wss://' + window.location.host + '/ws/dm/' + dmTo + '/';
+    const websocketUrl = 'wss://' + window.location.host + '/ws/dm-with/' + dmTo + '/';
     const dmSocket = new WebSocket(websocketUrl);
 
     applyStylesToInitialLoadMessages(dmTo);
@@ -44,7 +47,7 @@ function initDM() {
 
         messageContent.className = 'message-content';
 
-        // [ sender ] \n message
+        // [ sender ] \n message に整形 -> todo: senderはicon化
         let senderElement = document.createElement('span');
         senderElement.textContent = `[ ${senderName} ]`;
 
@@ -52,17 +55,16 @@ function initDM() {
         messageTextElement.textContent = data.message;
 
         messageContent.appendChild(senderElement);
-        // messageContent.appendChild(document.createElement('br'));
         messageContent.appendChild(messageTextElement);
         messageElement.appendChild(messageContent);
 
         timestampContent.className = 'timestamp';
         timestampContent.textContent = timestamp;
-        timestampContent.style.textAlign = 'right'; // 追加: タイムスタンプのスタイルを設定
+        timestampContent.style.textAlign = 'right';
         messageElement.appendChild(timestampContent);
 
         document.querySelector('#dm-log').appendChild(messageElement);
-        scrollToBottom();  // 受信時にスクロール位置を調整
+        scrollToBottom();  // dm-logのスクロール位置を調整
     };
 
     document.querySelector('#message-input').onkeyup = function(e) {
@@ -79,7 +81,7 @@ function initDM() {
             'message': message
         }));
         messageInputDom.value = '';
-        scrollToBottom();  // 受信時にスクロール位置を調整
+        scrollToBottom();  // dm-logのスクロール位置を調整
     };
 
     dmSocket.onopen = function() {
@@ -96,6 +98,7 @@ function initDM() {
 }
 
 
+// dm-logのスクロール位置を調整
 function scrollToBottom() {
     const dmLog = document.getElementById('dm-log');
     dmLog.scrollTop = dmLog.scrollHeight;

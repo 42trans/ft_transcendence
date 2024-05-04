@@ -9,6 +9,16 @@
 </head>
 <body>
 <h2>Start DM</h2>
+
+<!-- エラーメッセージの表示 -->
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 dm with
 <input id="nickname-input" type="text" size="20">
 <input id="nickname-submit" type="button" value="Enter">
@@ -19,7 +29,7 @@ dm with
 <p><a href="{% url 'accounts:user' %}">return to user page</a></p>
 <hr>
 
-<script src="{% static 'chat/js/dm_list.js' %}"></script>
+<script src="{% static 'chat/js/dm-list.js' %}"></script>
 
 </body>
 </html>

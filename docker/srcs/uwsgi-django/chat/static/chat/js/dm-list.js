@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function fetchDMList() {
-    fetch('/dm/api/list/', {
+    fetch('/chat/api/dm-list/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ function startDMwithUser() {
     // ボタンクリックでDM画面へのリダイレクト
     submitButton.onclick = function() {
         const receiver_nickname = input.value;
-        window.location.pathname = '/chat/dm/' + receiver_nickname + '/';
+        window.location.pathname = '/chat/dm-with/' + receiver_nickname + '/';
     };
 }
 
@@ -58,7 +58,7 @@ function updateDOM(other_user) {
 
         // リンク要素を作成
         const link = document.createElement('a');
-        link.href = `/chat/dm/${dm_user.nickname}/`; // リンクの設定
+        link.href = `/chat/dm-with/${dm_user.nickname}/`; // リンクの設定
 
         // link.textContent = `${dm_user.nickname} (DMSession.id: ${dm_user.session_id})`;
         // link.textContent = `${dm_user.nickname}`;

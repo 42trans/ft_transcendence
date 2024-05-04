@@ -79,7 +79,7 @@
 <body>
 
 {% if not isSystemUser %}
-<h1>DM with [<a href="{% url 'accounts:info' nickname %}">{{ nickname }}</a>]</h1>
+<h1>DM with <a href="{% url 'accounts:info' nickname %}">{{ nickname }}</a></h1>
 {% else %}
 <h1>System Message</h1>
 {% endif %}

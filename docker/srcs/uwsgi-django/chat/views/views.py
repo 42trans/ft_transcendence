@@ -26,42 +26,21 @@ def print_blue(text):
     print(f"\033[34m[DEBUG] {text}\033[0m")
 
 
-def index(request):
-    if not request.user.is_authenticated:
-        return redirect("accounts:login")
-
-    user = request.user
-    data = {
-        'nickname': user.nickname
-    }
-    return render(request, "chat/index.html", data)
-
-
-def chat_room(request, room_name):
-    if not request.user.is_authenticated:
-        return redirect("accounts:login")
-
-    data = {
-        "room_name": room_name
-    }
-    return render(request, "chat/room.html", data)
-
-
 # todo: CBV API
-def dm_room(request, nickname):
+def dm_with(request, nickname):
     if not request.user.is_authenticated:
         return redirect("accounts:login")
 
     user = request.user
     if nickname == user.nickname:
         messages.error(request, "You cannot send a message to yourself")
-        return redirect('chat:index')
+        return redirect('chat:dm_list')
 
     try:
         target_user = CustomUser.objects.get(nickname=nickname)
     except CustomUser.DoesNotExist:
         messages.error(request, "The specified user does not exist")
-        return redirect('chat:index')
+        return redirect('chat:dm_list')
 
     # DMからログを取得
     other_user = CustomUser.objects.get(id=target_user.id)
@@ -82,11 +61,9 @@ def dm_room(request, nickname):
     return render(request, 'chat/dm.html', data)
 
 
-# test page
-def test(request):
-    return render(request, "chat/tmp.html")
 
-
-# test page
+# todo: CBV API
 def dm_list(request):
+    if not request.user.is_authenticated:
+        return redirect("accounts:login")
     return render(request, "chat/dm_list.html")

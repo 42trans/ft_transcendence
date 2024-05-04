@@ -29,7 +29,7 @@ urlpatterns = [
 # API
 urlpatterns += [
 	path('accounts/', include(accounts.urls_api)),
-	path('dm/', include(chat.urls_api)),
+	path('chat/', include(chat.urls_api)),
 ]
 
 # 国際化対象のURLパターン

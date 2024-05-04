@@ -12,7 +12,7 @@
     <li>History: history here</li>
     <li>xxx: xxx</li>
     <li>xxx: xxx</li>
-    <li><a href="/chat/dm/{{ user_data.nickname }}/">Start DM</a></li>
+    <li><a href="{% url 'chat:dm' user_data.nickname%}">DM with {{ user_data.nickname }}</a></li>
     <br>
     {% if not user_data.isBlockingUser %}
     <li><a href="#" onclick="blockUser('{{ user_data.nickname }}'); return false;">block</a></li>
