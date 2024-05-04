@@ -43,6 +43,7 @@ class TournamentEntry
 		// 作成した<div>要素をhtmlに追加
 		this.tournamentContainer.appendChild(header);
 		this.tournamentContainer.appendChild(overview);
+		// TODO_ft:naviButtonが2回ある。リファクタリングする。
 		this.tournamentContainer.appendChild(naviButton);
 		this.tournamentContainer.appendChild(tourId);
 		this.tournamentContainer.appendChild(deleteButton);

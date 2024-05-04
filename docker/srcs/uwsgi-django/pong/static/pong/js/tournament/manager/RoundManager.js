@@ -36,7 +36,7 @@ class RoundManager
 			if (this.currentState) {
 				this.currentState.exit();
 			}
-			console.log('currentRound', this.currentRound);
+			// console.log('currentRound', this.currentRound);
 			this.currentState = newState;
 			this.currentState.enter();
 		}

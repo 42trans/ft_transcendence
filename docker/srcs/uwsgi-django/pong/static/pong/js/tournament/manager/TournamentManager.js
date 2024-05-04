@@ -43,8 +43,8 @@ class TournamentManager
 			const latestTournament = await this._getFilteredUserTournaments();
 			// 主催トーナメントの開催状態で分岐
 			if (latestTournament) {
-				console.log('latestTournament:', latestTournament);
-				// 必要な値を渡す
+				// console.log('latestTournament:', latestTournament);
+				// roundManagerに必要な値を渡す
 				this.roundManager.userTournament	= latestTournament;
 				this.roundManager.userProfile		= this.userProfile;
 				// トーナメント情報の表示
@@ -86,7 +86,7 @@ class TournamentManager
 			}
 			
 			const result = await response.json();
-			console.log('Latest tournament:', result);
+			// console.log('Latest tournament:', result);
 
 			if (result && result.tournament) {
 				// ongoing が見つかった場合
