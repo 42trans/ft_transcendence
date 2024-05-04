@@ -68,6 +68,11 @@ build_up_monitor: init
 	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) build
 	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
 
+.PHONY: build_up_three
+build_up_three: init
+	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) build
+	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) up -d
+	
 .PHONY: build_up_default
 build_up_default: init
 	docker-compose $(COMPOSE_FILES_ARGS) build
@@ -284,7 +289,16 @@ run_django_server:
 # DBのフィールド変更時に毎回必要
 migrate_Django_db:
 	docker exec -it uwsgi-django bash -c "python manage.py migrate --noinput"
+# Django staticファイル収集
+django_collectstatic:
+	docker exec -it uwsgi-django bash -c "python manage.py collectstatic --noinput"
 
+# vite build for public
+vite_npm_run_build:
+	docker exec -it vite bash -c "npm run build"
+# vite 開発サーバー
+vite_npm_run_dev:
+	docker exec -it vite bash -c "npm run dev"
 # -----------------------------------------------
 # インクルードしたいファイルのリスト
 # -----------------------------------------------

@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta charset="UTF-8">
+	<title>game ft_trans three.js app</title>
+	<script type="module" crossorigin src="{% static 'pong/three/assets/index.js' %}"></script>
+	<link rel="stylesheet" crossorigin href="{% static 'pong/three/assets/index.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/pong.css' %}">
+</head>
+
+<body>
+	<div class="canvas-container">
+		<div class="hs-text">
+			<div class="container">
+				<canvas id="threejs-canvas-container"></canvas>
+				<div>
+					<a href="/pong/" class="site-btn" id="game-home-btn">(dev)Home</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

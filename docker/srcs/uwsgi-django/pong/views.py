@@ -27,11 +27,11 @@ def pong_view(request):
 
 
 def index_bootstrap(request):
-	return render(request, 'pong/bootstrap_index.html')
+	return render(request, 'pong/plane/bootstrap_index.html')
 
 
 def sign_in_bootstrap(request):
-	return render(request, 'pong/bootstrap_sign-in.html')
+	return render(request, 'pong/plane/bootstrap_sign-in.html')
 
 
 def results(request):
@@ -68,13 +68,13 @@ def save_game_result(request):
 			return JsonResponse({'status': 'error', 'message': str(e)})
 	return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
+# 3D
+def game(request):
+	return render(request, 'pong/game.html')
 # custom template hth pong
-def gw_index(request):
-	return render(request, 'pong/gw/index.html')
-def gw_game(request):
-	return render(request, 'pong/gw/game.html')
-def gw_tournament(request):
-	return render(request, 'pong/gw/tournament.html')
+def tournament(request):
+	return render(request, 'pong/tournament.html')
+
 def gw_sign_in(request):
 	return render(request, 'pong/gw/bootstrap_sign-in.html')
 def gw_sign_in42(request):
@@ -176,9 +176,3 @@ def gw_sign_in_redirect42(request):
 
 	# ログイン後のリダイレクト先：/pong/以下を記載する
 	return redirect('/pong/gw/')
-
-
-def gw_results(request):
-	results_list = PongGameResult.objects.all().order_by("-date")
-	context = {'results_list': results_list}
-	return render(request, 'pong/gw/results.html', context)

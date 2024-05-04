@@ -29,6 +29,8 @@
 |          |                       |      |      |      |             |
 |Exporter  | nginx_exporter        | 9113 | 9113 | 9113 | Monitor     |
 |Exporter  | elasticsearch-exporter| 9114 | 9114 | 9114 | Monitor     |
+| 3D       | vite                  | 5184 | 5184 | 5173 | three       |
+| 3D       | webpack               | 8180 | 8180 | 8080 | three       |
 
 ## link
 

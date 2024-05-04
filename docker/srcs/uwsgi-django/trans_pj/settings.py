@@ -139,20 +139,6 @@ ASGI_APPLICATION = 'trans_pj.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-# 		# -------------------------
-# 		# Prometheus
-# 		# -------------------------
-# 		'ENGINE': 'django_prometheus.db.backends.sqlite3',
-#         # 'ENGINE': 'django.db.backends.sqlite3',
-# 		# -------------------------
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
 DATABASES = {
 	'default': {
 		# -------------------------
@@ -211,10 +197,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
-# STATIC_ROOT = '/code/static/'
-# BASE_DIR: プロジェクトのルート
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}signin - hth Pong{% endblock title %}
+
+{% block content %}
+
+<div class="canvas-container">
+
+<main class="form-signin w-50 m-auto">
+	<form>
+		<h1 class="slideup-text h3 mb-3 fw-normal">Please sign in</h1>
+
+		<div class="slideup-text form-floating">
+			<input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+			<label for="floatingInput">Email address</label>
+		</div>
+		<div class="slideup-text form-floating">
+			<input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+			<label for="floatingPassword">Password</label>
+		</div>
+
+		<div class="slideup-text  form-check text-start my-3">
+			<input class="slideup-text form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+			<label class="slideup-text form-check-label" for="flexCheckDefault">
+				Remember me
+			</label>
+		</div>
+		<button class=" slideup-text mb-1 gw_btn gw_btn-primary w-100 py-2" type="submit">sign in</button>
+	</form>
+	<a href="#" class=" slideup-text gw_btn gw_btn-primary w-100 py-2" role="button">(仮)42Auth Link</a>
+	<p class="slideup-text mt-2 gw_text-body-secondary"> <a href="#" >未登録の方はこちら(sign up)</a></p>
+	<!-- <p class="slideup-text mt-2 gw_text-body-secondary">&copy; 2024</p> -->
+	</main>
+
+</div>
+
+{% endblock %}
+
+<h2 class="slideup-text">ユーザー登録</h2>
+			<p class="slideup-text"></p>
+
+			<form action="{% url 'accounts:signup' %}" method="post">
+				{% csrf_token %}
+				{{ form.as_p }}
+				<p><input type="submit" value="登録"></p>
+			</form>
+
+			<hr>
+			<a href="{% url 'accounts:oauth_ft' %}">sign-up with 42</a>
+			<hr>
+			<a href="/pong/">🏓 return to pong</a></li> 
+
+			<a href="#" class="site-btn">Read More</a>
