@@ -38,7 +38,7 @@ class TestGetMatchesByRound(TestCase):
 
 	def test_round_matches_multiple_success(self):
 		"""複数の試合が正しく取得できるかテスト（1回戦の全試合）"""
-		response = self.client.get(reverse('get_matches_by_round', kwargs={'round_number': 1}))
+		response = self.client.get(reverse('get_matches_by_round_latest_user_ongoing_tournament', kwargs={'round_number': 1}))
 		self.assertEqual(response.status_code, 200)
 		matches = response.json()['matches']
 		self.assertEqual(len(matches), 4)
@@ -52,16 +52,16 @@ class TestGetMatchesByRound(TestCase):
 		"""
 		試合が存在しないラウンドのリクエストテスト
 		"""
-		response = self.client.get(reverse('get_matches_by_round', kwargs={'round_number': 99}))
+		response = self.client.get(reverse('get_matches_by_round_latest_user_ongoing_tournament', kwargs={'round_number': 99}))
 		self.assertEqual(response.status_code, 404)
 
 	def test_unauthenticated_access(self):
 		"""認証されていないユーザーのアクセステスト"""
 		self.client.logout()
-		response = self.client.get(reverse('get_matches_by_round', kwargs={'round_number': 1}))
+		response = self.client.get(reverse('get_matches_by_round_latest_user_ongoing_tournament', kwargs={'round_number': 1}))
 		self.assertEqual(response.status_code, 302)  # 未認証の場合はリダイレクトされる
 
 	def test_wrong_method_access(self):
 		"""不正なリクエストメソッドでのアクセステスト"""
-		response = self.client.post(reverse('get_matches_by_round', kwargs={'round_number': 1}))
+		response = self.client.post(reverse('get_matches_by_round_latest_user_ongoing_tournament', kwargs={'round_number': 1}))
 		self.assertEqual(response.status_code, 405)

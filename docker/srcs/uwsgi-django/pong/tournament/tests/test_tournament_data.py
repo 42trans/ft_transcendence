@@ -6,7 +6,7 @@ from ...models import Tournament
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-class TournamentData(TestCase):
+class TestTournamentData(TestCase):
 	def setUp(self):
 		User = get_user_model()
 		self.user = User.objects.create_user(
@@ -53,7 +53,7 @@ class TournamentData(TestCase):
 
 	def test_tournament_data_success(self):
 		"""トーナメントデータが正しく取得できるかテスト"""
-		response = self.client.get(reverse('tournament_data_id', kwargs={'tournament_id': self.tournament.id}))
+		response = self.client.get(reverse('get_tournament_data_by_id', kwargs={'tournament_id': self.tournament.id}))
 		self.assertEqual(response.status_code, 200)
 		response_data = response.json()
 		self.assertEqual(response_data['id'], self.tournament.id)
@@ -63,7 +63,7 @@ class TournamentData(TestCase):
 	def test_unauthenticated_access(self):
 		"""認証されていないユーザーが正しく取得できるかテスト"""
 		self.client.logout()  # ユーザーをログアウト
-		response = self.client.get(reverse('tournament_data_id', kwargs={'tournament_id': self.tournament.id}))
+		response = self.client.get(reverse('get_tournament_data_by_id', kwargs={'tournament_id': self.tournament.id}))
 		response_data = response.json()
 		self.assertEqual(response_data['id'], self.tournament.id)
 		self.assertEqual(response_data['name'], self.tournament.name)
@@ -74,7 +74,7 @@ class TournamentData(TestCase):
 		"""他のユーザーがトーナメントデータにアクセスした際に適切にアクセスを制限するか"""
 		self.client.logout()  # 入り直し
 		self.client.login(email='testuser2@example.com', password='223alks;d;fjsakd45abcde')
-		response = self.client.get(reverse('tournament_data_id', kwargs={'tournament_id': self.tournament.id}))
+		response = self.client.get(reverse('get_tournament_data_by_id', kwargs={'tournament_id': self.tournament.id}))
 		response_data = response.json()
 		self.assertEqual(response_data['id'], self.tournament.id)
 		self.assertEqual(response_data['name'], self.tournament.name)
@@ -83,13 +83,10 @@ class TournamentData(TestCase):
 
 	def test_tournament_data_not_found(self):
 		"""存在しないトーナメントIDでアクセスした場合に404が返されるかテスト"""
-		response = self.client.get(reverse('tournament_data_id', kwargs={'tournament_id': 999999}))
+		response = self.client.get(reverse('get_tournament_data_by_id', kwargs={'tournament_id': 999999}))
 		self.assertEqual(response.status_code, 404)
 
 	def test_tournament_data_wrong_method(self):
 		"""不正なリクエストメソッドでアクセスした場合に405が返されるかテスト"""
-		response = self.client.post(reverse('tournament_data_id', kwargs={'tournament_id': self.tournament.id}))
+		response = self.client.post(reverse('get_tournament_data_by_id', kwargs={'tournament_id': self.tournament.id}))
 		self.assertEqual(response.status_code, 405)
-		
-	
-

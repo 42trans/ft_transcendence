@@ -120,7 +120,10 @@ class TournamentCreator
 			if (!response.ok) {
 				throw new Error(`Failed to fetch ongoing tournaments with status: ${response.status}`);
 			}
-
+			if (response.status === 204) {
+				console.log('No ongoing tournaments found, received 204 No Content');
+				return null;
+			}
 			const result = await response.json();
 			// result.tournamentが存在する場合はtrueを、それ以外の場合はfalseを返す
 			return !!result.tournament;

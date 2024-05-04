@@ -29,15 +29,16 @@ class ConfigTournament
 		this.tournamentContainerId	= 'tournament-container';
 		this.API_URLS = {
 			userProfile:			'/accounts/api/user/profile/',
-			tournamentCreate:		'/pong/api/tournament/create/',
-			tournamentDelete:		'/pong/api/tournament/delete/',
+			ongoingLatestTour:		'/pong/api/tournament/user/ongoing/latest/',
 			tournamentData:			'/pong/api/tournament/data/',
 			ongoingMatchesByRound:	'/pong/api/tournament/user/ongoing/matches/', 
-			ongoingTournaments:		'/pong/api/tournament/user/ongoing/all/',
-			ongoingLatestTour:		'/pong/api/tournament/user/ongoing/latest/',
+			tournamentCreate:		'/pong/api/tournament/create/',
+			tournamentDelete:		'/pong/api/tournament/delete/',
 			// 使用していない
 			ongoingAllMatches:		'/pong/api/tournament/user/ongoing/matches/all/',
-			// 
+			AllTournament:			'/pong/api/tournament/user/all/',
+			ongoingTournamentsId:	'/pong/api/tournament/user/ongoing/all/',
+			//
 		};
 	}
 }

@@ -80,9 +80,13 @@ class TournamentManager
 				// 他のエラーの場合は、何かしらのエラー処理を行う
 				throw new Error(`Request failed with status ${response.status}`);
 			}
+			if (response.status === 204) {
+				console.log('No ongoing tournaments found, received 204 No Content');
+				return null;
+			}
 			
 			const result = await response.json();
-			// console.log('Latest tournament:', result);
+			console.log('Latest tournament:', result);
 
 			if (result && result.tournament) {
 				// ongoing が見つかった場合

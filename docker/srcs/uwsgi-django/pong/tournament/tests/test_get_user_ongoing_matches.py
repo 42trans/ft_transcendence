@@ -55,7 +55,7 @@ class TestGetUserOngoingMatches(TestCase):
 		正しく最新の未終了トーナメントのマッチが取得できるかテスト
 		確認方法: nameがExample2ではない
 		"""
-		response = self.client.get(reverse('get_user_ongoing_matches'))
+		response = self.client.get(reverse('get_matches_of_latest_tournament_user_ongoing'))
 		self.assertEqual(response.status_code, 200)
 		matches = response.json()['matches']
 		self.assertEqual(len(matches), 1)
@@ -64,7 +64,7 @@ class TestGetUserOngoingMatches(TestCase):
 	def test_no_ongoing_matches(self):
 		"""未終了のトーナメントがない場合の挙動をテスト"""
 		Tournament.objects.all().update(is_finished=True)
-		response = self.client.get(reverse('get_user_ongoing_matches'))
+		response = self.client.get(reverse('get_matches_of_latest_tournament_user_ongoing'))
 		self.assertEqual(response.status_code, 204)
 		# レスポンスボディが空であることを確認
 		self.assertEqual(response.content, b'')
@@ -72,12 +72,12 @@ class TestGetUserOngoingMatches(TestCase):
 	def test_unauthenticated_access(self):
 		"""認証されていないユーザーのアクセステスト"""
 		self.client.logout()
-		response = self.client.get(reverse('get_user_ongoing_matches'))
+		response = self.client.get(reverse('get_matches_of_latest_tournament_user_ongoing'))
 		self.assertEqual(response.status_code, 302)
 
 	def test_wrong_method_access(self):
 		"""不正なリクエストメソッドでのアクセステスト"""
-		response = self.client.post(reverse('get_user_ongoing_matches'))
+		response = self.client.post(reverse('get_matches_of_latest_tournament_user_ongoing'))
 		self.assertEqual(response.status_code, 405)
 
 	def test_access_by_other_user(self):
@@ -86,6 +86,6 @@ class TestGetUserOngoingMatches(TestCase):
 		self.client.login(
 			email='testuser2@example.com',
 			password='223alks;d;fjsakd45abcde')
-		response = self.client.get(reverse('get_user_ongoing_matches'))
+		response = self.client.get(reverse('get_matches_of_latest_tournament_user_ongoing'))
 		self.assertEqual(response.status_code, 204)
 		self.assertEqual(response.content, b'')

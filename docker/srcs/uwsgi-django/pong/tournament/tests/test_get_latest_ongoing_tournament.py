@@ -1,4 +1,4 @@
-# docker/srcs/uwsgi-django/pong/tournament/tests/get_latest_ongoing_tournament.py
+# docker/srcs/uwsgi-django/pong/tournament/tests/get_latest_user_ongoing_tournament.py
 from django.test import TestCase, Client
 from django.urls import reverse
 from ...models import Tournament
@@ -41,7 +41,7 @@ class TestGetLatestOngoingTournament(TestCase):
 
 	def test_get_latest_ongoing_tournament(self):
 		"""最新の未終了トーナメントが正しく取得できるか確認"""
-		response = self.client.get(reverse('get_latest_ongoing_tournament'))
+		response = self.client.get(reverse('get_latest_user_ongoing_tournament'))
 		self.assertEqual(response.status_code, 200)
 		response_data = json.loads(response.content)
 		self.assertEqual(response_data['tournament']['name'], 'Tournament Two')
@@ -50,7 +50,7 @@ class TestGetLatestOngoingTournament(TestCase):
 		"""未終了のトーナメントが存在しない場合の挙動を確認"""
 		# すべて終了状態に
 		Tournament.objects.all().update(is_finished=True) 
-		response = self.client.get(reverse('get_latest_ongoing_tournament'))
+		response = self.client.get(reverse('get_latest_user_ongoing_tournament'))
 		self.assertEqual(response.status_code, 204)
 		# HTTP 204応答ではレスポンスボディが空であることを確認
 		self.assertEqual(response.content, b'')
@@ -59,14 +59,14 @@ class TestGetLatestOngoingTournament(TestCase):
 		"""認証されていないアクセスが拒否されること"""
 		# ログアウト
 		self.client.logout()
-		response = self.client.get(reverse('get_latest_ongoing_tournament'))
+		response = self.client.get(reverse('get_latest_user_ongoing_tournament'))
 		self.assertNotEqual(response.status_code, 200)
 		self.assertEqual(response.status_code, 302)
 		self.assertTrue(response.url.startswith('/accounts/login'))
 
 	def test_wrong_method_access(self):
 		"""不正なリクエストメソッドでアクセスした場合のエラー確認"""
-		response = self.client.post(reverse('get_latest_ongoing_tournament'))
+		response = self.client.post(reverse('get_latest_user_ongoing_tournament'))
 		self.assertEqual(response.status_code, 405)
 
 	def test_access_by_other_user(self):
@@ -75,5 +75,5 @@ class TestGetLatestOngoingTournament(TestCase):
 		self.client.login(
 			email='testuser2@example.com',
 			password='223alks;d;fjsakd45abcde')
-		response = self.client.get(reverse('get_latest_ongoing_tournament'))
+		response = self.client.get(reverse('get_latest_user_ongoing_tournament'))
 		self.assertEqual(response.status_code, 204)

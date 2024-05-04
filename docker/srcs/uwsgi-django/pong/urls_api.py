@@ -1,12 +1,18 @@
 # docker/srcs/uwsgi-django/pong/urls.py
-from django.urls import include, path
-from django.views.generic import TemplateView
-from pong import views
+from django.urls import path
 from pong.blockchain import save_testnet
 from pong.blockchain import fetch_testnet
 from pong.blockchain import fetch_testnet
 from pong.blockchain import record_game_result
-from .views.tournament_views import tournament_create, tournament_data_id, list_all_user_tournaments, delete_tournament, get_user_ongoing_matches, get_matches_by_round, user_all_ongoing_tournament, get_latest_ongoing_tournament
+from .views.tournament_views import (
+	create_new_tournament_and_matches, 
+	get_tournament_data_by_id, 
+	get_history_all_user_tournaments, 
+	delete_tournament_and_matches, 
+	get_matches_of_latest_tournament_user_ongoing, 
+	get_matches_by_round_latest_user_ongoing_tournament, 
+	get_tournament_id_user_all_ongoing, get_latest_user_ongoing_tournament
+)
 
 # パスはapiが先頭につきます。ex./pong/api/tournament/create/
 urlpatterns = [
@@ -17,20 +23,26 @@ urlpatterns = [
 	# ----------------------------------------
 	# tournament
 	# ----------------------------------------
-	# 「ユーザーが主催する && 未終了のトーナメント」 に関する「全7試合」のデータを全て取得する
-	path("tournament/user/ongoing/matches/all", get_user_ongoing_matches, name="get_user_ongoing_matches"),
-	# 「ユーザーが主催する && 未終了のトーナメント」 に関する「round_number」のデータを全て取得する
-	path("tournament/user/ongoing/matches/<int:round_number>/", get_matches_by_round, name="get_matches_by_round"),
-	# トーナメントと「全7試合」の新規作成
-	path("tournament/create/", tournament_create, name="tournament_create"),
-	# 「ユーザーが主催する && 未終了のトーナメント」 データを全て返す
-	path("tournament/user/ongoing/all/", user_all_ongoing_tournament, name="user_all_ongoing_tournament"),
-	# ログイン中のユーザーが主催する未終了トーナメントのうち、「最新」のものを返す
-	path("tournament/user/ongoing/latest/", get_latest_ongoing_tournament, name="get_latest_ongoing_tournament"),
-	# 指定されたトーナメントIDのトーナメント情報を取得
-	path("tournament/data/<int:tournament_id>/", tournament_data_id, name="tournament_data_id"),
+	# 「最新」のトーナメントの情報を取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
+	path("tournament/user/ongoing/latest/", get_latest_user_ongoing_tournament, name="get_latest_user_ongoing_tournament"),
+	#  ゲストも「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。
+	path("tournament/data/<int:tournament_id>/", get_tournament_data_by_id, name="get_tournament_data_by_id"),
+	# 「round_number」のデータを全て取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
+	path("tournament/user/ongoing/matches/<int:round_number>/", get_matches_by_round_latest_user_ongoing_tournament, name="get_matches_by_round_latest_user_ongoing_tournament"),
 
-	path("tournament/user/all/", list_all_user_tournaments, name="list_all_user_tournaments"),
-	path('tournament/delete/<int:tournament_id>/', delete_tournament, name='delete_tournament'),
+	# 新規作成: トーナメントと「全7試合」。 ログイン中のユーザーが主催者として。
+	path("tournament/create/", create_new_tournament_and_matches, name="create_new_tournament_and_matches"),
+	# 削除: トーナメントと「全7試合」。ログイン中のユーザーが主催者のものを。
+	path('tournament/delete/<int:tournament_id>/', delete_tournament_and_matches, name='delete_tournament_and_matches'),
+
+		# -------------------------------
+		# 未使用（汎用的なものを用意）
+		# -------------------------------
+		# 「ユーザーが主催者」のトーナメントを全て取得
+		path("tournament/user/all/", get_history_all_user_tournaments, name="get_history_all_user_tournaments"),
+		# 「ユーザーが主催する && 未終了のトーナメント」 のidを全て返す
+		path("tournament/user/ongoing/all/", get_tournament_id_user_all_ongoing, name="get_tournament_id_user_all_ongoing"),
+		# 「ユーザーが主催する && 未終了のトーナメント」 に関する「全7試合」のデータを全て取得する
+		path("tournament/user/ongoing/matches/all", get_matches_of_latest_tournament_user_ongoing, name="get_matches_of_latest_tournament_user_ongoing"),
 ]
 

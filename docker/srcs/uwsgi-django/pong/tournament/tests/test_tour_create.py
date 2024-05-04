@@ -24,7 +24,7 @@ class TestTourCreate(TestCase):
 
 	def test_tournament_create_valid_data(self):
 		"""有効なリクエスト"""
-		response = self.client.post(reverse('tournament_create'), {
+		response = self.client.post(reverse('create_new_tournament_and_matches'), {
 			'name': 'New Tournament',
 			'date': timezone.now().isoformat(),
 			# 'date': timezone.now().isoformat(timespec='minutes'),
@@ -36,7 +36,7 @@ class TestTourCreate(TestCase):
 
 	def test_tournament_create_invalid_date_format(self):
 		"""日付が不正"""
-		response = self.client.post(reverse('tournament_create'), {
+		response = self.client.post(reverse('create_new_tournament_and_matches'), {
 			'name': 'New Tournament',
 			  # 不正な形式
 			'date': '2024-12-01 14:00',
@@ -46,7 +46,7 @@ class TestTourCreate(TestCase):
 
 	def test_tournament_create_no_name(self):
 		"""名前が空"""		
-		response = self.client.post(reverse('tournament_create'), {
+		response = self.client.post(reverse('create_new_tournament_and_matches'), {
 			# 名前がない
 			'name': '',
 			'date': timezone.now().isoformat(),			
@@ -56,7 +56,7 @@ class TestTourCreate(TestCase):
 
 	def test_tournament_create_seven_nicknames(self):
 		"""ニックネームが7名"""
-		response = self.client.post(reverse('tournament_create'), {
+		response = self.client.post(reverse('create_new_tournament_and_matches'), {
 			'name': 'New Tournament',
 			'date': timezone.now().isoformat(),
 			'player_nicknames': json.dumps(['Player1', 'Player2', 'Player3', 'Player4', 'Player5', 'Player6', 'Player7'])  # 7名のみ
@@ -65,7 +65,7 @@ class TestTourCreate(TestCase):
 
 	def test_tournament_create_empty_strings(self):
 		"""ニックネームが空文字列"""
-		response = self.client.post(reverse('tournament_create'), {
+		response = self.client.post(reverse('create_new_tournament_and_matches'), {
 			'name': 'New Tournament',
 			'date': timezone.now().isoformat(),
 			# 空文字列を含む

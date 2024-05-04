@@ -223,6 +223,10 @@ ELK_certs:
 test_django_test_py:
 	docker exec uwsgi-django /bin/sh -c "python manage.py test --keepdb" > test/result/test_py_results.txt 
 
+# pong/tournament 
+test_tournament_django_all:
+	docker exec -it uwsgi-django bash -c "python manage.py test pong.tournament.tests"
+
 .PHONY: test_main
 test_main:
 	bash ./test/main_test.sh

@@ -1,7 +1,10 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/components/TournamentOverview.js
 import { config }	from '../ConfigTournament.js';
 
-export class TournamentOverview 
+/**
+ * - ゲストも利用可能なAPIを用いている
+ */
+class TournamentOverview 
 {
 	constructor() { /** empty */ }
 

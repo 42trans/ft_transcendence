@@ -15,8 +15,8 @@ class Tournament(models.Model):
 	organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tournaments')
 	is_finished = models.BooleanField(default=False)
 	# オブジェクトを人間が読める文字列形式で表現するために使用
-	# def __str__(self):
-	# 	return self.name
+	def __str__(self):
+		return self.name
 
 class Match(models.Model):
 	tournament = models.ForeignKey(Tournament, related_name='matches', on_delete=models.CASCADE)
@@ -34,8 +34,8 @@ class Match(models.Model):
 	player1_score = models.IntegerField(default=0)
 	player2_score = models.IntegerField(default=0)
 	is_finished = models.BooleanField(default=False)
-	# def __str__(self):
-	# 	return f"Round {self.round_number} Match {self.match_number}: {self.player1.nickname} vs {self.player2.nickname}"
+	def __str__(self):
+		return f"Round {self.round_number} Match {self.match_number}: {self.player1.nickname} vs {self.player2.nickname}"
 
 class PongGameResult(models.Model):
 	""" 
