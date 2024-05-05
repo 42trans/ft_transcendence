@@ -14,7 +14,7 @@ function fetchDMList() {
             }
             return response.json();
         })
-        .then(data => updateDOM(data))
+        .then(data => createDMSessionLinks(data))
         .catch(error => console.error('There has been a problem with your fetch operation:', error));
 }
 
@@ -41,22 +41,23 @@ function startDMwithUser() {
 }
 
 
-function updateDOM(other_user) {
+// DMSessionへのリンク一覧を作成
+function createDMSessionLinks(data) {
     const list = document.getElementById('dm-sessions');
-    list.innerHTML = ''; // リストをクリア
+    list.innerHTML = '';
 
-    other_user.forEach(dm_user => {
+    data.forEach(dmSession => {
         const item = document.createElement('li');
-
-        // リンク要素を作成
         const link = document.createElement('a');
-        link.href = `/chat/dm-with/${dm_user.nickname}/`; // リンクの設定
+
+        // リンクの設定
+        link.href = `/chat/dm-with/${dmSession.target_nickname}/`;
 
         // システムメッセージの場合は表示を変更
-        if (dm_user.is_system_message) {
-            link.textContent = `System Message to ${dm_user.nickname}`;
+        if (dmSession.is_system_message) {
+            link.textContent = `System Message to ${dmSession.target_nickname}`;
         } else {
-            link.textContent = `${dm_user.nickname}`;
+            link.textContent = `${dmSession.target_nickname}`;
         }
 
         // リストアイテムにリンクを追加
