@@ -1,4 +1,4 @@
-<!-- chat/templates/chat/dm_list.html -->
+<!-- chat/templates/chat/dm_sessions.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -27,12 +27,12 @@
 
 <!-- DM履歴のあるuserとのDMはこちらから-->
 <h2>DM List</h2>
-<ul id="dm-list"></ul>
+<ul id="dm-sessions"></ul>
 <hr>
 
 <p><a href="{% url 'accounts:user' %}">return to user page</a></p>
 <hr>
-<script src="{% static 'chat/js/dm-list.js' %}"></script>
+<script src="{% static 'chat/js/dm-sessions.js' %}"></script>
 
 </body>
 </html>

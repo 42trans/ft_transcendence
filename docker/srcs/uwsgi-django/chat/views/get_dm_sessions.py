@@ -1,4 +1,4 @@
-# chat/views/dm_list.py
+# chat/views/dm_sessions.py
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -12,11 +12,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from accounts.models import CustomUser
-from chat.models import DMSession, Message
+from chat.models import DMSession
 
 
-# todo: data形式見直し
-class GetDMListAPI(APIView):
+class GetDMSessionsAPI(APIView):
     """
     Login userが参加しているDMSession一覧を取得
     """
@@ -26,17 +25,19 @@ class GetDMListAPI(APIView):
         user = request.user
 
         sessions = DMSession.objects.filter(member=user)
-        other_user_list = []
-        for session in sessions:
-            other_users = session.member.exclude(id=user.id)
-            for other_user in other_users:
-                message_data = {
-                    'user_id': other_user.id,
-                    'nickname': other_user.nickname,
-                    'session_id': session.sessionId,
-                    'is_system_message': session.is_system_message
-                }
-                other_user_list.append(message_data)
+        dm_set = set()
 
-        unique_partners = {message['user_id']: message for message in other_user_list}.values()
-        return Response(list(unique_partners), status=status.HTTP_200_OK)
+        for session in sessions:
+            other_user = session.member.exclude(id=user.id).first()
+            if other_user:
+                dm_set.add((other_user.nickname, session.is_system_message))
+
+        dm_sessions = []
+        for nickname_dm_with, is_system_message in dm_set:
+            data = {
+                'nickname': nickname_dm_with,
+                'is_system_message': is_system_message  # Maybe unused
+            }
+            dm_sessions.append(data)
+
+        return Response(dm_sessions, status=status.HTTP_200_OK)

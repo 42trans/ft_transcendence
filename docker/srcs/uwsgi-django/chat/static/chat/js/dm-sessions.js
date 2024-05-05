@@ -1,7 +1,7 @@
-// dm_list.js
+// dm_sessions.js
 
 function fetchDMList() {
-    fetch('/chat/api/dm-list/', {
+    fetch('/chat/api/dm-sessions/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ function startDMwithUser() {
 
 
 function updateDOM(other_user) {
-    const list = document.getElementById('dm-list');
+    const list = document.getElementById('dm-sessions');
     list.innerHTML = ''; // リストをクリア
 
     other_user.forEach(dm_user => {

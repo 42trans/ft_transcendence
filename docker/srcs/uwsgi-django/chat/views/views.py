@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 class DMView(TemplateView):
     template_name = "chat/dm.html"
-    error_occurred_redirect_to = "chat:list"
+    error_occurred_redirect_to = "chat:dm_sessions"
     not_authenticated_redirect_to = "accounts:login"
 
     def get(self, request, nickname):
@@ -63,8 +63,8 @@ class DMView(TemplateView):
 
 
 
-class DMList(TemplateView):
-    template_name = "chat/dm_list.html"
+class DMSessionsView(TemplateView):
+    template_name = "chat/dm_sessions.html"
     not_authenticated_redirect_to = "accounts:login"
 
     def get(self, request):
