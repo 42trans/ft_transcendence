@@ -28,10 +28,10 @@ class DMView(LoginRequiredMixin, TemplateView):
     template_name = "chat/dm.html"
     error_occurred_redirect_to = "chat:dm_sessions"
 
-    def get(self, request, nickname):
+    def get(self, request, target_nickname):
         # user, other_userを取得
         # dm targetのnicknameがuser.nicknameである場合はerr
-        user, other_user, err = self.get_dm_users(request, nickname)
+        user, other_user, err = self._get_dm_users(request, target_nickname)
         if err is not None:
             messages.error(request, err)
             return redirect(self.error_occurred_redirect_to)
@@ -47,22 +47,22 @@ class DMView(LoginRequiredMixin, TemplateView):
 
         # dm.htmlのレンダリングに必要な情報を格納
         data = {
-            'nickname'      : other_user.nickname,
-            'messages'      : message_log,
-            'isBlockingUser': is_blocking_user,
-            'isSystemUser'  : other_user.is_system
+            'target_nickname'   : other_user.nickname,
+            'messages'          : message_log,
+            'isBlockingUser'    : is_blocking_user,
+            'isSystemUser'      : other_user.is_system
         }
         # logging.error(f'dm_room: user: {user.nickname}, dm_to: {nickname}, blocking: {is_blocking_user}')
         return render(request, self.template_name, data)
 
 
-    def get_dm_users(self, request, nickname):
+    def _get_dm_users(self, request, target_nickname):
         try:
             user = request.user
-            other_user = CustomUser.objects.get(nickname=nickname)
+            other_user = CustomUser.objects.get(nickname=target_nickname)
             err = None
 
-            if nickname == user.nickname:
+            if target_nickname == user.nickname:
                 err = "You cannot send a message to yourself"
             return user, other_user, err
 

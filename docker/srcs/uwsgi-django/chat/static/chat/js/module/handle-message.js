@@ -33,16 +33,16 @@ function createMessageElement(senderName, message, timestamp) {
 }
 
 
-function classifyMessage(messageElement, isSystemMessage, senderName, dmTo) {
+function classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNickname) {
     if (isSystemMessage) {
         messageElement.classList.add('system-message');
     } else {
-        classifyMessageSender(messageElement, senderName, dmTo);
+        classifyMessageSender(messageElement, senderName, dmTargetNickname);
     }
 }
 
 
-function handleMessage(event, dmTo) {
+function handleMessage(event, dmTargetNickname) {
     const data = JSON.parse(event.data);
 
     const senderName = data.sender;
@@ -50,7 +50,7 @@ function handleMessage(event, dmTo) {
     const isSystemMessage = data.is_system_message;
 
     let messageElement = createMessageElement(senderName, data.message, timestamp);
-    classifyMessage(messageElement, isSystemMessage, senderName, dmTo);
+    classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNickname);
 
     document.querySelector('#dm-log').appendChild(messageElement);
     scrollToBottom();  // dm-logのスクロール位置を調整

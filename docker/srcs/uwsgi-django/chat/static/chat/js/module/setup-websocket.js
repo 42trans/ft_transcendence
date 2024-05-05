@@ -8,20 +8,20 @@ export { setupWebSocket };
 
 
 // WebSocketの接続確立とメッセージの送受信ロジック
-function setupWebSocket(dmTo) {
-    const websocketUrl = 'wss://' + window.location.host + '/ws/dm-with/' + dmTo + '/';
+function setupWebSocket(dmTargetNickname) {
+    const websocketUrl = 'wss://' + window.location.host + '/ws/dm-with/' + dmTargetNickname + '/';
     const dmSocket = new WebSocket(websocketUrl);
 
-    dmSocket.onmessage = (event) => handleMessage(event, dmTo);
-    dmSocket.onopen = () => handleOpen(dmSocket, dmTo);
+    dmSocket.onmessage = (event) => handleMessage(event, dmTargetNickname);
+    dmSocket.onopen = () => handleOpen(dmSocket, dmTargetNickname);
     dmSocket.onclose = handleClose;
     dmSocket.onerror = handleError;
 
     document.querySelector('#message-submit').onclick = () => handleSendMessage(dmSocket);
 }
 
-function handleOpen(dmTo) {
-    console.log('WebSocket connection established with', dmTo);
+function handleOpen(dmTargetNickname) {
+    console.log('WebSocket connection established with', dmTargetNickname);
 }
 
 

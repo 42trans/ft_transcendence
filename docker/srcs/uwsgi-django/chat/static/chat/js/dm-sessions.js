@@ -35,8 +35,8 @@ function startDMwithUser() {
 
     // ボタンクリックでDM画面へのリダイレクト
     submitButton.onclick = function() {
-        const receiver_nickname = input.value;
-        window.location.pathname = '/chat/dm-with/' + receiver_nickname + '/';
+        const dmTargetNickname = input.value;
+        window.location.pathname = '/chat/dm-with/' + dmTargetNickname + '/';
     };
 }
 
