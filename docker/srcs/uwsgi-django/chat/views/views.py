@@ -2,18 +2,14 @@
 
 import logging
 from django.contrib import messages
-from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import models
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.views import APIView
 
 from accounts.models import CustomUser
 from chat.models import DMSession, Message
-
 
 logging.basicConfig(
     level=logging.ERROR,
@@ -23,35 +19,33 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-class DMView(TemplateView):
+class DMView(LoginRequiredMixin, TemplateView):
+    """
+    DM相手のnicknameを受取り、chat/dm-with/<str:nickname> をレンダリング
+    nicknameが存在しないuserなどの不正値出会った場合は、chat:dm_sessions へ遷移
+    Login認証していなければ accounts:login へ遷移
+    """
     template_name = "chat/dm.html"
     error_occurred_redirect_to = "chat:dm_sessions"
-    not_authenticated_redirect_to = "accounts:login"
 
     def get(self, request, nickname):
-        if not request.user.is_authenticated:
-            return redirect(self.not_authenticated_redirect_to)
-
-        user = request.user
-        if nickname == user.nickname:
-            messages.error(request, "You cannot send a message to yourself")
+        # user, other_userを取得
+        # dm targetのnicknameがuser.nicknameである場合はerr
+        user, other_user, err = self.get_dm_users(request, nickname)
+        if err is not None:
+            messages.error(request, err)
             return redirect(self.error_occurred_redirect_to)
 
-        try:
-            target_user = CustomUser.objects.get(nickname=nickname)
-        except CustomUser.DoesNotExist:
-            messages.error(request, "The specified user does not exist")
-            return redirect(self.error_occurred_redirect_to)
-
-        # DMからログを取得
-        other_user = CustomUser.objects.get(id=target_user.id)
+        # DBから user, other_userのメッセージを取得。検索パターンは
+        #  1) sender=user,       receiver=other_user
+        #  2) sender=other_user, receiver=user
         message_log = Message.objects.filter(
-            sender__in=[user, other_user],
-            receiver__in=[user, other_user]
+            (models.Q(sender=user) & models.Q(receiver=other_user)) |
+            (models.Q(sender=other_user) & models.Q(receiver=user))
         ).order_by('timestamp')
+        is_blocking_user = user.blocking_users.filter(id=other_user.id).exists()
 
-        is_blocking_user = user.blocking_users.filter(id=target_user.id).exists()
-
+        # dm.htmlのレンダリングに必要な情報を格納
         data = {
             'nickname'      : other_user.nickname,
             'messages'      : message_log,
@@ -61,6 +55,24 @@ class DMView(TemplateView):
         # logging.error(f'dm_room: user: {user.nickname}, dm_to: {nickname}, blocking: {is_blocking_user}')
         return render(request, self.template_name, data)
 
+
+    def get_dm_users(self, request, nickname):
+        try:
+            user = request.user
+            other_user = CustomUser.objects.get(nickname=nickname)
+            err = None
+
+            if nickname == user.nickname:
+                err = "You cannot send a message to yourself"
+            return user, other_user, err
+
+        except CustomUser.DoesNotExist:
+            err = "The specified user does not exist"
+
+        except Exception as e:
+            err = str(e)
+
+        return None, None, err
 
 
 class DMSessionsView(TemplateView):
