@@ -33,5 +33,5 @@ import PongApp from './js/PongApp'
 import './css/3d.css';
 
 // 'dev'= コントローラーGUI表示 
-// PongApp.main('dev');
-PongApp.main();
+PongApp.main('dev');
+// PongApp.main();

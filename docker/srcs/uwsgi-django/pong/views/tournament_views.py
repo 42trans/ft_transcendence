@@ -9,8 +9,69 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
 from django.utils.dateparse import parse_datetime
 from django.forms.models import model_to_dict
+# from ..models import PongGameResult
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.utils import timezone
 
 User = get_user_model()
+
+def assign_winner_to_next_match(current_match, winner):
+	if not winner:
+		return
+	# 次のラウンドの試合番号を計算
+	next_round_number = current_match.round_number + 1
+	next_match_number = (current_match.match_number + 1) // 2
+	# 次のラウンドの試合を検索
+	next_match = Match.objects.filter(
+		tournament=current_match.tournament,
+		round_number=next_round_number,
+		match_number=next_match_number
+	).first()
+	if next_match:
+		# 奇数試合番号から来る勝者は player1、偶数試合番号から来る勝者は player2
+		if current_match.match_number % 2 == 1:
+			# 奇数試合番号
+			next_match.player1 = winner
+		else:
+			# 偶数試合番号
+			next_match.player2 = winner
+		next_match.save()
+		print(f"Updated next match {next_match.id}: {next_match.player1} vs {next_match.player2}")
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def save_game_result(request):
+	try:
+		data = json.loads(request.body)
+		print("Received data:", data)
+		match_id = data.get('match_id')
+		player1_score = data.get('player1_score', 0)
+		player2_score = data.get('player2_score', 0)
+		match = get_object_or_404(Match, id=match_id)
+		if player1_score > player2_score:
+			winner = match.player1
+		else:
+			winner = match.player2
+		# マッチの更新
+		match.winner = winner
+		match.player1_score = player1_score
+		match.player2_score = player2_score
+		match.date			= timezone.now()
+		match.is_finished = True
+		match.save()
+
+		if winner:
+			assign_winner_to_next_match(match, winner)
+
+		# response = JsonResponse({"status": "success", "message": "Game result saved successfully."})
+		# print("Response being sent:", response)
+		# return response
+		return JsonResponse({"status": "success", "message": "Game result saved successfully."})
+	except Exception as e:
+		import traceback
+		traceback.print_exc()  # サーバーのコンソールにエラーのトレースバックを出力
+		return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
 @login_required
 def get_latest_user_ongoing_tournament(request):
@@ -71,22 +132,11 @@ def get_matches_by_round_latest_user_ongoing_tournament(request, round_number):
 			# 試合が見つからない場合はエラー404
 			return JsonResponse({'status': 'error', 'message': 'Round not found'}, status=404)
 
-		matches_data = [
-			{
-				'id': match.id,
-				'tournament_id': match.tournament.id,
-				'round_number': match.round_number,
-				'match_number': match.match_number,
-				'player1': match.player1,
-				'player2': match.player2,
-				'player1_score': match.player1_score,
-				'player2_score': match.player2_score,
-				'is_finished': match.winner is not None,
-				'date': match.date.isoformat(),
-				'tournament_name': match.tournament.name,
-			}
-			for match in matches
-		]
+		matches_data = [model_to_dict(match) for match in matches]  # すべてのフィールドを取得
+
+		for match_data in matches_data:
+			match_data['date'] = match_data['date'].isoformat()
+	
 		return JsonResponse({'matches': matches_data}, safe=False)
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
@@ -152,9 +202,9 @@ def create_matches(tournament, player_nicknames):
 		(1, 2, player_nicknames[2], player_nicknames[3]),
 		(1, 3, player_nicknames[4], player_nicknames[5]),
 		(1, 4, player_nicknames[6], player_nicknames[7]),
-		(2, 1, 'winner1', 'winner2'),
-		(2, 2, 'winner3', 'winner4'),
-		(3, 1, 'winner5', 'winner6')
+		(2, 1, '', ''),
+		(2, 2, '', ''),
+		(3, 1, '', '')
 	]
 
 	# winner,is_finished(default=false)は未入力
@@ -164,7 +214,8 @@ def create_matches(tournament, player_nicknames):
 			round_number=round_number,
 			match_number=match_number,
 			player1=player1,
-			player2=player2
+			player2=player2,
+			winner=None  # winner フィールドを None で初期化
 		) for round_number, match_number, player1, player2 in matches_info
 	]
 	return matches

@@ -71,20 +71,22 @@ class StateBaseRound
 			matchElement.className = 'match';
 
 			 // プレイヤー名が未確定の場合の処理
-			 const player1 = match.player1 || "TBD";
-			 const player2 = match.player2 || "TBD";
+			 const player1 = match.player1 || "Winner";
+			 const player2 = match.player2 || "Winner";
 
 			let matchDetails = `
 				<h4>Match #${match.match_number}: ${player1} vs ${player2}</h4>
 			`;
 
-			// winnerが存在する = 試合終了
-			if (match.winner) {
-				matchDetails += `<p>Score: ${match.player1_score} to ${match.player2_score}</p>`;
+			console.log(match);
+			// 試合終了している場合はスコア表示
+			if (match.is_finished) {
+				matchDetails += `<p>Score: ${match.player1_score} - ${match.player2_score}, Winner: ${match.winner}</p>`;
 			} else {
 				// Pong gameへのリンク
-				matchDetails += `<a href="/play/${match.id}">Play</a>`;
+				matchDetails += `<a href="/pong/play/${match.id}">Play</a>`;
 			}
+			console.log(match);
 
 			// console.log(matchDetails);
 			matchElement.innerHTML = matchDetails;

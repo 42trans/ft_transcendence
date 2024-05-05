@@ -13,8 +13,8 @@ class EffectsSceneConfig extends BaseSceneConfig
 	{
 		super();
 		if (import.meta.env.MODE === 'development') {
-			this.gltfURL = '../assets/animated_butterfly/scene.gltf';
-			this.gltfPng = '../assets/animated_butterfly/textures/Wings_baseColor.png';
+			this.gltfURL = 'assets/animated_butterfly/scene.gltf';
+			this.gltfPng = 'assets/animated_butterfly/textures/Wings_baseColor.png';
 		} else {
 			const baseURL = new URL('.', import.meta.url).href;
 			this.gltfURL = new URL('../../gltf/animated_butterfly/scene.gltf', baseURL).href;

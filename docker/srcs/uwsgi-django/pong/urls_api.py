@@ -11,7 +11,8 @@ from .views.tournament_views import (
 	delete_tournament_and_matches, 
 	get_matches_of_latest_tournament_user_ongoing, 
 	get_matches_by_round_latest_user_ongoing_tournament, 
-	get_tournament_id_user_all_ongoing, get_latest_user_ongoing_tournament
+	get_tournament_id_user_all_ongoing, get_latest_user_ongoing_tournament,
+	save_game_result
 )
 
 # パスはapiが先頭につきます。ex./pong/api/tournament/create/
@@ -35,6 +36,7 @@ urlpatterns = [
 	# 削除: トーナメントと「全7試合」。ログイン中のユーザーが主催者のものを。
 	path('tournament/delete/<int:tournament_id>/', delete_tournament_and_matches, name='delete_tournament_and_matches'),
 
+	path('tournament/save_game_result/', save_game_result, name='save_game_result'),
 		# -------------------------------
 		# 未使用（汎用的なものを用意）
 		# -------------------------------

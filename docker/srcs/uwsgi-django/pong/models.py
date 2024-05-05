@@ -35,7 +35,7 @@ class Match(models.Model):
 	player2_score = models.IntegerField(default=0)
 	is_finished = models.BooleanField(default=False)
 	def __str__(self):
-		return f"Round {self.round_number} Match {self.match_number}: {self.player1.nickname} vs {self.player2.nickname}"
+		return f"Round {self.round_number} Match {self.match_number}: {self.player1} vs {self.player2}"
 
 class PongGameResult(models.Model):
 	""" 
