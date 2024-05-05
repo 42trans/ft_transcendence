@@ -19,16 +19,19 @@
 </ul>
 {% endif %}
 
-dm with
+<!-- DM相手を指定して開始するtext field -->
+<label for="nickname-input">DM with:</label>
 <input id="nickname-input" type="text" size="20">
 <input id="nickname-submit" type="button" value="Enter">
 <hr>
+
+<!-- DM履歴のあるuserとのDMはこちらから-->
 <h2>DM List</h2>
 <ul id="dm-list"></ul>
 <hr>
+
 <p><a href="{% url 'accounts:user' %}">return to user page</a></p>
 <hr>
-
 <script src="{% static 'chat/js/dm-list.js' %}"></script>
 
 </body>

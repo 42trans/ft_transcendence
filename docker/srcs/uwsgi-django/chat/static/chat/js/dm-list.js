@@ -52,8 +52,6 @@ function updateDOM(other_user) {
         const link = document.createElement('a');
         link.href = `/chat/dm-with/${dm_user.nickname}/`; // リンクの設定
 
-        // link.textContent = `${dm_user.nickname} (DMSession.id: ${dm_user.session_id})`;
-        // link.textContent = `${dm_user.nickname}`;
         // システムメッセージの場合は表示を変更
         if (dm_user.is_system_message) {
             link.textContent = `System Message to ${dm_user.nickname}`;
