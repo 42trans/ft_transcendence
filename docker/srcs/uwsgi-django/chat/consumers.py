@@ -6,12 +6,11 @@ from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
 
 
-class ChatConsumer(AsyncWebsocketConsumer):
+class Consumer(AsyncWebsocketConsumer):
     permission_classes = [IsAuthenticated]
 
-    async def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_name
+    async def connect(self, grop_name: str):
+        self.room_group_name = grop_name
 
         # Join room group
         await self.channel_layer.group_add(
@@ -28,25 +27,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-    # Receive message from WebSocket
-    async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-
+    # Receive from WebSocket
+    async def receive(self, json_data):
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'chat_message',
-                'message': message
+                'type': 'send_data',
+                'data': json_data
             }
         )
 
-    # Receive message from room group
-    async def chat_message(self, event):
-        message = event['message']
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+    # Send to WebSocket
+    async def send_data(self, event):
+        await self.send(text_data=json.dumps(event))

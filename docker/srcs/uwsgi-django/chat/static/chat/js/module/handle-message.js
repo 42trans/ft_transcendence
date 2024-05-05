@@ -44,12 +44,16 @@ function classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNi
 
 function handleMessage(event, dmTargetNickname) {
     const data = JSON.parse(event.data);
+    const message_data = JSON.parse(data.data);
+    console.log('Received WebSocket data:', data);
+    console.log('Received WebSocket message_data:', message_data);
 
-    const senderName = data.sender;
-    const timestamp = data.timestamp;
-    const isSystemMessage = data.is_system_message;
+    const senderName = message_data.sender;
+    const message = message_data.message;
+    const timestamp = message_data.timestamp;
+    const isSystemMessage = message_data.is_system_message;
 
-    let messageElement = createMessageElement(senderName, data.message, timestamp);
+    let messageElement = createMessageElement(senderName, message, timestamp);
     classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNickname);
 
     document.querySelector('#dm-log').appendChild(messageElement);

@@ -28,18 +28,18 @@ class DMSession(models.Model):
                        user_id: int,
                        other_user_id: int,
                        is_system_message: bool =False):
-        print_blue("get_dm_session: 1")
+        # print_blue("get_dm_session: 1")
         user = CustomUser.objects.get(id=user_id)
         other_user = CustomUser.objects.get(id=other_user_id)
 
         # 両方のユーザーが既に属しているセッションを検索
         sessions = cls.objects.filter(member=user).filter(member=other_user)
         if sessions.exists():
-            print_blue("get_dm_session: 2 (DM)")
+#             print_blue("get_dm_session: 2 (DM)")
             # 既存のセッションがあればそれを返す
             return sessions.first()
         else:
-            print_blue("get_dm_session: 3 (DM)")
+#             print_blue("get_dm_session: 3 (DM)")
             # セッションがなければ新規作成
             session = cls.objects.create()
             session.member.add(user, other_user)
