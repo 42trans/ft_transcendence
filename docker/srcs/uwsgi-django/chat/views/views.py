@@ -68,19 +68,13 @@ class DMView(LoginRequiredMixin, TemplateView):
 
         except CustomUser.DoesNotExist:
             err = "The specified user does not exist"
-
         except Exception as e:
             err = str(e)
-
         return None, None, err
 
 
-class DMSessionsView(TemplateView):
+class DMSessionsView(LoginRequiredMixin, TemplateView):
     template_name = "chat/dm_sessions.html"
-    not_authenticated_redirect_to = "accounts:login"
 
     def get(self, request):
-        if not request.user.is_authenticated:
-            return redirect(self.not_authenticated_redirect_to)
-
         return render(request, self.template_name)
