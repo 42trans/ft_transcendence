@@ -18,12 +18,12 @@ class TournamentManager
 	/**
 	 * 処理フロー: まずログイン状態で分岐
 	 */
-	async main() 
+	async main(roundNum) 
 	{
 		try {
 			this.userProfile = await this.userManagement.getUserProfile();
 			if (this.userProfile) {
-				await this._handleLoggedInUser();
+				await this._handleLoggedInUser(roundNum);
 			} else {
 				this._handleGuestUser();
 			}
@@ -36,7 +36,7 @@ class TournamentManager
 	/** 
 	 * 処理フロー： 次に、主催トーナメントの開催状態で分岐:トーナメント対戦表 or　作成form を表示 
 	 * */
-	async _handleLoggedInUser() 
+	async _handleLoggedInUser(roundNum) 
 	{
 		console.log('profile:', this.userProfile);
 		try {
@@ -48,7 +48,7 @@ class TournamentManager
 				this.roundManager.userTournament	= latestTournament;
 				this.roundManager.userProfile		= this.userProfile;
 				// トーナメント情報の表示
-				this.roundManager.changeStateToRound(0);
+				this.roundManager.changeStateToRound(roundNum);
 			} else {
 				console.log('!latestTournament:', latestTournament);
 				// トーナメント新規作成フォームを表示
@@ -103,11 +103,13 @@ class TournamentManager
 	}
 
 	/** ゲストユーザーへ表示する内容 */
-	_handleGuestUser() {
-		document.getElementById('tournament-container').innerHTML = `
-			<p>Please log in to manage or create tournaments.</p>
-			<p><a href="/accounts/login">Log in</a> or <a href="/accounts/signup">Sign up</a></p>
-		`;
+	_handleGuestUser() 
+	{
+		this.roundManager.changeStateToRound(11);
+		// document.getElementById('tournament-container').innerHTML = `
+		// 	<p>Please log in to manage or create tournaments.</p>
+		// 	<p><a href="/accounts/login">Log in</a> or <a href="/accounts/signup">Sign up</a></p>
+		// `;
 	}
 }
 

@@ -1,8 +1,8 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/tournamentMain.js
-import TournamentManager	from './manager/TournamentManager.js';
-import UserManager			from './manager/UserManager.js';
-import RoundManager			from './manager/RoundManager.js';
-import TournamentCreator	from './components/TournamentCreator.js';
+import TournamentManager	from './tournament/manager/TournamentManager.js';
+import UserManager			from './tournament/manager/UserManager.js';
+import RoundManager			from './tournament/manager/RoundManager.js';
+import TournamentCreator	from './tournament/components/TournamentCreator.js';
 
 // TODO_ft: サブコンテナの名称をcontainerとわかるものに変更・統一 ex. errMsgContainer
 // 空文字列のplayerの試合はできない。前回が未終了の試合はできない　ハンドリング
@@ -25,5 +25,5 @@ document.addEventListener('DOMContentLoaded', () =>
 		creator
 	);
 
-	tournamentManager.main(0);
+	tournamentManager.main(11);
 });

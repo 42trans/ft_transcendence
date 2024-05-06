@@ -3,6 +3,7 @@ import StateFirstRound	from '../round/StateFirstRound.js'
 import StateSecondRound from '../round/StateSecondRound.js'
 import StateFinalRound	from '../round/StateFinalRound.js'
 import StateEntry		from '../round/StateEntry.js';
+import StatePongIndex	from '../round/StatePongIndex.js';
 import { config }		from '../ConfigTournament.js';
 
 /** ラウンドの切り替え */
@@ -23,6 +24,7 @@ class RoundManager
 			1: new StateFirstRound(this),
 			2: new StateSecondRound(this),
 			3: new StateFinalRound(this),
+			11: new StatePongIndex(this),
 		}
 	}
 

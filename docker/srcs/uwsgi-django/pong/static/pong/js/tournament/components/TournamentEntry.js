@@ -59,20 +59,34 @@ class TournamentEntry
 		return header;
 	}
 
-	/** ナビゲーションリンクの作成とイベントハンドラの設定 */
 	addNavigationLinks() 
 	{
-		const naviButton = document.createElement('div');
-		naviButton.id = 'round-navigation';
-		naviButton.innerHTML = `
+		const container = document.createElement('div');
+		container.id = 'round-navigation';
+		container.innerHTML = `
+			<button id="prev-round">HOME</button>
 			<button id="next-round">Round</button>
 		`;
-		this.tournamentContainer.appendChild(naviButton);
-		document.getElementById('next-round').addEventListener('click', () => 
-		{
-			this.roundManager.changeStateToRound(1);
-		});
-		return naviButton;
+		// this.tournamentContainer.appendChild(container);
+
+		// container.getElementById('prev-round').addEventListener('click', () => {
+		// 	// HOME
+		// 	this.roundManager.changeStateToRound(11);
+		// });
+		// container.getElementById('next-round').addEventListener('click', () => {
+		// 	// Tournament entry
+		// 	this.roundManager.changeStateToRound(1);
+		// });
+		// containerにイベントリスナーを追加
+		container.addEventListener('click', (event) => {
+			if (event.target.id === 'prev-round') {
+				this.roundManager.changeStateToRound(11);
+			} else if (event.target.id === 'next-round') {
+				this.roundManager.changeStateToRound(1);
+			}
+		})
+
+		return container;
 	}
 
 	// 削除ボタンの作成ととイベントハンドラの設定
