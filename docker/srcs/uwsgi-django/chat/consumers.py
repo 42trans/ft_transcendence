@@ -1,6 +1,8 @@
 # chat/consumers.py
 
 import json
+import logging
+
 from django.contrib.auth import get_user_model
 
 from channels.db import database_sync_to_async
@@ -10,11 +12,25 @@ from rest_framework.permissions import IsAuthenticated
 from accounts.models import CustomUser
 
 
+logging.basicConfig(
+    level=logging.ERROR,
+    format='%(asctime)s - %(levelname)s - %(message)s - [in %(funcName)s: %(lineno)d]',
+)
+
+logger = logging.getLogger(__name__)
+
+
 class Consumer(AsyncWebsocketConsumer):
     permission_classes = [IsAuthenticated]
 
-    async def connect(self, room_grop_name: str):
-        self.room_group_name = room_grop_name
+    async def connect(self, model, user_id, other_user_id):
+        self.room_group_name, err = await self._get_room_group_name(model=model,
+                                                                    user_id=user_id,
+                                                                    other_user_id=other_user_id)
+        if err is not None:
+            logger.error(f'[Consumer]: Error: connect: {err}')
+            await self.close(code=1007)  # 1007: Invalid data
+            return
 
         # Join room group
         await self.channel_layer.group_add(

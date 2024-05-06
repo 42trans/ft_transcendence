@@ -34,23 +34,15 @@ class DMConsumer(Consumer):
         """
         try:
             # user, other_user, is_system_message をclass変数にセット
+            # system_userも追加する可能性あり
             err = await self._get_dm_consumer_params()
             if err is not None:
                 logger.error(f'[DMConsumer]: Error: connect: {err}')
                 await self.close(code=1007)  # 1007: Invalid data
                 return
 
-            # channel_layerのroom_group_nameを設定
-            self.room_group_name, err = await self._get_room_group_name(model=DMSession,
-                                                                        user_id=self.user.id,
-                                                                        other_user_id=self.other_user.id)
-            if err is not None:
-                logger.error(f'[DMConsumer]: Error: connect: {err}')
-                await self.close(code=1007)  # 1007: Invalid data
-                return
-
-            # Consumer classのconnect()を呼び出す
-            await super().connect(room_grop_name=self.room_group_name)
+            # model, user_id, other_user_idからsessionを検索 or 作成し、接続
+            await super().connect(DMSession, self.user.id, self.other_user.id)
 
         except Exception as e:
             logger.error(f'[DMConsumer]: Error: connect: {str(e)}')
@@ -98,7 +90,7 @@ class DMConsumer(Consumer):
         return send_data
 
 
-    # todo: 機能していないかも
+    # todo: API（HTTP）経由では実行されない？
     @classmethod
     def send_system_message_to_channel(cls,
                                        message,
