@@ -16,7 +16,7 @@ class DMSession(models.Model):
     sessionは、DMをやり取りするuser1, user2のobjectをkeyとする
     """
     sessionId = ShortUUIDField()
-    member = models.ManyToManyField(CustomUser, related_name='chat_sessions')
+    member = models.ManyToManyField(CustomUser, related_name='dm_sessions')
     is_system_message = models.BooleanField(default=False)  # システムメッセージフラグ
 
     def __str__(self):
