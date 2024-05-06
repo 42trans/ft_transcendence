@@ -24,10 +24,10 @@ class DMSession(models.Model):
         return (f"DMSession {self.id} with memberes: {members}")
 
     @classmethod
-    def get_dm_session(cls,
-                       user_id: int,
-                       other_user_id: int,
-                       is_system_message: bool =False):
+    def get_session(cls,
+                    user_id: int,
+                    other_user_id: int,
+                    is_system_message: bool =False):
         # print_blue("get_dm_session: 1")
         user = CustomUser.objects.get(id=user_id)
         other_user = CustomUser.objects.get(id=other_user_id)

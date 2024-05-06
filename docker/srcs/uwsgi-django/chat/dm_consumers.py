@@ -33,15 +33,17 @@ class DMConsumer(Consumer):
         websocket接続時に呼ばれる関数
         """
         try:
-            # user, other_user, system_user, is_system_message をクラス変数にセット
-            err = await self._get_dm_consumes_parame()
+            # user, other_user, is_system_message をclass変数にセット
+            err = await self._get_dm_consumer_params()
             if err is not None:
                 logger.error(f'[DMConsumer]: Error: connect: {err}')
                 await self.close(code=1007)  # 1007: Invalid data
                 return
 
             # channel_layerのroom_group_nameを設定
-            self.room_group_name, err = await self._get_room_group_name(self.user.id, self.other_user.id)
+            self.room_group_name, err = await self._get_room_group_name(model=DMSession,
+                                                                        user_id=self.user.id,
+                                                                        other_user_id=self.other_user.id)
             if err is not None:
                 logger.error(f'[DMConsumer]: Error: connect: {err}')
                 await self.close(code=1007)  # 1007: Invalid data
@@ -96,19 +98,22 @@ class DMConsumer(Consumer):
         return send_data
 
 
+    # todo: 機能していないかも
     @classmethod
     def send_system_message_to_channel(cls,
                                        message,
                                        target_user_id,
-                                       system_user,
                                        timestamp):
         """"
         API経由でWebSocketにmessageを送信する際に呼ばれる関数（機能していないかも？）
         system messageの送信に使用
         """
         try:
+            system_user = self._get_system_user()
+
             channel_layer = get_channel_layer()
-            dm_session = DMSession.get_dm_session(target_user_id, system_user.id)
+            dm_session = DMSession.get_session(user_id=system_user,
+                                               other_user_id=target_user_id)
             async_to_sync(channel_layer.group_send)(
                 f'room_{dm_session.id}',
                 {
@@ -124,24 +129,25 @@ class DMConsumer(Consumer):
             raise e
 
 
-    async def _get_dm_consumes_parame(self):
-        self.user, self.other_user, self.system_user, err = await self._get_users()
+    async def _get_dm_consumer_params(self):
+        self.user, self.other_user, err = await self._get_users()
         if err is not None:
             return err
+
+        # unused
         self.is_system_message = self.scope['url_route']['kwargs'].get('is_system_message', False)
         return None
 
 
     async def _get_users(self):
-        user_nickname = self.scope['user'].nickname
-        other_user_nickname = self.scope['url_route']['kwargs']['nickname']
-
         # DM送受信者のuser objectをnickanmeから取得
         try:
-            user = await self._get_user_by_nickname(user_nickname)
-            other_user = await self._get_user_by_nickname(other_user_nickname)
-            system_user = await self._get_system_user()
-            return user, other_user, system_user, None
+            user_nickname = self.scope['user'].nickname
+            other_user_nickname = self.scope['url_route']['kwargs']['nickname']
+
+            user = await self._get_user_by_nickname(nickname=user_nickname)
+            other_user = await self._get_user_by_nickname(nickname=other_user_nickname)
+            return user, other_user, None
 
         except CustomUser.DoesNotExist:
             err = "user does not exist"
@@ -151,26 +157,8 @@ class DMConsumer(Consumer):
 
 
     @database_sync_to_async
-    def _get_user_by_nickname(self, nickname: str) -> None:
-        return CustomUser.objects.get(nickname=nickname)
-
-
-    @database_sync_to_async
-    def _get_system_user(self) -> None:
+    def _get_system_user(self):
         return CustomUser.objects.get(is_system=True)
-
-
-    @database_sync_to_async
-    def _get_room_group_name(self, user_id, other_user_id):
-        """
-        DMSessionをuser_id, other_user_idで作成 or 取得し、idからroom nameを作成
-        """
-        try:
-            dm_session = DMSession.get_dm_session(user_id, other_user_id)
-            room_group_name = f"room_{dm_session.id}"
-            return room_group_name, None
-        except Exception as e:
-            return None, str(e)
 
 
     @database_sync_to_async

@@ -41,4 +41,5 @@ class GetDMSessionsAPI(APIView):
                 'is_system_message' : is_system_message  # Maybe unused
             }
             dm_session_list.append(data)
-        return dm_session_list
+        sorted_dm_session_list = sorted(dm_session_list, key=lambda x: x['target_nickname'])
+        return sorted_dm_session_list
