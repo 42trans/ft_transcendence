@@ -13,8 +13,8 @@ from accounts.models import CustomUser
 class Consumer(AsyncWebsocketConsumer):
     permission_classes = [IsAuthenticated]
 
-    async def connect(self, grop_name: str):
-        self.room_group_name = grop_name
+    async def connect(self, room_grop_name: str):
+        self.room_group_name = room_grop_name
 
         # Join room group
         await self.channel_layer.group_add(
@@ -24,8 +24,8 @@ class Consumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
+    # Leave room group
     async def disconnect(self, close_code):
-        # Leave room group
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
@@ -43,6 +43,7 @@ class Consumer(AsyncWebsocketConsumer):
         )
 
     # Send to WebSocket
+    #  send() data is `'data': json_data` group_sent by receive()
     async def send_data(self, event):
         await self.send(text_data=json.dumps(event))
 

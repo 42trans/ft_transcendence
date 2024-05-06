@@ -34,6 +34,7 @@ function createMessageElement(senderName, message, timestamp) {
 
 
 function classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNickname) {
+    // todo: isSystemMessageは未使用
     if (isSystemMessage) {
         messageElement.classList.add('system-message');
     } else {

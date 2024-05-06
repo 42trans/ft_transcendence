@@ -50,7 +50,7 @@ class DMConsumer(Consumer):
                 return
 
             # Consumer classのconnect()を呼び出す
-            await super().connect(grop_name=self.room_group_name)
+            await super().connect(room_grop_name=self.room_group_name)
 
         except Exception as e:
             logger.error(f'[DMConsumer]: Error: connect: {str(e)}')
@@ -134,7 +134,7 @@ class DMConsumer(Consumer):
         if err is not None:
             return err
 
-        # unused
+        # todo: unused
         self.is_system_message = self.scope['url_route']['kwargs'].get('is_system_message', False)
         return None
 
