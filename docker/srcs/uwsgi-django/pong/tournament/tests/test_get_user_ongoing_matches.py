@@ -47,7 +47,7 @@ class TestGetUserOngoingMatches(TestCase):
 			match_number=1,
 			player1='Player1',
 			player2='Player2',
-			date=timezone.now()
+			ended_at=timezone.now()
 		)
 		
 	def test_ongoing_matches(self):

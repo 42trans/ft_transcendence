@@ -36,6 +36,11 @@ def assign_winner_to_next_match(current_match, winner):
 		else:
 			# 偶数試合番号
 			next_match.player2 = winner
+		
+		# 次のマッチが開始可能かどうかチェック（両プレイヤーが割り当てられたか）
+		if next_match.player1 and next_match.player2:
+			next_match.can_start = True
+
 		next_match.save()
 		print(f"Updated next match {next_match.id}: {next_match.player1} vs {next_match.player2}")
 
@@ -57,16 +62,13 @@ def save_game_result(request):
 		match.winner = winner
 		match.player1_score = player1_score
 		match.player2_score = player2_score
-		match.date			= timezone.now()
-		match.is_finished = True
+		match.ended_at		= timezone.now()
+		match.is_finished	= True
 		match.save()
 
 		if winner:
 			assign_winner_to_next_match(match, winner)
 
-		# response = JsonResponse({"status": "success", "message": "Game result saved successfully."})
-		# print("Response being sent:", response)
-		# return response
 		return JsonResponse({"status": "success", "message": "Game result saved successfully."})
 	except Exception as e:
 		import traceback
@@ -101,7 +103,6 @@ def get_tournament_data_by_id(request, tournament_id):
 		""" 機能: ゲストも「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。"""
 		tournament = get_object_or_404(Tournament, pk=tournament_id)
 		# print("Tournament:", tournament)
-		# print("Organizer ID:", tournament.organizer_id)
 		data = {
 			'id': tournament.id,
 			'name': tournament.name,
@@ -133,10 +134,14 @@ def get_matches_by_round_latest_user_ongoing_tournament(request, round_number):
 			return JsonResponse({'status': 'error', 'message': 'Round not found'}, status=404)
 
 		matches_data = [model_to_dict(match) for match in matches]  # すべてのフィールドを取得
-
+		# print("matches_data:", matches_data)
 		for match_data in matches_data:
-			match_data['date'] = match_data['date'].isoformat()
-	
+			if match_data['ended_at']:
+				match_data['ended_at'] = match_data['ended_at'].isoformat()
+			else:
+				match_data['ended_at'] = None
+
+
 		return JsonResponse({'matches': matches_data}, safe=False)
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
@@ -161,6 +166,8 @@ def create_new_tournament_and_matches(request):
 		player_nicknames_json	= request.POST.get('player_nicknames', '[]')
 		player_nicknames 		= json.loads(player_nicknames_json)
 
+		# print("Received Data:", name, date_str, player_nicknames) 
+
 		# 空ではないことを確認		
 		if (
 			not date_str or 
@@ -172,6 +179,8 @@ def create_new_tournament_and_matches(request):
 	
 		# 日付のフォーマットを確認 UTC ISO8601
 		aware_datetime = parse_datetime(date_str)
+		# print("Parsed Date:", aware_datetime) 
+		
 		if (
 			aware_datetime is None or 
 			not aware_datetime.tzinfo
@@ -187,6 +196,12 @@ def create_new_tournament_and_matches(request):
 				organizer=request.user,
 				is_finished=False
 			)
+
+			# print("Tournament Created:", tournament) 
+			if len(player_nicknames) != 8:
+				return JsonResponse({'status': 'error', 'message': 'Exactly 8 player nicknames are required.'}, status=400)
+			if any(nickname.strip() == '' for nickname in player_nicknames):
+				return JsonResponse({'status': 'error', 'message': 'All player nicknames must be non-empty.'}, status=400)
 			matches = create_matches(tournament, player_nicknames)
 		# ---------------ここまでatomic
 
@@ -197,6 +212,7 @@ def create_new_tournament_and_matches(request):
 		return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 	
 def create_matches(tournament, player_nicknames):
+	print("Tournament:", tournament) 
 	matches_info = [
 		(1, 1, player_nicknames[0], player_nicknames[1]),
 		(1, 2, player_nicknames[2], player_nicknames[3]),
@@ -206,18 +222,23 @@ def create_matches(tournament, player_nicknames):
 		(2, 2, '', ''),
 		(3, 1, '', '')
 	]
-
+	# print("Matches info:", matches_info) 
 	# winner,is_finished(default=false)は未入力
-	matches = [
-		Match.objects.create(
-			tournament=tournament,
-			round_number=round_number,
-			match_number=match_number,
-			player1=player1,
-			player2=player2,
-			winner=None  # winner フィールドを None で初期化
-		) for round_number, match_number, player1, player2 in matches_info
-	]
+	try:
+		matches = [
+			Match.objects.create(
+				tournament=tournament,
+				round_number=round_number,
+				match_number=match_number,
+				player1=player1,
+				player2=player2,
+				winner=None,
+				can_start=(round_number == 1)  # 第一ラウンドの場合はcan_startをTrueに設定
+			) for round_number, match_number, player1, player2 in matches_info
+		]
+	except Exception as e:
+		print(f"Error creating match: {e}")
+		raise
 	return matches
 
 @login_required
@@ -316,7 +337,8 @@ def get_matches_of_latest_tournament_user_ongoing(request):
 				# 関連するトーナメント名を追加
 				'tournament_name': match.tournament.name,
 				# 日付をISO 8601形式に変換
-				'date': match.date.isoformat() if match.date else None,
+				'ended_at': match.ended_at.isoformat() if match.ended_at else None,
+				# 'date': match.date.isoformat() if match.date else None,
 			}
 			for match in matches
 		]

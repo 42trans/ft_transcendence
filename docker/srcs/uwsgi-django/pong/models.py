@@ -25,15 +25,15 @@ class Match(models.Model):
 	# ラウンド内の試合番号
 	match_number = models.IntegerField()
 	# TounamentTableのニックネーム配列から文字列を直接保存
-	player1 = models.CharField(max_length=100)
-	player2 = models.CharField(max_length=100)
+	player1 = models.CharField(max_length=100, blank=True)
+	player2 = models.CharField(max_length=100, blank=True, )
 	winner = models.CharField(max_length=100, blank=True, null=True)
 	# settings.py で USE_TZ=True が設定されている。保存はUTC
-	date = models.DateTimeField(default=timezone.now)
-	# 文字列で複雑なスコアを管理する場合 : score = models.CharField(max_length=50, blank=True, null=True)
+	ended_at = models.DateTimeField(null=True, blank=True)
 	player1_score = models.IntegerField(default=0)
 	player2_score = models.IntegerField(default=0)
 	is_finished = models.BooleanField(default=False)
+	can_start = models.BooleanField(default=False)
 	def __str__(self):
 		return f"Round {self.round_number} Match {self.match_number}: {self.player1} vs {self.player2}"
 

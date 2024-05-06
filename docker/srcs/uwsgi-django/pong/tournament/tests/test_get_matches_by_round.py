@@ -30,7 +30,7 @@ class TestGetMatchesByRound(TestCase):
 				player1=f'Player{i}',
 				# とりあえずの名前なのでi+1.assertEqual用
 				player2=f'Player{i+1}',
-				date=timezone.now()
+				# ended_at=timezone.now()
 			)
 
 		self.client = Client()

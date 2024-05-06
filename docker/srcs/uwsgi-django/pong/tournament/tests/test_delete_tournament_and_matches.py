@@ -40,14 +40,6 @@ class TestDeleteTournament(TestCase):
 			organizer=self.user2,
 			is_finished=False
 		)
-
-		# Match.objects.create(
-        #     tournament=self.tournament,
-        #     round_number=1,
-        #     match_number=1,
-        #     player1='Player1',
-        #     player2='Player2'
-        # )
 		# 4試合
 		for i in range(1, 5):
 			Match.objects.create(
@@ -57,7 +49,7 @@ class TestDeleteTournament(TestCase):
 				player1=f'Player{i}',
 				# とりあえずの名前なのでi+1.assertEqual用
 				player2=f'Player{i+1}',
-				date=timezone.now()
+				# ended_at=timezone.now()
 			)
 
 		self.client = Client()

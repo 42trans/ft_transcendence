@@ -93,7 +93,7 @@ start:
 
 .PHONY: down
 down:
-	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) down; \
+	COMPOSE_PROFILES=elk,blockchain,monitor,three docker-compose $(COMPOSE_FILES_ARGS) down; \
 	PATTERN='127.0.0.1 $(SERVER_NAME)'; \
 	OSTYPE=`uname -s`; \
 	if [ "$$OSTYPE" = "Darwin" ]; then \

@@ -35,26 +35,10 @@ class StateBaseRound
 	{
 		try {
 			const response = await fetch(`${this.API_URLS.ongoingMatchesByRound}${roundNumber}`);
+			if (!response.ok) {
+				throw new Error('Server responded with an error: ' + response.status);
+			}
 			const data = await response.json();
-			// マッチデータの配列を取得
-			// {
-			// 	"matches": [
-			// 		{
-			// 			"id": "試合ID",
-			// 			"tournament_id": "トーナメントID",
-			// 			"round_number": "ラウンド番号",
-			// 			"match_number": "試合番号",
-			// 			"player1": "プレイヤー1の名前",
-			// 			"player2": "プレイヤー2の名前",
-			// 			"player1_score": "プレイヤー1のスコア",
-			// 			"player2_score": "プレイヤー2のスコア",
-			// 			"is_finished": "試合が完了しているかどうか",
-			// 			"date": "試合日時（ISO 8601形式）",
-			// 			"tournament_name": "トーナメントの名前"
-			// 		},
-			// 		...
-			// 	]
-			// }
 			this.matches = data.matches; 
 			this.displayMatches(roundNumber);
 		} catch (error) {
@@ -66,6 +50,12 @@ class StateBaseRound
 	displayMatches(roundNumber) 
 	{
 		this.tournamentContainer.innerHTML = ''; 
+		// matchesが空の配列であるか、null/undefinedである場合は早期リターン
+		if (!this.matches || this.matches.length === 0) {
+			this.tournamentContainer.innerHTML = '<p>No matches available.</p>';
+			return; // 早期リターン
+		}
+	
 		this.matches.forEach(match => {
 			const matchElement = document.createElement('div');
 			matchElement.className = 'match';
@@ -78,16 +68,28 @@ class StateBaseRound
 				<h4>Match #${match.match_number}: ${player1} vs ${player2}</h4>
 			`;
 
-			console.log(match);
 			// 試合終了している場合はスコア表示
-			if (match.is_finished) {
-				matchDetails += `<p>Score: ${match.player1_score} - ${match.player2_score}, Winner: ${match.winner}</p>`;
+			if (match.is_finished && match.ended_at) {
+				const endedAt = new Date(match.ended_at); // ISO 8601形式の日時をDateオブジェクトに変換
+				// ユーザーのロケールを自動で使用し、秒以降を除外
+				const formattedEndedAt = endedAt.toLocaleString(undefined, {
+					year: 'numeric', // 年
+					month: '2-digit', // 月
+					day: '2-digit', // 日
+					hour: '2-digit', // 時
+					minute: '2-digit' // 分
+				});
+				matchDetails += `<p>Score: ${match.player1_score} - ${match.player2_score}</p>`;
+				matchDetails += `<p>Winner: ${match.winner}</p>`;
+				matchDetails += `<p>Ended at: ${formattedEndedAt}</p>`;
 			} else {
-				// Pong gameへのリンク
-				matchDetails += `<a href="/pong/play/${match.id}">Play</a>`;
+				if (match.can_start) {
+					// Pong gameへのリンク APIにmatch.idを渡す。
+					matchDetails += `<a href="/pong/play/${match.id}">Start Match</a>`;
+				} else {
+					matchDetails += `<p>On Hold</p>`;
+				}
 			}
-			console.log(match);
-
 			// console.log(matchDetails);
 			matchElement.innerHTML = matchDetails;
 			this.tournamentContainer.appendChild(matchElement);

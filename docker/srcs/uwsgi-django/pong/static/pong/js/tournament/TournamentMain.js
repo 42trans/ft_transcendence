@@ -5,6 +5,8 @@ import RoundManager			from './manager/RoundManager.js';
 import TournamentCreator	from './components/TournamentCreator.js';
 
 // TODO_ft: サブコンテナの名称をcontainerとわかるものに変更・統一 ex. errMsgContainer
+// 空文字列のplayerの試合はできない。前回が未終了の試合はできない　ハンドリング
+
 /**
  * - entryの役割
  * - ドキュメントの完全な読み込みと解析が完了した後に実行する
