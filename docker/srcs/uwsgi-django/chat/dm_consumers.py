@@ -143,7 +143,7 @@ class DMConsumer(Consumer):
 
         except CustomUser.DoesNotExist:
             err = "user does not exist"
-            return None, None, None, err
+            return None, None, err
         except Exception as e:
             return None, None, None, str(e)
 

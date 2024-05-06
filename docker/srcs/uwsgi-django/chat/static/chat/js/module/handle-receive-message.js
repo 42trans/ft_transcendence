@@ -3,7 +3,7 @@
 import {classifyMessageSender} from "./apply-message-style.js";
 import {scrollToBottom} from "./ui-util.js";
 
-export { handleMessage };
+export { handleReceiveMessage };
 
 
 function createMessageElement(senderName, message, timestamp) {
@@ -43,7 +43,7 @@ function classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNi
 }
 
 
-function handleMessage(event, dmTargetNickname) {
+function handleReceiveMessage(event, dmTargetNickname) {
     const data = JSON.parse(event.data);
     const message_data = JSON.parse(data.data);
     console.log('Received WebSocket data:', data);

@@ -1,7 +1,7 @@
 // chat/js/setup-websocket.js
 
 import { classifyMessageSender } from './apply-message-style.js';
-import { handleMessage } from './handle-message.js';
+import { handleReceiveMessage } from './handle-receive-message.js';
 import { scrollToBottom } from './ui-util.js';
 
 export { setupWebSocket };
@@ -12,7 +12,7 @@ function setupWebSocket(dmTargetNickname) {
     const websocketUrl = 'wss://' + window.location.host + '/ws/dm-with/' + dmTargetNickname + '/';
     const dmSocket = new WebSocket(websocketUrl);
 
-    dmSocket.onmessage = (event) => handleMessage(event, dmTargetNickname);
+    dmSocket.onmessage = (event) => handleReceiveMessage(event, dmTargetNickname);
     dmSocket.onopen = () => handleOpen(dmSocket, dmTargetNickname);
     dmSocket.onclose = handleClose;
     dmSocket.onerror = handleError;
