@@ -1,5 +1,6 @@
 # tests/test_dm_consumers.py
 
+import json
 import traceback
 from django.test import TestCase
 from django.test import TransactionTestCase
@@ -44,7 +45,8 @@ class DMConsumerTestCase(TransactionTestCase):
         )
         await database_sync_to_async(self.user1.save)()
         await database_sync_to_async(self.user2.save)()
-        self.user1_jwt = await self._login(self.kUser1Email, self.kUser1Password)
+        user1_jwt = await self._login(self.kUser1Email, self.kUser1Password)
+        self.communicator = self._create_ws_communicator(user1_jwt)
 
     async def _login(self, email, password):
         login_api_path = reverse("api_accounts:api_login")
@@ -55,20 +57,80 @@ class DMConsumerTestCase(TransactionTestCase):
         else:
             raise ValueError("Failed to retrieve JWT token")
 
-    # --------------------------------------------------------------------------
-    # test
+    def _create_ws_communicator(self, user1_jwt):
+        token_header = f'Bearer {user1_jwt}'.encode()
+        headers = [(b'authorization', token_header)]
+        communicator = WebsocketCommunicator(application,
+                                             f"ws/dm-with/{self.user2.nickname}/",
+                                             headers)
+        return communicator
 
+# --------------------------------------------------------------------------
+    # test
+    # --------------------------------------------------------------------------
     async def test_connect_websocket(self):
-        await self.asyncSetUp()
+        await self.asyncSetUp()  # login
         try:
-            token_header = f'Bearer {self.user1_jwt}'.encode()
-            headers = [(b'authorization', token_header)]
-            communicator = WebsocketCommunicator(application, f"ws/dm-with/{self.user2.nickname}/", headers)
-            connected, code = await communicator.connect()
+            # wsに接続
+            connected, code = await self.communicator.connect()
+
+            self.assertTrue(connected, f"WebSocket connection failed, code: {code}")
+            self.assertEqual(self.communicator.scope['user'], self.user1)
+
+            await self.communicator.disconnect()
+
         except Exception as e:
             self.fail(f"Unexpected error occurred: {str(e)}")
 
-        self.assertTrue(connected, f"WebSocket connection failed, code: {code}")
-        self.assertEqual(communicator.scope['user'], self.user1)
+    async def test_receive_and_store_message(self):
+        await self.asyncSetUp()  # login
+        try:
+            # wsに接続
+            connected, code = await self.communicator.connect()
+            self.assertTrue(connected, f"WebSocket connection failed, code: {code}")
 
-        await communicator.disconnect()
+            # messageを送信
+            message_data = {
+                'message': 'Hello, user2!'
+            }
+            await self.communicator.send_json_to(message_data)
+
+            response = await self.communicator.receive_json_from()
+            self.assertEqual(response['type'], 'send_data')
+            response_data = json.loads(response['data'])
+
+            # messageの各要素を評価
+            self.assertEqual(response_data['sender'], self.user1.nickname)
+            self.assertEqual(response_data['message'], 'Hello, user2!')
+            self.assertIsInstance(response_data['timestamp'], str)
+            self.assertFalse(response_data['is_system_message'])
+
+            # DBから取得したmessageの各要素を評価
+            message = await database_sync_to_async(Message.objects.last)()
+            sender = await database_sync_to_async(lambda: message.sender)()
+            receiver = await database_sync_to_async(lambda: message.receiver)()
+            self.assertEqual(message.message, 'Hello, user2!')
+            self.assertEqual(sender, self.user1)
+            self.assertEqual(receiver, self.user2)
+
+            await self.communicator.disconnect()
+
+        except Exception as e:
+            self.fail(f"Unexpected error occurred: {str(e)}")
+
+    async def test_invalid_json(self):
+        await self.asyncSetUp()  # login
+        try:
+            # wsに接続
+            connected, code = await self.communicator.connect()
+            self.assertTrue(connected, f"WebSocket connection failed, code: {code}")
+
+            # invalid_jsonを送信
+            await self.communicator.send_to(text_data="invalid json")
+            with self.assertRaises(AssertionError):
+                await self.communicator.receive_from(timeout=1)
+
+            await self.communicator.disconnect()
+
+        except Exception as e:
+            self.fail(f"Unexpected error occurred: {str(e)}")

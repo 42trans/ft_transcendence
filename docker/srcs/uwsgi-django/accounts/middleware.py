@@ -36,7 +36,7 @@ class CookieAuthMiddleware(BaseMiddleware):
     Custom middleware to authenticate WebSocket connections using JWT tokens stored in cookies.
     """
     async def __call__(self, scope, receive, send):
-        print_yellow(f"[CookieAuthMiddleware] scope: {scope}")
+        # print_yellow(f"[CookieAuthMiddleware] scope: {scope}")
         headers = dict(scope['headers'])
         token = None
 
@@ -52,7 +52,7 @@ class CookieAuthMiddleware(BaseMiddleware):
                 token = auth_header[1]
 
         if token:
-            print_yellow(f"[CookieAuthMiddleware] token: {token}")
+            # print_yellow(f"[CookieAuthMiddleware] token: {token}")
             user = await self.authenticate_token(token)
             if user:
                 scope['user'] = user
