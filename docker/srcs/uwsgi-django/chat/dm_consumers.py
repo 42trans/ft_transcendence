@@ -47,6 +47,7 @@ class DMConsumer(Consumer):
         except Exception as e:
             logger.error(f'[DMConsumer]: Error: connect: {str(e)}')
             await self.close(code=1011)  # 1011: Internal error
+            raise e
 
 
     async def receive(self, text_data):
@@ -145,7 +146,7 @@ class DMConsumer(Consumer):
             err = "user does not exist"
             return None, None, err
         except Exception as e:
-            return None, None, None, str(e)
+            return None, None, str(e)
 
 
     @database_sync_to_async
