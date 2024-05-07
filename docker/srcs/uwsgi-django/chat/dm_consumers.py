@@ -140,6 +140,10 @@ class DMConsumer(Consumer):
 
             user = await self._get_user_by_nickname(nickname=user_nickname)
             other_user = await self._get_user_by_nickname(nickname=other_user_nickname)
+
+            if user == other_user:
+                raise ValueError('user and other_user must be a different user')
+
             return user, other_user, None
 
         except CustomUser.DoesNotExist:
