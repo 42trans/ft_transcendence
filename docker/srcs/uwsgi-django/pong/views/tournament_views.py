@@ -13,6 +13,7 @@ from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
+import random
 
 User = get_user_model()
 
@@ -165,22 +166,29 @@ def create_new_tournament_and_matches(request):
 		date_str				= request.POST.get('date')
 		player_nicknames_json	= request.POST.get('player_nicknames', '[]')
 		player_nicknames 		= json.loads(player_nicknames_json)
+		randomize				= request.POST.get('randomize', False)
 
 		# print("Received Data:", name, date_str, player_nicknames) 
 
-		# 空ではないことを確認		
 		if (
 			not date_str or 
-			not name or 
+			not name
+		):
+			return JsonResponse({'status': 'error', 'message': 'Name and date are required.'}, status=400)
+		
+		if (
+			# ニックネームの数が8？
 			len(player_nicknames) != 8 or 
+			# ユニークか？　set():重複登録不可
+			len(set(player_nicknames)) != 8 or 
+			# 空文字列か？
 			any(nickname.strip() == '' for nickname in player_nicknames)
 		):
-			return JsonResponse({'status': 'error', 'message': 'Invalid input data.'}, status=400)
+			return JsonResponse({'status': 'error', 'message': 'Invalid player nicknames data. Ensure exactly 8 unique, non-empty nicknames.'}, status=400)
 	
 		# 日付のフォーマットを確認 UTC ISO8601
 		aware_datetime = parse_datetime(date_str)
 		# print("Parsed Date:", aware_datetime) 
-		
 		if (
 			aware_datetime is None or 
 			not aware_datetime.tzinfo
@@ -196,13 +204,7 @@ def create_new_tournament_and_matches(request):
 				organizer=request.user,
 				is_finished=False
 			)
-
-			# print("Tournament Created:", tournament) 
-			if len(player_nicknames) != 8:
-				return JsonResponse({'status': 'error', 'message': 'Exactly 8 player nicknames are required.'}, status=400)
-			if any(nickname.strip() == '' for nickname in player_nicknames):
-				return JsonResponse({'status': 'error', 'message': 'All player nicknames must be non-empty.'}, status=400)
-			matches = create_matches(tournament, player_nicknames)
+			matches = create_matches(tournament, player_nicknames, randomize)
 		# ---------------ここまでatomic
 
 		# トーナメントとマッチのIDを含むレスポンスを返す
@@ -210,9 +212,34 @@ def create_new_tournament_and_matches(request):
 		return JsonResponse({'status': 'success', 'tournament_id': tournament.id, 'matches': match_data})
 	except Exception as e:
 		return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-	
-def create_matches(tournament, player_nicknames):
-	print("Tournament:", tournament) 
+
+def create_matches(tournament, player_nicknames, randomize=False):
+	# test random
+	# randomize = True
+	'''
+	引数 randomize=False:
+		省略可能
+
+	ランダム関数について:
+
+		def shuffle(self, x):
+			"""
+			Shuffle list x in place, and return None.
+			randbelow関数は、指定された数未満のランダムな整数を返すためのメソッド
+			"""
+
+			randbelow = self._randbelow
+			for i in reversed(range(1, len(x))):
+				# pick an element in x[:i+1] with which to exchange x[i]
+				j = randbelow(i + 1)
+				x[i], x[j] = x[j], x[i]
+	'''
+	# プレイヤーリストをランダムに並べ替える
+	print("Original player_nicknames:", player_nicknames)
+	if randomize:
+		random.shuffle(player_nicknames)
+		print("Shuffled player_nicknames:", player_nicknames)
+
 	matches_info = [
 		(1, 1, player_nicknames[0], player_nicknames[1]),
 		(1, 2, player_nicknames[2], player_nicknames[3]),
@@ -222,11 +249,12 @@ def create_matches(tournament, player_nicknames):
 		(2, 2, '', ''),
 		(3, 1, '', '')
 	]
-	# print("Matches info:", matches_info) 
+	print("Matches info:", matches_info) 
 	# winner,is_finished(default=false)は未入力
+	matches = []
 	try:
-		matches = [
-			Match.objects.create(
+		for round_number, match_number, player1, player2 in matches_info:
+			match = Match.objects.create(
 				tournament=tournament,
 				round_number=round_number,
 				match_number=match_number,
@@ -234,8 +262,9 @@ def create_matches(tournament, player_nicknames):
 				player2=player2,
 				winner=None,
 				can_start=(round_number == 1)  # 第一ラウンドの場合はcan_startをTrueに設定
-			) for round_number, match_number, player1, player2 in matches_info
-		]
+			) 
+			print(f"Created match: Round {round_number}, Match {match_number}, Players {player1} vs {player2}")
+			matches.append(match)
 	except Exception as e:
 		print(f"Error creating match: {e}")
 		raise
