@@ -65,10 +65,13 @@ class DMConsumerTestCase(TransactionTestCase):
                                              headers)
         return communicator
 
-# --------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     # test
     # --------------------------------------------------------------------------
     async def test_connect_websocket(self):
+        """
+        WebSocketへの接続
+        """
         await self.asyncSetUp()  # login
         try:
             # wsに接続
@@ -83,6 +86,9 @@ class DMConsumerTestCase(TransactionTestCase):
             self.fail(f"Unexpected error occurred: {str(e)}")
 
     async def test_receive_and_store_message(self):
+        """
+        user1->user2へのメッセージ送信 & DB保存
+        """
         await self.asyncSetUp()  # login
         try:
             # wsに接続
@@ -118,23 +124,84 @@ class DMConsumerTestCase(TransactionTestCase):
         except Exception as e:
             self.fail(f"Unexpected error occurred: {str(e)}")
 
-    async def test_invalid_json(self):
+    async def test_receive_and_store_empty_message(self):
+        """
+        user1->user2へのメッセージ送信（空文字列） & DB保存
+        """
         await self.asyncSetUp()  # login
         try:
             # wsに接続
             connected, subprotocol = await self.communicator.connect()
             self.assertTrue(connected, f"WebSocket connection failed, code: {subprotocol}")
 
-            # invalid_jsonを送信
-            await self.communicator.send_to(text_data="invalid json")
-            with self.assertRaises(AssertionError):
-                await self.communicator.receive_from(timeout=1)
+            # messageを送信
+            message_data = {
+                'message': ''
+            }
+            await self.communicator.send_json_to(message_data)
+
+            response = await self.communicator.receive_json_from()
+            self.assertEqual(response['type'], 'send_data')
+            response_data = json.loads(response['data'])
+
+            # messageの各要素を評価
+            self.assertEqual(response_data['sender'], self.user1.nickname)
+            self.assertEqual(response_data['message'], '')
+            self.assertIsInstance(response_data['timestamp'], str)
+            self.assertFalse(response_data['is_system_message'])
+
+            # DBから取得したmessageの各要素を評価
+            message = await database_sync_to_async(Message.objects.last)()
+            sender = await database_sync_to_async(lambda: message.sender)()
+            receiver = await database_sync_to_async(lambda: message.receiver)()
+            self.assertEqual(message.message, '')
+            self.assertEqual(sender, self.user1)
+            self.assertEqual(receiver, self.user2)
 
             await self.communicator.disconnect()
 
         except Exception as e:
             self.fail(f"Unexpected error occurred: {str(e)}")
 
+    async def test_receive_and_store_max_size_mesage(self):
+        """
+        user1->user2へのメッセージ送信（65536 byte） & DB保存
+        """
+        await self.asyncSetUp()  # login
+        try:
+            # wsに接続
+            connected, subprotocol = await self.communicator.connect()
+            self.assertTrue(connected, f"WebSocket connection failed, code: {subprotocol}")
+
+            # messageを送信
+            message_text = 'a' * 65536
+            message_data = {
+                'message': message_text
+            }
+            await self.communicator.send_json_to(message_data)
+
+            response = await self.communicator.receive_json_from()
+            self.assertEqual(response['type'], 'send_data')
+            response_data = json.loads(response['data'])
+
+            # messageの各要素を評価
+            self.assertEqual(response_data['sender'], self.user1.nickname)
+            self.assertEqual(response_data['message'], message_text)
+            self.assertIsInstance(response_data['timestamp'], str)
+            self.assertFalse(response_data['is_system_message'])
+
+            # DBから取得したmessageの各要素を評価
+            message = await database_sync_to_async(Message.objects.last)()
+            sender = await database_sync_to_async(lambda: message.sender)()
+            receiver = await database_sync_to_async(lambda: message.receiver)()
+            self.assertEqual(message.message, message_text)
+            self.assertEqual(sender, self.user1)
+            self.assertEqual(receiver, self.user2)
+
+            await self.communicator.disconnect()
+
+        except Exception as e:
+            self.fail(f"Unexpected error occurred: {str(e)}")
 
 
 class DMConsumerInvalidTestCase(TransactionTestCase):
@@ -219,3 +286,85 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
         connected, subprotocol = await communicator.connect()
 
         self.assertFalse(connected)
+
+    async def test_invalid_json(self):
+        await self.asyncSetUp()  # login
+        try:
+            # wsに接続
+            token_header = f'Bearer {self.user1_jwt}'.encode()
+            headers = [(b'authorization', token_header)]
+            communicator = WebsocketCommunicator(application,
+                                                 f"ws/dm-with/{self.user2.nickname}/",
+                                                 headers)
+            connected, subprotocol = await communicator.connect()
+            self.assertTrue(connected, f"WebSocket connection failed, code: {subprotocol}")
+
+            # invalid_jsonを送信
+            await communicator.send_to(text_data="invalid json")
+            with self.assertRaises(AssertionError):
+                await communicator.receive_from(timeout=1)
+
+            await communicator.disconnect()
+
+        except Exception as e:
+            self.fail(f"Unexpected error occurred: {str(e)}")
+
+    async def test_receive_max_size_mesage(self):
+        """
+        user1->user2へのメッセージ送信（65537文字）でWebSocketが適切にクローズされるかテスト
+        """
+        await self.asyncSetUp()  # login
+
+        # wsに接続
+        token_header = f'Bearer {self.user1_jwt}'.encode()
+        headers = [(b'authorization', token_header)]
+        communicator = WebsocketCommunicator(application,
+                                             f"ws/dm-with/{self.user2.nickname}/",
+                                             headers)
+        connected, subprotocol = await communicator.connect()
+
+        # messageを送信
+        message_text = 'a' * 65537
+        message_data = {
+            'message': message_text
+        }
+        await communicator.send_json_to(message_data)
+
+        # ここでサーバーからの応答を待つ
+        response = await communicator.receive_output()
+
+        # WebSocketがクローズされたかを検証する
+        self.assertEqual(response['type'], 'websocket.close')
+        self.assertEqual(response['code'], 1011)
+
+        await communicator.disconnect()
+
+    async def test_receive_big_size_mesage(self):
+        """
+        user1->user2へのメッセージ送信（65537文字）でWebSocketが適切にクローズされるかテスト
+        """
+        await self.asyncSetUp()  # login
+
+        # wsに接続
+        token_header = f'Bearer {self.user1_jwt}'.encode()
+        headers = [(b'authorization', token_header)]
+        communicator = WebsocketCommunicator(application,
+                                             f"ws/dm-with/{self.user2.nickname}/",
+                                             headers)
+        connected, subprotocol = await communicator.connect()
+
+        # messageを送信
+        message_text = 'a' * 2147483647
+        message_data = {
+            'message': message_text
+        }
+        await communicator.send_json_to(message_data)
+
+        # ここでサーバーからの応答を待つ
+        response = await communicator.receive_output()
+
+        # WebSocketがクローズされたかを検証する
+        self.assertEqual(response['type'], 'websocket.close')
+        self.assertEqual(response['code'], 1011)
+
+        await communicator.disconnect()

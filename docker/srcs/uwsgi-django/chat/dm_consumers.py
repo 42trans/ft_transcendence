@@ -58,6 +58,8 @@ class DMConsumer(Consumer):
         try:
             text_data_json = json.loads(text_data)
             message = text_data_json['message']
+            if 65536 < len(message):
+                raise ValueError('message is too long, must be less than 65536 characters')
 
             # メッセージをデータベースに保存
             message_instance = await self._store_message_to_db(sender_id=self.user.id,
@@ -75,6 +77,7 @@ class DMConsumer(Consumer):
             await self.close(code=1007)  # 1007: Invalid data
         except Exception as e:
             logger.error(f'[DMConsumer]: Error: receive: {str(e)}')
+            # print(f'[DMConsumer]: Error: receive: {str(e)}')
             await self.close(code=1011)  # 1011: Internal error
 
 
