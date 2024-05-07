@@ -19,6 +19,8 @@
     {% else %}
     <li><a href="#" onclick="unblockUser('{{ user_data.nickname }}'); return false;">unblock</a></li>
     {% endif %}
+<!--    <li><a href="#" onclick="sendSystemMessage('{{ user_data.nickname }}');">[test] send system message to {{ user_data.nickname }}</a></li>-->
+    <li><a href="#" onclick="sendSystemMessage('user1');">[test] send system message to user1</a></li>
 </ul>
 
 <hr>
@@ -28,6 +30,7 @@
 
 <script src="{% static 'accounts/js/block-user.js' %}"></script>
 <script src="{% static 'accounts/js/unblock-user.js' %}"></script>
+<script src="{% static 'chat/js/test-system-message.js' %}"></script>
 
 </body>
 </html>

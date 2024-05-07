@@ -32,6 +32,7 @@ class DMConsumer(Consumer):
         """
         websocket接続時に呼ばれる関数
         """
+        # logger.debug(f'[DMConsumer]: connect 1')
         try:
             # user, other_user, is_system_message をclass変数にセット
             # system_userも追加する可能性あり
@@ -55,6 +56,7 @@ class DMConsumer(Consumer):
         #message-submit でWebSocketを通じてサーバーがメッセージを受信すると呼ばれる関数
         メッセージをDBに保存し、groupにmessage_dataを送信する
         """
+        # logger.debug(f'[DMConsumer]: receive 1')
         try:
             text_data_json = json.loads(text_data)
             message = text_data_json['message']
@@ -82,6 +84,8 @@ class DMConsumer(Consumer):
 
 
     def _get_send_data(self, message_instance):
+        # logger.debug(f'[DMConsumer]: get_send_data 1')
+
         message = message_instance.message
         timestamp = message_instance.timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -129,6 +133,10 @@ class DMConsumer(Consumer):
         self.user, self.other_user, err = await self._get_users()
         if err is not None:
             return err
+
+        # logger.debug(f'[DMConsumer]: get_dm_consumer_params:'
+        #              f' user: {self.user.nickname},'
+        #              f' other_user: {self.other_user.nickname}')
 
         # todo: unused
         self.is_system_message = self.scope['url_route']['kwargs'].get('is_system_message', False)

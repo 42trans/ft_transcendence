@@ -1,5 +1,5 @@
 # chat/systen_message.py
-
+import json
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
@@ -8,12 +8,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 
-from asgiref.sync import async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
 from channels.layers import get_channel_layer
 
 from accounts.models import CustomUser
 from chat.models import DMSession, Message
 from chat.dm_consumers import DMConsumer
+from channels.db import database_sync_to_async
 
 import logging
 
@@ -39,7 +40,6 @@ class SystemMessageAPI(APIView):
         target_nickname = request.data.get('target_nickname')
         message = request.data.get('message')
 
-
         if not message or not target_nickname:
             response = {
                 'status': 'error',
@@ -51,39 +51,34 @@ class SystemMessageAPI(APIView):
 
         try:
             target_user = CustomUser.objects.get(nickname=target_nickname)
-        except CustomUser.DoesNotExist:
-            response = {
-                'status': 'error',
-                'message': 'Target user does not exist'
-            }
-            return Response(response, status=status.HTTP_404_NOT_FOUND)
+            system_user = CustomUser.objects.get(is_system=True)  # システムユーザーを取得
+            logger.debug(f'[system message] 3: system_user: {system_user.nickname}')
 
-        system_user = CustomUser.objects.get(is_system=True)  # システムユーザーを取得
-        # logger.error(f'system message 3: system_user: {system_user.nickname}')
+            if target_user == system_user:
+                response = {
+                    'status': 'error',
+                    'message': 'Target user should be other than system user'
+                }
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        if target_user == system_user:
-            response = {
-                'status': 'error',
-                'message': 'Target user should be other than system user'
-            }
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            dm_session = DMSession.get_session(system_user.id,
+                                               target_user.id,
+                                               is_system_message=True)
 
-        dm_session = DMSession.get_dm_session(system_user.id,
-                                              target_user.id,
-                                              is_system_message=True)
+            # メッセージをデータベースに保存
+            message_instance = Message.objects.create(sender=system_user,
+                                                      receiver=target_user,
+                                                      message=message)
+            timestamp = message_instance.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            logger.debug(f'[system message] 4, dm_session.id: {dm_session.id}')
 
-        # メッセージをデータベースに保存
-        message_instance = Message.objects.create(sender=system_user,
-                                                  receiver=target_user,
-                                                  message=message)
-        timestamp = message_instance.timestamp.strftime("%Y-%m-%d %H:%M:%S")
-        # logger.error(f'system message 4, dm_session.id: {dm_session.id}')
-
-        try:
-            DMConsumer.send_system_message_to_channel(message,
-                                                      target_user.id,
-                                                      system_user,
-                                                      timestamp)
+            channel_layer = get_channel_layer()
+            DMConsumer.send_system_message(channel_layer,
+                                                 dm_session.id,
+                                                 system_user.nickname,
+                                                 message,
+                                                 timestamp,
+                                                 is_system_message=True)
 
             logger.debug(f'[system message] 5')
             response = {
@@ -91,6 +86,14 @@ class SystemMessageAPI(APIView):
                 'message': 'System message sent'
             }
             return Response(response, status=status.HTTP_200_OK)
+
+        except CustomUser.DoesNotExist:
+            response = {
+                'status': 'error',
+                'message': 'Target user does not exist'
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
         except Exception as e:
             logger.debug(f'[system message] 6: err {str(e)}')
             response = {
