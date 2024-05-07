@@ -42,10 +42,10 @@ class TournamentEntry
 
 		// 作成した<div>要素をhtmlに追加
 		this.tournamentContainer.appendChild(header);
+		this.tournamentContainer.appendChild(naviButton);
 		this.tournamentContainer.appendChild(overview);
 		// TODO_ft:naviButtonが2回ある。リファクタリングする。
-		this.tournamentContainer.appendChild(naviButton);
-		this.tournamentContainer.appendChild(tourId);
+		// this.tournamentContainer.appendChild(tourId);
 		this.tournamentContainer.appendChild(deleteButton);
 	}
 
@@ -62,16 +62,11 @@ class TournamentEntry
 	/** ナビゲーションリンクの作成とイベントハンドラの設定 */
 	addNavigationLinks() 
 	{
-		const naviButton = document.createElement('div');
+		const naviButton = document.createElement('button');
 		naviButton.id = 'round-navigation';
-		naviButton.innerHTML = `
-			<button id="next-round">Round</button>
-		`;
-		this.tournamentContainer.appendChild(naviButton);
-		document.getElementById('next-round').addEventListener('click', () => 
-		{
-			this.roundManager.changeStateToRound(1);
-		});
+		naviButton.className = 'site-btn my-3';
+		naviButton.textContent = 'Round';
+		naviButton.onclick = () => this.roundManager.changeStateToRound(1);
 		return naviButton;
 	}
 
@@ -79,8 +74,14 @@ class TournamentEntry
 	addDeleteButton(tournamentId) {
 		const deleteButton = document.createElement('button');
 		deleteButton.id = 'delete-button';
+		deleteButton.className = 'site-btn my-3';
 		deleteButton.textContent = 'Delete Tournament';
-		deleteButton.onclick = () => this.tournamentDeleter.deleteTournament(tournamentId);
+		deleteButton.onclick = async () => {
+			if (confirm('Delete this tournament?')) {
+				await this.tournamentDeleter.deleteTournament(tournamentId);
+				// location.reload();
+			}
+		}
 		return deleteButton;
 	}
 
@@ -89,7 +90,7 @@ class TournamentEntry
 	{
 		const tourId = document.createElement('p');
 		tourId.id = 'tourId';
-		tourId.textContent = `Details for tournament ID: ${tournamentId}`;
+		tourId.textContent = `tournament ID: ${tournamentId}`;
 		return tourId;
 	}
 

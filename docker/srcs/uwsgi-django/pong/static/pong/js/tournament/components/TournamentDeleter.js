@@ -37,6 +37,7 @@ class TournamentDeleter
 			const data = await response.json();
 			if (data.status === 'success') {
 				UIHelper.handleSuccess('Tournament deleted successfully', '/pong/', this.submitMessage)
+				location.reload();
 			} else {
 				UIHelper.putError("No data returned. Please try again later.", this.errorMessage);
 			}

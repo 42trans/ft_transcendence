@@ -17,7 +17,11 @@ class UIHelper
 		if (userProfile && userProfile.nickname) 
 		{
 			const nicknameItem = document.createElement('li');
-			nicknameItem.textContent = `Nickname: ${userProfile.nickname}`;
+			nicknameItem.textContent = `${userProfile.nickname}`;
+			// nicknameItem.textContent = `Nickname: ${userProfile.nickname}`;
+			nicknameItem.id = 'user-info';
+			nicknameItem.className = 'mb-2';
+			// nicknameItem.style.listStyle = 'none';
 			container.appendChild(nicknameItem);
 		} else {
 			UIHelper.putError('User profile data is incomplete or missing.', container);

@@ -37,22 +37,56 @@ class TournamentCreator
 	_generateFormHTML(csrfToken) 
 	{
 		return `
-			<h2 class="slideup-text">Create Tournament</h2>
-			<input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
-			<input type="hidden" id="date" name="date" readonly>
-			<input type="text" id="name" name="name" placeholder="Tournament Name" value="My Tournament">
-			<input type="text" name="nickname" placeholder="Nickname 1" value="Nickname1">
-			<input type="text" name="nickname" placeholder="Nickname 2" value="Nickname2">
-			<input type="text" name="nickname" placeholder="Nickname 3" value="Nickname3">
-			<input type="text" name="nickname" placeholder="Nickname 4" value="Nickname4">
-			<input type="text" name="nickname" placeholder="Nickname 5" value="Nickname5">
-			<input type="text" name="nickname" placeholder="Nickname 6" value="Nickname6">
-			<input type="text" name="nickname" placeholder="Nickname 7" value="Nickname7">
-			<input type="text" name="nickname" placeholder="Nickname 8" value="Nickname8">
-			<button type="submit">Submit</button>
+		<main class="form-sign m-auto" id="signup-form">
+				<form class="sign-form" onsubmit="signupUser(event)">
+					<h2 class="slideup-text">Create Tournament</h2>
+					
+					<input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+					<input type="hidden" id="date" name="date" readonly>
+
+					<div class="slideup-text form-floating">
+						<input type="text" class="form-control" id="name" name="name" placeholder="Tournament Name" value="My Tournament">
+						<label for="floatingInput">My Tournament</label>
+	 				</div>
+					
+					<div class="slideup-text form-floating">
+						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname1">
+						<label for="floatingInput">Nickname1</label>
+	 				</div>
+					<div class="slideup-text form-floating">
+						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname2">
+						<label for="floatingInput">Nickname2</label>
+	 				</div>
+					<div class="slideup-text form-floating">
+						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname3">
+						<label for="floatingInput">Nickname3</label>
+	 				</div>
+					<div class="slideup-text form-floating">
+						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname4">
+						<label for="floatingInput">Nickname4</label>
+	 				</div>
+					<div class="slideup-text form-floating">
+						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname5">
+						<label for="floatingInput">Nickname5</label>
+	 				</div>
+					<div class="slideup-text form-floating">
+						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname6">
+						<label for="floatingInput">Nickname6</label>
+	 				</div>
+					<div class="slideup-text form-floating">
+						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname7">
+						<label for="floatingInput">Nickname7</label>
+	 				</div>
+					<div class="slideup-text form-floating">
+						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname8">
+						<label for="floatingInput">Nickname8</label>
+	 				</div>
+					
+					<button class="site-btn my-4" type="submit">Submit</button>
+			</form>
+		</main>
 		`;
 	}
-
 	/** トーナメントを保存する */
 	async _saveTournament(event) 
 	{
@@ -80,6 +114,7 @@ class TournamentCreator
 				return;
 			} else {
 				await this._processFormSubmission(nicknames);
+				
 			}
 		} catch (error) {
 			console.error('Error checking ongoing tournaments or processing form:', error);
@@ -152,6 +187,7 @@ class TournamentCreator
 	
 			const data = await response.json();
 			UIHelper.handleSuccess('Tournament successfully', '/pong/', this.submitMessage)
+			location.reload();
 		} catch (error) {
 			console.error('Fetch error:', error);
 			UIHelper.putError(error, this.errorMessage);

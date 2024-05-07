@@ -85,7 +85,7 @@ class StateBaseRound
 			} else {
 				if (match.can_start) {
 					// Pong gameへのリンク APIにmatch.idを渡す。
-					matchDetails += `<a href="/pong/play/${match.id}">Start Match</a>`;
+					matchDetails += `<a class='site-btn mt-2 mb-3' href="/pong/play/${match.id}">Start Match</a>`;
 				} else {
 					matchDetails += `<p>On Hold</p>`;
 				}
@@ -94,28 +94,36 @@ class StateBaseRound
 			matchElement.innerHTML = matchDetails;
 			this.tournamentContainer.appendChild(matchElement);
 		});
-		this.addNavigationLinks(roundNumber);
+		const prevNavi = this.addPrevNavigationLinks(roundNumber, 'prev-round', 'site-btn my-5 me-5', 'prev');
+		const nextNavi = this.addNextNavigationLinks(roundNumber, 'next-round', 'site-btn my-5', 'next');
+		this.tournamentContainer.appendChild(prevNavi);
+		this.tournamentContainer.appendChild(nextNavi);
 	}
 
-	// ナビゲーションリンクの追加とイベントハンドラの設定
-	addNavigationLinks(roundNumber) 
+	addPrevNavigationLinks(roundNumber, id, className, textContents) 
 	{
-		const container = document.createElement('div');
-		container.id = 'round-navigation';
-		container.innerHTML = `
-			<button id="prev-round">prev</button>
-			<button id="next-round">next</button>
-		`;
-		this.tournamentContainer.appendChild(container);
-
-		document.getElementById('prev-round').addEventListener('click', () => {
+		const naviButton = document.createElement('button');
+		naviButton.id = id;
+		naviButton.className = className;
+		naviButton.textContent = textContents;
+		naviButton.onclick = () => {
 			const newRound = Math.max(0, roundNumber - 1);
 			this.roundManager.changeStateToRound(newRound);
-		});
-		document.getElementById('next-round').addEventListener('click', () => {
+		};
+		return naviButton;
+	}
+
+	addNextNavigationLinks(roundNumber, id, className, textContents) 
+	{
+		const naviButton = document.createElement('button');
+		naviButton.id = id;
+		naviButton.className = className;
+		naviButton.textContent = textContents;
+		naviButton.onclick = () => {
 			const newRound = Math.min(3, roundNumber + 1);
 			this.roundManager.changeStateToRound(newRound);
-		});
+		};
+		return naviButton;
 	}
 }
 
