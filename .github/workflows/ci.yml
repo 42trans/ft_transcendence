@@ -100,4 +100,5 @@ jobs:
             echo -e "\e[32m[OK] ALL TEST SUCCESS\e[0m"
           else
             echo -e "\e[31m[NG] TEST FAILURE\e[0m"
+            exit 1
           fi
