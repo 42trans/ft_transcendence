@@ -26,8 +26,8 @@ logger = logging.getLogger(__name__)
 
 
 class SystemMessageAPI(APIView):
-    # permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]  # login required
+    # permission_classes = [AllowAny]
 
     def post(self, request) -> Response:
         """
@@ -35,8 +35,7 @@ class SystemMessageAPI(APIView):
          target_nickname: the nickname of the target user for send system message
          message: system message
         """
-
-        logger.error(f'system message 1')
+        # logger.error(f'system message 1')
         target_nickname = request.data.get('target_nickname')
         message = request.data.get('message')
 
@@ -48,7 +47,7 @@ class SystemMessageAPI(APIView):
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        logger.error(f'system message 2: target: {target_nickname}, message: {message}')
+        # logger.error(f'system message 2: target: {target_nickname}, message: {message}')
 
         try:
             target_user = CustomUser.objects.get(nickname=target_nickname)
@@ -60,7 +59,7 @@ class SystemMessageAPI(APIView):
             return Response(response, status=status.HTTP_404_NOT_FOUND)
 
         system_user = CustomUser.objects.get(is_system=True)  # システムユーザーを取得
-        logger.error(f'system message 3: system_user: {system_user.nickname}')
+        # logger.error(f'system message 3: system_user: {system_user.nickname}')
 
         if target_user == system_user:
             response = {
@@ -78,7 +77,7 @@ class SystemMessageAPI(APIView):
                                                   receiver=target_user,
                                                   message=message)
         timestamp = message_instance.timestamp.strftime("%Y-%m-%d %H:%M:%S")
-        logger.error(f'system message 4, dm_session.id: {dm_session.id}')
+        # logger.error(f'system message 4, dm_session.id: {dm_session.id}')
 
         try:
             DMConsumer.send_system_message_to_channel(message,
@@ -86,14 +85,14 @@ class SystemMessageAPI(APIView):
                                                       system_user,
                                                       timestamp)
 
-            logger.error(f'system message 5')
+            # logger.error(f'system message 5')
             response = {
                 'status': 'success',
                 'message': 'System message sent'
             }
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
-            logger.error(f'system message 5: err {str(e)}')
+            # logger.error(f'system message 5: err {str(e)}')
             response = {
                 'status': 'error',
                 'message': f'Error: {str(e)}'

@@ -79,7 +79,7 @@
 <body>
 
 {% if not isSystemUser %}
-<h1>DM with <a href="{% url 'accounts:info' nickname %}">{{ nickname }}</a></h1>
+<h1>DM with <a href="{% url 'accounts:info' target_nickname %}">{{ target_nickname }}</a></h1>
 {% else %}
 <h1>System Message</h1>
 {% endif %}
@@ -110,9 +110,9 @@
 
 <hr>
 
-<p><a href="{% url 'chat:dm_list' %}">dm_list</a></p>
+<p><a href="{% url 'chat:dm_sessions' %}">dm_sessions</a></p>
 
-{{ nickname|json_script:"nickname" }}
+{{ target_nickname|json_script:"target_nickname" }}
 
 <script type="module" src="{% static 'chat/js/dm.js' %}"></script>
 

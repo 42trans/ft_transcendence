@@ -1,17 +1,17 @@
 # chat/consumers.py
 
 import json
-from django.contrib.auth import get_user_model
+import logging
+from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
+from django.contrib.auth import get_user_model
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from accounts.models import CustomUser
+from chat.consumers import Consumer
 from chat.models import DMSession, Message
-
-import logging
 
 
 logging.basicConfig(
@@ -22,176 +22,157 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def print_mazenta(text):
-    print(f"\033[35m[DEBUG] {text}\033[0m")
-
-
-class DMConsumer(AsyncWebsocketConsumer):
+class DMConsumer(Consumer):
+    """
+    Websocket consumer class to handle DM
+    """
     permission_classes = [AllowAny]
 
     async def connect(self):
+        """
+        websocket接続時に呼ばれる関数
+        """
         try:
-            print_mazenta(f'[DMConsumer]: Connect 1')
-
-            self.user, self.other_user, self.system_user = await self.get_users()
-            if self.other_user is None or self.system_user is None:
-                print_mazenta(f'[DMConsumer]: Connect 2: other user not exist')
-                await self.close()  # ユーザーが存在しない場合は接続を閉じる
+            # user, other_user, is_system_message をclass変数にセット
+            # system_userも追加する可能性あり
+            err = await self._get_dm_consumer_params()
+            if err is not None:
+                logger.error(f'[DMConsumer]: Error: connect: {err}')
+                await self.close(code=1007)  # 1007: Invalid data
                 return
 
-            self.is_system_message = self.scope['url_route']['kwargs'].get('is_system_message', False)
-
-            print_mazenta(f'[DMConsumer]: Connect 3')
-            # ChatSession を取得または作成
-            self.chat_session = await self.get_dm_session(self.user.id, self.other_user.id)
-            print_mazenta(f'[DMConsumer]: Connect 4')
-
-            # グループ名をセッションIDを使用して設定
-            self.room_group_name = f"chat_{self.chat_session.id}"
-            print_mazenta(f'[DMConsumer]: Connect 5, group_name: {self.room_group_name}')
-            # 同じグループ名に参加
-            await self.channel_layer.group_add(
-                self.room_group_name,
-                self.channel_name
-            )
-            print_mazenta(f'[DMConsumer]: Connect 6')
-            await self.accept()
+            # model, user_id, other_user_idからsessionを検索 or 作成し、接続
+            await super().connect(DMSession, self.user.id, self.other_user.id)
 
         except Exception as e:
-            print_mazenta(f'[DMConsumer]: err: {str(e)}')
-
-
-    async def disconnect(self, close_code):
-        print_mazenta(f'[DMConsumer]: Disconnect code: {close_code}')
-        # グループから離脱
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+            logger.error(f'[DMConsumer]: Error: connect: {str(e)}')
+            await self.close(code=1011)  # 1011: Internal error
+            raise e
 
 
     async def receive(self, text_data):
-        print_mazenta(f'[DMConsumer]: Receive')
+        """
+        #message-submit でWebSocketを通じてサーバーがメッセージを受信すると呼ばれる関数
+        メッセージをDBに保存し、groupにmessage_dataを送信する
+        """
+        try:
+            text_data_json = json.loads(text_data)
+            message = text_data_json['message']
+            if 65536 < len(message):
+                raise ValueError('message is too long, must be less than 65536 characters')
 
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+            # メッセージをデータベースに保存
+            message_instance = await self._store_message_to_db(sender_id=self.user.id,
+                                                               receiver_id=self.other_user.id,
+                                                               message=message)
 
-        # メッセージをデータベースに保存
-        message_instance = await self.store_message(sender_id=self.user.id,
-                                                    receiver_id=self.other_user.id,
-                                                    message=message)
+            # 受信したメッセージからmessage_dataを作成し、send_dataに整形
+            send_data = self._get_send_data(message_instance)
+
+            # グループにsend_dataを送信 -> send_message()
+            await super().receive(json_data=json.dumps(send_data))
+
+        except json.JSONDecodeError as e:
+            logger.error(f'[DMConsumer]: Error: Invalid JSON data: {str(e)}')
+            await self.close(code=1007)  # 1007: Invalid data
+        except Exception as e:
+            logger.error(f'[DMConsumer]: Error: receive: {str(e)}')
+            # print(f'[DMConsumer]: Error: receive: {str(e)}')
+            await self.close(code=1011)  # 1011: Internal error
+
+
+    def _get_send_data(self, message_instance):
+        message = message_instance.message
         timestamp = message_instance.timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
-        message_param = {
-            'type': 'send_message',
-            'sender': self.user.nickname,
-            'message': message,
-            'timestamp': timestamp,
-            'is_system_message': False
+        send_data = {
+            'sender'            : self.user.nickname,
+            'message'           : message,
+            'timestamp'         : timestamp,
+            'is_system_message' : False
         }
-        # グループにメッセージを送信
-        await self.channel_layer.group_send(self.room_group_name, message_param)
+        return send_data
 
 
-    async def send_message(self, event):
-        print_mazenta(f'[DMConsumer]: send_message 1')
-
-        message = event['message']
-        sender = event['sender']
-        timestamp = event['timestamp']
-        is_system_message = event.get('is_system_message', False)  # システムメッセージフラグを取得
-
-        # WebSocketにメッセージを送信
-        message_data = {
-            'sender': sender,
-            'message': message,
-            'timestamp': timestamp,
-            'is_system_message': is_system_message
-        }
-        print_mazenta(f'[DMConsumer]: send_message 2')
-        await self.send(text_data=json.dumps(message_data))
-
-
+    # todo: API（HTTP）経由では実行されない？
     @classmethod
     def send_system_message_to_channel(cls,
                                        message,
                                        target_user_id,
-                                       system_user,
                                        timestamp):
+        """"
+        API経由でWebSocketにmessageを送信する際に呼ばれる関数（機能していないかも？）
+        system messageの送信に使用
+        """
         try:
-            print_mazenta(f'[DMConsumer]: send_system_message 1, system_user: {system_user.nickname}')
+            system_user = self._get_system_user()
+
             channel_layer = get_channel_layer()
-            dm_session = DMSession.get_dm_session(target_user_id, system_user.id)
-            print_mazenta(f'[DMConsumer]: send_system_message 2, session_id: {dm_session.id}')
+            dm_session = DMSession.get_session(user_id=system_user,
+                                               other_user_id=target_user_id)
             async_to_sync(channel_layer.group_send)(
-                f'chat_{dm_session.id}',
+                f'room_{dm_session.id}',
                 {
-                    'type': 'send_message',
-                    'sender': system_user.nickname,
-                    'message': message,
-                    'timestamp': timestamp,
-                    'is_system_message': True
+                    'type'              : 'send_message',
+                    'sender'            : system_user.nickname,
+                    'message'           : message,
+                    'timestamp'         : timestamp,
+                    'is_system_message' : True
                 }
             )
-            print_mazenta(f'[DMConsumer]: send_system_message 3')
         except Exception as e:
-            print_mazenta(f'[DMConsumer]: send_system_message 4: err: {str(e)}')
+            logger.error(f'[DMConsumer]: Error: send_system_message: {str(e)}')
+            raise e
 
 
-    async def get_users(self):
-        user_nickname = self.scope['user'].nickname
-        other_user_nickname = self.scope['url_route']['kwargs']['nickname']
-        print_mazenta(f'[DMConsumer]: Connect 2 other_user_nickname: {other_user_nickname}')
+    async def _get_dm_consumer_params(self):
+        self.user, self.other_user, err = await self._get_users()
+        if err is not None:
+            return err
 
+        # todo: unused
+        self.is_system_message = self.scope['url_route']['kwargs'].get('is_system_message', False)
+        return None
+
+
+    async def _get_users(self):
         # DM送受信者のuser objectをnickanmeから取得
-        user = await self.get_user_by_nickname(user_nickname)
-        other_user = await self.get_user_by_nickname(other_user_nickname)
-        system_user = await self.get_system_user()
-        return user, other_user, system_user
-
-
-    @database_sync_to_async
-    def get_dm_session(self, user_id, other_user_id):
-        # print_mazenta(f'[DMConsumer]: 3-1: get_dm_session user_id={user_id} other_user_id={other_user_id}')
-        # return DMSession.get_dm_session(user_id, other_user_id)
         try:
-            print_mazenta(f'[DMConsumer]: 3-1: get_dm_session user_id={user_id} other_user_id={other_user_id}')
-            return DMSession.get_dm_session(user_id, other_user_id)
+            user_nickname = self.scope['user'].nickname
+            other_user_nickname = self.scope['url_route']['kwargs']['nickname']
+
+            user = await self._get_user_by_nickname(nickname=user_nickname)
+            other_user = await self._get_user_by_nickname(nickname=other_user_nickname)
+
+            if user == other_user:
+                raise ValueError('user and other_user must be a different user')
+
+            return user, other_user, None
+
+        except CustomUser.DoesNotExist:
+            err = "user does not exist"
+            return None, None, err
         except Exception as e:
-            print_mazenta(f'[DMConsumer]: Error in get_dm_session: {str(e)}')
-            return None
+            return None, None, str(e)
 
 
     @database_sync_to_async
-    def user_exists(self, nickname):
-        """Check if a user with the given nickname exists."""
-        return CustomUser.objects.filter(nickname=nickname).exists()
-
-
-    @database_sync_to_async
-    def get_user_by_nickname(self, nickname: str) -> None:
-        return CustomUser.objects.get(nickname=nickname)
-
-
-    @database_sync_to_async
-    def get_system_user(self) -> None:
+    def _get_system_user(self):
         return CustomUser.objects.get(is_system=True)
 
 
     @database_sync_to_async
-    def store_message(self, sender_id: int, receiver_id: int, message: str) -> None:
-        print_mazenta(f'[DMConsumer] store_message: sender_id: {sender_id}, receiver_id: {receiver_id}, message: {message}')
+    def _store_message_to_db(self,
+                             sender_id: int,
+                             receiver_id: int,
+                             message: str) -> None:
         try:
-            print_mazenta(f'[DMConsumer]store_message 1')
             sender = CustomUser.objects.get(id=sender_id)
-            print_mazenta(f'[DMConsumer]store_message 2')
             receiver = CustomUser.objects.get(id=receiver_id)
-            print_mazenta(f'[DMConsumer]store_message 3')
             message_instance = Message.objects.create(sender=sender,
                                                       receiver=receiver,
                                                       message=message)
-            print_mazenta(f'[DMConsumer]store_message 4')
             return message_instance
         except Exception as e:
-            print_mazenta(f'[DMConsumer]: Error storing message: {str(e)}')
+            logger.error(f'[DMConsumer]: Error: storing message: {str(e)}')
             raise e

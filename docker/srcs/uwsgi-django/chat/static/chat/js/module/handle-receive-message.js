@@ -3,7 +3,7 @@
 import {classifyMessageSender} from "./apply-message-style.js";
 import {scrollToBottom} from "./ui-util.js";
 
-export { handleMessage };
+export { handleReceiveMessage };
 
 
 function createMessageElement(senderName, message, timestamp) {
@@ -33,24 +33,29 @@ function createMessageElement(senderName, message, timestamp) {
 }
 
 
-function classifyMessage(messageElement, isSystemMessage, senderName, dmTo) {
+function classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNickname) {
+    // todo: isSystemMessageは未使用
     if (isSystemMessage) {
         messageElement.classList.add('system-message');
     } else {
-        classifyMessageSender(messageElement, senderName, dmTo);
+        classifyMessageSender(messageElement, senderName, dmTargetNickname);
     }
 }
 
 
-function handleMessage(event, dmTo) {
+function handleReceiveMessage(event, dmTargetNickname) {
     const data = JSON.parse(event.data);
+    const message_data = JSON.parse(data.data);
+    console.log('Received WebSocket data:', data);
+    console.log('Received WebSocket message_data:', message_data);
 
-    const senderName = data.sender;
-    const timestamp = data.timestamp;
-    const isSystemMessage = data.is_system_message;
+    const senderName = message_data.sender;
+    const message = message_data.message;
+    const timestamp = message_data.timestamp;
+    const isSystemMessage = message_data.is_system_message;
 
-    let messageElement = createMessageElement(senderName, data.message, timestamp);
-    classifyMessage(messageElement, isSystemMessage, senderName, dmTo);
+    let messageElement = createMessageElement(senderName, message, timestamp);
+    classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNickname);
 
     document.querySelector('#dm-log').appendChild(messageElement);
     scrollToBottom();  // dm-logのスクロール位置を調整

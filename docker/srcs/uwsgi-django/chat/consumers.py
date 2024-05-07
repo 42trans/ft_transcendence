@@ -1,17 +1,36 @@
 # chat/consumers.py
 
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+import logging
+
 from django.contrib.auth import get_user_model
+
+from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework.permissions import IsAuthenticated
 
+from accounts.models import CustomUser
 
-class ChatConsumer(AsyncWebsocketConsumer):
+
+logging.basicConfig(
+    level=logging.ERROR,
+    format='%(asctime)s - %(levelname)s - %(message)s - [in %(funcName)s: %(lineno)d]',
+)
+
+logger = logging.getLogger(__name__)
+
+
+class Consumer(AsyncWebsocketConsumer):
     permission_classes = [IsAuthenticated]
 
-    async def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_name
+    async def connect(self, model, user_id, other_user_id):
+        self.room_group_name, err = await self._get_room_group_name(model=model,
+                                                                    user_id=user_id,
+                                                                    other_user_id=other_user_id)
+        if err is not None:
+            logger.error(f'[Consumer]: Error: connect: {err}')
+            await self.close(code=1007)  # 1007: Invalid data
+            return
 
         # Join room group
         await self.channel_layer.group_add(
@@ -21,32 +40,44 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
+    # Leave room group
     async def disconnect(self, close_code):
-        # Leave room group
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
 
-    # Receive message from WebSocket
-    async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-
+    # Receive from WebSocket
+    async def receive(self, json_data):
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'chat_message',
-                'message': message
+                'type': 'send_data',
+                'data': json_data
             }
         )
 
-    # Receive message from room group
-    async def chat_message(self, event):
-        message = event['message']
+    # Send to WebSocket
+    #  send() data is `'data': json_data` group_sent by receive()
+    async def send_data(self, event):
+        await self.send(text_data=json.dumps(event))
 
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+
+    @database_sync_to_async
+    def _get_user_by_nickname(self, nickname: str):
+        return CustomUser.objects.get(nickname=nickname)
+
+
+    @database_sync_to_async
+    def _get_room_group_name(self, model, user_id, other_user_id):
+        """
+        SessionModel.get_sessionからroom_group_nameを取得する関数
+        Sessionの検索 or 作成のために、user_id, other_user_idが必要
+        """
+        try:
+            session = model.get_session(user_id, other_user_id)
+            room_group_name = f"room_{session.id}"
+            return room_group_name, None
+        except Exception as e:
+            return None, str(e)
