@@ -19,10 +19,10 @@ import logging
 
 
 logging.basicConfig(
-    level=logging.ERROR,
+    level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s - [in %(funcName)s: %(lineno)d]',
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('chat')
 
 
 class SystemMessageAPI(APIView):
@@ -35,7 +35,7 @@ class SystemMessageAPI(APIView):
          target_nickname: the nickname of the target user for send system message
          message: system message
         """
-        # logger.error(f'system message 1')
+        # logger.debug(f'[system message] 1')
         target_nickname = request.data.get('target_nickname')
         message = request.data.get('message')
 
@@ -47,7 +47,7 @@ class SystemMessageAPI(APIView):
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        # logger.error(f'system message 2: target: {target_nickname}, message: {message}')
+        logger.debug(f'[system message] 2: target: {target_nickname}, message: {message}')
 
         try:
             target_user = CustomUser.objects.get(nickname=target_nickname)
@@ -85,14 +85,14 @@ class SystemMessageAPI(APIView):
                                                       system_user,
                                                       timestamp)
 
-            # logger.error(f'system message 5')
+            logger.debug(f'[system message] 5')
             response = {
                 'status': 'success',
                 'message': 'System message sent'
             }
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
-            # logger.error(f'system message 5: err {str(e)}')
+            logger.debug(f'[system message] 6: err {str(e)}')
             response = {
                 'status': 'error',
                 'message': f'Error: {str(e)}'

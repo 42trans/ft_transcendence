@@ -13,11 +13,11 @@ from accounts.models import CustomUser
 
 
 logging.basicConfig(
-    level=logging.ERROR,
+    level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s - [in %(funcName)s: %(lineno)d]',
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('chat')
 
 
 class Consumer(AsyncWebsocketConsumer):
@@ -28,7 +28,7 @@ class Consumer(AsyncWebsocketConsumer):
                                                                     user_id=user_id,
                                                                     other_user_id=other_user_id)
         if err is not None:
-            logger.error(f'[Consumer]: Error: connect: {err}')
+            # logger.debug(f'[Consumer]: Error: connect: {err}')
             await self.close(code=1007)  # 1007: Invalid data
             return
 
@@ -61,6 +61,7 @@ class Consumer(AsyncWebsocketConsumer):
     # Send to WebSocket
     #  send() data is `'data': json_data` group_sent by receive()
     async def send_data(self, event):
+        # logger.debug(f'[Consumer]: send_data: {json.dumps(event)}')
         await self.send(text_data=json.dumps(event))
 
 

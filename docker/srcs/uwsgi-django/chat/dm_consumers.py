@@ -15,11 +15,11 @@ from chat.models import DMSession, Message
 
 
 logging.basicConfig(
-    level=logging.ERROR,
+    level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s - [in %(funcName)s: %(lineno)d]',
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('chat')
 
 
 class DMConsumer(Consumer):
@@ -37,7 +37,7 @@ class DMConsumer(Consumer):
             # system_userも追加する可能性あり
             err = await self._get_dm_consumer_params()
             if err is not None:
-                logger.error(f'[DMConsumer]: Error: connect: {err}')
+                logger.debug(f'[DMConsumer]: Error: connect: {err}')
                 await self.close(code=1007)  # 1007: Invalid data
                 return
 
@@ -45,7 +45,7 @@ class DMConsumer(Consumer):
             await super().connect(DMSession, self.user.id, self.other_user.id)
 
         except Exception as e:
-            logger.error(f'[DMConsumer]: Error: connect: {str(e)}')
+            logger.debug(f'[DMConsumer]: Error: connect: {str(e)}')
             await self.close(code=1011)  # 1011: Internal error
             raise e
 
@@ -73,10 +73,10 @@ class DMConsumer(Consumer):
             await super().receive(json_data=json.dumps(send_data))
 
         except json.JSONDecodeError as e:
-            logger.error(f'[DMConsumer]: Error: Invalid JSON data: {str(e)}')
+            logger.debug(f'[DMConsumer]: Error: Invalid JSON data: {str(e)}')
             await self.close(code=1007)  # 1007: Invalid data
         except Exception as e:
-            logger.error(f'[DMConsumer]: Error: receive: {str(e)}')
+            logger.debug(f'[DMConsumer]: Error: receive: {str(e)}')
             # print(f'[DMConsumer]: Error: receive: {str(e)}')
             await self.close(code=1011)  # 1011: Internal error
 
@@ -174,5 +174,5 @@ class DMConsumer(Consumer):
                                                       message=message)
             return message_instance
         except Exception as e:
-            logger.error(f'[DMConsumer]: Error: storing message: {str(e)}')
+            logger.debug(f'[DMConsumer]: Error: storing message: {str(e)}')
             raise e

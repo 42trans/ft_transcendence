@@ -9,11 +9,11 @@ from accounts.models import CustomUser
 
 
 logging.basicConfig(
-    level=logging.ERROR,
+    level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s - [in %(funcName)s: %(lineno)d]',
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('chat')
 
 
 class DMSession(models.Model):
@@ -44,14 +44,14 @@ class DMSession(models.Model):
         if sessions.exists():
             # 既存のセッションがあればそれを返す
             session = sessions.first()
-            logger.error(f'[DMSession]: session exists: {session.id}')
+            logger.debug(f'[DMSession]: session exists: {session.id}')
             return session
         else:
             # セッションがなければ新規作成
             session = cls.objects.create()
             session.member.add(user, other_user)
             session.save()
-            logger.error(f'[DMSession]: session created: {session.id}')
+            logger.debug(f'[DMSession]: session created: {session.id}')
             return session
 
 
