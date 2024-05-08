@@ -8,10 +8,13 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files.storage import FileSystemStorage
+from django.templatetags.static import static
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -38,13 +41,18 @@ class UserProfileView(TemplateView):
 
 class UserProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    kDefaultAvatarPath = 'accounts/images/default_avatar.jpg'
 
     def get(self, request) -> JsonResponse:
         user = request.user
+        avatar_url = user.avatar.url if user.avatar else static(self.kDefaultAvatarPath)
+        logger.debug(f'UserProfileAPIView: avatar_url: {avatar_url}')
+
         params = {
             'email': user.email,
             'nickname': user.nickname,
             'enable_2fa': user.enable_2fa,
+            'avatar_url': avatar_url,
         }
         return JsonResponse(params)
 
@@ -136,6 +144,8 @@ class EditUserProfileAPIView(APIView):
 
 # todo: tmp, API and FBV -> CBV
 def get_user_info(request, nickname):
+    kDefaultAvatarPath = 'accounts/images/default_avatar.jpg'
+
     if not nickname:
         return redirect('/pong/')
 
@@ -145,8 +155,8 @@ def get_user_info(request, nickname):
             return redirect(to='/pong/')
 
         info_user = CustomUser.objects.get(nickname=nickname)
+        avatar_url = info_user.avatar.url if info_user.avatar else static(kDefaultAvatarPath)
         is_blocking_user = request.user.blocking_users.filter(id=info_user.id).exists()
-
 
         # フレンドリクエスト送信済みの情報（pendingのみ）
         friend_request_sent = Friend.objects.filter(sender=user, receiver=info_user, status='pending').first()
@@ -161,6 +171,7 @@ def get_user_info(request, nickname):
             'info_user_email'   : info_user.email,
             'info_user_nickname': info_user.nickname,
             'enable_2fa'        : info_user.enable_2fa,
+            'avatar_url'        : avatar_url,
             'isBlockingUser'    : is_blocking_user,
             'is_friend'         : is_friend,
             'friend_request_sent_status'    : 'pending' if friend_request_sent else None,
@@ -171,3 +182,23 @@ def get_user_info(request, nickname):
     except Exception as e:
         logging.error(f"API request failed: {e}")
         return redirect('/pong/')
+
+
+class ChangeAvatarView(LoginRequiredMixin, TemplateView):
+    template_name = 'accounts/change_avatar.html'
+    login_url = reverse_lazy('accounts:login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+@csrf_exempt  # todo: tmp
+def change_avatar(request):
+    if request.method == 'POST' and request.FILES['avatar']:
+        avatar_file = request.FILES['avatar']
+        request.user.avatar.save(avatar_file.name, avatar_file, save=True)
+        logger.debug(f'change_avatar: avatar_url: {request.user.avatar.url}')
+        return redirect('accounts:user')
+
+    return render(request, 'user.html', {'error': 'upload failed'})

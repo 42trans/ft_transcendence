@@ -24,9 +24,11 @@
                 userInfo.innerHTML = `
             <li>Email: ${data.email}</li>
             <li>Nickname: ${data.nickname}</li>
-            <li>avater: [avater here]</li>
             ${data.has_usable_password ? '<li>Password: ******</li>' : ''}
             <li><a href="/accounts/edit/">Edit Profile</a></li>
+            <br>
+            <li>Avatar: <img src="${data.avatar_url}" alt="User Avatar" width="100">
+            <a href="/accounts/change-avatar/">Edit Avatar</a></li>
             <br>
             ${data.enable_2fa ?
                     `<li>2FA: ✅Enabled</li><li><a href="/accounts/verify/disable_2fa/">Disable 2FA</a></li>` :

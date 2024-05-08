@@ -159,8 +159,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
     enable_2fa = models.BooleanField(_("enable 2fa"), default=False)
     blocking_users = models.ManyToManyField('self', symmetrical=False, related_name='blocking_me')
-    # friends = ...
-    is_system = models.BooleanField(_("is_system"), default=False)
+    is_system = models.BooleanField(_("is_system"), default=False)  # unused
+
+    # アバター画像フィールドを追加
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
     is_staff = models.BooleanField(
         _("staff status"),

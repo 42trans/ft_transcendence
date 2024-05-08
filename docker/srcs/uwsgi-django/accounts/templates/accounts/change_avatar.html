@@ -1,0 +1,23 @@
+<!-- change_avatar.html -->
+
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>Change Avatar</title>
+</head>
+<body>
+<h1>Change Avatar</h1>
+
+<!-- アバター変更用のフォーム -->
+<form action="{% url 'api_accounts:change_avatar' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="avatar">New Avatar:</label>
+    <input type="file" id="avatar" name="avatar" required>
+    <button type="submit">Upload New Avatar</button>
+</form>
+
+<hr>
+<a href="{% url 'accounts:user' %}">Return to User Page</a>
+</body>
+</html>
