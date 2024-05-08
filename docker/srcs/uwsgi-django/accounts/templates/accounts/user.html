@@ -6,6 +6,16 @@
 <head>
     <meta charset="utf-8">
     <title>User Page</title>
+
+    <style>
+        .avatar {
+            width: 50px;    /* 幅を30pxに設定 */
+            height: 50px;   /* 高さを30pxに設定 */
+            border-radius: 50%;  /* 角を円形にする */
+            object-fit: cover;   /* 画像のアスペクト比を維持しながら、設定された領域に収まるようにする */
+            margin-right: 10px;  /* 画像とテキストの間の余白 */
+        }
+    </style>
 </head>
 <body>
 <h1>User Page (private)</h1>
@@ -27,7 +37,7 @@
             ${data.has_usable_password ? '<li>Password: ******</li>' : ''}
             <li><a href="/accounts/edit/">Edit Profile</a></li>
             <br>
-            <li>Avatar: <img src="${data.avatar_url}" alt="User Avatar" width="100">
+            <li>Avatar: <img src="${data.avatar_url}" alt="User Avatar" class="avatar">
             <a href="/accounts/change-avatar/">Edit Avatar</a></li>
             <br>
             ${data.enable_2fa ?

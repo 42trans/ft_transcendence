@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.shortcuts import render, redirect
+from django.templatetags.static import static
 from django.views.generic import TemplateView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
@@ -50,7 +51,9 @@ class DMView(LoginRequiredMixin, TemplateView):
             'target_nickname'   : other_user.nickname,
             'messages'          : message_log,
             'isBlockingUser'    : is_blocking_user,
-            'isSystemUser'      : other_user.is_system
+            'isSystemUser'      : other_user.is_system,
+            'user_avatar_url'   : user.avatar.url,
+            'other_avatar_url'  : other_user.avatar.url
         }
         # logging.error(f'dm_room: user: {user.nickname}, dm_to: {nickname}, blocking: {is_blocking_user}')
         return render(request, self.template_name, data)

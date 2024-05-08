@@ -162,7 +162,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_system = models.BooleanField(_("is_system"), default=False)  # unused
 
     # アバター画像フィールドを追加
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/',
+                               default='avatars/default_avatar.jpg',
+                               blank=True)
 
     is_staff = models.BooleanField(
         _("staff status"),

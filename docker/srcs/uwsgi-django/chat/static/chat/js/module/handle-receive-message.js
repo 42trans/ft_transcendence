@@ -6,35 +6,51 @@ import {scrollToBottom} from "./ui-util.js";
 export { handleReceiveMessage };
 
 
-function createMessageElement(senderName, message, timestamp) {
+function createMessageElement(senderName, message, timestamp, avatarUrl) {
     let messageElement = document.createElement('li');
+    let avatarAndSenderContainer = document.createElement('div');
     let messageContent = document.createElement('div');
     let timestampContent = document.createElement('span');
-
-    messageContent.className = 'message-content';
-
-    // [ sender ] \n message に整形 -> todo: senderはicon化
+    let avatarElement = document.createElement('img');
     let senderElement = document.createElement('span');
-    senderElement.textContent = `[ ${senderName} ]`;
 
+    avatarAndSenderContainer.className = 'avatar-and-sender';
+    messageContent.className = 'message-content';
+    timestampContent.className = 'timestamp';
+
+    // アバター設定
+    avatarElement.src = avatarUrl;
+    avatarElement.className = 'avatar';
+
+    // 送信者名設定
+    senderElement.textContent = senderName;
+    senderElement.className = 'sender-name';
+
+    // メッセージテキスト設定
     let messageTextElement = document.createElement('span');
     messageTextElement.textContent = message;
 
-    messageContent.appendChild(senderElement);
-    messageContent.appendChild(messageTextElement);
-    messageElement.appendChild(messageContent);
+    // アバターと送信者名のコンテナに追加
+    avatarAndSenderContainer.appendChild(avatarElement);
+    avatarAndSenderContainer.appendChild(senderElement);
 
-    timestampContent.className = 'timestamp';
+    // メッセージコンテンツにテキスト追加
+    messageContent.appendChild(messageTextElement);
+
+    // タイムスタンプをメッセージコンテンツに追加
     timestampContent.textContent = timestamp;
-    timestampContent.style.textAlign = 'right';
-    messageElement.appendChild(timestampContent);
+    messageContent.appendChild(timestampContent);
+
+    // メッセージエレメントに全てを追加
+    messageElement.appendChild(avatarAndSenderContainer);
+    messageElement.appendChild(messageContent);
 
     return messageElement;
 }
 
 
 function classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNickname) {
-    // todo: isSystemMessageは未使用
+    // todo: isSystemMessageは未使用, system message実装で使う可能性あり
     if (isSystemMessage) {
         messageElement.classList.add('system-message');
     } else {
@@ -49,14 +65,18 @@ function handleReceiveMessage(event, dmTargetNickname) {
     console.log('Received WebSocket data:', data);
     console.log('Received WebSocket message_data:', message_data);
 
-    const senderName = message_data.sender;
-    const message = message_data.message;
-    const timestamp = message_data.timestamp;
+    let messageElement = createMessageElement(
+        message_data.sender,
+        message_data.message,
+        message_data.timestamp,
+        message_data.avatar_url
+    );
     const isSystemMessage = message_data.is_system_message;
 
-    let messageElement = createMessageElement(senderName, message, timestamp);
-    classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNickname);
+    // メッセージに適切なクラスを適用
+    classifyMessage(messageElement, isSystemMessage, message_data.sender, dmTargetNickname);
 
     document.querySelector('#dm-log').appendChild(messageElement);
+
     scrollToBottom();  // dm-logのスクロール位置を調整
 }

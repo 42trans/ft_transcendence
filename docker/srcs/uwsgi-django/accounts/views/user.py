@@ -41,11 +41,10 @@ class UserProfileView(TemplateView):
 
 class UserProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
-    kDefaultAvatarPath = 'accounts/images/default_avatar.jpg'
 
     def get(self, request) -> JsonResponse:
         user = request.user
-        avatar_url = user.avatar.url if user.avatar else static(self.kDefaultAvatarPath)
+        avatar_url = user.avatar.url
         logger.debug(f'UserProfileAPIView: avatar_url: {avatar_url}')
 
         params = {
@@ -144,8 +143,6 @@ class EditUserProfileAPIView(APIView):
 
 # todo: tmp, API and FBV -> CBV
 def get_user_info(request, nickname):
-    kDefaultAvatarPath = 'accounts/images/default_avatar.jpg'
-
     if not nickname:
         return redirect('/pong/')
 
@@ -155,7 +152,7 @@ def get_user_info(request, nickname):
             return redirect(to='/pong/')
 
         info_user = CustomUser.objects.get(nickname=nickname)
-        avatar_url = info_user.avatar.url if info_user.avatar else static(kDefaultAvatarPath)
+        avatar_url = info_user.avatar.url
         is_blocking_user = request.user.blocking_users.filter(id=info_user.id).exists()
 
         # フレンドリクエスト送信済みの情報（pendingのみ）
