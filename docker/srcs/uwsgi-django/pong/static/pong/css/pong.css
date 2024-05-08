@@ -62,13 +62,13 @@ ol {
 }
 
 .container h2{
-	font-size: 3rem;
+	/* font-size: 3rem; */
 	color: #ffb320;
 	text-shadow: 0px 0px 10px #000; 
 }
 
 .container h3{
-	font-size: 2rem;
+	/* font-size: 2rem; */
 	color: #ffb320;
 	text-shadow: 0px 0px 10px #000; 
 }
