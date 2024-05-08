@@ -51,7 +51,7 @@
                 const friendsUl = document.createElement('ul');
                 data.friends.forEach(friend => {
                     const li = document.createElement('li');
-                    li.innerHTML = `${friend.nickname} <a href="#" onclick="deleteFriend(${friend.id}); return false;">Delete</a>`;
+                    li.innerHTML = `<a href="/accounts/info/${friend.nickname}/">${friend.nickname}</a> <a href="#" onclick="deleteFriend(${friend.id}); return false;">Delete</a>`;
                     friendsUl.appendChild(li);
                 });
                 friendsList.appendChild(friendsUl);
@@ -72,7 +72,7 @@
                 const sentRequestsUl = document.createElement('ul');
                 data.sent_requests.forEach(req => {
                     const li = document.createElement('li');
-                    li.innerHTML = `Request sent to ${req.receiver__nickname} <a href="#" onclick="cancelFriendRequest(${req.receiver_id}); return false;">Cancel</a>`;
+                    li.innerHTML = `Request sent to <a href="/accounts/info/${req.receiver__nickname}/">${req.receiver__nickname}</a> <a href="#" onclick="cancelFriendRequest(${req.receiver_id}); return false;">Cancel</a>`;
                     sentRequestsUl.appendChild(li);
                 });
                 sentRequestsDiv.appendChild(sentRequestsUl);
@@ -84,7 +84,7 @@
                 const receivedRequestsUl = document.createElement('ul');
                 data.received_requests.forEach(req => {
                     const li = document.createElement('li');
-                    li.innerHTML = `Request from ${req.sender__nickname} <a href="#" onclick="acceptFriendRequest(${req.sender_id}); return false;">Accept</a> <a href="#" onclick="rejectFriendRequest(${req.sender_id}); return false;">Reject</a>`;
+                    li.innerHTML = `Request from  <a href="/accounts/info/${req.sender__nickname}/">${req.sender__nickname}</a> <a href="#" onclick="acceptFriendRequest(${req.sender_id}); return false;">Accept</a> <a href="#" onclick="rejectFriendRequest(${req.sender_id}); return false;">Reject</a>`;
                     receivedRequestsUl.appendChild(li);
                 });
                 receivedRequestsDiv.appendChild(receivedRequestsUl);
