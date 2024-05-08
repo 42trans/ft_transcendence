@@ -235,3 +235,26 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     devices = models.ManyToManyField(TOTPDevice)
+
+
+class Friend(models.Model):
+    """
+    user間のfriendリクエスト状態を管理
+    sender  : 友達申請を送信したuser
+    receiver: 友達申請を受信したuser
+    """
+    class FriendStatus(models.TextChoices):
+        PENDING  = 'pending' , _('Pending')
+        ACCEPTED = 'accepted', _('Accepted')
+        REJECTED = 'rejected', _('Rejected')
+
+    sender = models.ForeignKey(CustomUser,
+                               on_delete=models.CASCADE,
+                               related_name='friend_requests_sent')
+    receiver = models.ForeignKey(CustomUser,
+                                 on_delete=models.CASCADE,
+                                 related_name='friend_requests_received')
+    status = models.CharField(max_length=10,
+                              choices=FriendStatus.choices,
+                              default=FriendStatus.PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)

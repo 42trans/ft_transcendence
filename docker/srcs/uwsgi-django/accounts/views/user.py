@@ -19,7 +19,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from accounts.forms import UserEditForm, CustomPasswordChangeForm
-from accounts.models import CustomUser, UserManager
+from accounts.models import CustomUser, UserManager, Friend
 from accounts.views.jwt import is_valid_jwt
 
 
@@ -137,24 +137,37 @@ class EditUserProfileAPIView(APIView):
 # todo: tmp, API and FBV -> CBV
 def get_user_info(request, nickname):
     if not nickname:
-        response = {
-            'error': 'Nickname required'
-        }
         return redirect('/pong/')
 
-
     try:
+        user = request.user
+        if not user.is_authenticated:
+            return redirect(to='/pong/')
+
         info_user = CustomUser.objects.get(nickname=nickname)
         is_blocking_user = request.user.blocking_users.filter(id=info_user.id).exists()
 
+
+        # フレンドリクエスト送信済みの情報（pendingのみ）
+        friend_request_sent = Friend.objects.filter(sender=user, receiver=info_user, status='pending').first()
+        # フレンドリクエスト受信済みの情報（pendingのみ）
+        friend_request_received = Friend.objects.filter(sender=info_user, receiver=user, status='pending').first()
+        # 既に友達であるか確認
+        is_friend = Friend.objects.filter(sender=user, receiver=info_user, status='accepted').exists() or \
+                    Friend.objects.filter(sender=info_user, receiver=user, status='accepted').exists()
+
         user_data = {
-            'id': info_user.id,
-            'email': info_user.email,
-            'nickname': info_user.nickname,
-            'enable_2fa': info_user.enable_2fa,
-            'isBlockingUser': is_blocking_user
+            'info_user_id'      : info_user.id,
+            'info_user_email'   : info_user.email,
+            'info_user_nickname': info_user.nickname,
+            'enable_2fa'        : info_user.enable_2fa,
+            'isBlockingUser'    : is_blocking_user,
+            'is_friend'         : is_friend,
+            'friend_request_sent_status'    : 'pending' if friend_request_sent else None,
+            'friend_request_received_status': 'pending' if friend_request_received else None,
         }
         return render(request, 'accounts/user_info.html', {'user_data': user_data})
+
     except Exception as e:
         logging.error(f"API request failed: {e}")
         return redirect('/pong/')
