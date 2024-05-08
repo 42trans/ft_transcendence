@@ -1,59 +1,17 @@
-
-html,
-body {
-	height: 100%;
-	font-family: 'Roboto', sans-serif;
-	-webkit-font-smoothing: antialiased;
-	font-smooth: antialiased;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+.hth-main {
+	width: 100vw; 
+	max-width: 100%; 
 	margin: 0;
-	font-weight: 500;
-	/* color: #131313; */
-}
-
-/* p {
-	color: #fff;
-} */
-
-img {
-	max-width: 100%;
-}
-
-input:focus,
-select:focus,
-button:focus,
-textarea:focus {
-	outline: none;
-}
-
-a:hover,
-a:focus {
-	text-decoration: none;
-	outline: none;
-}
-
-ul,
-ol {
 	padding: 0;
-	margin: 0;
 }
-
 
 /* Canvasのスタイリング */
-.canvas-container {
-	width: 100%; /* コンテナの幅 */
-	/* height: 900px; */
+.hth-container {
+	width: 100vw;
 	height: 100vh;
-	display: flex; /* Flexboxを使用 */
-	justify-content: center; /* 水平方向中央揃え */
-	align-items: center; /* 垂直方向中央揃え */
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	background: url('../img/bg.png') no-repeat center center; /* 背景画像の設定 */
 	background-size: cover; /* 背景画像をカバーとして設定 */
 	position: relative;
@@ -61,51 +19,35 @@ ol {
 	text-shadow: 1px 1px 5px #000; 
 }
 
-.container h2{
-	/* font-size: 3rem; */
+.hth-container .text-shadow-primary{
 	color: #ffb320;
 	text-shadow: 0px 0px 10px #000; 
 }
 
-.container h3{
-	/* font-size: 2rem; */
-	color: #ffb320;
-	text-shadow: 0px 0px 10px #000; 
-}
-.container h4{
-	/* font-size: 2rem; */
-	color: #ffb320;
-	text-shadow: 0px 0px 10px #000; 
-}
-
-.container div{
-	/* font-size: 2rem; */
-	color: #ffb320;
-	text-shadow: 0px 0px 10px #000; 
+.hth-container .text-shadow-secondary {
+	color: #fff;
+	text-shadow: 1px 1px 5px #000;
 }
 
 .dev-link{
-	color: rgba(255, 179, 32, 0.5); /* 50%透明の黄色 */
+	color: #fff;
 	text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* 50%透明の黒のテキストシャドウ */
 	background: rgba(0, 0, 0, 0.5); /* 50%透明の黒い背景 */
 }
 
-.container a {
+.hth-container a {
 	color: #fff; 
 	text-decoration: none; 
 	text-shadow: 1px 1px 5px #000; 
 }
 
-.container  a:hover {
+.hth-container  a:hover {
 	color: #ffb320;
-	text-shadow: 1px 1px 20px #000; 
-}
-
-.container p {
-	color: #fff;
 	text-shadow: 1px 1px 5px #000; 
 }
 
+
+/* ----- ここまでチェック済み */
 .text-overlay {
 	position: absolute;
 	bottom: 20px; /* 下部からの距離を調整 */

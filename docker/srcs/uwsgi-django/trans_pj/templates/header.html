@@ -1,6 +1,4 @@
 {% load static %}
-<header>
-
 <!-- 
 	navbar: Bootstrap defaultのクラス
 	参考:【ナビゲーションバー · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/components/navbar/#%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84>
@@ -76,13 +74,15 @@
 					class="
 						btn 
 						btn-outline-light 
+						transition-ease-color
 						me-2" 
 					onclick="location.href='/accounts/logout/'">Log out</button>
 				<button 
 					type="button" 
 					class="
 						btn 
-						btn-primary"
+						btn-primary
+						transition-ease-color"
 					onclick="location.href='/accounts/user/'">Profile</button>
 			{% else %}
 				<button 
@@ -90,13 +90,15 @@
 					class="
 						btn 
 						btn-primary
+						transition-ease-color
 						me-2" 
 					onclick="location.href='/accounts/login/'">Log in</button>
 				<button 
 					type="button" 
 					class="
 						btn 
-						btn-primary" 
+						btn-primary
+						transition-ease-color" 
 					onclick="location.href='/accounts/signup/'">Sign up</button>
 			{% endif %}
 	
@@ -104,4 +106,4 @@
 	</div>
 </div>
 </nav>
-</header>
+

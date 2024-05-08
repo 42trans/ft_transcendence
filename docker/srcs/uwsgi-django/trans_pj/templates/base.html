@@ -2,43 +2,43 @@
 <!doctype html>
 <html lang="en" class="h-100" data-bs-theme="auto">
 <head>
-	<!-- <script src="../assets/js/color-modes.js"></script> -->
-	<script src="{% static 'pong/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
-	<script src="{% static 'pong/js/bootstrap/color-modes.js' %}"></script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="3D-Pong">
-	<title>hth Pong</title>
 	<!-- Stylesheets -->
 	<link rel="stylesheet" href="{% static 'pong/css/bootstrap/bootstrap.min.css' %}"/>
 	<link rel="stylesheet" href="{% static 'pong/css/animation.css' %}" >
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-	<!-- <link rel="stylesheet" href="{% static 'pong/css/style.css' %}"> -->
-	<link rel="stylesheet" href="{% static 'pong/css/custom-responsive.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-responsive.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/pong.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/pong-default.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/footer.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/header.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/custom-contents.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/sign.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/tournament.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/bootstrap/sticky-footer-navbar.css' %}">
+	<!-- title -->
+	<title>{% block title %}{% endblock %}</title>
 </head>
 
 <body class="d-flex flex-column h-100">
 	<!-- color mode -->
 	{% include 'icons.html' %}
 	{% include 'theme-toggle.html' %}
-	<!-- header -->
-	{% include 'header.html' %}
-	<!-- contents -->
-	<main class="flex-shrink-0">
-		<div class="container">
-			<!-- Begin page content -->
-			{% block content %}
-			{% endblock %}
+	<header>{% include 'header.html' %}</header>
+	<main id="hth-main" class="flex-shrink-0">
+		<div class="container-fluid px-0">
+			<div class="hth-container">
+				{% block content %}{% endblock %}
+			</div>
 		</div>
 	</main>
-	<!-- footer -->
-	{% include 'footer.html' %}
+	<footer>{% include 'footer.html' %}</footer>
+
+<script src="{% static 'pong/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'pong/js/bootstrap/color-modes.js' %}"></script>
+<script src="{% static 'accounts/js/logout.js' %}"></script>
 </body>
+
 </html>

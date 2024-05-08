@@ -1,9 +1,20 @@
 /*------------------
 custom: prefix hth
 ---------------------*/
-/* responsive.cssで設定するクラス・id
-#hth-site-logo
-*/
+header {
+	background: #131313; /* ヘッダーの背景色 */
+	padding: 15px 0; /* ヘッダーの内側の余白 */
+	border-bottom: 1px solid #ffb320; /* ヘッダーの下辺に境界線を設定 */
+}
+
+#hth-site-logo {
+	display: block;
+	float: left;
+	/* padding-top: 6px; */
+	margin-right: 30px;
+	max-width: 130px;
+
+}
 
 #hth-header-navi {
 	clear: both;
@@ -75,10 +86,5 @@ custom: prefix hth
 	--bs-btn-disabled-bg: transparent;
 	--bs-btn-disabled-border-color: #f8f9fa;
 	--bs-gradient: none;
-}
-
-/* 色が変わる時間をゆっくりにするアニメーション */
-.btn-primary, .btn-outline-light {
-	transition: color 0.7s ease, background-color 0.7s ease, border-color 0.7s ease;
 }
 

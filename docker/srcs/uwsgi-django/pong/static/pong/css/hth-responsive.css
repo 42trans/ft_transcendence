@@ -39,13 +39,8 @@ XX-Large: ≥1400px */
 	}
 }
 
-/* md: Tablet との分岐点
-*/
+/* md: Tablet との分岐点*/
 @media (min-width: 768px)  {
-	#hth-site-logo {
-		max-width: 130px;
-		margin-right: 20px;
-	}
 	.main-menu {
 		margin-right: 25px;
 	}
@@ -64,19 +59,7 @@ XX-Large: ≥1400px */
 }
 
 /* sm */
-
 @media (min-width: 576px){
-	#hth-site-logo {
-		float: none;
-		padding-top: 0;
-	}
-	/* .header-section {
-		overflow: visible;
-		padding: 23px 0;
-	}
-	.header-section .container {
-		position: relative;
-	} */
 	.main-menu {
 		display: none;
 		position: absolute;
@@ -124,10 +107,6 @@ XX-Large: ≥1400px */
 }
 
 /* -xs */
-@media (max-width: 575.98px) {
-	#hth-site-logo {
-		display: block;
-		float: left;
-		padding-top: 6px;
-	}
+@media (min-width: 0px) {
+
 }
