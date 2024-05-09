@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
@@ -262,3 +263,15 @@ class Friend(models.Model):
                               choices=FriendStatus.choices,
                               default=FriendStatus.PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class UserStatus(models.Model):
+    """
+    userのオンラインステータスを追跡するモデル
+    """
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    is_online = models.BooleanField(default=False)
+    last_online = models.DateTimeField(default=now)
+
+    def __str__(self):
+        return f"{self.user.username} is {'online' if self.is_online else 'offline'}"

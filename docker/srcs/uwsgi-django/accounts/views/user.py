@@ -44,14 +44,14 @@ class UserProfileAPIView(APIView):
 
     def get(self, request) -> JsonResponse:
         user = request.user
-        avatar_url = user.avatar.url
-        logger.debug(f'UserProfileAPIView: avatar_url: {avatar_url}')
+        logger.debug(f'UserProfileAPIView: avatar_url: {user.avatar.url}')
 
         params = {
-            'email': user.email,
-            'nickname': user.nickname,
+            'id'        : user.id,
+            'email'     : user.email,
+            'nickname'  : user.nickname,
             'enable_2fa': user.enable_2fa,
-            'avatar_url': avatar_url,
+            'avatar_url': user.avatar.url,
         }
         return JsonResponse(params)
 

@@ -15,13 +15,23 @@
             object-fit: cover;   /* 画像のアスペクト比を維持しながら、設定された領域に収まるようにする */
             margin-right: 10px;  /* 画像とテキストの間の余白 */
         }
+
+        .status.online {
+            color: green;
+        }
+
+        .status.offline {
+            color: red;
+        }
     </style>
 </head>
 <body>
 <h1>User Page (private)</h1>
 
 <div id="user-info"></div>
+<hr>
 <div id="friends-container"></div>
+<hr>
 <div id="requests-container"></div>
 
 <!-- todo: jsへ移動 -->
@@ -32,42 +42,33 @@
             .then(data => {
                 const userInfo = document.getElementById("user-info");
                 userInfo.innerHTML = `
-            <li>Email: ${data.email}</li>
-            <li>Nickname: ${data.nickname}</li>
-            ${data.has_usable_password ? '<li>Password: ******</li>' : ''}
-            <li><a href="/accounts/edit/">Edit Profile</a></li>
-            <br>
-            <li>Avatar: <img src="${data.avatar_url}" alt="User Avatar" class="avatar">
-            <a href="/accounts/change-avatar/">Edit Avatar</a></li>
-            <br>
-            ${data.enable_2fa ?
-                    `<li>2FA: ✅Enabled</li><li><a href="/accounts/verify/disable_2fa/">Disable 2FA</a></li>` :
-                    `<li>2FA: Disabled</li><li><a href="/accounts/verify/enable_2fa/">Enable 2FA</a></li>`}
-            <br>
-            <button onclick="handleLogout()">Logout</button>
-            <br>
-            `;
+                <li>Email: ${data.email}</li>
+                <li>Nickname: ${data.nickname}</li>
+                ${data.has_usable_password ? '<li>Password: ******</li>' : ''}
+                <li><a href="/accounts/edit/">Edit Profile</a></li>
+                <br>
+                <li>Avatar: <img src="${data.avatar_url}" alt="User Avatar" class="avatar">
+                <a href="/accounts/change-avatar/">Edit Avatar</a></li>
+                <br>
+                ${data.enable_2fa ?
+                        `<li>2FA: ✅Enabled</li><li><a href="/accounts/verify/disable_2fa/">Disable 2FA</a></li>` :
+                        `<li>2FA: Disabled</li><li><a href="/accounts/verify/enable_2fa/">Enable 2FA</a></li>`}
+                <br>
+                <button onclick="handleLogout()">Logout</button>
+                <br>
+                `;
+
+                setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
             })
             .catch(error => console.error("Error:", error));
 
 
-        // フレンドリストの取得
-        fetch("/accounts/api/friend/list/")
+        fetch('/accounts/api/friend/list/')
             .then(response => response.json())
             .then(data => {
-                const friendsContainer = document.getElementById("friends-container");
-                const friendsList = document.createElement('div');
-                friendsList.innerHTML = "<h3>Friends</h3>";
-                const friendsUl = document.createElement('ul');
-                data.friends.forEach(friend => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<a href="/accounts/info/${friend.nickname}/">${friend.nickname}</a> <a href="#" onclick="deleteFriend(${friend.id}); return false;">Delete</a>`;
-                    friendsUl.appendChild(li);
-                });
-                friendsList.appendChild(friendsUl);
-                friendsContainer.appendChild(friendsList);
+                createFriendsList(data);
             })
-            .catch(error => console.error("Error:", error));
+            .catch(error => console.error('Error loading friends:', error));
 
 
         // フレンド申請リストの一覧
@@ -106,6 +107,7 @@
 
 <script src="{% static 'accounts/js/logout.js' %}"></script>
 <script src="{% static 'accounts/js/friend.js' %}"></script>
+<script src="{% static 'accounts/js/online-status.js' %}"></script>
 
 <hr>
 <br>

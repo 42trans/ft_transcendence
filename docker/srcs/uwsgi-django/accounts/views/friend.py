@@ -1,6 +1,6 @@
 import logging
 from django.http import JsonResponse
-from accounts.models import CustomUser, Friend
+from accounts.models import CustomUser, Friend, UserStatus
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, Q
 
@@ -150,9 +150,9 @@ def delete_friend(request, user_id):
     except Exception as e:
         return JsonResponse({'error': f'Unexpected error: {str(e)}'}, status=500)
 
-
 def get_friends(request):
     user = request.user
+
     if not user.is_authenticated:
         return JsonResponse({'error': 'Unauthorized'}, status=401)
 
@@ -179,16 +179,23 @@ def get_friends(request):
     ).order_by('nickname')
 
     # リストを統合してソート
-    friends = list(friends_as_sender) + list(friends_as_receiver)
-    friends_sorted = sorted(friends, key=lambda x: x['nickname'])
+    friends         = list(friends_as_sender) + list(friends_as_receiver)
+    friends_sorted  = sorted(friends, key=lambda x: x['nickname'])
+
+    # フレンドのステータス情報を取得
+    friend_ids          = [friend['friend_id'] for friend in friends_sorted]
+    friend_statuses     = UserStatus.objects.filter(user_id__in=friend_ids).values('user_id', 'is_online')
+    friend_status_dict  = {status['user_id']: status['is_online'] for status in friend_statuses}
+
+    # フレンドのステータス情報を追加
     renamed_friends = [{
-        'id': friend['friend_id'], 'nickname': friend['nickname']
+        'id'        : friend['friend_id'],
+        'nickname'  : friend['nickname'],
+        'status'    : friend_status_dict.get(friend['friend_id'], False)
     } for friend in friends_sorted]
 
     logger.debug(f'get_friends friends: {renamed_friends}')
-
     return JsonResponse({'friends': renamed_friends}, safe=False)
-
 
 def get_friend_requests(request):
     user = request.user
