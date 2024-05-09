@@ -9,7 +9,7 @@ header {
 #hth-site-logo {
 	display: block;
 	float: left;
-	margin-right: 30px;
+	margin-right: 1rem;
 	max-width: 130px;
 }
 
@@ -24,13 +24,15 @@ header {
 }
 
 #hth-toggle-menu {
-	color: #fff;
+	color: #ffb320;
 }
+
 
 /* 通常時のスタイル */
 .hth-nav-link {
 	color: #ffb320; 
 	transition: color 0.3s ease; 
+	padding-left: 2rem;
 }
 
 /* ホバー時のスタイル */
@@ -42,15 +44,22 @@ header {
 上書き・追加
 ---------------------*/
 .navbar {
-	--bs-navbar-color: rgba(255, 255, 255, 0.55);
-	--bs-navbar-hover-color: rgba(255, 255, 255, 0.75);
-	--bs-navbar-disabled-color: rgba(255, 255, 255, 0.25);
-	--bs-navbar-active-color: #fff;
-	--bs-navbar-brand-color: #fff;
-	--bs-navbar-brand-hover-color: #fff;
-	--bs-navbar-toggler-border-color: rgba(255, 255, 255, 0.1);
-	--bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+	/* 透過のためにRGBに変更 #ffb320 */
+	--bs-navbar-color: rgba(255, 179, 32, 0.5);
+	--bs-navbar-toggler-border-color: #ffb320;
+	--bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23ffb320' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
+
+/* ダークモードのスタイル */
+[data-bs-theme="dark"] .navbar {
+	--bs-navbar-color: rgba(255, 179, 32, 0.5);  
+	--bs-navbar-toggler-border-color: #ffb320; 
+}
+
+[data-bs-theme="dark"] .navbar-toggler-icon {
+	--bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23ffb320' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
 
 .btn-primary {
 	--bs-btn-color: #ffb320;

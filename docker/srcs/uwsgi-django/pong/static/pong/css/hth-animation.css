@@ -9,6 +9,7 @@
 	}
 }
 
+/* テキストが下から現れるアニメーション */
 .slideup-text {
 	animation: slideUp 0.5s ease-out forwards;
 }

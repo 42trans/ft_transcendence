@@ -1,20 +1,14 @@
-
 .form-sign {
-	margin: auto; /* 中央寄せ */
+	margin: auto;
 	padding: 20px; 
-	/* max-width: 400px; */
+	max-width: 400px;
 	min-width: 375px;
 	background-color: rgba(35, 24, 1, 0.921); 
 	text-shadow: 0px 0px 0px #fff;
 	border-radius: 10px; 
-
 }
 
 .fw-normal {
-	color: #fff;
-}
-
-.form-check-label {
 	color: #fff;
 }
 
@@ -22,13 +16,8 @@
 	color: #fff;
 }
 
-.form-floating label {
-	text-shadow: 0px 0px 0px #fff; 
-}
-
 #message-area {
 	color: #ffb320;
-	/* height: 1rem; */
 }
 
 .sign_btn {
@@ -69,7 +58,7 @@
 
 .sign_btn-primary {
 	/* --bs-btn-color: #000; */
-	/* --bs-btn-color: #fff; */
+	--bs-btn-color: #131313;
 	--bs-btn-bg:#ffb320;
 	--bs-btn-border-color:#ffb320;
 	--bs-btn-hover-color: #fff;
@@ -100,6 +89,7 @@ a.sign_btn-primary:hover {
 	color: #fff;
 	text-shadow: 0px 0px 0px #fff; 
 }
+
 a.sign_btn-primary {
 	color: #000;
 	text-shadow: 0px 0px 0px #fff; 
@@ -129,17 +119,12 @@ div.user-info-container {
 	margin: auto;
 	margin-top: 2rem;
 	padding: 20px; 
-	/* max-width: 400px; */
+	max-width: 500px;
 	min-width: 375px;
+	/* background-color: rgba(19, 19, 19, 0.921);  */
 	background-color: rgba(35, 24, 1, 0.921); 
 	text-shadow: 0px 0px 0px #fff;
 	border-radius: 10px; 
-
-}
-
-.user-info-container ul {
-	color: #fff;
-	list-style-type: none;
 }
 
 .user-info-container li {
@@ -154,33 +139,6 @@ div.user-info-container {
 }
 .user-info-container a:hover {
 	color: #fff;
-}
-
-.user-info-container button{
-	display: inline-block;
-	text-align: center;
-	/* font-size: 15px; */
-	margin-top:1rem;
-	padding: 16px 30px;
-	min-width: 153px;
-	border-radius: 50px;
-	font-weight: 500;
-	border: none;
-	background: #ffb320;
-	cursor: pointer;
-	text-decoration: none;
-	z-index: 100;
-	text-shadow: 0px 0px 0px #fff; 
-}
-
-.user-info-container button:hover {
-	color: #fff;
-}
-
-
-.canvas-container .site-btn {
-	color: #131313;
-	text-shadow: 0px 0px 0px #fff; 
 }
 
 /* tournament UIHelper SPA後削除*/
