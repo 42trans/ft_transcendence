@@ -126,7 +126,8 @@ ul.form-sign-text {
 /* userProfle */
 
 div.user-info-container {
-	margin: auto; /* 中央寄せ */
+	margin: auto;
+	margin-top: 2rem;
 	padding: 20px; 
 	/* max-width: 400px; */
 	min-width: 375px;

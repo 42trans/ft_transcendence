@@ -1,27 +1,44 @@
-/*------------------
-custom: prefix hth
----------------------*/
-.hth-main {
-	width: 100vw; 
-	max-width: 100%; 
-	margin: 0;
-	padding-top: 30px; /* ヘッダーの高さに合わせて調整 */
-	flex-grow: 1; /* コンテンツが画面いっぱいに広がるように設定 */
-	overflow-x: hidden; /* 横スクロールを無効にする */
+:root {
+	--header-height: 80px;
+	--footer-height: 50px;
 }
 
-/* Canvasのスタイリング */
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	margin: 0;
+	background: #131313;
+}
+
+.hth-main {
+	width: 100%; 
+	padding-top: var(--header-height);
+	min-height: calc(100vh - var(--header-height) - var(--footer-height)); 
+	padding-bottom: var(--footer-height);
+	flex-grow: 1;
+	overflow-x: hidden;
+	overflow-y: auto;	
+}
+
+/* 背景設定用コンテナ */
 .hth-container {
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	min-height: calc(100vh - var(--header-height) - var(--footer-height));
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: url('../img/bg.png') no-repeat center center; /* 背景画像の設定 */
-	background-size: cover; /* 背景画像をカバーとして設定 */
+	background: url('../img/bg.png') no-repeat center center;
+	background-size: cover;
 	position: relative;
 	color: #ffb320;
 	text-shadow: 1px 1px 5px #000; 
+	flex-direction: column;
+}
+
+#hth-txt-container{
+	padding-top: 2rem;
+	padding-bottom: 2rem;
 }
 
 .hth-container .text-shadow-primary{
@@ -44,7 +61,6 @@ custom: prefix hth
 	color: #ffb320;
 	text-shadow: 1px 1px 5px #000; 
 }
-
 
 .dev-link{
 	color: #fff;

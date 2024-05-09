@@ -1,12 +1,10 @@
-/*------------------
-custom: prefix hth
----------------------*/
 footer { 
 	margin-top: auto;
 	padding-top: 1rem;
 	padding-bottom: 1rem;
 	color: var(--footer-text-color);
 	background-color: var(--footer-bg-color); 
+	height: var(--footer-height);
 }
 
 #hth-footer-menu {
@@ -36,5 +34,8 @@ footer {
 }
 
 #hth-footer-menu li a:hover {
-	color: var(--footer-hover-text-color);
+	color: #fff;
+	/* color: var(--footer-hover-text-color); */
+	/* background-color: var(--footer-bg-color);  */
+
 }

@@ -3,7 +3,10 @@
 {% block title %}Home - hth Pong{% endblock title %}
 {% block content %}
 
-<div class="container">
+<!-- TODO_ft: bugfooter hover color がbg同じ -->
+
+<!-- TODO_ft:gameではcontainerが邪魔になるのでbase.htmlに入れられない -->
+<div class="container" id="hth-txt-container">
 	<h2 class="
 		slideup-text
 		text-shadow-primary
@@ -26,7 +29,6 @@
 			">For a happier life, let's play the pong game!</p>
 	{% endif %}
 
-	<!-- for dev -->
 	{% include 'pong/dev-link.html' %}
 
 </div>
