@@ -46,40 +46,40 @@ class TournamentCreator
 
 					<div class="slideup-text form-floating">
 						<input type="text" class="form-control" id="name" name="name" placeholder="Tournament Name" value="My Tournament">
-						<label for="floatingInput">My Tournament</label>
+						<label for="floatingInput">Tournament Name</label>
 	 				</div>
 					
 					<div class="slideup-text form-floating">
 						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname1">
-						<label for="floatingInput">Nickname1</label>
+						<label for="floatingInput">Player1</label>
 	 				</div>
 					<div class="slideup-text form-floating">
 						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname2">
-						<label for="floatingInput">Nickname2</label>
+						<label for="floatingInput">Player2</label>
 	 				</div>
 					<div class="slideup-text form-floating">
 						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname3">
-						<label for="floatingInput">Nickname3</label>
+						<label for="floatingInput">Player3</label>
 	 				</div>
 					<div class="slideup-text form-floating">
 						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname4">
-						<label for="floatingInput">Nickname4</label>
+						<label for="floatingInput">Player4</label>
 	 				</div>
 					<div class="slideup-text form-floating">
 						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname5">
-						<label for="floatingInput">Nickname5</label>
+						<label for="floatingInput">Player5</label>
 	 				</div>
 					<div class="slideup-text form-floating">
 						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname6">
-						<label for="floatingInput">Nickname6</label>
+						<label for="floatingInput">Player6</label>
 	 				</div>
 					<div class="slideup-text form-floating">
 						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname7">
-						<label for="floatingInput">Nickname7</label>
+						<label for="floatingInput">Player7</label>
 	 				</div>
 					<div class="slideup-text form-floating">
 						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname8">
-						<label for="floatingInput">Nickname8</label>
+						<label for="floatingInput">Player8</label>
 	 				</div>
 					
 					<button class="hth-btn my-4" type="submit">Submit</button>
