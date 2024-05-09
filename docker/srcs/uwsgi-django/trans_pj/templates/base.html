@@ -10,14 +10,17 @@
 	<link rel="stylesheet" href="{% static 'pong/css/animation.css' %}" >
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 	<link rel="stylesheet" href="{% static 'pong/css/hth-responsive.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/pong.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-main.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/pong-default.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/footer.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/header.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/custom-contents.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-btn.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/sign.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/tournament.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/bootstrap/sticky-footer-navbar.css' %}">
+	<!-- 追加css: Game用 -->
+	{% block extra_css %}{% endblock %}
 	<!-- title -->
 	<title>{% block title %}{% endblock %}</title>
 </head>

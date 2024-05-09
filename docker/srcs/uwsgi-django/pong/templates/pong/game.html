@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block extra_css %}
+<link rel="stylesheet" crossorigin href="{% static 'pong/three/assets/index.css' %}">
+{% endblock %}
 {% block title %}Play - hth Pong{% endblock title %}
 {% block content %}
-
 	{% csrf_token %}
 	<canvas id="threejs-canvas-container"></canvas>
-
-	<!-- <div><a href="/pong/" class="site-btn" id="game-home-btn">(dev)Home</a></div> -->
-
-	<script type="module" crossorigin src="{% static 'pong/three/assets/index.js' %}"></script>
-	<link rel="stylesheet" crossorigin href="{% static 'pong/three/assets/index.css' %}">
+<!-- TODO_ft: Free playとトーナメントマッチ、1vs1プレイの違いが決まったら共通化する -->
+<!-- <script type="application/json" id="match-data">
+	{{ match_json|safe }}
+</script>	 -->
+<script type="module" crossorigin src="{% static 'pong/three/assets/index.js' %}"></script>
 {% endblock %}

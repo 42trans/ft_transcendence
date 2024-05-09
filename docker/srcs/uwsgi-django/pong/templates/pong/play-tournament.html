@@ -1,31 +1,15 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta charset="UTF-8">
-	<title>play - hth Pong</title>
-	
-	<link rel="stylesheet" crossorigin href="{% static 'pong/three/assets/index.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/pong.css' %}">
-</head>
-
-<body>
-	<div class="canvas-container">
-		<div class="hs-text">
-			<div class="container">
-				<canvas id="threejs-canvas-container"></canvas>
-				<div>
-					<a href="/pong/" class="site-btn" id="game-home-btn">(dev)Home</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<script type="module" crossorigin src="{% static 'pong/three/assets/index.js' %}"></script>
-	<script type="application/json" id="match-data">
-		{{ match_json|safe }}
-	</script>	
-</body>
-
-</html>
+{% block extra_css %}
+<link rel="stylesheet" crossorigin href="{% static 'pong/three/assets/index.css' %}">
+{% endblock %}
+{% block title %}Play - hth Pong{% endblock title %}
+{% block content %}
+	{% csrf_token %}
+	<canvas id="threejs-canvas-container"></canvas>
+<!-- TODO_ft: Free playとトーナメントマッチ、1vs1プレイの違いが決まったら共通化する -->
+<script type="application/json" id="match-data">
+	{{ match_json|safe }}
+</script>	
+<script type="module" crossorigin src="{% static 'pong/three/assets/index.js' %}"></script>
+{% endblock %}

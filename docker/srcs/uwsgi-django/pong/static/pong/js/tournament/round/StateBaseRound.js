@@ -85,7 +85,7 @@ class StateBaseRound
 			} else {
 				if (match.can_start) {
 					// Pong gameへのリンク APIにmatch.idを渡す。
-					matchDetails += `<a class='site-btn mt-2 mb-3' href="/pong/play/${match.id}">Start Match</a>`;
+					matchDetails += `<a class='hth-btn mt-2 mb-3' href="/pong/play/${match.id}">Start Match</a>`;
 				} else {
 					matchDetails += `<p>On Hold</p>`;
 				}
@@ -94,8 +94,8 @@ class StateBaseRound
 			matchElement.innerHTML = matchDetails;
 			this.tournamentContainer.appendChild(matchElement);
 		});
-		const prevNavi = this.addPrevNavigationLinks(roundNumber, 'prev-round', 'site-btn my-5 me-5', 'prev');
-		const nextNavi = this.addNextNavigationLinks(roundNumber, 'next-round', 'site-btn my-5', 'next');
+		const prevNavi = this.addPrevNavigationLinks(roundNumber, 'prev-round', 'hth-btn my-5 me-5', 'prev');
+		const nextNavi = this.addNextNavigationLinks(roundNumber, 'next-round', 'hth-btn my-5', 'next');
 		this.tournamentContainer.appendChild(prevNavi);
 		this.tournamentContainer.appendChild(nextNavi);
 	}

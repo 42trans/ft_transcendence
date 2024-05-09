@@ -3,17 +3,24 @@ custom: prefix hth
 ---------------------*/
 header {
 	background: #131313; /* ヘッダーの背景色 */
-	padding: 15px 0; /* ヘッダーの内側の余白 */
+	/* padding: 15px 0; */
 	border-bottom: 1px solid #ffb320; /* ヘッダーの下辺に境界線を設定 */
+
+	height: 30px; /* 高さを30pxに固定 */
+	line-height: 30px; /* テキストが中央に来るようにラインハイトを高さと同じに設定 */
+
+	padding: 0 20px; 
+	display: flex; /* フレックスボックスを利用 */
+	align-items: center; /* 中央揃え */
+	justify-content: space-between; /* 内容物の間隔を均等に設定 */
+	box-sizing: border-box; /* パディングとボーダーを高さに含める */
 }
 
 #hth-site-logo {
 	display: block;
 	float: left;
-	/* padding-top: 6px; */
 	margin-right: 30px;
 	max-width: 130px;
-
 }
 
 #hth-header-navi {

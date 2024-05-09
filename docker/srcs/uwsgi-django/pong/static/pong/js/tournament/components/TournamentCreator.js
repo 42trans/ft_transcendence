@@ -82,7 +82,7 @@ class TournamentCreator
 						<label for="floatingInput">Nickname8</label>
 	 				</div>
 					
-					<button class="site-btn my-4" type="submit">Submit</button>
+					<button class="hth-btn my-4" type="submit">Submit</button>
 			</form>
 		</main>
 		`;

@@ -176,3 +176,13 @@ div.user-info-container {
 	color: #fff;
 }
 
+
+.canvas-container .site-btn {
+	color: #131313;
+	text-shadow: 0px 0px 0px #fff; 
+}
+
+/* tournament UIHelper SPA後削除*/
+#user-info {
+	list-style-type: none;
+}
