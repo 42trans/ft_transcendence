@@ -28,85 +28,33 @@ XX-Large: ≥1400px */
 
 /* lg */
 @media (min-width: 992px) {
-	.main-menu {
-		margin-right: 90px;
-	}
-	.footer-top-bg {
-		max-width: 370px;
-	}
-	.page-info-section .pi-content h2 {
-		font-size: 50px;
+	#hth-footer-menu li {
+		margin-left: 3rem;
+		font-size: 1rem;
 	}
 }
 
 /* md: Tablet との分岐点*/
 @media (min-width: 768px)  {
-	.main-menu {
-		margin-right: 25px;
-	}
-	.main-menu ul li a {
-		margin-left: 15px;
-	}
-	.user-panel {
-		padding: 8px 15px;
-	}
-	.footer-logo {
-		margin-bottom: 50px;
-	}
-	.footer-top-bg {
-		display: none;
+	#hth-footer-menu li {
+		margin-left: 2rem;
+		font-size: 1rem;
 	}
 }
 
 /* sm */
 @media (min-width: 576px){
-	.main-menu {
-		display: none;
-		position: absolute;
-		top: calc(100% + 24px);
-		left: 0;
-		width: 100%;
-		background: #ffffff;
-		z-index: 999;
+	#hth-footer-menu li {
+		margin-left: 1rem;
+		font-size: 1rem;
 	}
-	.main-menu ul li {
-		display: block;
-		border-bottom: 1px solid #ececec;
-	}
-	.main-menu ul li a {
-		margin-left: 0;
-		color: #131313;
-		padding: 13px 26px;
-	}
-	.nav-switch {
-		color: #fff;
-		display: block;
-		float: right;
-		cursor: pointer;
-	}
-	.user-panel {
-		display: none;
-	}
-	.footer-logo {
-		margin-bottom: 50px;
-	}
-	.footer-top-bg {
-		display: none;
-	}
-	.footer-section {
-		padding: 30px 0 20px;
-		text-align: center;
-	}
-	.footer-menu li:first-child a {
-		margin-left: 0;
-	}
-	.footer-menu {
-		float: none;
-	}
-
 }
 
 /* -xs */
 @media (min-width: 0px) {
-
+	#hth-footer-menu li {
+		margin-left: 1rem;
+		font-size: 0.9rem;
+	}
+	
 }
