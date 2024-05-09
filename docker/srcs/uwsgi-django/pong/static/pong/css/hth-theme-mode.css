@@ -1,0 +1,34 @@
+
+/* 共通設定 */
+:root {
+	--light-yellow-ffb320: #ffb320;
+	--dark-black-131313: #131313;
+}
+
+/* ライトモード設定 (デフォルト) */
+:root {
+	--btn-bg-color:				var(--light-yellow-ffb320);
+	--btn-text-color:			var(--dark-black-131313);
+	--btn-hover-bg-color:		var(--dark-black-131313);
+	--btn-hover-text-color:		var(--light-yellow-ffb320);
+	--btn-border-color:			var(--light-yellow-ffb320);
+
+	--footer-bg-color:			var(--light-yellow-ffb320);
+	--footer-text-color:		var(--dark-black-131313);
+	--footer-hover-bg-color:	var(--dark-black-131313);
+	--footer-hover-text-color:	var(--light-yellow-ffb320);
+}
+
+/* ダークモード設定 */
+[data-bs-theme="dark"] {
+	--btn-bg-color:				var(--dark-black-131313);
+	--btn-text-color:			var(--light-yellow-ffb320);
+	--btn-hover-bg-color:		var(--light-yellow-ffb320);
+	--btn-hover-text-color:		var(--dark-black-131313);
+	--btn-border-color:			var(--light-yellow-ffb320);
+
+	--footer-bg-color:			var(--dark-black-131313);
+	--footer-text-color:		var(--light-yellow-ffb320);
+	--footer-hover-bg-color:	var(--light-yellow-ffb320);
+	--footer-hover-text-color:	var(--dark-black-131313);
+}

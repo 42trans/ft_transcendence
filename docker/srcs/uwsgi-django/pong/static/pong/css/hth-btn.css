@@ -1,4 +1,5 @@
 /* buttons */
+
 .hth-btn,
 .hth-container .hth-btn {
 	display: inline-block;
@@ -18,24 +19,6 @@
 	color: var(--btn-text-color, #131313);
 	/* 色変化アニメーション */
 	transition: background-color 0.3s ease, color 0.3s ease; 
-}
-
-/* ライトモード設定 */
-:root {
-	--btn-bg-color: #ffb320;
-	--btn-text-color: #131313;
-	--btn-hover-bg-color: #131313;
-	--btn-hover-text-color: #ffb320;
-	--btn-border-color: #ffb320;
-}
-
-/* ダークモード設定 */
-[data-bs-theme="dark"] {
-	--btn-bg-color: #131313;
-	--btn-text-color: #ffb320;
-	--btn-hover-bg-color: #ffb320; 
-	--btn-hover-text-color: #131313; 
-	--btn-border-color: #ffb320;
 }
 
 .hth-btn:hover,
