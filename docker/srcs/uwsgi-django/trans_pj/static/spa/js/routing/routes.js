@@ -4,10 +4,10 @@ import PostView from "../views/PostView.js";
 import Settings from "../views/Settings.js";
 import Login from "../views/Login.js";
 import Lang from "../views/Lang.js";
-import Spa from "../views/Script.js";
+import Script from "../views/Script.js";
+import Script2 from "../views/Script2.js";
 import Index from "../views/Index.js";
 import Pong from "../views/Pong.js";
-//import Pong from "../views/Pong.js";
 import Accounts from "../views/Accounts.js";
 import Admin from "../views/Admin.js";
 
@@ -23,5 +23,6 @@ export const Routes = [
   { path: "/ja/settings", view: Settings },
   { path: "/login", view: Login },
   { path: "/lang", view: Lang },
-  { path: "/spa", view: Spa },
+  { path: "/script", view: Script },
+  { path: "/script2", view: Script2 },
 ];

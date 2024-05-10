@@ -49,3 +49,6 @@ def lang(request):
 
 def script(request):
 	return render(request, 'script.html')
+
+def script2(request):
+	return render(request, 'script2.html')

@@ -17,24 +17,6 @@ const getDisplayedURI = (pathname) => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  /*
-  // フォーム内の全てのinput要素を取得
-  const inputs = document.querySelectorAll("input");
-
-  // 各input要素にクリックイベントを追加
-  inputs.forEach((input) => {
-    input.addEventListener("click", function (e) {
-      e.preventDefault();
-
-      const lang_url = "/i18n/setlang/";
-      const form = document.getElementById("lang_form");
-      var formData = new FormData(form);
-      const current_uri = getDisplayedURI(tmp_path);
-      changingLanguage(lang_url, formData, current_uri);
-    });
-  });
-  */
-
   let tmp_path = window.location.pathname;
   document.body.addEventListener("click", (e) => {
     // ページ切替

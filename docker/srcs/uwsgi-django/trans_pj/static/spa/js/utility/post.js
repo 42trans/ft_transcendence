@@ -11,23 +11,6 @@ function makeRequest(method, url, data, data_type) {
     }
     return response.text();
   });
-  /*
-  return new Promise(function (resolve, reject) {
-    var xhr = new XMLHttpRequest();
-    xhr.open(method, url);
-    xhr.onload = function () {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(xhr.responseText);
-      } else {
-        reject(new Error("Request failed with status: " + xhr.status));
-      }
-    };
-    xhr.onerror = function () {
-      reject(new Error("Request failed"));
-    };
-    xhr.send();
-  });
-  */
 }
 
 export default async function sendPost(url, data, data_type) {
@@ -41,7 +24,6 @@ export default async function sendPost(url, data, data_type) {
       content_type = "text/html";
     }
     const response = await makeRequest("POST", url, data, content_type);
-    //console.log(response);
     return response;
   } catch (error) {
     console.error(error);

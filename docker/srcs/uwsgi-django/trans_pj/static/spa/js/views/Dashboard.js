@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView.js";
+import { executeScriptTab } from "../utility/script.js";
 
 export default class extends AbstractView {
   constructor(params) {
@@ -16,5 +17,8 @@ export default class extends AbstractView {
                 <a href="/posts" data-link>View recent posts</a>.
             </p>
         `;
+  }
+  async executeScript() {
+    //executeScriptTab("");
   }
 }

@@ -1,0 +1,11 @@
+{% load static %} {% load i18n %}
+<body>
+  <h1>Script TEST</h1>
+
+  <div id="replace">変換前</div>
+  <p id="child">ここは変換せず</p>
+
+  <div id="test_spa">test_spa_replace?</div>
+  <script src="{% static '/spa/js/script/test.js' %}"></script>
+  <script type="module" src="{% static '/spa/js/script/test2.js' %}"></script>
+</body>

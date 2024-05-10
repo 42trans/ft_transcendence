@@ -1,0 +1,12 @@
+{% load static %} {% load i18n %}
+<body>
+  <h1>Script TEST</h1>
+
+  <div id="replace">変換前</div>
+  <p id="child">ここは変換せず</p>
+
+  <div id="test_spa">test_spa_replace?</div>
+  <script>
+    document.getElementById("test_spa").textContent = "Replaced test_spa";
+  </script>
+</body>

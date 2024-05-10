@@ -42,6 +42,7 @@ urlpatterns += i18n_patterns(
 	path('home', main_views.index, name='home'),
 	path('lang', main_views.lang, name='lang'),
 	path('script', main_views.script, name='script'),
+	path('script2', main_views.script2, name='script2'),
 
 	# SPA
 	path('', main_views.spa, name='index'),
