@@ -5,12 +5,12 @@ import { getUrl } from "../utility/url.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Lang");
+    this.setTitle("Test2");
   }
 
   async getHtml() {
-    const uri = getUrl("/lang");
-    const data = await fetchData(uri);
+    const uri = getUrl("/pong/bootstrap_sign-in/");
+    const data = fetchData(uri);
     return data;
   }
 }

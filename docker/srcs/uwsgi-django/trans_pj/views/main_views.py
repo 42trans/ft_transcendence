@@ -42,3 +42,10 @@ def api_status(request):
 
 def spa(request):
 	return render(request, 'spa.html')
+
+# テスト用　後で消す
+def lang(request):
+	return render(request, 'lang_test.html')
+
+def script(request):
+	return render(request, 'script.html')

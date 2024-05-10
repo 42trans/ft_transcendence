@@ -37,7 +37,13 @@ urlpatterns += i18n_patterns(
 	path('admin/', admin.site.urls),
 	path('api/status/', main_views.api_status, name='api_status'),
 	path('accounts/', include(accounts.urls)),
+
+	# テスト用　削除予定
 	path('home', main_views.index, name='home'),
+	path('lang', main_views.lang, name='lang'),
+	path('script', main_views.script, name='script'),
+
+	# SPA
 	path('', main_views.spa, name='index'),
 	re_path(r'\w*', main_views.spa, name='index'),
 	prefix_default_language=True

@@ -5,11 +5,11 @@ import { getUrl } from "../utility/url.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Lang");
+    this.setTitle("Admin");
   }
 
   async getHtml() {
-    const uri = getUrl("/lang");
+    const uri = getUrl("/admin/login/?next=/");
     const data = await fetchData(uri);
     return data;
   }

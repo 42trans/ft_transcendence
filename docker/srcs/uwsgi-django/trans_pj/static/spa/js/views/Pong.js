@@ -5,12 +5,13 @@ import { getUrl } from "../utility/url.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Lang");
+    this.setTitle("Pong");
   }
 
   async getHtml() {
-    const uri = getUrl("/lang");
+    const uri = getUrl("/pong/");
     const data = await fetchData(uri);
+    //console.log("Pong:" + data);
     return data;
   }
 }

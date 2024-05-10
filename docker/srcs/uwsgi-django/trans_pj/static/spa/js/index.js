@@ -12,14 +12,12 @@ const getDisplayedURI = (pathname) => {
   let path = splits.find(
     (str) => Routes.findIndex((path) => path.path.replace("/", "") === str) >= 0
   );
-  path !== undefined ? path : "";
-  //if (path === undefined) {
-  //return getUrl("");
-  //}
+  path = path === undefined ? "" : path;
   return getUrl(path);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  /*
   // フォーム内の全てのinput要素を取得
   const inputs = document.querySelectorAll("input");
 
@@ -35,16 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
       changingLanguage(lang_url, formData, current_uri);
     });
   });
+  */
 
   let tmp_path = window.location.pathname;
   document.body.addEventListener("click", (e) => {
+    // ページ切替
     if (e.target.matches("[data-link]")) {
       e.preventDefault();
       tmp_path = e.target.href;
-      console.log("click tmp_path:" + tmp_path);
       navigateTo(tmp_path);
     }
 
+    //多言語切替
     if (
       e.target.tagName === "INPUT" &&
       e.target.className === "change-language"
@@ -59,9 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  console.log("navi uri No.1:" + tmp_path);
   const uri = getDisplayedURI(tmp_path);
-  console.log("navi uri No.2:" + tmp_path);
   navigateTo(uri);
   router();
 });
