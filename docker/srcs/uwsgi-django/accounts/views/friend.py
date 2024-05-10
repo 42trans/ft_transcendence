@@ -182,34 +182,44 @@ class RejectFriendRequestAPI(APIView):
 
 
 
-@csrf_exempt  # todo: tmp
-def delete_friend(request, user_id):
-    try:
-        user = request.user
-        if not user.is_authenticated:
-            return JsonResponse({'error': 'Unauthorized'}, status=401)
+class DeleteFriendAPI(APIView):
+    """
+    user_idとのfriend関係を削除する
+    """
+    permission_classes = [IsAuthenticated]
 
-        friend = CustomUser.objects.get(id=user_id)
-        if user == friend:
-            return JsonResponse({'error': 'Cannot send request to yourself.'}, status=400)
+    def post(self, request, user_id) -> Response:
+        try:
+            user, friend, err = _get_user_and_friend(request, user_id)
+            if err is not None:
+                response = {'error': err}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        friend_requests = Friend.objects.filter(
-            Q(sender=user, receiver=friend) | Q(sender=friend, receiver=user),
-            status='accepted'
-        )
+            friend_requests = Friend.objects.filter(
+                Q(sender=user, receiver=friend) | Q(sender=friend, receiver=user),
+                status='accepted'
+            )
 
-        if not friend_requests.exists():
-            return JsonResponse({'error': 'Friend not found.'}, status=404)
+            if not friend_requests.exists():
+                response = {'error': 'Friend not found.'}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        friend_requests.delete()
-        return JsonResponse({'status': 'Success: delete friend'}, status=200)
+            friend_requests.delete()
+            response = {'status': 'Success: delete friend'}
+            return Response(response, status=status.HTTP_200_OK)
 
-    except CustomUser.DoesNotExist:
-        return JsonResponse({'error': 'User not found.'}, status=404)
-    except Friend.DoesNotExist:
-        return JsonResponse({'error': 'Friend request not found.'}, status=404)
-    except Exception as e:
-        return JsonResponse({'error': f'Unexpected error: {str(e)}'}, status=500)
+        except CustomUser.DoesNotExist:
+            error_msg = 'User not found'
+            error_status = status.HTTP_400_BAD_REQUEST
+        except Friend.DoesNotExist:
+            error_msg = 'Friend request not found'
+            error_status = status.HTTP_400_BAD_REQUEST
+        except Exception as e:
+            error_msg = f'Unexpected error: {str(e)}'
+            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = {'error': error_msg}
+        return Response(response, status=error_status)
+
 
 def get_friends(request):
     user = request.user

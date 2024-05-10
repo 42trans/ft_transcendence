@@ -15,7 +15,7 @@ from accounts.views.jwt import JWTRefreshView
 from accounts.views.block import BlockUserAPI, UnblockUserAPI
 from accounts.views.friend import SendFriendRequestAPI
 from accounts.views.friend import CancelFriendRequestAPI
-from accounts.views.friend import delete_friend
+from accounts.views.friend import DeleteFriendAPI
 from accounts.views.friend import AcceptFriendRequestAPI, RejectFriendRequestAPI
 from accounts.views.friend import get_friends, get_friend_requests
 
@@ -42,7 +42,7 @@ urlpatterns = [
     path('api/friend/cancel-request/<int:user_id>/' , CancelFriendRequestAPI.as_view()  , name='cancel_friend_request'),
     path('api/friend/accept-request/<int:user_id>/' , AcceptFriendRequestAPI.as_view()  , name='accept_friend_request'),
     path('api/friend/reject-request/<int:user_id>/' , RejectFriendRequestAPI.as_view()  , name='reject_friend_request'),
-    path('api/friend/delete/<int:user_id>/'         , delete_friend        , name='delete_friend'),
+    path('api/friend/delete/<int:user_id>/'         , DeleteFriendAPI.as_view()         , name='delete_friend'),
 
     path('api/friend/requests/'                     , get_friend_requests  , name='friend_requests'),
     path('api/friend/list/'                         , get_friends          , name='friend_list'),
