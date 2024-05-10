@@ -74,7 +74,7 @@ class SendFriendRequestAPI(APIView):
 
 class CancelFriendRequestAPI(APIView):
     """
-    自分が送信したFriend Requestをキャンセル
+    user_idへ送信したFriend Requestをキャンセル
     """
     permission_classes = [IsAuthenticated]
 
@@ -108,30 +108,41 @@ class CancelFriendRequestAPI(APIView):
         return Response(response, status=error_status)
 
 
-@csrf_exempt  # todo: tmp
-def accept_friend_request(request, user_id):
-    try:
-        user = request.user
-        if not user.is_authenticated:
-            return JsonResponse({'error': 'Unauthorized'}, status=401)
+class AcceptFriendRequestAPI(APIView):
+    """
+    user_idから受信したFriend Requestを承認
+    """
+    permission_classes = [IsAuthenticated]
 
-        friend = CustomUser.objects.get(id=user_id)
-        if user == friend:
-            return JsonResponse({'error': 'Cannot send request to yourself.'}, status=400)
+    def post(self, request, user_id) -> Response:
+        try:
+            user, request_sender, err = _get_user_and_friend(request, user_id)
+            if err is not None:
+                response = {'error': err}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        friend_request = Friend.objects.get(sender=friend, receiver=user, status='pending')
+            # request_sender -> user へのPending状態のリクエストリクエストを取得
+            friend_request = Friend.objects.get(sender=request_sender,
+                                                receiver=user,
+                                                status='pending')
 
-        # リクエストのステータスを更新
-        friend_request.status = Friend.FriendStatus.ACCEPTED
-        friend_request.save()
-        return JsonResponse({'status': 'Success: accept request'}, status=200)
+            # リクエストのステータスを更新
+            friend_request.status = Friend.FriendStatus.ACCEPTED
+            friend_request.save()
+            response = {'status': 'Success: accept request'}
+            return Response(response, status=status.HTTP_200_OK)
 
-    except CustomUser.DoesNotExist:
-        return JsonResponse({'error': 'User not found.'}, status=404)
-    except Friend.DoesNotExist:
-        return JsonResponse({'error': 'Friend request not found.'}, status=404)
-    except Exception as e:
-        return JsonResponse({'error': f'Unexpected error: {str(e)}'}, status=500)
+        except CustomUser.DoesNotExist:
+            error_msg = 'User not found'
+            error_status = status.HTTP_400_BAD_REQUEST
+        except Friend.DoesNotExist:
+            error_msg = 'Friend request not found'
+            error_status = status.HTTP_400_BAD_REQUEST
+        except Exception as e:
+            error_msg = f'Unexpected error: {str(e)}'
+            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = {'error': error_msg}
+        return Response(response, status=error_status)
 
 
 @csrf_exempt  # todo: tmp
