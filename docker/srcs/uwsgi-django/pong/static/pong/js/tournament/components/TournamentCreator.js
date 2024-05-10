@@ -181,11 +181,12 @@ class TournamentCreator
 				body: formData,
 			});
 	
+			const data = await response.json(); 
 			if (!response.ok) {
-				throw new Error('Network response was not ok');
+				// APIの返すメッセージを使用する
+				throw new Error(data.message);
 			}
 	
-			const data = await response.json();
 			UIHelper.handleSuccess('Tournament successfully', '/pong/', this.submitMessage)
 			location.reload();
 		} catch (error) {
