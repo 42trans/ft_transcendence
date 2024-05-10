@@ -1,12 +1,12 @@
 # docker/srcs/uwsgi-django/pong/urls.py
 from django.urls import include, path
-from django.views.generic import TemplateView
-from pong import views
-from pong.blockchain import save_testnet
-from pong.blockchain import fetch_testnet
-from pong.blockchain import fetch_testnet
-from pong.blockchain import record_game_result
-from .views.navi_views import tournament, results, game, pong_view, play_tournament
+# from django.views.generic import TemplateView
+# from pong import views
+# from pong.blockchain import save_testnet
+# from pong.blockchain import fetch_testnet
+# from pong.blockchain import fetch_testnet
+# from pong.blockchain import record_game_result
+from .views.navi_views import tournament, game, pong_view, play_tournament
 
 # api/をurls_api.pyに移動(国際化・多言語対応のため)
 
