@@ -72,33 +72,40 @@ class SendFriendRequestAPI(APIView):
         return Response(response, status=error_status)
 
 
-@csrf_exempt  # todo: tmp
-def cancel_friend_request(request, user_id):
+class CancelFriendRequestAPI(APIView):
     """
-    send_friend_requestで送信した友達申請をキャンセル
+    自分が送信したFriend Requestをキャンセル
     """
-    try:
-        user = request.user
-        if not user.is_authenticated:
-            return JsonResponse({'error': 'Unauthorized'}, status=401)
+    permission_classes = [IsAuthenticated]
 
-        friend = CustomUser.objects.get(id=user_id)
-        if user == friend:
-            return JsonResponse({'error': 'Cannot send request to yourself.'}, status=400)
+    def post(self, request, user_id) -> Response:
+        try:
+            user, friend_request_target, err = _get_user_and_friend(request, user_id)
+            if err is not None:
+                response = {'error': err}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        # リクエストを取得
-        friend_request = Friend.objects.get(sender=user, receiver=friend, status='pending')
+            # リクエストを取得
+            friend_request = Friend.objects.get(sender=user,
+                                                receiver=friend_request_target,
+                                                status='pending')
 
-        # リクエストをデータベースから削除
-        friend_request.delete()
-        return JsonResponse({'status': 'Friend request cancelled'}, status=200)
+            # リクエストをデータベースから削除
+            friend_request.delete()
+            response = {'status': 'Friend request cancelled'}
+            return Response(response, status=status.HTTP_200_OK)
 
-    except CustomUser.DoesNotExist:
-        return JsonResponse({'error': 'User not found.'}, status=404)
-    except Friend.DoesNotExist:
-        return JsonResponse({'error': 'Friend request not found.'}, status=404)
-    except Exception as e:
-        return JsonResponse({'error': f'Unexpected error: {str(e)}'}, status=500)
+        except CustomUser.DoesNotExist:
+            error_msg = 'User not found'
+            error_status = status.HTTP_400_BAD_REQUEST
+        except Friend.DoesNotExist:
+            error_msg = 'Friend request not found'
+            error_status = status.HTTP_400_BAD_REQUEST
+        except Exception as e:
+            error_msg = f'Unexpected error: {str(e)}'
+            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = {'error': error_msg}
+        return Response(response, status=error_status)
 
 
 @csrf_exempt  # todo: tmp

@@ -13,7 +13,9 @@ from accounts.views.two_factor_auth import Enable2FaAPIView
 from accounts.views.two_factor_auth import Verify2FaAPIView
 from accounts.views.jwt import JWTRefreshView
 from accounts.views.block import BlockUserAPI, UnblockUserAPI
-from accounts.views.friend import SendFriendRequestAPI, cancel_friend_request, delete_friend
+from accounts.views.friend import SendFriendRequestAPI
+from accounts.views.friend import CancelFriendRequestAPI
+from accounts.views.friend import delete_friend
 from accounts.views.friend import accept_friend_request, reject_friend_request
 from accounts.views.friend import get_friends, get_friend_requests
 
@@ -37,7 +39,7 @@ urlpatterns = [
     path('api/unblock/<str:nickname>/'  , UnblockUserAPI.as_view()      , name='api_unblock'),
 
     path('api/friend/send-request/<int:user_id>/'   , SendFriendRequestAPI.as_view()    , name='send_friend_request'),
-    path('api/friend/cancel-request/<int:user_id>/' , cancel_friend_request, name='cancel_friend_request'),
+    path('api/friend/cancel-request/<int:user_id>/' , CancelFriendRequestAPI.as_view()  , name='cancel_friend_request'),
     path('api/friend/accept-request/<int:user_id>/' , accept_friend_request, name='accept_friend_request'),
     path('api/friend/reject-request/<int:user_id>/' , reject_friend_request, name='reject_friend_request'),
     path('api/friend/delete/<int:user_id>/'         , delete_friend        , name='delete_friend'),
