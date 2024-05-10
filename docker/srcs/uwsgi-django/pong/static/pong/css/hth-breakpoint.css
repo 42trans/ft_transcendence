@@ -1,7 +1,3 @@
-/*------------------
-Responsive
----------------------*/
-
 /* Bootstarp breakpoint
 X-Small: <576px
 Small: ≥576px
@@ -28,33 +24,32 @@ XX-Large: ≥1400px */
 
 /* lg */
 @media (min-width: 992px) {
-	#hth-footer-menu li {
+	/* #hth-footer-menu li {
 		margin-left: 3rem;
 		font-size: 1rem;
-	}
+	} */
 }
 
 /* md: Tablet との分岐点*/
 @media (min-width: 768px)  {
-	#hth-footer-menu li {
+	/* #hth-footer-menu li {
 		margin-left: 2rem;
 		font-size: 1rem;
-	}
+	} */
 }
 
 /* sm */
 @media (min-width: 576px){
-	#hth-footer-menu li {
+	/* #hth-footer-menu li {
 		margin-left: 1rem;
 		font-size: 1rem;
-	}
+	} */
 }
 
 /* -xs */
 @media (min-width: 0px) {
-	#hth-footer-menu li {
-		margin-left: 1rem;
-		font-size: 0.9rem;
-	}
-	
+	/* #hth-footer-menu li {
+		margin-left: 0.3rem;
+		font-size: 0.3rem;
+	} */
 }
