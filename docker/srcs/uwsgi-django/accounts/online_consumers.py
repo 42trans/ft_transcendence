@@ -25,29 +25,29 @@ class OnlineStatusConsumer(AsyncWebsocketConsumer):
     permission_classes = [IsAuthenticated]
 
     async def connect(self):
-        logger.debug(f'[OnlineStatusConsumer]: connect 1')
+        # logger.debug(f'[OnlineStatusConsumer]: connect 1')
         self.user_id = self.scope["user"].id
-        logger.debug(f'[OnlineStatusConsumer]: connect 2: user: {self.scope["user"].nickname}')
+        # logger.debug(f'[OnlineStatusConsumer]: connect 2: user: {self.scope["user"].nickname}')
 
         self.group_name = "online_status"
-        logger.debug(f'[OnlineStatusConsumer]: connect 3: group_name: {self.group_name}')
+        # logger.debug(f'[OnlineStatusConsumer]: connect 3: group_name: {self.group_name}')
 
-        logger.debug(f'[OnlineStatusConsumer]: connect 4')
+        # logger.debug(f'[OnlineStatusConsumer]: connect 4')
 
         # ユーザーグループに接続
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
         )
-        logger.debug(f'[OnlineStatusConsumer]: connect 5')
+        # logger.debug(f'[OnlineStatusConsumer]: connect 5')
         await self.accept()
 
-        logger.debug(f'[OnlineStatusConsumer]: connect 6')
+        # logger.debug(f'[OnlineStatusConsumer]: connect 6')
         # ユーザーをオンラインに設定
         await self.update_user_status( True)
 
     async def disconnect(self, close_code):
-        logger.debug(f'[OnlineStatusConsumer]: disconnect')
+        # logger.debug(f'[OnlineStatusConsumer]: disconnect')
         # ユーザーをオフラインに設定
         await self.update_user_status( False)
 
@@ -58,7 +58,7 @@ class OnlineStatusConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
-        logger.debug(f'[OnlineStatusConsumer]: receive')
+        # logger.debug(f'[OnlineStatusConsumer]: receive')
 
         data = json.loads(text_data)
         user_id = data['user_id']
@@ -75,7 +75,7 @@ class OnlineStatusConsumer(AsyncWebsocketConsumer):
         )
 
     async def broadcast_status(self, event):
-        logger.debug(f'[OnlineStatusConsumer]: broadcast_status')
+        # logger.debug(f'[OnlineStatusConsumer]: broadcast_status')
         # イベントからステータスを取得
         user_id = event['user_id']
         status = event['status']
@@ -88,11 +88,11 @@ class OnlineStatusConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def update_user_status(self, status):
-        logger.debug(f'[OnlineStatusConsumer]: connect 4')
+        # logger.debug(f'[OnlineStatusConsumer]: connect 4')
         try:
             user_status, _ = UserStatus.objects.get_or_create(user_id=self.user_id)
             user_status.is_online = status
             user_status.last_online = now()
             user_status.save()
         except Exception as e:
-            logger.debug(f'[OnlineStatusConsumer]: Unexpected error: {str(e)}')
+            logger.error(f'[OnlineStatusConsumer]: Unexpected error: {str(e)}')

@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
+from django.db.models import Q
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -263,6 +264,37 @@ class Friend(models.Model):
                               choices=FriendStatus.choices,
                               default=FriendStatus.PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+    @classmethod
+    def is_friend(cls, user1, user2):
+        """
+        user1, user2 がすでに友達関係であるか確認
+        """
+        return cls.objects.filter(
+            Q(sender=user1, receiver=user2) | Q(sender=user2, receiver=user1),
+            status=cls.FriendStatus.ACCEPTED
+        ).exists()
+
+
+    @classmethod
+    def is_already_sent(cls, sender, receiver):
+        """
+        送信者が受信者に送ったリクエストがPending状態にあるか確認
+        """
+        return cls.objects.filter(sender=sender,
+                                  receiver=receiver,
+                                  status=cls.FriendStatus.PENDING).exists()
+
+
+    @classmethod
+    def is_already_received(cls, sender, receiver):
+        """
+        受信者が送信者からのリクエストをPending状態で受けているか確認
+        """
+        return cls.objects.filter(sender=receiver,
+                                  receiver=sender,
+                                  status=cls.FriendStatus.PENDING).exists()
 
 
 class UserStatus(models.Model):

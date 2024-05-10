@@ -3,6 +3,11 @@ from django.http import JsonResponse
 from accounts.models import CustomUser, Friend, UserStatus
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, Q
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -12,29 +17,59 @@ logging.basicConfig(
 logger = logging.getLogger('accounts')
 
 
-@csrf_exempt  # todo: tmp
-def send_friend_request(request, user_id):
+def _get_user_and_friend(request, friend_user_id):
+    err = None
+
     try:
         user = request.user
-        if not user.is_authenticated:
-            return JsonResponse({'error': 'Unauthorized'}, status=401)
+        friend = CustomUser.objects.get(id=friend_user_id)
 
-        friend = CustomUser.objects.get(id=user_id)
-
-        # 自分自身には友達申請を送れないようにする
         if user == friend:
-            return JsonResponse({'error': 'Cannot send request to yourself.'}, status=400)
+            err = 'Cannot send request to yourself'
+            return None, None, err
 
-        # 既に申請が存在するか、または既に友達かどうかをチェック
-        if Friend.objects.filter(sender=user, receiver=friend).exists():
-            return JsonResponse({'error': 'Friend request already sent or already friends.'}, status=400)
-
-        # 友達申請を作成
-        Friend.objects.create(sender=user, receiver=friend)
-        return JsonResponse({'status': 'Friend request sent success'})
+        return user, friend, err
 
     except CustomUser.DoesNotExist:
-        return JsonResponse({'error': 'User not found.'}, status=404)
+        err = 'User not found'
+        return None, None, err
+
+
+class SendFriendRequestAPI(APIView):
+    """
+    user_idと友人申請関係がなく友人関係にない場合、
+    Friend object(status=PENDING)を作成する
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id) -> Response:
+        try:
+            user, friend_request_target, err = _get_user_and_friend(request, user_id)
+            if err is not None:
+                response = {'error': err}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+            if Friend.is_friend(user, friend_request_target):
+                response = {'error': 'Already friend'}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+            if (Friend.is_already_sent(user, friend_request_target)
+                    or Friend.is_already_received(user, friend_request_target)):
+                response = {'error': 'Friend request already friends'}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+            Friend.objects.create(sender=user, receiver=friend_request_target)
+            response = {'status': 'Friend request sent successfully'}
+            return Response(response)
+
+        except CustomUser.DoesNotExist:
+            error_msg = 'User not found'
+            error_status = status.HTTP_400_BAD_REQUEST
+        except Exception as e:
+            error_msg = f'Unexpected error: {str(e)}'
+            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = {'error': error_msg}
+        return Response(response, status=error_status)
 
 
 @csrf_exempt  # todo: tmp
@@ -94,6 +129,9 @@ def accept_friend_request(request, user_id):
 
 @csrf_exempt  # todo: tmp
 def reject_friend_request(request, user_id):
+    """
+    statusをREJECTEDに変更すると、再度Friend Requestを送信できないため、friend_requestを削除する
+    """
     try:
         user = request.user
         if not user.is_authenticated:
@@ -106,10 +144,6 @@ def reject_friend_request(request, user_id):
         friend_request = Friend.objects.get(sender=friend, receiver=user, status='pending')
 
         # リクエストのステータスを更新
-        # friend_request.status = Friend.FriendStatus.REJECTED
-        # friend_request.save()
-
-        # statusをREJECTEDに変更すると、再度Friend Requestを送信できないため、friend_requestを削除する
         friend_request.delete()
         return JsonResponse({'status': 'Success: reject request'}, status=200)
 
