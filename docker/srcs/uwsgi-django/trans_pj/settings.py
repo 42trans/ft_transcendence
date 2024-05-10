@@ -199,6 +199,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+# upload file
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -217,7 +220,8 @@ LOGGING = {
 		'class': 'logging.StreamHandler',
 	},
 	'file': {
-		'level': 'WARNING',
+		# 'level': 'WARNING',
+		'level': 'DEBUG',
 		'class': 'logging.FileHandler',
 		'filename': 'django_debug.log',
 	},
@@ -256,6 +260,16 @@ LOGGING = {
 	},
 	'pong.views': {
 		'handlers': ['console_debug'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'chat': {
+		'handlers': ['console_debug', 'file'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'accounts': {
+		'handlers': ['console_debug', 'file'],
 		'level': 'DEBUG',
 		'propagate': False,
 	},

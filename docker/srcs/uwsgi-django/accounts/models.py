@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
@@ -159,8 +160,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
     enable_2fa = models.BooleanField(_("enable 2fa"), default=False)
     blocking_users = models.ManyToManyField('self', symmetrical=False, related_name='blocking_me')
-    # friends = ...
-    is_system = models.BooleanField(_("is_system"), default=False)
+    is_system = models.BooleanField(_("is_system"), default=False)  # unused
+
+    # アバター画像フィールドを追加
+    avatar = models.ImageField(upload_to='avatars/',
+                               default='avatars/default_avatar.jpg',
+                               blank=True)
 
     is_staff = models.BooleanField(
         _("staff status"),
@@ -235,3 +240,38 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     devices = models.ManyToManyField(TOTPDevice)
+
+
+class Friend(models.Model):
+    """
+    user間のfriendリクエスト状態を管理
+    sender  : 友達申請を送信したuser
+    receiver: 友達申請を受信したuser
+    """
+    class FriendStatus(models.TextChoices):
+        PENDING  = 'pending' , _('Pending')
+        ACCEPTED = 'accepted', _('Accepted')
+        REJECTED = 'rejected', _('Rejected')
+
+    sender = models.ForeignKey(CustomUser,
+                               on_delete=models.CASCADE,
+                               related_name='friend_requests_sent')
+    receiver = models.ForeignKey(CustomUser,
+                                 on_delete=models.CASCADE,
+                                 related_name='friend_requests_received')
+    status = models.CharField(max_length=10,
+                              choices=FriendStatus.choices,
+                              default=FriendStatus.PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class UserStatus(models.Model):
+    """
+    userのオンラインステータスを追跡するモデル
+    """
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    is_online = models.BooleanField(default=False)
+    last_online = models.DateTimeField(default=now)
+
+    def __str__(self):
+        return f"{self.user.username} is {'online' if self.is_online else 'offline'}"
