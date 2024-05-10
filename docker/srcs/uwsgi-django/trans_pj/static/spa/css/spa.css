@@ -1,0 +1,19 @@
+body {
+  font-family: "Quicksand", sans-serif;
+  font-size: 18px;
+  color: black;
+}
+
+.spa_area {
+  border: solid black 1px;
+}
+
+#app {
+  margin: 2em;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+a {
+  color: blue;
+}

@@ -60,6 +60,8 @@ INSTALLED_APPS = [
 	'django_otp',  						# 2fa
 	'django_otp.plugins.otp_totp',  	# 2fa
 	'django_otp.plugins.otp_static',  	# 2fa
+	'trans_pj',
+	"corsheaders", #CORS用
 ]
 
 
@@ -68,6 +70,8 @@ FT_SECRET = get_env_variable('FT_SECRET')
 
 
 MIDDLEWARE = [
+    # CORS用 ------------
+	"corsheaders.middleware.CorsMiddleware",
 	# Prometheus----------
 	'django_prometheus.middleware.PrometheusBeforeMiddleware',
 	# --------------------
@@ -282,4 +286,10 @@ LANGUAGES = [
     ('ja', _('Japanese')),
     ('en', _('English')),
     ('fr', _('French')),
+]
+
+# CORS設定
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost",
+    "http://localhost:8002",
 ]

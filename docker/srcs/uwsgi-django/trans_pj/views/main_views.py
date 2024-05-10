@@ -37,3 +37,8 @@ def index(request):
 def api_status(request):
 	data = {'api/status/': 'OK'}
 	return JsonResponse(data)
+
+
+
+def spa(request):
+	return render(request, 'spa.html')
