@@ -12,7 +12,7 @@ from .views.navi_views import tournament, results, game, pong_view, play_tournam
 
 urlpatterns = [
 	path("tournament/", tournament, name="tournament"),
-	path('results/', results, name='results'),
+	# path('results/', results, name='results'),
 	path("game/", game, name="game"),
 	path("play/<int:match_id>", play_tournament, name="play_tournament"),
 	# root（一番下に記述する。上から順にマッチ評価されるため） ex. https://localhost/pong/
