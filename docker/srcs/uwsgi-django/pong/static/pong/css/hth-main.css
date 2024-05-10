@@ -67,3 +67,9 @@ body {
 	text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* 50%透明の黒のテキストシャドウ */
 	background: rgba(0, 0, 0, 0.5); /* 50%透明の黒い背景 */
 }
+
+/* -------- 共通 */
+/* 透明の背景 */
+.hth-transparent-black-bg-color {
+	background: rgba(var(--transparent-bg-color), 0.8); 
+}

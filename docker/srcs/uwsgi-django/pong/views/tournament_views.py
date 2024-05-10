@@ -46,6 +46,7 @@ def assign_winner_to_next_match(current_match, winner):
 		print(f"Updated next match {next_match.id}: {next_match.player1} vs {next_match.player2}")
 
 @csrf_exempt
+@login_required
 @require_http_methods(["POST"])
 def save_game_result(request):
 	try:

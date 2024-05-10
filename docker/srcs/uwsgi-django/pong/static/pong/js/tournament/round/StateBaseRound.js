@@ -65,7 +65,8 @@ class StateBaseRound
 			 const player2 = match.player2 || "Winner";
 
 			let matchDetails = `
-				<h4>Match #${match.match_number}: ${player1} vs ${player2}</h4>
+				<div class="round-result-score hth-transparent-black-bg-color mb-2">
+				<h4 class="round-match-title px-3 pt-3 mb-2">Match #${match.match_number}: ${player1} vs ${player2}</h4>
 			`;
 
 			// 試合終了している場合はスコア表示
@@ -79,17 +80,20 @@ class StateBaseRound
 					hour: '2-digit', // 時
 					minute: '2-digit' // 分
 				});
-				matchDetails += `<p>Score: ${match.player1_score} - ${match.player2_score}</p>`;
-				matchDetails += `<p>Winner: ${match.winner}</p>`;
-				matchDetails += `<p>Ended at: ${formattedEndedAt}</p>`;
+				
+				matchDetails += `<p class="round-result-score text-white px-4  mb-0">Score: ${match.player1_score} - ${match.player2_score}</p>`;
+				matchDetails += `<p class="round-result-winner text-white px-4 mb-0">Winner: ${match.winner}</p>`;
+				matchDetails += `<p class="round-result-endedat text-white px-4 pb-2">Ended at: ${formattedEndedAt}</p>`;
+				
 			} else {
 				if (match.can_start) {
 					// Pong gameへのリンク APIにmatch.idを渡す。
-					matchDetails += `<a class='hth-btn mt-2 mb-3' href="/pong/play/${match.id}">Start Match</a>`;
+					matchDetails += `<a class="hth-btn px-3 mx-4 mt-2 mb-3" href="/pong/play/${match.id}">Start Match</a>`;
 				} else {
-					matchDetails += `<p>On Hold</p>`;
+					matchDetails += `<p class="px-4 pb-2" >On Hold</p>`;
 				}
 			}
+			matchDetails += '</div>'
 			// console.log(matchDetails);
 			matchElement.innerHTML = matchDetails;
 			this.tournamentContainer.appendChild(matchElement);
