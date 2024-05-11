@@ -10,7 +10,7 @@ header {
 	display: block;
 	float: left;
 	margin-right: 1rem;
-	max-width: 130px;
+	max-width: 180px;
 }
 
 #hth-header-navi {
@@ -26,7 +26,6 @@ header {
 #hth-toggle-menu {
 	color: #ffb320;
 }
-
 
 /* 通常時のスタイル */
 .hth-nav-link {
