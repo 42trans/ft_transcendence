@@ -11,6 +11,7 @@ export default class extends AbstractView {
     return `
             <h1>Posts</h1>
             <p>You are viewing the posts!!!111a1234zzz</p>
+            <a href="/settings" class="nav__link" data-link>Settings</a>
         `;
   }
   async executeScript() {
