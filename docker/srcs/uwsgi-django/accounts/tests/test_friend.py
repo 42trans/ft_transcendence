@@ -468,3 +468,106 @@ class RejectFriendRequestAPITestCase(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('Friend request not found', response.data['error'])
+
+
+class DeleteFriendAPITestCase(TestCase):
+    kUser1Email = 'test1@example.com'
+    kUser1Nickname = 'test1'
+    kUser1Password = 'pass012345'
+
+    kUser2Email = 'test2@example.com'
+    kUser2Nickname = 'test2'
+    kUser2Password = 'pass012345'
+
+    kLoginAPIName = "api_accounts:api_login"
+    kLogoutAPIName = "api_accounts:api_logout"
+    kDeleteFriendAPIName = "api_accounts:delete_friend"
+
+    def setUp(self):
+        self.client = APIClient()
+        self.login_path = reverse(self.kLoginAPIName)
+
+        self.user1 = CustomUser.objects.create_user(email=self.kUser1Email,
+                                                    nickname=self.kUser1Nickname,
+                                                    password=self.kUser1Password,
+                                                    enable_2fa=False)
+        self.user1.save()
+
+        self.user2 = CustomUser.objects.create_user(email=self.kUser2Email,
+                                                    nickname=self.kUser2Nickname,
+                                                    password=self.kUser2Password,
+                                                    enable_2fa=False)
+        self.user2.save()
+        self.__login(self.kUser1Email, self.kUser1Password)
+
+    def __login(self, email, password):
+        login_api_url = reverse(self.kLoginAPIName)
+        login_data = {'email': email, 'password': password}
+        response = self.client.post(login_api_url, data=login_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def __logout(self):
+        logout_api_url = reverse(self.kLogoutAPIName)
+        self.client.get(logout_api_url)
+
+    def test_delete_friend_successfully(self):
+        """
+        フレンド関係を正常に削除する
+         -> 200
+            status: Success: delete friend
+        """
+        Friend.objects.create(sender=self.user1,
+                              receiver=self.user2,
+                              status=Friend.FriendStatus.ACCEPTED)
+        user_id = self.user2.id
+        url = reverse(self.kDeleteFriendAPIName, kwargs={'user_id': user_id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('Success: delete friend', response.data['status'])
+
+    def test_delete_friend_relationship_to_myself(self):
+        """
+        自分自身とのフレンド関係を削除しようとする
+         -> 400
+            error: Cannot send request to yourself
+        """
+        user_id = self.user1.id
+        url = reverse(self.kDeleteFriendAPIName, kwargs={'user_id': user_id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('Cannot send request to yourself', response.data['error'])
+
+    def test_delete_friend_unauthenticated(self):
+        """
+        認証されていないユーザーがフレンド削除を試みる
+         -> 401
+        """
+        self.__logout()
+        user_id = self.user1.id
+        url = reverse(self.kDeleteFriendAPIName, kwargs={'user_id': user_id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_delete_friend_with_nonexistent_user(self):
+        """
+        存在しないユーザーとのフレンド関係を削除しようとする
+         -> 400
+            errro: User not found
+        """
+        invalid_user_id = 99999
+        url = reverse(self.kDeleteFriendAPIName, kwargs={'user_id': invalid_user_id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('User not found', response.data['error'])
+
+    def test_delete_non_friend_relationship(self):
+        """
+        フレンドでないユーザーとの関係を削除しようとする
+         -> 400
+            error: Friend not found.
+        """
+        user_id = self.user2.id
+        url = reverse(self.kDeleteFriendAPIName, kwargs={'user_id': user_id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('Friend not found.', response.data['error'])
