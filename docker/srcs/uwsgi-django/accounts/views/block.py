@@ -14,6 +14,7 @@ logging.basicConfig(
     level=logging.ERROR,
     format='%(asctime)s - %(levelname)s - %(message)s - [in %(funcName)s: %(lineno)d]',
 )
+
 logger = logging.getLogger(__name__)
 
 
@@ -24,20 +25,20 @@ class BlockUserAPI(APIView):
         nickname = kwargs.get('nickname', None)
         try:
             block_user = CustomUser.objects.get(nickname=nickname)
+
+            if request.user == block_user:
+                response = {'message': 'Cannot block yourself'}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
             request.user.block_user(block_user)
-            response = {
-                'message': f'User {nickname} successfully blocked'
-            }
+            response = {'message': f'User {nickname} successfully blocked'}
             return Response(response, status=status.HTTP_200_OK)
+
         except CustomUser.DoesNotExist:
-            response = {
-                'message': f'User {nickname} not found'
-            }
+            response = {'message': f'User {nickname} not found'}
             return Response(response, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            response = {
-                'message': f'Unexpected error: {str(e)}'
-            }
+            response = {'message': f'Unexpected error: {str(e)}'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -48,18 +49,18 @@ class UnblockUserAPI(APIView):
         nickname = kwargs.get('nickname', None)
         try:
             unblock_user = CustomUser.objects.get(nickname=nickname)
+
+            if request.user == unblock_user:
+                response = {'message': 'Cannot unblock yourself'}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
             request.user.unblock_user(unblock_user)
-            response = {
-                'message': f'User {nickname} successfully unblocked'
-            }
+            response = {'message': f'User {nickname} successfully unblocked'}
             return Response(response, status=status.HTTP_200_OK)
+
         except CustomUser.DoesNotExist:
-            response = {
-                'message': f'User {nickname} not found'
-            }
+            response = {'message': f'User {nickname} not found'}
             return Response(response, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            response = {
-                'message': f'Unexpected error: {str(e)}'
-            }
+            response = {'message': f'Unexpected error: {str(e)}'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
