@@ -293,8 +293,8 @@ class GetFriendRequestListAPI(APIView):
             sent_requests       = Friend.get_friends_as_sender(user, Friend.FriendStatus.PENDING)
             received_requests   = Friend.get_friends_as_receiver(user, Friend.FriendStatus.PENDING)
 
-            logger.debug(f'get_friend_requests: sent_request: {sent_requests}')
-            logger.debug(f'get_friend_requests: received_requests: {received_requests}')
+            # logger.debug(f'get_friend_requests: sent_request: {sent_requests}')
+            # logger.debug(f'get_friend_requests: received_requests: {received_requests}')
 
             response = {
                 'sent_requests'    : sent_requests,
