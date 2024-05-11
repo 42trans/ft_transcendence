@@ -571,3 +571,129 @@ class DeleteFriendAPITestCase(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('Friend not found.', response.data['error'])
+
+
+class GetFriendListAPITestCase(TestCase):
+    kUser1Email = 'test1@example.com'
+    kUser1Nickname = 'test1'
+    kUser1Password = 'pass012345'
+
+    kUser2Email = 'test2@example.com'
+    kUser2Nickname = 'test2'
+    kUser2Password = 'pass012345'
+
+    kUser3Email = 'test3@example.com'
+    kUser3Nickname = 'test3'
+    kUser3Password = 'pass012345'
+
+    kUser4Email = 'test4@example.com'
+    kUser4Nickname = 'test4'
+    kUser4Password = 'pass012345'
+
+    kLoginAPIName = "api_accounts:api_login"
+    kLogoutAPIName = "api_accounts:api_logout"
+    kGetFriendListAPIName = "api_accounts:friend_list"
+
+    def setUp(self):
+        """
+        user1のfriend: user2, user3
+        user2のfriend: user1
+        user3のfriend: user1
+        user4のfriend: -
+        """
+        self.client = APIClient()
+        self.login_path = reverse(self.kLoginAPIName)
+
+        self.user1 = CustomUser.objects.create_user(email=self.kUser1Email,
+                                                    nickname=self.kUser1Nickname,
+                                                    password=self.kUser1Password,
+                                                    enable_2fa=False)
+        self.user1.save()
+
+        self.user2 = CustomUser.objects.create_user(email=self.kUser2Email,
+                                                    nickname=self.kUser2Nickname,
+                                                    password=self.kUser2Password,
+                                                    enable_2fa=False)
+        self.user2.save()
+
+        self.user3 = CustomUser.objects.create_user(email=self.kUser3Email,
+                                                    nickname=self.kUser3Nickname,
+                                                    password=self.kUser3Password,
+                                                    enable_2fa=False)
+        self.user3.save()
+
+        self.user4 = CustomUser.objects.create_user(email=self.kUser4Email,
+                                                    nickname=self.kUser4Nickname,
+                                                    password=self.kUser4Password,
+                                                    enable_2fa=False)
+        self.user4.save()
+
+        Friend.objects.create(sender=self.user1,
+                              receiver=self.user2,
+                              status=Friend.FriendStatus.ACCEPTED)
+        Friend.objects.create(sender=self.user1,
+                              receiver=self.user3,
+                              status=Friend.FriendStatus.ACCEPTED)
+
+    def __login(self, email, password):
+        login_api_url = reverse(self.kLoginAPIName)
+        login_data = {'email': email, 'password': password}
+        response = self.client.post(login_api_url, data=login_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def __logout(self):
+        logout_api_url = reverse(self.kLogoutAPIName)
+        self.client.get(logout_api_url)
+
+    def test_get_user1_friend_list_successfully(self):
+        """
+        user1のフレンドリストを取得する
+         -> 200 OK
+        """
+        self.__login(self.kUser1Email, self.kUser1Password)
+
+        url = reverse(self.kGetFriendListAPIName)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['friends']), 2)
+        self.assertEqual(response.data['friends'][0]['id'], self.user2.id)
+        self.assertEqual(response.data['friends'][0]['nickname'], self.user2.nickname)
+        self.assertFalse(response.data['friends'][0]['status'])  # offline
+
+        self.assertEqual(response.data['friends'][1]['id'], self.user3.id)
+        self.assertEqual(response.data['friends'][1]['nickname'], self.user3.nickname)
+        self.assertFalse(response.data['friends'][1]['status'])  # offline
+
+    def test_get_user4_friend_list_successfully(self):
+        """
+        user4のフレンドリストを取得する
+         -> 200 OK
+        """
+        self.__login(self.kUser4Email, self.kUser4Password)
+
+        url = reverse(self.kGetFriendListAPIName)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['friends']), 0)
+
+    def test_get_friend_list_unauthenticated(self):
+        """
+        認証されていないユーザーがフレンドリストを取得しようとする
+         -> 401 Unauthorized
+        """
+        url = reverse(self.kGetFriendListAPIName)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_empty_friend_list(self):
+        """
+        フレンドがいないユーザーのリスト取得を試みる
+         -> 200 OK, 空のリスト
+        """
+        self.__login(self.kUser1Email, self.kUser1Password)
+        Friend.objects.all().delete()  # Remove all friends
+
+        url = reverse(self.kGetFriendListAPIName)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['friends']), 0)
