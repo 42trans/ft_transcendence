@@ -1,3 +1,6 @@
+import logging
+from typing import List, Dict, Any
+
 from django.db import models
 from django.contrib import auth
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
@@ -7,12 +10,10 @@ from django.core.mail import send_mail
 from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
-from django.db.models import Q
+from django.db.models import F, Q
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
-
-import logging
 
 
 logging.basicConfig(
@@ -267,7 +268,7 @@ class Friend(models.Model):
 
 
     @classmethod
-    def is_friend(cls, user1, user2):
+    def is_friend(cls, user1, user2) -> bool:
         """
         user1, user2 がすでに友達関係であるか確認
         """
@@ -278,7 +279,7 @@ class Friend(models.Model):
 
 
     @classmethod
-    def is_already_sent(cls, sender, receiver):
+    def is_already_sent(cls, sender, receiver) -> bool:
         """
         送信者が受信者に送ったリクエストがPending状態にあるか確認
         """
@@ -288,13 +289,46 @@ class Friend(models.Model):
 
 
     @classmethod
-    def is_already_received(cls, sender, receiver):
+    def is_already_received(cls, sender, receiver) -> bool:
         """
         受信者が送信者からのリクエストをPending状態で受けているか確認
         """
         return cls.objects.filter(sender=receiver,
                                   receiver=sender,
                                   status=cls.FriendStatus.PENDING).exists()
+
+    @classmethod
+    def get_friends_as_sender(cls, user, status) -> List[Dict[str, Any]]:
+        """
+        userが送信したフレンドリクエストのうち、statusが一致するものを取得
+        key: nickname, friend_id
+        """
+        return list(cls.objects.filter(
+            sender=user,
+            status=status
+        ).annotate(
+            nickname=F('receiver__nickname'),
+            friend_id=F('receiver_id')
+        ).values(
+            'nickname', 'friend_id'
+        ).order_by('nickname'))
+
+
+    @classmethod
+    def get_friends_as_receiver(cls, user, status) -> List[Dict[str, Any]]:
+        """
+        userが受信したフレンドリクエストのうち、statusが一致するものを取得
+        key: nickname, friend_id
+        """
+        return list(cls.objects.filter(
+            receiver=user,
+            status=status
+        ).annotate(
+            nickname=F('sender__nickname'),
+            friend_id=F('sender_id')
+        ).values(
+            'nickname', 'friend_id'
+        ).order_by('nickname'))
 
 
 class UserStatus(models.Model):

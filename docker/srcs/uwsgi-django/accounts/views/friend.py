@@ -221,52 +221,63 @@ class DeleteFriendAPI(APIView):
         return Response(response, status=error_status)
 
 
-def get_friends(request):
-    user = request.user
+class GetFriendListAPI(APIView):
+    """
+    userとのfriend関係にあるuser一覧を取得
+    key: id, nickname, status
+    """
+    permission_classes = [IsAuthenticated]
 
-    if not user.is_authenticated:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+    def get(self, request) -> Response:
+        try:
+            friends = self.__get_friends(request)
+            friend_online_statues = self.__get_friend_online_statues(friends)
 
-    # 送信者としてのフレンドリクエスト
-    friends_as_sender = Friend.objects.filter(
-        sender=user,
-        status=Friend.FriendStatus.ACCEPTED
-    ).annotate(
-        nickname=F('receiver__nickname'),
-        friend_id=F('receiver_id')
-    ).values(
-        'nickname', 'friend_id'
-    ).order_by('nickname')
+            # フレンドのステータス情報を追加
+            friend_list = [{
+                'id'        : friend['friend_id'],
+                'nickname'  : friend['nickname'],
+                'status'    : friend_online_statues.get(friend['friend_id'], False)
+            } for friend in friends]
 
-    # 受信者としてのフレンドリクエスト
-    friends_as_receiver = Friend.objects.filter(
-        receiver=user,
-        status=Friend.FriendStatus.ACCEPTED
-    ).annotate(
-        nickname=F('sender__nickname'),
-        friend_id=F('sender_id')
-    ).values(
-        'nickname', 'friend_id'
-    ).order_by('nickname')
+            # logger.debug(f'get_friends friends: {friend_list}')
+            response = {'friends': friend_list}
+            return Response(response, status=status.HTTP_200_OK)
 
-    # リストを統合してソート
-    friends         = list(friends_as_sender) + list(friends_as_receiver)
-    friends_sorted  = sorted(friends, key=lambda x: x['nickname'])
+        except CustomUser.DoesNotExist:
+            error_msg = 'User not found'
+            error_status = status.HTTP_400_BAD_REQUEST
+        except Friend.DoesNotExist:
+            error_msg = 'Friend request not found'
+            error_status = status.HTTP_400_BAD_REQUEST
+        except Exception as e:
+            error_msg = f'Unexpected error: {str(e)}'
+            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = {'error': error_msg}
+        logger.debug(f'get_friends friends: error: {error_msg}')
 
-    # フレンドのステータス情報を取得
-    friend_ids          = [friend['friend_id'] for friend in friends_sorted]
-    friend_statuses     = UserStatus.objects.filter(user_id__in=friend_ids).values('user_id', 'is_online')
-    friend_status_dict  = {status['user_id']: status['is_online'] for status in friend_statuses}
+        return Response(response, status=error_status)
 
-    # フレンドのステータス情報を追加
-    renamed_friends = [{
-        'id'        : friend['friend_id'],
-        'nickname'  : friend['nickname'],
-        'status'    : friend_status_dict.get(friend['friend_id'], False)
-    } for friend in friends_sorted]
 
-    logger.debug(f'get_friends friends: {renamed_friends}')
-    return JsonResponse({'friends': renamed_friends}, safe=False)
+    def __get_friends(self, request) -> list:
+        user = request.user
+
+        # フレンドリクエストを取得
+        friends_as_sender   = Friend.get_friends_as_sender(user, Friend.FriendStatus.ACCEPTED)
+        friends_as_receiver = Friend.get_friends_as_receiver(user, Friend.FriendStatus.ACCEPTED)
+
+        # リストを統合してソート
+        friends         = friends_as_sender + friends_as_receiver
+        friends_sorted  = sorted(friends, key=lambda x: x['nickname'])
+        return friends_sorted
+
+    def __get_friend_online_statues(self, friends) -> dict:
+        # フレンドのonline statusを取得
+        friend_ids          = [friend['friend_id'] for friend in friends]
+        friend_statuses     = UserStatus.objects.filter(user_id__in=friend_ids).values('user_id', 'is_online')
+        friend_status_dict  = {status['user_id']: status['is_online'] for status in friend_statuses}
+        return friend_status_dict
+
 
 def get_friend_requests(request):
     user = request.user

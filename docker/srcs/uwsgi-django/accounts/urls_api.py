@@ -17,7 +17,7 @@ from accounts.views.friend import SendFriendRequestAPI
 from accounts.views.friend import CancelFriendRequestAPI
 from accounts.views.friend import DeleteFriendAPI
 from accounts.views.friend import AcceptFriendRequestAPI, RejectFriendRequestAPI
-from accounts.views.friend import get_friends, get_friend_requests
+from accounts.views.friend import GetFriendListAPI, get_friend_requests
 
 app_name = 'api_accounts'
 
@@ -44,6 +44,6 @@ urlpatterns = [
     path('api/friend/reject-request/<int:user_id>/' , RejectFriendRequestAPI.as_view()  , name='reject_friend_request'),
     path('api/friend/delete/<int:user_id>/'         , DeleteFriendAPI.as_view()         , name='delete_friend'),
 
-    path('api/friend/requests/'                     , get_friend_requests  , name='friend_requests'),
-    path('api/friend/list/'                         , get_friends          , name='friend_list'),
+    path('api/friend/requests/'     , get_friend_requests       , name='friend_requests'),
+    path('api/friend/list/'         , GetFriendListAPI.as_view()   , name='friend_list'),
 ]
