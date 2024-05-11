@@ -279,24 +279,31 @@ class GetFriendListAPI(APIView):
         return friend_status_dict
 
 
-def get_friend_requests(request):
-    user = request.user
-    if not user.is_authenticated:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+class GetFriendRequestListAPI(APIView):
+    """
+    userが受信・送信し、Pending状態のフレンド申請一覧を取得する
+    key: nickname, friend_id
+    """
+    permission_classes = [IsAuthenticated]
 
-    # 申請中のフレンドリクエスト
-    sent_requests = list(Friend.objects.filter(sender=user, status='pending')
-                     .values('receiver__nickname', 'receiver_id'))
-    sorted_sent_requests = sorted(sent_requests, key=lambda x: x['receiver__nickname'])
-    # logger.debug(f'get_friend_requests: sorted_sent_requests: {sorted_sent_requests}')
+    def get(self, request) -> Response:
+        try:
+            user = request.user
 
-    # 受信中のフレンドリクエスト
-    received_requests = list(Friend.objects.filter(receiver=user, status='pending')
-                         .values('sender__nickname', 'sender_id'))
-    sorted_received_requests = sorted(received_requests, key=lambda x: x['sender__nickname'])
-    # logger.debug(f'get_friend_requests: sorted_received_requests: {sorted_received_requests}')
+            sent_requests       = Friend.get_friends_as_sender(user, Friend.FriendStatus.PENDING)
+            received_requests   = Friend.get_friends_as_receiver(user, Friend.FriendStatus.PENDING)
 
-    return JsonResponse({
-        'sent_requests'    : sorted_sent_requests,
-        'received_requests': sorted_received_requests
-    }, safe=False)
+            logger.debug(f'get_friend_requests: sent_request: {sent_requests}')
+            logger.debug(f'get_friend_requests: received_requests: {received_requests}')
+
+            response = {
+                'sent_requests'    : sent_requests,
+                'received_requests': received_requests
+            }
+            return Response(response, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            error_msg = f'Unexpected error: {str(e)}'
+            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response = {'error': error_msg}
+        return Response(response, status=error_status)
