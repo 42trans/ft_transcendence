@@ -63,7 +63,29 @@ class TestAssignWinnerToNextMatch(TestCase):
 		# 両プレイヤーが割り当てられたので開始可能
 		self.assertTrue(next_match.can_start)
 
+	def test_invalid_current_match(self):
+		unfinished_match = Match.objects.create(
+			tournament=self.tournament,
+			round_number=1,
+			match_number=1,
+			player1='Player1',
+			player2='Player2',
+			is_finished=False,
+			ended_at=timezone.now()
+		)
 
-	def test_aaa(self):
-		# 第一試合の勝者を次のラウンドに割り当て
-		assign_winner_to_next_match(self.matches[0], self.matches[0].winner)
+		with self.assertRaises(ValueError):
+			assign_winner_to_next_match(None, self.matches[0].winner)
+
+		with self.assertRaises(ValueError):
+			assign_winner_to_next_match('hoge', self.matches[0].winner)
+
+		with self.assertRaises(ValueError):
+			assign_winner_to_next_match(unfinished_match, 'Player1')
+
+	def test_invalid_nickname(self):
+		with self.assertRaises(ValueError):
+			assign_winner_to_next_match(self.matches[0], None)
+
+		with self.assertRaises(ValueError):
+			assign_winner_to_next_match(self.matches[0], 'invalid user')

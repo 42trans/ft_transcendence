@@ -1,6 +1,7 @@
 # docker/srcs/uwsgi-django/pong/views/tournament_views.py
 import json
 import logging
+from typing import Any, Tuple
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from ..models import Tournament, Match
@@ -27,11 +28,25 @@ User = get_user_model()
 
 
 def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
-	if not winner_nickname:
-		return
+	def __is_valid_argument(current_match: Match,
+							winner_nickname: str) -> Tuple[bool, Any]:
+		if not winner_nickname:
+			return False, 'No nickname provided'
 
-	if (current_match.player1 != winner_nickname πand current_match.player2 != winner_nickname):
-		return
+		if not current_match or not isinstance(current_match, Match):
+			return False, 'No current_match provided'
+
+		if not current_match.is_finished:
+			return False, 'Current_match not finished'
+
+		if (current_match.player1 != winner_nickname
+				and current_match.player2 != winner_nickname):
+			return False, f'No {winner_nickname} in current match'
+		return True, None
+
+	is_valid, err = __is_valid_argument(current_match, winner_nickname)
+	if not is_valid:
+		raise ValueError(err)
 
 	# 次のラウンドの試合番号を計算
 	next_round_number = current_match.round_number + 1
