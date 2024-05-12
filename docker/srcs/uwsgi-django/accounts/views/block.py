@@ -42,10 +42,10 @@ class BlockUserAPI(APIView):
 
         except CustomUser.DoesNotExist:
             response = {'message': f'User {block_user_nickname} not found'}
-            return Response(response, status=status.HTTP_404_NOT_FOUND)
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             response = {'message': f'Unexpected error: {str(e)}'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UnblockUserAPI(APIView):
@@ -72,7 +72,7 @@ class UnblockUserAPI(APIView):
 
         except CustomUser.DoesNotExist:
             response = {'message': f'User {unblock_user_nickname} not found'}
-            return Response(response, status=status.HTTP_404_NOT_FOUND)
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             response = {'message': f'Unexpected error: {str(e)}'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
