@@ -1,6 +1,7 @@
 from __future__ import annotations
 import traceback
 import logging
+from typing import List, Dict, Any
 
 from django.db import models
 from django.contrib import auth
@@ -11,6 +12,8 @@ from django.core.mail import send_mail
 from django.core.validators import validate_email
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
+from django.db.models import F, Q
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
@@ -161,8 +164,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
     enable_2fa = models.BooleanField(_("enable 2fa"), default=False)
     blocking_users = models.ManyToManyField('self', symmetrical=False, related_name='blocking_me')
-    # friends = ...
-    is_system = models.BooleanField(_("is_system"), default=False)
+    is_system = models.BooleanField(_("is_system"), default=False)  # unused
+
+    # アバター画像フィールドを追加
+    avatar = models.ImageField(upload_to='avatars/',
+                               default='avatars/default_avatar.jpg',
+                               blank=True)
 
     is_staff = models.BooleanField(
         _("staff status"),
@@ -241,3 +248,102 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     devices = models.ManyToManyField(TOTPDevice)
+
+
+class Friend(models.Model):
+    """
+    user間のfriendリクエスト状態を管理
+    sender  : 友達申請を送信したuser
+    receiver: 友達申請を受信したuser
+    """
+    class FriendStatus(models.TextChoices):
+        PENDING  = 'pending' , _('Pending')
+        ACCEPTED = 'accepted', _('Accepted')
+        REJECTED = 'rejected', _('Rejected')
+
+    sender = models.ForeignKey(CustomUser,
+                               on_delete=models.CASCADE,
+                               related_name='friend_requests_sent')
+    receiver = models.ForeignKey(CustomUser,
+                                 on_delete=models.CASCADE,
+                                 related_name='friend_requests_received')
+    status = models.CharField(max_length=10,
+                              choices=FriendStatus.choices,
+                              default=FriendStatus.PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+    @classmethod
+    def is_friend(cls, user1, user2) -> bool:
+        """
+        user1, user2 がすでに友達関係であるか確認
+        """
+        return cls.objects.filter(
+            Q(sender=user1, receiver=user2) | Q(sender=user2, receiver=user1),
+            status=cls.FriendStatus.ACCEPTED
+        ).exists()
+
+
+    @classmethod
+    def is_already_sent(cls, sender, receiver) -> bool:
+        """
+        送信者が受信者に送ったリクエストがPending状態にあるか確認
+        """
+        return cls.objects.filter(sender=sender,
+                                  receiver=receiver,
+                                  status=cls.FriendStatus.PENDING).exists()
+
+
+    @classmethod
+    def is_already_received(cls, sender, receiver) -> bool:
+        """
+        受信者が送信者からのリクエストをPending状態で受けているか確認
+        """
+        return cls.objects.filter(sender=receiver,
+                                  receiver=sender,
+                                  status=cls.FriendStatus.PENDING).exists()
+
+    @classmethod
+    def get_friends_as_sender(cls, user, status) -> List[Dict[str, Any]]:
+        """
+        userが送信したフレンドリクエストのうち、statusが一致するものを取得
+        key: nickname, friend_id
+        """
+        return list(cls.objects.filter(
+            sender=user,
+            status=status
+        ).annotate(
+            nickname=F('receiver__nickname'),
+            friend_id=F('receiver_id')
+        ).values(
+            'nickname', 'friend_id'
+        ).order_by('nickname'))
+
+
+    @classmethod
+    def get_friends_as_receiver(cls, user, status) -> List[Dict[str, Any]]:
+        """
+        userが受信したフレンドリクエストのうち、statusが一致するものを取得
+        key: nickname, friend_id
+        """
+        return list(cls.objects.filter(
+            receiver=user,
+            status=status
+        ).annotate(
+            nickname=F('sender__nickname'),
+            friend_id=F('sender_id')
+        ).values(
+            'nickname', 'friend_id'
+        ).order_by('nickname'))
+
+
+class UserStatus(models.Model):
+    """
+    userのオンラインステータスを追跡するモデル
+    """
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    is_online = models.BooleanField(default=False)
+    last_online = models.DateTimeField(default=now)
+
+    def __str__(self):
+        return f"{self.user.username} is {'online' if self.is_online else 'offline'}"

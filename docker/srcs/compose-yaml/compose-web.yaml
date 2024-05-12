@@ -19,6 +19,7 @@ services:
       # - ${VOLUME_PATH:?}:/container_output
       - ${VOLUME_PATH:?}/log_vol:/var/log/nginx
       - ./uwsgi-django/static/:/var/trans/static/
+      - ./uwsgi-django/media/:/var/trans/media/
     networks:
       - web_transcendence
       # - monitor_transcendence
@@ -190,5 +191,3 @@ services:
   #     - "8181:8080"
   #   profiles:
   #     - three
-
-  

@@ -89,7 +89,8 @@ class DMConsumer(Consumer):
             'sender'            : self.user.nickname,
             'message'           : message,
             'timestamp'         : timestamp,
-            'is_system_message' : False
+            'is_system_message' : False,
+            'avatar_url'        : self.user.avatar.url
         }
         return send_data
 

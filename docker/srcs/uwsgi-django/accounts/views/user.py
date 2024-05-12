@@ -1,25 +1,30 @@
 # accounts/views/user.py
 
+import os
 import logging
 import requests
-
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ValidationError
+from django.core.files.storage import FileSystemStorage
+from django.templatetags.static import static
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from accounts.forms import UserEditForm, CustomPasswordChangeForm
-from accounts.models import CustomUser, UserManager
+from accounts.models import CustomUser, UserManager, Friend
 from accounts.views.jwt import is_valid_jwt
 
 
@@ -41,10 +46,14 @@ class UserProfileAPIView(APIView):
 
     def get(self, request) -> JsonResponse:
         user = request.user
+        logger.debug(f'UserProfileAPIView: avatar_url: {user.avatar.url}')
+
         params = {
-            'email': user.email,
-            'nickname': user.nickname,
+            'id'        : user.id,
+            'email'     : user.email,
+            'nickname'  : user.nickname,
             'enable_2fa': user.enable_2fa,
+            'avatar_url': user.avatar.url,
         }
         return JsonResponse(params)
 
@@ -137,24 +146,113 @@ class EditUserProfileAPIView(APIView):
 # todo: tmp, API and FBV -> CBV
 def get_user_info(request, nickname):
     if not nickname:
-        response = {
-            'error': 'Nickname required'
-        }
         return redirect('/pong/')
 
-
     try:
+        user = request.user
+        if not user.is_authenticated:
+            return redirect(to='/pong/')
+
         info_user = CustomUser.objects.get(nickname=nickname)
+        avatar_url = info_user.avatar.url
         is_blocking_user = request.user.blocking_users.filter(id=info_user.id).exists()
 
+        # フレンドリクエスト送信済みの情報（pendingのみ）
+        friend_request_sent = Friend.objects.filter(sender=user, receiver=info_user, status='pending').first()
+        # フレンドリクエスト受信済みの情報（pendingのみ）
+        friend_request_received = Friend.objects.filter(sender=info_user, receiver=user, status='pending').first()
+        # 既に友達であるか確認
+        is_friend = Friend.objects.filter(sender=user, receiver=info_user, status='accepted').exists() or \
+                    Friend.objects.filter(sender=info_user, receiver=user, status='accepted').exists()
+
         user_data = {
-            'id': info_user.id,
-            'email': info_user.email,
-            'nickname': info_user.nickname,
-            'enable_2fa': info_user.enable_2fa,
-            'isBlockingUser': is_blocking_user
+            'info_user_id'      : info_user.id,
+            'info_user_email'   : info_user.email,
+            'info_user_nickname': info_user.nickname,
+            'enable_2fa'        : info_user.enable_2fa,
+            'avatar_url'        : avatar_url,
+            'isBlockingUser'    : is_blocking_user,
+            'is_friend'         : is_friend,
+            'friend_request_sent_status'    : 'pending' if friend_request_sent else None,
+            'friend_request_received_status': 'pending' if friend_request_received else None,
         }
         return render(request, 'accounts/user_info.html', {'user_data': user_data})
+
     except Exception as e:
         logging.error(f"API request failed: {e}")
         return redirect('/pong/')
+
+
+class ChangeAvatarView(LoginRequiredMixin, TemplateView):
+    template_name = 'accounts/change_avatar.html'
+    login_url = reverse_lazy('accounts:login')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class UploadAvatarAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    redirect_to = "/accounts/user/"
+
+    def post(self, request) -> Response:
+        avatar_file = request.FILES.get('avatar')
+        logger.debug(f'upload avatar 1')
+        if not avatar_file:
+            response = {
+                'status': 'error',
+                'message': 'No file provided'
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            logger.debug(f'upload avatar 2')
+            self.__validate_avatar_extension(avatar_file)
+            self.__validate_avatar_size(avatar_file)
+            logger.debug(f'upload avatar 3')
+
+            request.user.avatar.save(avatar_file.name, avatar_file, save=True)
+            logger.debug(f'change_avatar: avatar_url: {request.user.avatar.url}')
+
+            response = {
+                'status': "success",
+                'message': "upload successfully",
+            }
+            return Response(response, status=status.HTTP_200_OK)
+
+        except ValidationError as e:
+            logger.debug(f'upload avatar 4, error: {str(e)}')
+            response = {
+                'status': "error",
+                'message': f"upload failed: {str(e)}",
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            logger.debug(f'upload avatar 5, error: {str(e)}')
+            response = {
+                'status': "error",
+                'message': f"unexpected error {str(e)}",
+            }
+            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # アバター画像ファイルのサイズバリデータ
+    def __validate_avatar_size(self, avatar_file: str):
+        if avatar_file is None:
+            raise ValidationError("No file was uploaded. Please upload a file.")
+
+        kMaxSizeKB = 500  # 最大サイズを500KBとする
+        if kMaxSizeKB * 1024 < avatar_file.size:
+            raise ValidationError(f'File too large. Size should not exceed {kMaxSizeKB} KB.')
+
+    # アバター画像ファイルの拡張子バリデータ
+    def __validate_avatar_extension(self, avatar_file: str):
+        if avatar_file is None:
+            raise ValidationError("No file was uploaded. Please upload a file.")
+
+        valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
+        ext = os.path.splitext(avatar_file.name)[1][1:].lower()
+        if ext not in valid_extensions:
+            raise ValidationError(f'Unsupported file extension {ext}.'
+                                  f' Allowed types are: jpg, jpeg, png, gif.')
