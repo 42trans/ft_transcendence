@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<title>Tournament - hth Pong</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="hth Pong">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/static/pong/img/favicon.ico" rel="shortcut icon"/>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="/static/pong/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="/static/pong/css/animation.css" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+	<!-- <link rel="stylesheet" href="/static/pong/css/style.css"> -->
+	<link rel="stylesheet" href="/static/pong/css/custom-responsive.css">
+	<link rel="stylesheet" href="/static/pong/css/pong.css">
+	<link rel="stylesheet" href="/static/pong/css/navi.css">
+	<link rel="stylesheet" href="/static/pong/css/custom-contents.css">
+	<link rel="stylesheet" href="/static/pong/css/sign.css">
+
+	
+	
+
+</head>
+<body>
+	<!-- Header section -->
+	<header class="header-section">
+		<div class="container">
+			<!-- logo -->
+			<a class="site-logo" href="/pong/">
+				<img src="/static/pong/img/logo.png" alt="">
+			</a>
+			<div class="user-panel">
+				<a href="/accounts/signup/">Sign up</a> / <a href="/accounts/login/">Log in</a>
+			</div>
+			<!-- site menu -->
+			<nav class="main-menu">
+				<ul>
+					<li><a href="/pong/">Home</a></li>
+					<li><a href="/pong/game/">Pong</a></li>
+					<li><a href="/pong/tournament">Tournament</a></li>
+					<li><a href="/pong/results">results</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+	<!-- Header section end -->
+	
+	<!-- Content section -->
+	
+
+	<div class="canvas-container">
+
+		<div class="container tournament-container">
+			<h2 class="slideup-text">Create Tournament</h2>
+			<p id="error-message" style="color: red;"></p>
+			<form id="tournamentForm" method="post" action="/ja/pong/tournament/">
+				<input type="hidden" name="csrfmiddlewaretoken" value="9SnEj6OlLepqJq0kXUqHC6FnX5xuC44xgec2BvIjRvx1DLgGi7ANZNJnwlleO3l5">
+				<input type="text" id="name" name="name" placeholder="Tournament Name" value="My Tournament">
+				<input type="datetime-local" id="date" name="date" readonly>
+				<!-- <input type="text" id="date" name="date" placeholder="Tournament Date"> -->
+				<input type="text" name="nickname" placeholder="Nickname 1" value="Nickname1">
+				<input type="text" name="nickname" placeholder="Nickname 2" value="Nickname2">
+				<input type="text" name="nickname" placeholder="Nickname 3" value="Nickname3">
+				<input type="text" name="nickname" placeholder="Nickname 4" value="Nickname4">
+				<input type="text" name="nickname" placeholder="Nickname 5" value="Nickname5">
+				<input type="text" name="nickname" placeholder="Nickname 6" value="Nickname6">
+				<input type="text" name="nickname" placeholder="Nickname 7" value="Nickname7">
+				<input type="text" name="nickname" placeholder="Nickname 8" value="Nickname8">
+				<input type="hidden" name="player_nicknames" id="playerNicknames">
+				<button type="submit">Submit</button>
+			</form>
+			
+			<script>
+				document.addEventListener('DOMContentLoaded', function() {
+					var now = new Date().toISOString();
+					var localDateTime = now.substring(0, now.length - 8); // ISO形式から秒以下を削除
+					document.getElementById('date').value = localDateTime;
+				});
+			</script>
+
+			<script>
+				document.getElementById('tournamentForm').addEventListener('submit', function(event) {
+					event.preventDefault(); 
+					console.log('Form submission prevented.'); 
+
+					var errorElement = document.getElementById('error-message');
+					errorElement.textContent = '';  // エラーメッセージをクリア
+
+					var name = document.getElementById('name').value;
+					if (!name) {
+						errorElement.textContent = 'Tournament name is required.';
+						return;
+					}
+					
+					var nicknames = Array.from(document.querySelectorAll('input[name="nickname"]'))
+										.map(input => input.value.trim());
+					
+					if (nicknames.length < 8 || nicknames.includes('')) {
+						errorElement.textContent = 'All 8 nicknames are required.';
+						return;
+					}
+					document.getElementById('playerNicknames').value = JSON.stringify(nicknames);
+
+					// フォームデータを送信するための新しい FormData オブジェクトを作成
+					var formData = new FormData(this);
+					formData.append('player_nicknames', JSON.stringify(nicknames));
+
+					// FormData オブジェクトを使用してデータを送信
+					fetch(this.action, {
+						method: 'POST',
+						body: formData,
+						headers: {
+							'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+						}					
+					}).then(response => response.json())
+					.then(data => console.log('Success:', data))
+					.catch(error => console.error('Error:', error));
+
+				});
+			</script>
+				
+		</div>
+	</div>
+
+
+	<!-- Content section end-->
+
+	<!-- Footer section -->
+	<footer class="footer-section">
+		<div class="container">
+			<ul class="footer-menu">
+				<li><a href="/pong/">Home</a></li>
+				<li><a href="/pong/game/">Pong</a></li>
+				<li><a href="/pong/tournament/">Tournament</a></li>
+				<li><a href="/pong/results">results</a></li>
+			</ul>
+		</div>
+	</footer>
+	<!-- Footer section end -->
+
+	<!--====== Javascripts & Jquery ======-->
+	<!-- <script src="/static/pong/gw/js/color-modes.js"></script> -->
+	<script src="/static/pong/js-bootstarp/bootstrap.bundle.min.js"></script>
+</body>
+</html>

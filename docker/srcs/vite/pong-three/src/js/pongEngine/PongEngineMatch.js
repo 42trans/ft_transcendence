@@ -9,13 +9,17 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
  */
 class PongEngineMatch 
 {
-	constructor(pongEngine,scene, data) 
+	constructor(pongEngine, scene, data) 
 	{
-		this.pongEngine = pongEngine;
-		this.scene	= scene;
-		this.score1 = data.state.score1;
-		this.score2 = data.state.score2;
-		this.maxScore = data.settings.maxScore;
+		this.pongEngine	= pongEngine;
+		this.scene		= scene;
+		this.score1		= data.state.score1;
+		this.score2		= data.state.score2;
+		this.maxScore	= data.settings.maxScore;
+		this.matchData	= pongEngine.matchData;
+		this.env		= pongEngine.env; 
+
+		// console.log('match constructor', this.matchData.id);
 
 		this.fontSize	= 40;
 		this.depth		= 10;
@@ -42,20 +46,20 @@ class PongEngineMatch
 			this.fontURL,
 			// フォントが正常にロードされた後に実行の処理
 			( font ) => 
-			{
-				console.log('Font loaded successfully', font);
-				this.font = font;
-				this.createScoreText();
-			},
+				{
+					// console.log('Font loaded successfully', font);
+					this.font = font;
+					this.createScoreText();
+				},
 			// ロードされたデータの量と全体のデータ量を取得し、ロードの進行状況をパーセンテージでコンソールに出力
 			(xhr) => 
-			{
-				console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-			},
+				{
+					console.log((xhr.loaded / xhr.total * 100) + '% font loaded');
+				},
 			(err) => 
-			{
-				console.error('An error happened');
-			}
+				{
+					console.error('An error happened');
+				}
 		);
 	}
 
@@ -119,17 +123,18 @@ class PongEngineMatch
 	{
 		if (this.score1 >= this.maxScore || this.score2 >= this.maxScore) 
 		{
-			const winner = this.score1 >= this.maxScore ? 'Player 1' : 'Player 2';
-			// console.log(`${this.winner} wins the match!`);
 			this.endGame();
 		}
 	}
 
 	endGame() 
 	{
-		console.log('end game');
+		console.log('Game end');
 		this.pongEngine.isRunning = false;
-		this.sendMatchResult(this.winner);
+		
+		if (this.matchData)
+			this.sendMatchResult();
+		
 		this.displayEndGameButton();
 	}
 
@@ -146,48 +151,37 @@ class PongEngineMatch
 		document.body.appendChild(button);
 	}
 
-	sendMatchResult(winner) 
+	sendMatchResult() 
 	{
-		// TODO_ft: matchID
 		const result = 
 		{
-			winner: winner,
-			score1: this.score1,
-			score2: this.score2,
-			// matchId: this.matchId,
-			// player1: this.player1,
-			// player2: this.player2
+			match_id: this.matchData.id, 
+			player1_score: this.score1,
+			player2_score: this.score2,
 		};
 
-		// ウェブリソースへのアクセス
-		fetch('https://localhost/pong/api/save_game_result/', {
-			method: 'POST',
-// TODO_ft: テスト用
-mode: 'no-cors', 
-//
-			headers: 
+		
+		if (this.env === 'dev') {
+			this.saveURL = 'http://localhost:8002/pong/api/tournament/save_game_result/';
+		} else {
+			this.saveURL = 'https://localhost/pong/api/tournament/save_game_result/';
+		}
+		fetch(this.saveURL, 
 			{
-				'Content-Type': 'application/json',
-			},
-			// result オブジェクトをJSON文字列に変換してボディにセット
-			body: JSON.stringify(result)
-		})
-
-		// fetch からのレスポンスが返された後に実行
-		// ボディをJSONとして解析
-		// .then(response => 
-		// {
-		// 	if (!response.ok) 
-		// 	{
-		// 		throw new Error('response faled');
-		// 	}
-
-		// 	// ↑上記のmode: 'no-cors', では機能しない
-		// 	return response.json();
-		// 	// 
-		// })
-		// .then(data => console.log('Success:', data))
-		// .catch((error) => console.error('Error:', error));
+				method: 'POST',
+				headers: {'Content-Type': 'application/json',},
+				// result オブジェクトをJSON文字列に変換してボディにセット
+				body: JSON.stringify(result)
+			})
+			.then(response => 
+				{
+					if (!response.ok) {
+						throw new Error('response faled');
+					}
+					return response.json();
+				})
+		.then(data => console.log('The Results have been saved to the DB: match.id:', this.matchData.id, data))
+		.catch((error) => console.error('Error:', error));
 	}
 
 }

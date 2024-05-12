@@ -9,26 +9,29 @@
  * - そのファイルと合わせて、public/内のファイルをすべて、django/static/share_webpack2などのディレクトリに保存してください。共有ボリュームを設定しているので、再起動時二回以内にマウントされる予定ですが、不安定な時は手動で行ってください。
  * 
  * ## 使い方
- * - ホスト開発用サーバーの起動 ※hotReload機能
- *   - cd docker/srcs/webpack2/ft_trans && npm run dev
- *   - コンテナの8181はwsが機能してません。が、一応動きます。けど、使わないよう。
+ * ### ホスト開発用サーバーの起動 ※hotReload機能
+ * vite_npm_run_dev:
+ * 	docker exec -it vite bash -c "npm run dev"
+ * ### build
+ * vite_npm_run_build:
+ * 	docker exec -it vite bash -c "npm run build"
  * - Django　static用のpublic
- *   - docker exec -it webpack2 bash -c "npm run build"
- *   - webpack2/public/に一式できます。マウント共有してるので二回再起動すればDjangoに認識されるはず
- *   - static/share_wabpack2/に自動で入ります。ホストマシンに保存されます。.gitignore済み
- * - main()の引数に文字列'dev'を渡すことでライトやカメラをコントロールするGUIを表示
+ *   - vite/public/に一式できます。マウント共有してるので自動的にDjangoに認識されます。.gitignoreしてます
+ *   - pong/static/pong/three/に自動で入ります。そこはホストマシンに保存されません。が、下記で対応
+ *   - django/staticにcode/一式マウントされてるので逆流してホストに保存されます。.gitignore済み
  * 
- * ## ディレクトリ構成
+ * ## ディレクトリ/ファイル
  * - シーン（空間）毎にSceneConfig.jsに値を設定してください。scene設定はそこで全てです。
  * - Contorls.jsのパラメーターはスライダーの感度調整なので変更しなくても問題ないはずです。が、必要なら。
  * - 他の.jsファイルは js/ にまとめてます。 
- * - Pong.jsから全ての処理のフローが見通せるように書きたい。ファサードパターンで。
+ * - Pong.jsから全ての処理のフローが見通せるように書いてます
  * - 3Dmodel.gltfやtextureは assejs/にまとめてます。
+ * - 説明資料+4/8~22進捗日記 => 3️⃣ three.js △ https://docs.google.com/presentation/d/e/2PACX-1kFAEPPUCHrODmv94oPZiLU1zN8VEWBE-sCt5eYDm5i-fJpl221U1rc8G4w9BB3-V30bUuLVMXRSp/pub?start=false&loop =false&遅延=10000
 */
 
 import PongApp from './js/PongApp'
 import './css/3d.css';
 
 // 'dev'= コントローラーGUI表示 
-// PongApp.main('dev');
-PongApp.main();
+PongApp.main('dev');
+// PongApp.main();

@@ -1,45 +1,21 @@
-<!doctype html>
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <title>ログアウト</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Log out - hth Pong{% endblock title %}
+{% block content %}
+<div class="canvas-container">
+	<div class="hs-text">
+		<div class="container">
 
-<script>
-    function handleLogout() {
-        fetch('/accounts/api/logout/', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-            .then(data => {
-                if (data.message) {
-                    alert(data.message);
-                    window.location.href = data.redirect;
-                } else {
-                    throw new Error('No message in response');
-                }
-            })
-            .catch(error => {
-                console.error('Logout failed:', error);
-                alert('Logout failed. Please try again.');
-            });
-    }
-</script>
+			<div class="user-info-container">
+				<button onclick="handleLogout()">Logout</button>
+				<hr>
+				<a href="{% url 'accounts:user'%}">return to user page</a>
+			</div>
+			
+		</div>
+	</div>
+</div>
 
-<button onclick="handleLogout()">Logout</button>
+<script src="{% static 'accounts/js/logout.js' %}"></script>
 
-<hr>
-<a href="{% url 'accounts:user'%}">return to user page</a>
-<hr>
-<a href="/pong/">🏓 return to pong</a>
-
-</body>
-</html>
+{% endblock %}
