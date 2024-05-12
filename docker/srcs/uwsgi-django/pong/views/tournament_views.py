@@ -283,20 +283,18 @@ def delete_tournament_and_matches(request, tournament_id) -> JsonResponse:
 # ------------------------------
 # option: 現時点では不要
 # ------------------------------
-@login_required
-def get_history_all_user_tournaments(request):
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_history_all_user_tournaments(request) -> JsonResponse:
 	""" 
 	機能: 「ユーザーが主催者」のトーナメントを全て取得
 	用途: result, histoty. 終了したトーナメントも含む過去情報全てを取得
 	"""
-	if request.method == 'GET':
-		# ログインユーザーが主催するトーナメントを全て取得
-		tournaments = Tournament.objects.filter(organizer=request.user)
-		# すべてのフィールドを含む辞書のリストに変換
-		tournaments_data = [model_to_dict(tournament) for tournament in tournaments]
-		return JsonResponse(tournaments_data, safe=False)
-	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+	# ログインユーザーが主催するトーナメントを全て取得
+	tournaments = Tournament.objects.filter(organizer=request.user)
+	# すべてのフィールドを含む辞書のリストに変換
+	tournaments_data = [model_to_dict(tournament) for tournament in tournaments]
+	return JsonResponse(tournaments_data, safe=False)
 
 
 @api_view(['GET'])
