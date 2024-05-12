@@ -2,6 +2,7 @@
 
 import logging
 
+from django.core.validators import MaxLengthValidator
 from django.db import models
 from shortuuidfield import ShortUUIDField
 
@@ -44,14 +45,14 @@ class DMSession(models.Model):
         if sessions.exists():
             # 既存のセッションがあればそれを返す
             session = sessions.first()
-            logger.debug(f'[DMSession]: session exists: {session.id}')
+            # logger.debug(f'[DMSession]: session exists: {session.id}')
             return session
         else:
             # セッションがなければ新規作成
             session = cls.objects.create()
             session.member.add(user, other_user)
             session.save()
-            logger.debug(f'[DMSession]: session created: {session.id}')
+            # logger.debug(f'[DMSession]: session created: {session.id}')
             return session
 
 
@@ -60,17 +61,25 @@ class Message(models.Model):
     DBに保存するDMの定義
     sender    : send userのobject
     receiver  : receive userのobject
-    message   : 1送信分のmessage text
+    message   : 1送信分のmessage text（max len=128）
     timestamp : messageを送信した日時情報
     """
+    kMessageMaxLength = 128
+
     sender = models.ForeignKey(CustomUser,
                                related_name='sent_dm',
                                on_delete=models.CASCADE)
     receiver = models.ForeignKey(CustomUser,
                                  related_name='received_dm',
                                  on_delete=models.CASCADE)
-    message = models.TextField()
+    message = models.TextField(validators=[MaxLengthValidator(kMessageMaxLength)])
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        # メッセージの長さを検証し、保存
+        if self.kMessageMaxLength < len(self.message):
+            raise ValidationError(f'Message must be less than {self.kMessageMaxLength} characters')
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return (f"Message from {self.sender}"

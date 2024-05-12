@@ -165,7 +165,7 @@ class DMConsumerTestCase(TransactionTestCase):
 
     async def test_receive_and_store_max_size_mesage(self):
         """
-        user1->user2へのメッセージ送信（65536 byte） & DB保存
+        user1->user2へのメッセージ送信（128 byte） & DB保存
         """
         await self.asyncSetUp()  # login
         try:
@@ -174,7 +174,7 @@ class DMConsumerTestCase(TransactionTestCase):
             self.assertTrue(connected, f"WebSocket connection failed, code: {subprotocol}")
 
             # messageを送信
-            message_text = 'a' * 65536
+            message_text = 'a' * 128
             message_data = {
                 'message': message_text
             }
@@ -311,7 +311,7 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
 
     async def test_receive_max_size_mesage(self):
         """
-        user1->user2へのメッセージ送信（65537文字）でWebSocketが適切にクローズされるかテスト
+        user1->user2へのメッセージ送信（129文字）でWebSocketが適切にクローズされるかテスト
         """
         await self.asyncSetUp()  # login
 
@@ -324,7 +324,7 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
         connected, subprotocol = await communicator.connect()
 
         # messageを送信
-        message_text = 'a' * 65537
+        message_text = 'a' * 129
         message_data = {
             'message': message_text
         }
@@ -341,7 +341,7 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
 
     async def test_receive_big_size_mesage(self):
         """
-        user1->user2へのメッセージ送信（65537文字）でWebSocketが適切にクローズされるかテスト
+        user1->user2へのメッセージ送信（INT_MAX文字）でWebSocketが適切にクローズされるかテスト
         """
         await self.asyncSetUp()  # login
 
@@ -361,7 +361,7 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
         await communicator.send_json_to(message_data)
 
         # ここでサーバーからの応答を待つ
-        response = await communicator.receive_output()
+        response = await communicator.receive_output(timeout=30)
 
         # WebSocketがクローズされたかを検証する
         self.assertEqual(response['type'], 'websocket.close')
