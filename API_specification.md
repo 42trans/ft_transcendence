@@ -405,3 +405,100 @@
   "error": error_message
 }
 ```
+
+<br>
+
+## 5. Block/Unblock
+###  5-1) Block User API
+- 指定したニックネームのユーザーをブロックするAPIです
+
+### Endpoint
+- path: `/accounts/api/block/<str:nickname>/`
+- name: `api_accounts: api_block`
+
+### Permissions
+- 認証されているユーザーのみアクセス可能（`IsAuthenticated`）
+
+### POST
+#### Request Parameters
+
+| パラメータ               | 型     | 説明                | 必須 |
+|---------------------|------|-------------------|--|
+| `nickname`          | 文字列 | ブロックするユーザーのニックネーム | 必須 |
+
+
+#### Responses
+##### 200 OK
+- ユーザーのブロックに成功した場合に返されます
+
+```json
+{
+  "message": "User nickname successfully blocked"
+}
+```
+
+##### 400 Bad Request
+- 指定したニックネームが存在しない場合や、すでにブロックしていた場合、自分自身をブロックしようとした場合に返されます
+
+```json
+{
+  "message": error_message
+}
+```
+
+#### 500 Internal Server Error
+- 予期せぬエラーが発生した場合に返されます
+
+```json
+{
+  "message": error_message
+}
+```
+
+<br>
+
+###  5-2) Unblock User API
+- 指定したニックネームのユーザーのブロックを解除するAPIです
+
+### Endpoint
+- path: `/accounts/api/unblock/<str:nickname>/`
+- name: `api_accounts: api_unblock`
+
+### Permissions
+- 認証されているユーザーのみアクセス可能（`IsAuthenticated`）
+
+### POST
+#### Request Parameters
+
+| パラメータ               | 型     | 説明                | 必須 |
+|---------------------|------|-------------------|--|
+| `nickname`          | 文字列 | ブロックするユーザーのニックネーム | 必須 |
+
+
+#### Responses
+##### 200 OK
+- ユーザーのブロックに成功した場合に返されます
+
+```json
+{
+  "message": "User nickname successfully unblocked"
+}
+```
+
+##### 400 Bad Request
+- 指定したニックネームが存在しない場合や、すでにブロックしていた場合、自分自身をブロックしようとした場合に返されます
+
+```json
+{
+  "message": error_message
+}
+```
+
+#### 500 Internal Server Error
+- 予期せぬエラーが発生した場合に返されます
+
+```json
+{
+  "message": error_message
+}
+```

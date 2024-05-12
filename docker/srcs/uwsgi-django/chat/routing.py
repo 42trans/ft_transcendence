@@ -1,6 +1,5 @@
 # chat/routing.py
 from django.urls import re_path
-from chat.consumers import ChatConsumer
 from chat.dm_consumers import DMConsumer
 
 

@@ -5,12 +5,14 @@ import { setupDOMEventListeners, scrollToBottom } from './module/ui-util.js';
 
 
 function initDM() {
-    const dmTo = JSON.parse(document.getElementById('nickname').textContent);
+    const dmTargetNickname = JSON.parse(
+        document.getElementById('target_nickname').textContent
+    );
 
-    applyStylesToInitialLoadMessages(dmTo);
+    applyStylesToInitialLoadMessages(dmTargetNickname);
     scrollToBottom();  // 受信時にスクロール位置を調整
 
-    setupWebSocket(dmTo);
+    setupWebSocket(dmTargetNickname);
     setupDOMEventListeners();
 }
 
