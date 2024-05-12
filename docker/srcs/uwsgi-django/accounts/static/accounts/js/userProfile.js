@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
 						`<li>2FA: ✅Enabled</li><li><a href="/accounts/verify/disable_2fa/">Disable 2FA</a></li>` :
 						`<li>2FA: Disabled</li><li><a href="/accounts/verify/enable_2fa/">Enable 2FA</a></li>`}
 				<br>
-				<button onclick="handleLogout()">Logout</button>
+				<button class="hth-btn" onclick="handleLogout()">Logout</button>
 			`;
 		})
 		.catch(error => console.error("Error:", error));

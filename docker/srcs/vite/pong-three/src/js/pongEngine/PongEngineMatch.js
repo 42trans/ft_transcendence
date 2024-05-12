@@ -160,8 +160,11 @@ class PongEngineMatch
 			player2_score: this.score2,
 		};
 
+		// console.log('three window.isDevServer', window.isDevServer);
 		
-		if (this.env === 'dev') {
+		// viteが開発環境ならば、this.env == 'dev'
+		// Djangoがdev server(:8002)ならば、window.isDevServer == true
+		if (this.env === 'dev'|| window.isDevServer) {
 			this.saveURL = 'http://localhost:8002/pong/api/tournament/save_game_result/';
 		} else {
 			this.saveURL = 'https://localhost/pong/api/tournament/save_game_result/';

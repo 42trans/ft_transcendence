@@ -2,26 +2,53 @@
 {% load static %}
 {% block title %}Edit user profile - hth Pong{% endblock title %}
 {% block content %}
-<div class="canvas-container">
-	<div class="hs-text">
-		<div class="container " >
+<!-- <div class="hth-container"> -->
+	<!-- <div class="hs-text"> -->
+		<div class="container" >
 
 			<div class="user-info-container">
-			<h1>Edit user profile</h1>
-			<p id="message-area"></p>
-			<!-- ニックネーム更新用のフォーム -->
-			<form id="nickname-form" onsubmit="updateNickname(event)">
-				<h4>Nickname</h4>
-				<p><input type="text" id="nickname" placeholder="{{ current_nickname }}" required></p>
-				<button type="submit">Update nickname</button>
-			</form>
-			<hr>
-			<a href="{% url 'accounts:user'%}">Return to user page</a>
+
+				<h1>Edit user profile</h1>
+				<p id="message-area"></p>
+
+				<!-- ニックネーム更新用のフォーム -->
+				<form class="mb-5" id="nickname-form" onsubmit="updateNickname(event)">
+					<h3 class="mb-1">Nickname</h3>
+					<p><input type="text" id="nickname" placeholder="{{ current_nickname }}" required></p>
+					<button class="hth-btn" type="submit">Update nickname</button>
+				</form>
+
+				<script>
+					document.addEventListener('DOMContentLoaded', function() {
+						const is42AuthUser = "{{ is_42auth_user|yesno:'true,false' }}";  // Djangoのyesnoフィルターを使用
+						console.log(is42AuthUser)
+						// TODO_ft: 文字列が返ってきてるので 文字列'true'を確認
+						if (is42AuthUser === 'true') {
+							document.getElementById('password-form').style.display = 'none';  // パスワードフォームを非表示にする
+						} else {
+							console.log("Displaying form because user is not 42Auth user.");
+						}
+					});
+				</script>
+
+				<form id="password-form" onsubmit="updatePassword(event)">
+					<h3 class="mb-1">password</h3>
+					<p>current password: <input type="password" id="current_password" placeholder="current-password" required></p>
+					<p>new password: <input type="password" id="new_password" placeholder="new-password"></p>
+					<button class="hth-btn" type="submit">update password</button>
+				</form>
+
+				<hr>
+
+				<a href="{% url 'accounts:user'%}">Return to user page</a>
+
 			</div>
 
+			
+
 		</div>
-	</div>
-</div>
+	<!-- </div> -->
+<!-- </div> -->
 
 <script src="{% static 'accounts/js/edit_profile.js' %}"></script>
 

@@ -28,7 +28,7 @@ class PongApp
 			const matchDataElement = document.getElementById('match-data');
 			if (matchDataElement) {
 				this.matchData = JSON.parse(matchDataElement.textContent);
-				// console.log('Match Data:', this.matchData);
+				console.log('Match Data:', this.matchData);
 			}
 			this.init();
 			// 無限ループでアニメーションの更新を担当。シングルトン

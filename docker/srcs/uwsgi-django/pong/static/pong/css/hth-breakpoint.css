@@ -1,0 +1,55 @@
+/* Bootstarp breakpoint
+X-Small: <576px
+Small: ≥576px
+Medium: ≥768px
+Large: ≥992px
+X-Large: ≥1200px
+XX-Large: ≥1400px */
+
+/**
+指定はサイズ「以上」の場合なので、最も小さいサイズに適用したものは全てに適用される。
+ただし、上書きされていない場合。
+ */
+
+/* xxl  */
+@media (min-width: 1400px) {
+
+}
+
+
+/* xl */
+@media (min-width: 1200px) {
+
+}
+
+/* lg */
+@media (min-width: 992px) {
+	/* #hth-footer-menu li {
+		margin-left: 3rem;
+		font-size: 1rem;
+	} */
+}
+
+/* md: Tablet との分岐点*/
+@media (min-width: 768px)  {
+	/* #hth-footer-menu li {
+		margin-left: 2rem;
+		font-size: 1rem;
+	} */
+}
+
+/* sm */
+@media (min-width: 576px){
+	/* #hth-footer-menu li {
+		margin-left: 1rem;
+		font-size: 1rem;
+	} */
+}
+
+/* -xs */
+@media (min-width: 0px) {
+	/* #hth-footer-menu li {
+		margin-left: 0.3rem;
+		font-size: 0.3rem;
+	} */
+}

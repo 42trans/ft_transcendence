@@ -1,0 +1,42 @@
+footer { 
+	margin-top: auto;
+	margin: 0;
+	padding: 0;
+
+	color: var(--footer-text-color);
+	background-color: var(--footer-bg-color); 
+	height: var(--footer-height);
+	display: flex;
+	justify-content: flex-end
+}
+
+#hth-footer-menu {
+	list-style: none;
+	display: flex;
+	justify-content: flex-end;
+	flex-wrap: nowrap;
+	padding-top: 10px;
+	padding-right: 80px;
+}
+
+#hth-footer-menu li {
+	white-space: nowrap;
+	display: inline-block;
+	margin-left: clamp(0.7rem, 1vw + 1rem, 1rem);
+}
+
+/* 最初のリストアイテムの左マージンを削除 */
+.footer-menu li:first-child {
+	margin-left: 0;
+}
+
+#hth-footer-menu li a {
+	font-weight: 500;
+	color: inherit;
+	text-decoration: none;
+	color: var(--footer-text-color);
+}
+
+#hth-footer-menu li a:hover {
+	color: #fff;
+}

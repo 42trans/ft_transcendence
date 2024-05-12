@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', function() {
-	const is42AuthUser = "{{ is_42auth_user|yesno:'true,false' }}";  // Djangoのyesnoフィルターを使用
-	if (is42AuthUser) {
-		document.getElementById('password-form').style.display = 'none';  // パスワードフォームを非表示にする
-	}
-});
+// document.addEventListener('DOMContentLoaded', function() {
+// 	const is42AuthUser = "{{ is_42auth_user|yesno:'true,false' }}";  // Djangoのyesnoフィルターを使用
+// 	if (is42AuthUser) {
+// 		document.getElementById('password-form').style.display = 'none';  // パスワードフォームを非表示にする
+// 	}
+// });
 
 function updateNickname(event) {
 	event.preventDefault();

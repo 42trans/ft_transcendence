@@ -1,0 +1,13 @@
+/* docker/srcs/uwsgi-django/pong/static/pong/css/match-history.css */
+.hth-results-container{
+	background: #131313;
+}
+
+.hth-results-title{
+	color: #fff;
+}
+
+.hth-results-ul{
+	list-style-type: none;
+	color: #fff;
+}
