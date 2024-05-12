@@ -277,7 +277,7 @@ def delete_tournament_and_matches(request, tournament_id) -> JsonResponse:
 				# - on_delete=models.CASCADE でトーナメントが削除されると、自動的に削除される。
 				tournament.matches.all().delete() #つまり、この行は不要。だが、明示的に記述する。
 				tournament.delete()
-				return JsonResponse({'status': 'success', 'message': 'Tournament and related matches deleted successfully.'})
+				return JsonResponse({'status': 'success', 'message': 'Tournament and related matches deleted successfully.'}, status=200)
 			else:
 				return JsonResponse({'status': 'error', 'message': 'Cannot delete finished tournaments.'}, status=400)
 	except Tournament.DoesNotExist:
