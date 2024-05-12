@@ -1,29 +1,48 @@
-{% extends 'base.html' %}
+<!-- user.html -->
+
 {% load static %}
-{% block title %}User profile - hth Pong{% endblock title %}
-{% block content %}
-<!-- <div class="canvas-container"> -->
-	<!-- <div class="hs-text"> -->
-		<div class="container" >
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>User Page</title>
 
-			<div class="user-info-container">
-				<h1>User Page</h1>
-				<ul id="user-info">
-					<!-- JavaScriptで動的に内容が生成される -->
-				</ul>
-			</div>
+    <style>
+        .avatar {
+            width: 50px;    /* 幅を30pxに設定 */
+            height: 50px;   /* 高さを30pxに設定 */
+            border-radius: 50%;  /* 角を円形にする */
+            object-fit: cover;   /* 画像のアスペクト比を維持しながら、設定された領域に収まるようにする */
+            margin-right: 10px;  /* 画像とテキストの間の余白 */
+        }
 
-		</div>
-	<!-- </div> -->
-<!-- </div> -->
+        .status.online {
+            color: green;
+        }
 
-<script src="{% static 'accounts/js/userProfile.js' %}"></script>
+        .status.offline {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<h1>User Page (private)</h1>
+
+<div id="user-info"></div>
+<hr>
+<div id="friends-container"></div>
+<hr>
+<div id="requests-container"></div>
+
 <script src="{% static 'accounts/js/logout.js' %}"></script>
+<script src="{% static 'accounts/js/friend.js' %}"></script>
+<script src="{% static 'accounts/js/online-status.js' %}"></script>
+<script src="{% static 'accounts/js/user-page.js' %}"></script>
 
 {% endblock %}
 <hr>
 <br>
-<p><a href="{% url 'chat:dm_list' %}">DM</a></p>
+<p><a href="{% url 'chat:dm_sessions' %}">DM</a></p>
 <a href="/pong/">🏓 Pong Index Page</a>
 </body>
 </html>
