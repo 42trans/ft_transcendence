@@ -3,6 +3,8 @@ from django.urls import reverse
 from ...models import Tournament, Match
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from rest_framework import status
+
 
 class TestDeleteTournament(TestCase):
 	def setUp(self):
@@ -53,10 +55,20 @@ class TestDeleteTournament(TestCase):
 			)
 
 		self.client = Client()
-		self.client.login(
+		self.__login(
 			email='testuser@example.com',
 			password='123alks;d;fjsakd45abcde',
 		)
+
+	def __login(self, email, password):
+		login_api_url = reverse('api_accounts:api_login')
+		login_data = {'email': email, 'password': password}
+		response = self.client.post(login_api_url, data=login_data)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+	def __logout(self):
+		logout_api_url = reverse('api_accounts:api_logout')
+		self.client.get(logout_api_url)
 
 	def test_delete_tournament_and_matches(self):
 		"""トーナメントと関連する試合が削除されることを確認するテスト"""
@@ -66,6 +78,23 @@ class TestDeleteTournament(TestCase):
 		self.assertFalse(Match.objects.filter(tournament=self.tournament1).exists())
 		response_data = response.json()
 		self.assertEqual(response_data['message'], 'Tournament and related matches deleted successfully.')
+
+	def test_delete_twice_tournament_and_matches(self):
+		"""削除したトーナメントを再度削除"""
+		# 削除
+		delete_tournament_id = self.tournament1.id
+		response = self.client.post(reverse('delete_tournament_and_matches', kwargs={'tournament_id': delete_tournament_id}))
+		self.assertEqual(response.status_code, 200)
+		self.assertFalse(Tournament.objects.filter(id=self.tournament1.id).exists())
+		self.assertFalse(Match.objects.filter(tournament=self.tournament1).exists())
+		response_data = response.json()
+		self.assertEqual(response_data['message'], 'Tournament and related matches deleted successfully.')
+
+		# 削除2回目
+		response = self.client.post(reverse('delete_tournament_and_matches', kwargs={'tournament_id': delete_tournament_id}))
+		self.assertEqual(response.status_code, 404)
+		response_data = response.json()
+		self.assertEqual(response_data['message'], 'Tournament not found.')
 
 	def test_delete_finished_tournament(self):
 		"""終了したトーナメントを削除しようとした場合のテスト"""
@@ -82,3 +111,9 @@ class TestDeleteTournament(TestCase):
 		self.assertEqual(response.status_code, 404)
 		response_data = response.json()
 		self.assertEqual(response_data['message'], 'Tournament not found.')
+
+	def test_delete_by_unauthorized_user(self):
+		"""未承認userによるリクエスト"""
+		self.__logout()
+		response = self.client.post(reverse('delete_tournament_and_matches', kwargs={'tournament_id': self.tournament1.id}))
+		self.assertEqual(response.status_code, 401)

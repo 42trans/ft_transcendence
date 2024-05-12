@@ -3,6 +3,8 @@ from django.urls import reverse
 from ...models import Tournament
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from rest_framework import status
+
 
 class TestUserAllOngoingTournament(TestCase):
 	def setUp(self):
@@ -42,10 +44,20 @@ class TestUserAllOngoingTournament(TestCase):
 		)
 
 		self.client = Client()
-		self.client.login(
+		self.__login(
 			email='testuser@example.com',
 			password='123alks;d;fjsakd45abcde',
 		)
+
+	def __login(self, email, password):
+		login_api_url = reverse('api_accounts:api_login')
+		login_data = {'email': email, 'password': password}
+		response = self.client.post(login_api_url, data=login_data)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+	def __logout(self):
+		logout_api_url = reverse('api_accounts:api_logout')
+		self.client.get(logout_api_url)
 
 	def test_multiple_ongoing_tournaments_error(self):
 		"""複数の未終了トーナメントが存在する場合に適切なエラーメッセージとIDを返すかテスト"""
@@ -67,9 +79,9 @@ class TestUserAllOngoingTournament(TestCase):
 
 	def test_unauthenticated_access(self):
 		"""認証されていないユーザーのアクセステスト"""
-		self.client.logout()
+		self.__logout()
 		response = self.client.get(reverse('get_tournament_id_user_all_ongoing'))
-		self.assertNotEqual(response.status_code, 200)
+		self.assertEqual(response.status_code, 401)
 
 	def test_wrong_method_access(self):
 		"""不正なリクエストメソッドでのアクセステスト"""
