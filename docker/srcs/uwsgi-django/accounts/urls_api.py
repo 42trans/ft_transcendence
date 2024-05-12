@@ -7,7 +7,7 @@ from accounts.views.basic_auth import LogoutAPIView
 from accounts.views.basic_auth import LoginAPIView
 from accounts.views.user import UserProfileAPIView
 from accounts.views.user import EditUserProfileAPIView
-from accounts.views.user import change_avatar
+from accounts.views.user import UploadAvatarAPI
 from accounts.views.oauth import OAuthWith42
 from accounts.views.two_factor_auth import Enable2FaAPIView
 from accounts.views.two_factor_auth import Verify2FaAPIView
@@ -28,7 +28,7 @@ urlpatterns = [
     path('api/logout/'              , LogoutAPIView.as_view()           , name='api_logout'),
     path('api/user/profile/'        , UserProfileAPIView.as_view()      , name='api_user_profile'),
     path('api/user/edit-profile/'   , EditUserProfileAPIView.as_view()  , name='api_edit_profile'),
-    path('api/change-avatar/'       , change_avatar                     , name='change_avatar'),
+    path('api/change-avatar/'       , UploadAvatarAPI.as_view()         , name='change_avatar'),
     path('api/enable_2fa/'          , Enable2FaAPIView.as_view()        , name='api_enable_2fa'),
     path('api/verify_2fa/'          , Verify2FaAPIView.as_view()        , name='api_verify_2fa'),
 

@@ -1,13 +1,14 @@
 # accounts/views/user.py
 
+import os
 import logging
 import requests
-
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.templatetags.static import static
 from django.http import HttpRequest, JsonResponse
@@ -16,6 +17,7 @@ from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -190,12 +192,67 @@ class ChangeAvatarView(LoginRequiredMixin, TemplateView):
         return context
 
 
-@csrf_exempt  # todo: tmp
-def change_avatar(request):
-    if request.method == 'POST' and request.FILES['avatar']:
-        avatar_file = request.FILES['avatar']
-        request.user.avatar.save(avatar_file.name, avatar_file, save=True)
-        logger.debug(f'change_avatar: avatar_url: {request.user.avatar.url}')
-        return redirect('accounts:user')
+class UploadAvatarAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    redirect_to = "/accounts/user/"
 
-    return render(request, 'user.html', {'error': 'upload failed'})
+    def post(self, request) -> Response:
+        avatar_file = request.FILES.get('avatar')
+        logger.debug(f'upload avatar 1')
+        if not avatar_file:
+            response = {
+                'status': 'error',
+                'message': 'No file provided'
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            logger.debug(f'upload avatar 2')
+            self.__validate_avatar_extension(avatar_file)
+            self.__validate_avatar_size(avatar_file)
+            logger.debug(f'upload avatar 3')
+
+            request.user.avatar.save(avatar_file.name, avatar_file, save=True)
+            logger.debug(f'change_avatar: avatar_url: {request.user.avatar.url}')
+
+            response = {
+                'status': "success",
+                'message': "upload successfully",
+            }
+            return Response(response, status=status.HTTP_200_OK)
+
+        except ValidationError as e:
+            logger.debug(f'upload avatar 4, error: {str(e)}')
+            response = {
+                'status': "error",
+                'message': f"upload failed: {str(e)}",
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            logger.debug(f'upload avatar 5, error: {str(e)}')
+            response = {
+                'status': "error",
+                'message': f"unexpected error {str(e)}",
+            }
+            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # アバター画像ファイルのサイズバリデータ
+    def __validate_avatar_size(self, avatar_file: str):
+        if avatar_file is None:
+            raise ValidationError("No file was uploaded. Please upload a file.")
+
+        kMaxSizeKB = 500  # 最大サイズを500KBとする
+        if kMaxSizeKB * 1024 < avatar_file.size:
+            raise ValidationError(f'File too large. Size should not exceed {kMaxSizeKB} KB.')
+
+    # アバター画像ファイルの拡張子バリデータ
+    def __validate_avatar_extension(self, avatar_file: str):
+        if avatar_file is None:
+            raise ValidationError("No file was uploaded. Please upload a file.")
+
+        valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
+        ext = os.path.splitext(avatar_file.name)[1][1:].lower()
+        if ext not in valid_extensions:
+            raise ValidationError(f'Unsupported file extension {ext}.'
+                                  f' Allowed types are: jpg, jpeg, png, gif.')
