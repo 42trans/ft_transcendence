@@ -304,23 +304,20 @@ def get_tournament_id_user_all_ongoing(request):
 	機能: ログイン中のユーザーが主催する未終了のトーナメントの「ID」を全て返す。
 	用途: エラーチェック。複数の未終了トーナメントが存在してはならないが、存在する場合はIDを返して削除作業を可能にする。
 	"""
-	if request.method == 'GET':
-		tournaments = Tournament.objects.filter(organizer=request.user, is_finished=False)
-		# 各トーナメントのIDをリストに格納
-		tournament_ids = [tournament.id for tournament in tournaments]
+	tournaments = Tournament.objects.filter(organizer=request.user, is_finished=False)
+	# 各トーナメントのIDをリストに格納
+	tournament_ids = [tournament.id for tournament in tournaments]
 
-		# 未終了のトーナメントが複数存在する場合はエラーメッセージと共にIDを返す
-		if len(tournament_ids) > 1:
-			return JsonResponse({
-				'status': 'error',
-				'message': 'Multiple ongoing tournaments found, which is not allowed.',
-				'tournaments': tournament_ids
-			# 200 OKでクライアントに処理可能なデータを返す
-			}, status=200)
+	# 未終了のトーナメントが複数存在する場合はエラーメッセージと共にIDを返す
+	if len(tournament_ids) > 1:
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Multiple ongoing tournaments found, which is not allowed.',
+			'tournaments': tournament_ids
+		# 200 OKでクライアントに処理可能なデータを返す
+		}, status=200)
 
-		return JsonResponse({'tournaments': tournament_ids}, safe=False)
-	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+	return JsonResponse({'tournaments': tournament_ids}, safe=False)
 
 
 @login_required
