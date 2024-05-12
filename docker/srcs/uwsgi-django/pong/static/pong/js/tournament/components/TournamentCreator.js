@@ -24,7 +24,7 @@ class TournamentCreator
 		this.form.action	= config.API_URLS.tournamentCreate;
 		this.form.organizer	= userProfile.id;
 		// フォームのHTML内容を生成して設定
-		this.form.innerHTML	= this._generateFormHTML(UIHelper.getCSRFToken());
+		this.form.innerHTML	= this._generateFormHTML(UIHelper.getCSRFToken(), userProfile.nickname);
 		// .htmlの<div>にフォームを追加
 		this.tournamentForm.appendChild(this.form);
 		// UTC ISO8601:"YYYY-MM-DDTHH:MM:SS.sssZ"
@@ -34,7 +34,7 @@ class TournamentCreator
 	}
 
 	/** form部分のhtml*/
-	_generateFormHTML(csrfToken) 
+	_generateFormHTML(csrfToken, organizerNickname)
 	{
 		return `
 		<main class="form-sign m-auto" id="signup-form">
@@ -45,12 +45,12 @@ class TournamentCreator
 					<input type="hidden" id="date" name="date" readonly>
 
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="name" name="name" placeholder="Tournament Name" value="My Tournament">
-						<label for="floatingInput">My Tournament</label>
+						<input type="text" class="form-control" id="name" name="name" placeholder="Tournament Name" value="Tournament Name">
+						<label for="floatingInput">Tournament Name</label>
 	 				</div>
 					
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname1">
+						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="${organizerNickname}" readonly>
 						<label for="floatingInput">Nickname1</label>
 	 				</div>
 					<div class="slideup-text form-floating">
