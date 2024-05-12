@@ -30,12 +30,14 @@ class TestGetLatestOngoingTournament(TestCase):
 			name="Tournament One",
 			date=timezone.now() - timezone.timedelta(days=1),
 			organizer=self.user1,
+			player_nicknames=['Player1', 'Player2', 'Player3', 'Player4', 'Player5', 'Player6', 'Player7', 'Player8'],
 			is_finished=False
 		)
 		Tournament.objects.create(
 			name="Tournament Two",
 			date=timezone.now(),
 			organizer=self.user1,
+			player_nicknames=['Player1', 'Player2', 'Player3', 'Player4', 'Player5', 'Player6', 'Player7', 'Player8'],
 			is_finished=False
 		)
 

@@ -11,6 +11,8 @@ from rest_framework import status
 class TestTourCreate(TestCase):
 	def setUp(self):
 		self.create_tournament_url = reverse('create_new_tournament_and_matches')
+		self.players = ['Player1', 'Player2', 'Player3', 'Player4',
+						'Player5', 'Player6', 'Player7', 'Player8']
 
 		# テストユーザーを作成
 		User = get_user_model()
@@ -41,7 +43,7 @@ class TestTourCreate(TestCase):
 			'name': 'New Tournament',
 			'date': timezone.now().isoformat(),
 			# 'date': timezone.now().isoformat(timespec='minutes'),
-			'player_nicknames': json.dumps(['Player1', 'Player2', 'Player3', 'Player4', 'Player5', 'Player6', 'Player7', 'Player8'])
+			'player_nicknames': json.dumps(self.players)
 		})
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(Tournament.objects.count(), 1)
@@ -63,7 +65,7 @@ class TestTourCreate(TestCase):
 			'name': 'New Tournament',
 			  # 不正な形式
 			'date': '2024-12-01 14:00',
-			'player_nicknames': json.dumps(['Player1', 'Player2', 'Player3', 'Player4', 'Player5', 'Player6', 'Player7', 'Player8'])
+			'player_nicknames': json.dumps(self.players)
 		})
 		self.assertEqual(response.status_code, 400)
 
@@ -73,7 +75,7 @@ class TestTourCreate(TestCase):
 			# 名前がない
 			'name': '',
 			'date': timezone.now().isoformat(),
-			'player_nicknames': json.dumps(['Player1', 'Player2', 'Player3', 'Player4', 'Player5', 'Player6', 'Player7', 'Player8'])
+			'player_nicknames': json.dumps(self.players)
 		})
 		self.assertEqual(response.status_code, 400)
 
@@ -98,7 +100,7 @@ class TestTourCreate(TestCase):
 
 	def test_tournament_create_random_matching(self):
 		"""ランダムマッチングのテスト"""
-		player_nicknames = ['Player1', 'Player2', 'Player3', 'Player4', 'Player5', 'Player6', 'Player7', 'Player8']
+		player_nicknames = self.players
 		response = self.client.post(self.create_tournament_url, {
 			'name': 'Random Tournament',
 			'date': timezone.now().isoformat(),
@@ -142,6 +144,26 @@ class TestTourCreate(TestCase):
 			'name': 'New Tournament',
 			'date': timezone.now().isoformat(),
 			# 'date': timezone.now().isoformat(timespec='minutes'),
-			'player_nicknames': json.dumps(['Player1', 'Player2', 'Player3', 'Player4', 'Player5', 'Player6', 'Player7', 'Player8'])
+			'player_nicknames': json.dumps(self.players)
 		})
 		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+	def test_invalid_tournament_name(self):
+		"""トーナメント名が不正"""
+		invalid_tournament_names = [
+			'',
+			'    ',
+			' a        ',
+			'abc        ',
+			'        abc',
+			'a' * 31,
+			' ' * 30
+		]
+
+		for tournament_name in invalid_tournament_names:
+			response = self.client.post(self.create_tournament_url, {
+				'name': tournament_name,
+				'date': timezone.now().isoformat(),
+				'player_nicknames': json.dumps(self.players)
+			})
+			self.assertEqual(response.status_code, 400)

@@ -1,11 +1,13 @@
 # docker/srcs/uwsgi-django/pong/views/tournament_views.py
 import json
+import logging
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from ..models import Tournament, Match
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.views.decorators.http import require_POST
 from django.utils.dateparse import parse_datetime
 from django.forms.models import model_to_dict
@@ -16,6 +18,10 @@ from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 import random
+
+
+logger = logging.getLogger('django')
+
 
 User = get_user_model()
 
@@ -160,10 +166,6 @@ def create_new_tournament_and_matches(request) -> JsonResponse:
 	- 機能: トーナメントの新規作成
 	- 備考: トーナメントと「全7試合」も同時に作成する。 ログイン中のユーザーが主催者として。
 	"""
-
-	if request.method != 'POST':
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
-
 	try:
 		name					= request.POST.get('name')
 		date_str				= request.POST.get('date')
@@ -171,38 +173,13 @@ def create_new_tournament_and_matches(request) -> JsonResponse:
 		player_nicknames 		= json.loads(player_nicknames_json)
 		randomize				= request.POST.get('randomize', False)
 
-		# print("Received Data:", name, date_str, player_nicknames) 
+		# print("Received Data:", name, date_str, player_nicknames)
 
-		if (
-			not date_str or 
-			not name
-		):
-			return JsonResponse({'status': 'error', 'message': 'Name and date are required.'}, status=400)
-		
-		if (
-			# ニックネームの数が8？
-			len(player_nicknames) != 8 or 
-			# ユニークか？　set():重複登録不可
-			len(set(player_nicknames)) != 8 or 
-			# 空文字列か？
-			any(nickname.strip() == '' for nickname in player_nicknames)
-		):
-			return JsonResponse({'status': 'error', 'message': 'Invalid player nicknames data. Ensure exactly 8 unique, non-empty nicknames.'}, status=400)
-	
-		# 日付のフォーマットを確認 UTC ISO8601
-		aware_datetime = parse_datetime(date_str)
-		# print("Parsed Date:", aware_datetime) 
-		if (
-			aware_datetime is None or 
-			not aware_datetime.tzinfo
-		):
-			return JsonResponse({'status': 'error', 'message': "Invalid: Please use ISO 8601 format."}, status=400)
-		
 		# atomic: このブロック内を一つとして実行。途中でエラーが出たら開始前の状態に戻る
 		with transaction.atomic():
 			tournament = Tournament.objects.create(
 				name=name,
-				date=aware_datetime,
+				date=parse_datetime(date_str),
 				player_nicknames=player_nicknames,
 				organizer=request.user,
 				is_finished=False
@@ -213,7 +190,12 @@ def create_new_tournament_and_matches(request) -> JsonResponse:
 		# トーナメントとマッチのIDを含むレスポンスを返す
 		match_data = [{'round_number': m.round_number, 'match_number': m.match_number, 'id': m.id} for m in matches]
 		return JsonResponse({'status': 'success', 'tournament_id': tournament.id, 'matches': match_data})
+
+	except ValidationError as e:
+		logger.error(f'create_new_tournament: ValidationError: {str(e)}')
+		return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 	except Exception as e:
+		logger.error(f'create_new_tournament: Exception: {str(e)}')
 		return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 
