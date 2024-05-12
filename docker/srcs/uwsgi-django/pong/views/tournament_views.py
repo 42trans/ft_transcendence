@@ -299,7 +299,7 @@ def get_history_all_user_tournaments(request) -> JsonResponse:
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_tournament_id_user_all_ongoing(request):
+def get_tournament_id_user_all_ongoing(request) -> JsonResponse:
 	""" 
 	機能: ログイン中のユーザーが主催する未終了のトーナメントの「ID」を全て返す。
 	用途: エラーチェック。複数の未終了トーナメントが存在してはならないが、存在する場合はIDを返して削除作業を可能にする。
