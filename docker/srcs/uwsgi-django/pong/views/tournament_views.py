@@ -53,6 +53,7 @@ def assign_winner_to_next_match(current_match, winner):
 		next_match.save()
 		print(f"Updated next match {next_match.id}: {next_match.player1} vs {next_match.player2}")
 
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def save_game_result(request):
@@ -84,28 +85,28 @@ def save_game_result(request):
 		traceback.print_exc()  # サーバーのコンソールにエラーのトレースバックを出力
 		return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
-@login_required
-def get_latest_user_ongoing_tournament(request):
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_latest_user_ongoing_tournament(request) -> JsonResponse:
 	"""
 	機能: 「最新」のトーナメントの情報を取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
 	用途: 未終了の主催トーナメントの有無を判定(200 or 204)
 	"""
-	if request.method == 'GET':
-		# 最新の未終了トーナメントを取得
-		tournament = Tournament.objects.filter(
-			organizer=request.user, 
-			is_finished=False
-		).order_by('-date').first()
+	# 最新の未終了トーナメントを取得
+	tournament = Tournament.objects.filter(
+		organizer=request.user,
+		is_finished=False
+	).order_by('-date').first()
 
-		if tournament:
-			# トーナメントオブジェクトを辞書に変換して返す
-			tournament_data = model_to_dict(tournament)
-			return JsonResponse({'tournament': tournament_data}, safe=False)
-		else:
-			# 未終了のトーナメントがない場合は204と空のレスポンスを返す
-			return HttpResponse(status=204)
+	if tournament:
+		# トーナメントオブジェクトを辞書に変換して返す
+		tournament_data = model_to_dict(tournament)
+		return JsonResponse({'tournament': tournament_data}, safe=False)
 	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+		# 未終了のトーナメントがない場合は204と空のレスポンスを返す
+		return JsonResponse({}, status=204)
+
 
 def get_tournament_data_by_id(request, tournament_id):
 	if request.method == 'GET':
