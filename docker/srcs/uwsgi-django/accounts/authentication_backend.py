@@ -1,3 +1,5 @@
+# accounts/authentication_backend.py
+
 import jwt
 from django.conf import settings
 from django.contrib.auth.backends import BaseBackend
