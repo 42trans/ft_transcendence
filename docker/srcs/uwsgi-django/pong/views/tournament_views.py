@@ -13,6 +13,8 @@ from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 import random
 
 User = get_user_model()
@@ -151,8 +153,9 @@ def get_matches_by_round_latest_user_ongoing_tournament(request, round_number):
 # ------------------------------
 # create
 # ------------------------------
-@login_required
-def create_new_tournament_and_matches(request):
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_new_tournament_and_matches(request) -> JsonResponse:
 	""" 
 	- 機能: トーナメントの新規作成
 	- 備考: トーナメントと「全7試合」も同時に作成する。 ログイン中のユーザーが主催者として。
@@ -204,7 +207,7 @@ def create_new_tournament_and_matches(request):
 				organizer=request.user,
 				is_finished=False
 			)
-			matches = create_matches(tournament, player_nicknames, randomize)
+			matches = _create_matches(tournament, player_nicknames, randomize)
 		# ---------------ここまでatomic
 
 		# トーナメントとマッチのIDを含むレスポンスを返す
@@ -213,7 +216,8 @@ def create_new_tournament_and_matches(request):
 	except Exception as e:
 		return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-def create_matches(tournament, player_nicknames, randomize=False):
+
+def _create_matches(tournament, player_nicknames, randomize=False):
 	# test random
 	# randomize = True
 	'''
