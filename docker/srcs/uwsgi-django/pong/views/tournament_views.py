@@ -25,9 +25,14 @@ logger = logging.getLogger('django')
 
 User = get_user_model()
 
-def assign_winner_to_next_match(current_match, winner):
-	if not winner:
+
+def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
+	if not winner_nickname:
 		return
+
+	if (current_match.player1 != winner_nickname πand current_match.player2 != winner_nickname):
+		return
+
 	# 次のラウンドの試合番号を計算
 	next_round_number = current_match.round_number + 1
 	next_match_number = (current_match.match_number + 1) // 2
@@ -41,17 +46,18 @@ def assign_winner_to_next_match(current_match, winner):
 		# 奇数試合番号から来る勝者は player1、偶数試合番号から来る勝者は player2
 		if current_match.match_number % 2 == 1:
 			# 奇数試合番号
-			next_match.player1 = winner
+			next_match.player1 = winner_nickname
 		else:
 			# 偶数試合番号
-			next_match.player2 = winner
+			next_match.player2 = winner_nickname
 		
 		# 次のマッチが開始可能かどうかチェック（両プレイヤーが割り当てられたか）
 		if next_match.player1 and next_match.player2:
 			next_match.can_start = True
 
 		next_match.save()
-		print(f"Updated next match {next_match.id}: {next_match.player1} vs {next_match.player2}")
+		print(f"Updated next match {next_match.id}: "
+			  f"{next_match.player1} vs {next_match.player2}")
 
 
 @csrf_exempt

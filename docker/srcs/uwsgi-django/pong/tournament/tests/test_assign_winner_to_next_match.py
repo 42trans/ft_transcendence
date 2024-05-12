@@ -61,4 +61,9 @@ class TestAssignWinnerToNextMatch(TestCase):
 		next_match.refresh_from_db()
 		self.assertEqual(next_match.player2, self.matches[1].winner)
 		# 両プレイヤーが割り当てられたので開始可能
-		self.assertTrue(next_match.can_start)  
+		self.assertTrue(next_match.can_start)
+
+
+	def test_aaa(self):
+		# 第一試合の勝者を次のラウンドに割り当て
+		assign_winner_to_next_match(self.matches[0], self.matches[0].winner)
