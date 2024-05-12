@@ -3,16 +3,18 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField 
 from django.contrib.auth import get_user_model
+from accounts.models import CustomUser
 
-User = get_user_model()
 
 class Tournament(models.Model):
-	name = models.CharField(max_length=100)
+	kTORNAMENT_NAME_MAX_LEN = 30
+
+	name = models.CharField(max_length=kTORNAMENT_NAME_MAX_LEN)
 	# settings.py で USE_TZ=True が設定されている。保存はUTC
 	date = models.DateTimeField(default=timezone.now)
 	# ニックネームを配列として保存
-	player_nicknames = ArrayField(models.CharField(max_length=100), default=list) 
-	organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tournaments')
+	player_nicknames = ArrayField(models.CharField(max_length=CustomUser.kNICKNAME_MAX_LENGTH), default=list)
+	organizer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='tournaments')
 	is_finished = models.BooleanField(default=False)
 	# オブジェクトを人間が読める文字列形式で表現するために使用
 	def __str__(self):
@@ -25,9 +27,9 @@ class Match(models.Model):
 	# ラウンド内の試合番号
 	match_number = models.IntegerField()
 	# TounamentTableのニックネーム配列から文字列を直接保存
-	player1 = models.CharField(max_length=100, blank=True)
-	player2 = models.CharField(max_length=100, blank=True, )
-	winner = models.CharField(max_length=100, blank=True, null=True)
+	player1 = models.CharField(max_length=CustomUser.kNICKNAME_MAX_LENGTH, blank=True)
+	player2 = models.CharField(max_length=CustomUser.kNICKNAME_MAX_LENGTH, blank=True, )
+	winner = models.CharField(max_length=CustomUser.kNICKNAME_MAX_LENGTH, blank=True, null=True)
 	# settings.py で USE_TZ=True が設定されている。保存はUTC
 	ended_at = models.DateTimeField(null=True, blank=True)
 	player1_score = models.IntegerField(default=0)
@@ -65,8 +67,8 @@ class PongGameResult(models.Model):
 	match_id = models.IntegerField()
 	player_1_score = models.IntegerField()
 	player_2_score = models.IntegerField()
-	name_winner = models.CharField(max_length=100)
-	name_loser = models.CharField(max_length=100)
+	name_winner = models.CharField(max_length=CustomUser.kNICKNAME_MAX_LENGTH)
+	name_loser = models.CharField(max_length=CustomUser.kNICKNAME_MAX_LENGTH)
 	date = models.DateTimeField(default=timezone.now)
 	# 下記はレコード作成後に変更することができない場合の設定。タイムゾーンはサーバー依存
 	# date = models.DateTimeField(auto_now_add=True)
