@@ -9,17 +9,23 @@ from rest_framework import status
 class TestGetMatchesByRound(TestCase):
 	def setUp(self):
 		User = get_user_model()
-		self.user = User.objects.create_user(
+		self.user1 = User.objects.create_user(
 			email='testuser@example.com',
 			password='123alks;d;fjsakd45abcde',
 			nickname='TestUser1'
+		)
+
+		self.user2 = User.objects.create_user(
+			email='testuser2@example.com',
+			password='123alks;d;fjsakd45abcde',
+			nickname='TestUser2'
 		)
 
 		self.tournament = Tournament.objects.create(
 			name="Example Tournament",
 			date=timezone.now(),
 			player_nicknames=['player1', 'player2', 'player3', 'player4', 'player5', 'player6', 'player7', 'player8'],
-			organizer=self.user,
+			organizer=self.user1,
 			is_finished=False
 		)
 
@@ -77,3 +83,13 @@ class TestGetMatchesByRound(TestCase):
 		"""不正なリクエストメソッドでのアクセステスト"""
 		response = self.client.post(reverse('get_matches_by_round_latest_user_ongoing_tournament', kwargs={'round_number': 1}))
 		self.assertEqual(response.status_code, 405)
+
+	def test_get_round_matches_by_user2(self):
+		"""主催トーナメントがないユーザーのリクエスト"""
+		self.__logout()
+
+		# user2でlogin
+		self.__login(email='testuser2@example.com', password='123alks;d;fjsakd45abcde')
+
+		response = self.client.get(reverse('get_matches_by_round_latest_user_ongoing_tournament', kwargs={'round_number': 1}))
+		self.assertEqual(response.status_code, 404)
