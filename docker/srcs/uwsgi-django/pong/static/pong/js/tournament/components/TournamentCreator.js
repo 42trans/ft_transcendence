@@ -45,8 +45,8 @@ class TournamentCreator
 					<input type="hidden" id="date" name="date" readonly>
 
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="name" name="name" placeholder="Tournament Name" value="My Tournament">
-						<label for="floatingInput">My Tournament</label>
+						<input type="text" class="form-control" id="name" name="name" placeholder="Tournament Name" value="Tournament Name">
+						<label for="floatingInput">Tournament Name</label>
 	 				</div>
 					
 					<div class="slideup-text form-floating">
