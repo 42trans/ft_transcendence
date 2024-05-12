@@ -1,3 +1,5 @@
+from __future__ import annotations
+import traceback
 import logging
 from typing import List, Dict, Any
 
@@ -197,7 +199,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
-    def block_user(self, user_to_block):
+    def block_user(self, user_to_block: CustomUser):
         """
         Attempts to add a user to the blocking list.
         Args:
@@ -213,12 +215,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         try:
             self.blocking_users.add(user_to_block)
             self.save()
+
         except Exception as e:
             logger.error(f"Failed to block user: {str(e)}")
             raise ValueError(f"Error: The user does not exist: {str(e)}") from e
 
 
-    def unblock_user(self, user_to_unblock):
+    def unblock_user(self, user_to_unblock: CustomUser):
         """
         Attempts to remove a user from the blocking list.
         Args:
@@ -238,6 +241,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             logger.error(f"Failed to unblock user: {str(e)}")
             raise ValueError(f"Error: The user does not exist: {str(e)}") from e
 
+
+    def is_blocking_user(self, user: CustomUser) -> bool:
+        return user in self.blocking_users.all()
 
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

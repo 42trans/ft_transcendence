@@ -50,7 +50,6 @@ class DMConsumer(Consumer):
             await self.close(code=1011)  # 1011: Internal error
             raise e
 
-
     async def receive(self, text_data):
         """
         #message-submit でWebSocketを通じてサーバーがメッセージを受信すると呼ばれる関数
@@ -60,8 +59,6 @@ class DMConsumer(Consumer):
         try:
             text_data_json = json.loads(text_data)
             message = text_data_json['message']
-            if 65536 < len(message):
-                raise ValueError('message is too long, must be less than 65536 characters')
 
             # メッセージをデータベースに保存
             message_instance = await self._store_message_to_db(sender_id=self.user.id,
@@ -82,7 +79,6 @@ class DMConsumer(Consumer):
             # print(f'[DMConsumer]: Error: receive: {str(e)}')
             await self.close(code=1011)  # 1011: Internal error
 
-
     def _get_send_data(self, message_instance):
         # logger.debug(f'[DMConsumer]: get_send_data 1')
 
@@ -97,7 +93,6 @@ class DMConsumer(Consumer):
             'avatar_url'        : self.user.avatar.url
         }
         return send_data
-
 
     # todo: API（HTTP）経由では実行されない？
     @classmethod
@@ -129,7 +124,6 @@ class DMConsumer(Consumer):
             logger.error(f'[DMConsumer]: Error: send_system_message: {str(e)}')
             raise e
 
-
     async def _get_dm_consumer_params(self):
         self.user, self.other_user, err = await self._get_users()
         if err is not None:
@@ -142,7 +136,6 @@ class DMConsumer(Consumer):
         # todo: unused
         self.is_system_message = self.scope['url_route']['kwargs'].get('is_system_message', False)
         return None
-
 
     async def _get_users(self):
         # DM送受信者のuser objectをnickanmeから取得
@@ -164,11 +157,9 @@ class DMConsumer(Consumer):
         except Exception as e:
             return None, None, str(e)
 
-
     @database_sync_to_async
     def _get_system_user(self):
         return CustomUser.objects.get(is_system=True)
-
 
     @database_sync_to_async
     def _store_message_to_db(self,
@@ -181,6 +172,7 @@ class DMConsumer(Consumer):
             message_instance = Message.objects.create(sender=sender,
                                                       receiver=receiver,
                                                       message=message)
+            message_instance.save()
             return message_instance
         except Exception as e:
             logger.debug(f'[DMConsumer]: Error: storing message: {str(e)}')
