@@ -125,36 +125,33 @@ def get_tournament_data_by_id(request, tournament_id) -> JsonResponse:
 	return JsonResponse(data, safe=False)
 
 
-@login_required
-def get_matches_by_round_latest_user_ongoing_tournament(request, round_number):
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_matches_by_round_latest_user_ongoing_tournament(request, round_number) -> JsonResponse:
 	""" 
 	機能: 「round_number」のデータを全て取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
 	用途: Round別のDisplay
 	"""
-	if request.method == 'GET':
-		# ユーザーが主催する未終了のトーナメントに属する指定ラウンドの試合を取得
-		matches = Match.objects.filter(
-			tournament__organizer=request.user,
-			tournament__is_finished=False,
-			round_number=round_number
-		).order_by('match_number')
+	# ユーザーが主催する未終了のトーナメントに属する指定ラウンドの試合を取得
+	matches = Match.objects.filter(
+		tournament__organizer=request.user,
+		tournament__is_finished=False,
+		round_number=round_number
+	).order_by('match_number')
 
-		if not matches:
-			# 試合が見つからない場合はエラー404
-			return JsonResponse({'status': 'error', 'message': 'Round not found'}, status=404)
+	if not matches:
+		# 試合が見つからない場合はエラー404
+		return JsonResponse({'status': 'error', 'message': 'Round not found'}, status=404)
 
-		matches_data = [model_to_dict(match) for match in matches]  # すべてのフィールドを取得
-		# print("matches_data:", matches_data)
-		for match_data in matches_data:
-			if match_data['ended_at']:
-				match_data['ended_at'] = match_data['ended_at'].isoformat()
-			else:
-				match_data['ended_at'] = None
+	matches_data = [model_to_dict(match) for match in matches]  # すべてのフィールドを取得
+	# print("matches_data:", matches_data)
+	for match_data in matches_data:
+		if match_data['ended_at']:
+			match_data['ended_at'] = match_data['ended_at'].isoformat()
+		else:
+			match_data['ended_at'] = None
 
-
-		return JsonResponse({'matches': matches_data}, safe=False)
-	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+	return JsonResponse({'matches': matches_data}, safe=False)
 
 
 # ------------------------------
