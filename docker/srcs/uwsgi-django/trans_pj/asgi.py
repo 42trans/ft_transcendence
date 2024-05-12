@@ -18,20 +18,19 @@ django.setup()
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
-import chat.routing
+
 from accounts.middleware import CookieAuthMiddlewareStack
+import chat.routing
+import accounts.routing
 
 
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),            # route for HTTP: http://
-    # "websocket": AuthMiddlewareStack(   # route for WebSocket: ws:// wss://
-    #     URLRouter(
-    #         chat.routing.websocket_urlpatterns  # chat/routing.py
-    #     )
-    # ),
+    "http": get_asgi_application(),             # route for HTTP: http://
     "websocket": CookieAuthMiddlewareStack(     # route for WebSocket: ws:// wss://
         URLRouter(
-            chat.routing.websocket_urlpatterns  # chat/routing.py
+            chat.routing.websocket_urlpatterns          # chat/routing.py
+            + accounts.routing.websocket_urlpatterns    # accounts/routing.py
         )
     ),
+
 })

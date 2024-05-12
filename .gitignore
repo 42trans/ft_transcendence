@@ -3,7 +3,7 @@
 .vscode
 .idea
 additional.mk
-
+__pychache__
 
 #### docker/ #####
 .env
@@ -20,6 +20,7 @@ docker/srcs/uwsgi-django/sphinx/build
 docker/srcs/uwsgi-django/django_debug.log
 # 再度修正。entrypoint.shで最新ファイルの自動収集を設定したため。
 docker/srcs/uwsgi-django/static/
+docker/srcs/uwsgi-django/media/
 
 docker/srcs/hardhat/hardhat_pj/artifacts
 docker/srcs/hardhat/hardhat_pj/cache

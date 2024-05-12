@@ -96,6 +96,15 @@ jobs:
             echo -e "\e[31m[NG] pong.tournament.tests\e[0m"
           fi
 
+          docker exec uwsgi-django python manage.py test chat.tests > /dev/null
+          unit_result=$?
+          total_result=$((total_result | unit_result))
+          if [ $unit_result -eq 0 ]; then
+            echo -e "\e[32m[OK] chat.tests\e[0m"
+          else
+            echo -e "\e[31m[NG] chat.tests\e[0m"
+          fi
+
           if [ $total_result -eq 0 ]; then
             echo -e "\e[32m[OK] ALL TEST SUCCESS\e[0m"
           else

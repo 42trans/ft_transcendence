@@ -20,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger('chat')
 
 
-class Consumer(AsyncWebsocketConsumer):
+class StatusConsumer(AsyncWebsocketConsumer):
     permission_classes = [IsAuthenticated]
 
     async def connect(self, model, user_id, other_user_id):
