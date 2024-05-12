@@ -257,9 +257,10 @@ def _create_matches(tournament, player_nicknames, randomize=False):
 		raise
 	return matches
 
-@login_required
-@require_POST
-def delete_tournament_and_matches(request, tournament_id):
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def delete_tournament_and_matches(request, tournament_id) -> JsonResponse:
 	""" 
 	機能:
 	- 削除: トーナメントと「全7試合」。ログイン中のユーザーが主催者のものを。
