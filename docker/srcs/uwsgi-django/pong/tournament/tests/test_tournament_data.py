@@ -5,6 +5,8 @@ from django.urls import reverse
 from ...models import Tournament
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from rest_framework import status
+
 
 class TestTournamentData(TestCase):
 	def setUp(self):
@@ -46,10 +48,20 @@ class TestTournamentData(TestCase):
 		)
 
 		self.client = Client()
-		self.client.login(
+		self.__login(
 			email='testuser@example.com',
 			password='123alks;d;fjsakd45abcde',
 		)
+
+	def __login(self, email, password):
+		login_api_url = reverse('api_accounts:api_login')
+		login_data = {'email': email, 'password': password}
+		response = self.client.post(login_api_url, data=login_data)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+	def __logout(self):
+		logout_api_url = reverse('api_accounts:api_logout')
+		self.client.get(logout_api_url)
 
 	def test_tournament_data_success(self):
 		"""トーナメントデータが正しく取得できるかテスト"""
@@ -62,7 +74,7 @@ class TestTournamentData(TestCase):
 
 	def test_unauthenticated_access(self):
 		"""認証されていないユーザーが正しく取得できるかテスト"""
-		self.client.logout()  # ユーザーをログアウト
+		self.__logout()  # ユーザーをログアウト
 		response = self.client.get(reverse('get_tournament_data_by_id', kwargs={'tournament_id': self.tournament.id}))
 		response_data = response.json()
 		self.assertEqual(response_data['id'], self.tournament.id)
@@ -72,8 +84,8 @@ class TestTournamentData(TestCase):
 
 	def test_access_by_other_user(self):
 		"""他のユーザーがトーナメントデータにアクセスした際に適切にアクセスを制限するか"""
-		self.client.logout()  # 入り直し
-		self.client.login(email='testuser2@example.com', password='223alks;d;fjsakd45abcde')
+		self.__logout()  # 入り直し
+		self.__login(email='testuser2@example.com', password='223alks;d;fjsakd45abcde')
 		response = self.client.get(reverse('get_tournament_data_by_id', kwargs={'tournament_id': self.tournament.id}))
 		response_data = response.json()
 		self.assertEqual(response_data['id'], self.tournament.id)

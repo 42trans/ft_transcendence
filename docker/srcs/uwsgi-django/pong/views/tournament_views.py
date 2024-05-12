@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 import random
 
 
@@ -108,22 +108,22 @@ def get_latest_user_ongoing_tournament(request) -> JsonResponse:
 		return JsonResponse({}, status=204)
 
 
-def get_tournament_data_by_id(request, tournament_id):
-	if request.method == 'GET':
-		""" 機能: ゲストも「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。"""
-		tournament = get_object_or_404(Tournament, pk=tournament_id)
-		# print("Tournament:", tournament)
-		data = {
-			'id': tournament.id,
-			'name': tournament.name,
-			'date': tournament.date.isoformat(), 
-			'player_nicknames': list(tournament.player_nicknames),
-			'is_finished': tournament.is_finished,
-			'organizer': tournament.organizer_id
-		}
-		return JsonResponse(data, safe=False)
-	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_tournament_data_by_id(request, tournament_id) -> JsonResponse:
+	""" 機能: ゲストも「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。"""
+	tournament = get_object_or_404(Tournament, pk=tournament_id)
+	# print("Tournament:", tournament)
+	data = {
+		'id': tournament.id,
+		'name': tournament.name,
+		'date': tournament.date.isoformat(),
+		'player_nicknames': list(tournament.player_nicknames),
+		'organizer': tournament.organizer_id,
+		'is_finished': tournament.is_finished
+	}
+	return JsonResponse(data, safe=False)
+
 
 @login_required
 def get_matches_by_round_latest_user_ongoing_tournament(request, round_number):
