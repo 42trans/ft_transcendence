@@ -298,7 +298,9 @@ def get_history_all_user_tournaments(request):
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
-@login_required
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_tournament_id_user_all_ongoing(request):
 	""" 
 	機能: ログイン中のユーザーが主催する未終了のトーナメントの「ID」を全て返す。
