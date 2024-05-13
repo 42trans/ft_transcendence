@@ -1,0 +1,31 @@
+/* buttons */
+
+.hth-btn,
+.hth-container .hth-btn {
+	display: inline-block;
+	text-align: center;
+	padding: 16px 30px;
+	min-width: 123px;
+	border-radius: 50px;
+	font-weight: 500;
+	cursor: pointer;
+	text-decoration: none;
+	z-index: 100;
+	/* シャドーオフのため */
+	text-shadow: 0px 0px 0px #fff;
+
+	border: 2px solid var(--btn-border-color, #ffb320);
+	background-color: var(--btn-bg-color, #ffb320); 
+	color: var(--btn-text-color, #131313);
+	/* 色変化アニメーション */
+	transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.hth-btn:hover,
+.hth-container .hth-btn:hover {
+	background-color: var(--btn-hover-bg-color);
+	color: var(--btn-hover-text-color); 
+	border-color: var(--btn-border-color); 
+	/* シャドーオフ */
+	text-shadow: 0px 0px 0px #fff;
+}

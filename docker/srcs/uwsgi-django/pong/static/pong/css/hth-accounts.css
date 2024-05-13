@@ -1,20 +1,14 @@
-
 .form-sign {
-	margin: auto; /* 中央寄せ */
+	margin: auto;
 	padding: 20px; 
-	/* max-width: 400px; */
-	min-width: 375px;
+	max-width: 400px;
+	min-width: 300px;
 	background-color: rgba(35, 24, 1, 0.921); 
 	text-shadow: 0px 0px 0px #fff;
 	border-radius: 10px; 
-
 }
 
 .fw-normal {
-	color: #fff;
-}
-
-.form-check-label {
 	color: #fff;
 }
 
@@ -22,13 +16,8 @@
 	color: #fff;
 }
 
-.form-floating label {
-	text-shadow: 0px 0px 0px #fff; 
-}
-
 #message-area {
 	color: #ffb320;
-	/* height: 1rem; */
 }
 
 .sign_btn {
@@ -68,12 +57,10 @@
 }
 
 .sign_btn-primary {
-	/* --bs-btn-color: #000; */
-	/* --bs-btn-color: #fff; */
+	--bs-btn-color: #131313;
 	--bs-btn-bg:#ffb320;
 	--bs-btn-border-color:#ffb320;
 	--bs-btn-hover-color: #fff;
-	/* --bs-btn-hover-color: #000000; */
 	--bs-btn-hover-bg: #0b5ed7;
 	--bs-btn-hover-border-color: #0a58ca;
 	--bs-btn-focus-shadow-rgb: 49, 132, 253;
@@ -100,6 +87,7 @@ a.sign_btn-primary:hover {
 	color: #fff;
 	text-shadow: 0px 0px 0px #fff; 
 }
+
 a.sign_btn-primary {
 	color: #000;
 	text-shadow: 0px 0px 0px #fff; 
@@ -126,19 +114,15 @@ ul.form-sign-text {
 /* userProfle */
 
 div.user-info-container {
-	margin: auto; /* 中央寄せ */
+	margin: auto;
+	margin-top: 2rem;
 	padding: 20px; 
-	/* max-width: 400px; */
-	min-width: 375px;
+	max-width: 500px;
+	min-width: 300px;
+	/* background-color: rgba(19, 19, 19, 0.921);  */
 	background-color: rgba(35, 24, 1, 0.921); 
 	text-shadow: 0px 0px 0px #fff;
 	border-radius: 10px; 
-
-}
-
-.user-info-container ul {
-	color: #fff;
-	list-style-type: none;
 }
 
 .user-info-container li {
@@ -155,24 +139,25 @@ div.user-info-container {
 	color: #fff;
 }
 
-.user-info-container button{
-	display: inline-block;
-	text-align: center;
-	/* font-size: 15px; */
-	margin-top:1rem;
-	padding: 16px 30px;
-	min-width: 153px;
-	border-radius: 50px;
-	font-weight: 500;
-	border: none;
-	background: #ffb320;
-	cursor: pointer;
-	text-decoration: none;
-	z-index: 100;
-	text-shadow: 0px 0px 0px #fff; 
+/* tournament UIHelper SPA後削除*/
+#user-info {
+	list-style-type: none;
 }
 
-.user-info-container button:hover {
-	color: #fff;
+/* アバター画像 */
+.avatar {
+	width: 50px;    /* 幅を30pxに設定 */
+	height: 50px;   /* 高さを30pxに設定 */
+	border-radius: 50%;  /* 角を円形にする */
+	object-fit: cover;   /* 画像のアスペクト比を維持しながら、設定された領域に収まるようにする */
+	margin-right: 10px;  /* 画像とテキストの間の余白 */
 }
 
+/* online status */
+.status.online {
+	color: green;
+}
+
+.status.offline {
+	color: red;
+}

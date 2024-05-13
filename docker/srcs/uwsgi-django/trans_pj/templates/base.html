@@ -1,87 +1,48 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
+<!doctype html>
+<html lang="en" class="h-100" data-bs-theme="auto">
 <head>
-	<title>{% block title %}hth Pong{% endblock title %}</title>
-	<meta charset="UTF-8">
-	<meta name="description" content="hth Pong">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="{% static 'pong/img/favicon.ico' %}" rel="shortcut icon"/>
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="3D-Pong">
 	<!-- Stylesheets -->
-	<link rel="stylesheet" href="{% static 'pong/css/bootstrap.min.css' %}"/>
-	<link rel="stylesheet" href="{% static 'pong/css/animation.css' %}" >
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-	<!-- <link rel="stylesheet" href="{% static 'pong/css/style.css' %}"> -->
-	<link rel="stylesheet" href="{% static 'pong/css/custom-responsive.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/pong.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/navi.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/custom-contents.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/sign.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/tournament.css' %}">
-
-	{% block head %}
-	{% endblock head %}
-
+	<link rel="stylesheet" href="{% static 'pong/css/bootstrap/bootstrap.min.css' %}"/>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-default.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-theme-mode.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-breakpoint.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-fontsize.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-animation.css' %}" >
+	<link rel="stylesheet" href="{% static 'pong/css/bootstrap/sticky-footer-navbar.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-header.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-main.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-footer.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-accounts.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-match-history.css' %}">
+	<link rel="stylesheet" href="{% static 'pong/css/hth-btn.css' %}">
+	<!-- 追加css: Game用 -->
+	{% block extra_css %}{% endblock %}
+	<!-- title -->
+	<title>{% block title %}{% endblock %}</title>
 </head>
-<body>
-	<!-- Header section -->
-	<header class="header-section">
-		<div class="container">
-			<!-- logo -->
-			<a class="site-logo" href="/pong/">
-				<img src="{% static 'pong/img/logo.png' %}" alt="">
-			</a>
-			{% if user.is_authenticated %}
-			<div class="user-panel">
-				<a href="/accounts/logout/">Log out</a> / <a href="/accounts/user/">Profile</a>
-			</div>
-			{% else %}
-			<div class="user-panel">
-				<a href="/accounts/signup/">Sign up</a> / <a href="/accounts/login/">Log in</a>
-			</div>
-			{% endif %}
-			<!-- site menu -->
-			<nav class="main-menu">
-				<ul>
-					<li><a href="/pong/">Home</a></li>
-					<li><a href="/pong/game/">Free Play</a></li>
-					<li><a href="/pong/tournament">Tournament</a></li>
-					<!-- <li><a href="/pong/results">results</a></li> -->
-				</ul>
-			</nav>
-		</div>
-	</header>
-	<!-- Header section end -->
-	
-	<!-- Content section -->
-	{% block content %}
-	
-	{% endblock %}
-	<!-- Content section end-->
 
-	<!-- Footer section -->
-	<footer class="footer-section">
-		<div class="container">
-			<ul class="footer-menu">
-				<li><a href="/pong/">Home</a></li>
-				<li><a href="/pong/game/">Free Play</a></li>
-				<li><a href="/pong/tournament/">Tournament</a></li>
-				<!-- <li><a href="/pong/results">results</a></li> -->
-				{% if user.is_authenticated %}
-				<li><a href="/accounts/logout/">Log out</a></li>
-				<li><a href="/accounts/user/">Profile</a></li>
-				{% else %}
-				<li><a href="/accounts/signup/">Sign up</a></li>
-				<li><a href="/accounts/login/">Log in</a></li>
-				{% endif %}
-			</ul>
+<body class="d-flex flex-column h-100">
+	<!-- color mode -->
+	{% include 'icons.html' %}
+	{% include 'theme-toggle.html' %}
+	<header>{% include 'header.html' %}</header>
+	<main id="hth-main" class="flex-shrink-0">
+		<div class="hth-container">
+			<!-- <div class="container-fluid px-0"> -->
+				{% block content %}{% endblock %}
+			<!-- </div> -->
 		</div>
-	</footer>
-	<!-- Footer section end -->
+	</main>
+	<footer>{% include 'footer.html' %}</footer>
 
-	<!--====== Javascripts & Jquery ======-->
-	<!-- <script src="{% static 'pong/gw/js/color-modes.js' %}"></script> -->
-	<script src="{% static 'pong/js-bootstarp/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'pong/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'pong/js/bootstrap/color-modes.js' %}"></script>
+<script src="{% static 'accounts/js/logout.js' %}"></script>
 </body>
+
 </html>
