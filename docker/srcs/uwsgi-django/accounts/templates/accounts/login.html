@@ -2,40 +2,78 @@
 {% load static %}
 {% block title %}Log in - hth Pong{% endblock title %}
 {% block content %}
-<!-- <div class="canvas-container"> -->
-	<!-- <div class="hs-text"> -->
-		<div class="container">
-			
-			<!-- signup box -->
-			<main class="form-sign m-auto" id="login-form">
-				<h1 class="slideup-text h3 mb-3 fw-normal">Please log in</h1>
-				<p id="message-area"></p>
-				<!-- auth form -->
-				<form class="sign-form" onsubmit="loginUser(event)">
-					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="email" placeholder="name@example.com" required>
-						<label for="floatingInput">Email address</label>
-					</div>
-					<div class="slideup-text form-floating">
-						<input type="password" class="form-control" id="password" placeholder="password" required>
-						<label for="floatingPassword">Password</label>
-					</div>
-					<input type="hidden" id="next" value="/accounts/user/">
-					<button class="slideup-text sign_btn sign_btn-primary mb-1 w-100 py-2 my-2" type="submit">Log in</button>
-				</form>
-				<hr>
-				<!-- button 42 auth -->
-				<a href="{% url 'accounts:oauth_ft' %}" class="slideup-text sign_btn sign_btn-primary w-100 py-2" role="button">Log in to your 42 account</a>
-				<!-- link: Sign up -->
-				<div class="slideup-text form-sign-text pt-4" >
-					<a href="{% url 'accounts:signup'%}">Create an Account</a>
-					<!-- <a href="{% url 'accounts:signup'%}">新規アカウントの作成</a> -->
-				</div>
-			</main>
 
+<div class="container">
+	
+	<div class="
+		hth-accounts-container
+		m-auto
+		" 
+		id="login-form-container">
+
+		<h1 class="
+			slideup-text 
+			">Please log in</h1>
+
+		<!-- TODO_ft:あらかじめスペースを用意しているのでPOPUPに切り替えたい -->
+		<p id="message-area"></p>
+
+		<!-- auth form -->
+		<form class="hth-sign-form" onsubmit="loginUser(event)">
+			<div class="
+				slideup-text 
+				form-floating">
+				<input class="form-control"
+				id="email" 
+				type="text" placeholder="name@example.com" required>
+				<label for="floatingInput">Email address</label>
+			</div>
+			<div class="
+				slideup-text 
+				form-floating">
+				<input class="form-control" 
+				id="password" 
+				type="password" placeholder="password" required>
+				<label for="floatingPassword">Password</label>
+			</div>
+			<input type="hidden" id="next" value="/accounts/user/">
+			<button class="
+				slideup-text 
+				sign_btn 
+				sign_btn-primary 
+				mb-1 
+				w-100 
+				py-2 
+				my-2
+				"
+				id="login-btn"
+				type="submit">Log in</button>
+		</form>
+
+		<hr>
+		
+		<!-- button 42 auth -->
+		<a class="
+			slideup-text 
+			sign_btn 
+			sign_btn-primary 
+			w-100 
+			py-2
+			" 
+			id="auth42-a-btn"
+			role="button" 
+			href="{% url 'accounts:oauth_ft' %}"
+			>Log in to your 42 account</a>
+
+		<!-- link: Sign up -->
+		<div class="slideup-text form-sign-text pt-4" >
+			<a href="{% url 'accounts:signup'%}">Create an Account</a>
+			<!-- <a href="{% url 'accounts:signup'%}">新規アカウントの作成</a> -->
 		</div>
-	<!-- </div> -->
-<!-- </div> -->
+
+	</div>
+</div>
+
 
 <script src="{% static 'accounts/js/login.js' %}"></script>
 

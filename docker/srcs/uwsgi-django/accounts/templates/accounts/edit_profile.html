@@ -2,53 +2,61 @@
 {% load static %}
 {% block title %}Edit user profile - hth Pong{% endblock title %}
 {% block content %}
-<!-- <div class="hth-container"> -->
-	<!-- <div class="hs-text"> -->
-		<div class="container" >
 
-			<div class="user-info-container">
+<div class="container" >
 
-				<h1>Edit user profile</h1>
-				<p id="message-area"></p>
+	<div class="hth-accounts-container">
 
-				<!-- ニックネーム更新用のフォーム -->
-				<form class="mb-5" id="nickname-form" onsubmit="updateNickname(event)">
-					<h3 class="mb-1">Nickname</h3>
-					<p><input type="text" id="nickname" placeholder="{{ current_nickname }}" required></p>
-					<button class="hth-btn" type="submit">Update nickname</button>
-				</form>
+		<h1>Edit user profile</h1>
+		<!-- TODO_ft:あらかじめスペースをとっているので、トーストに変更したい -->
+		<p id="message-area"></p>
 
-				<script>
-					document.addEventListener('DOMContentLoaded', function() {
-						const is42AuthUser = "{{ is_42auth_user|yesno:'true,false' }}";  // Djangoのyesnoフィルターを使用
-						console.log(is42AuthUser)
-						// TODO_ft: 文字列が返ってきてるので 文字列'true'を確認
-						if (is42AuthUser === 'true') {
-							document.getElementById('password-form').style.display = 'none';  // パスワードフォームを非表示にする
-						} else {
-							console.log("Displaying form because user is not 42Auth user.");
-						}
-					});
-				</script>
+		<!-- ニックネーム更新用のフォーム -->
+		<form id="nickname-form" onsubmit="updateNickname(event)">
+			<h2>Nickname</h2>
+			<p>
+				<label for="nickname">Nickname:</label>
+				<input type="text" id="nickname" placeholder="{{ current_nickname }}" required></p>
+			<button class="hth-btn" type="submit">Update nickname</button>
+		</form>
 
-				<form id="password-form" onsubmit="updatePassword(event)">
-					<h3 class="mb-1">password</h3>
-					<p>current password: <input type="password" id="current_password" placeholder="current-password" required></p>
-					<p>new password: <input type="password" id="new_password" placeholder="new-password"></p>
-					<button class="hth-btn" type="submit">update password</button>
-				</form>
+		<hr>
 
-				<hr>
+		<!-- パスワード更新用 -->
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				const is42AuthUser = "{{ is_42auth_user|yesno:'true,false' }}";  // Djangoのyesnoフィルターを使用
+				console.log(is42AuthUser)
+				// TODO_ft: 文字列が返ってきてるので 文字列'true'を確認
+				if (is42AuthUser === 'true') {
+					// パスワードフォームを非表示にする
+					document.getElementById('password-form').style.display = 'none';
+				} else {
+					console.log("Displaying form because user is not 42Auth user.");
+				}
+			});
+		</script>
 
-				<a href="{% url 'accounts:user'%}">Return to user page</a>
+		<form id="password-form" onsubmit="updatePassword(event)">
+			<h2>Password</h2>
+			<p>
+				<!-- Current password:  -->
+				<label for="current_password">Current password:</label>
+				<input type="password" id="current_password" placeholder="Current password" required></p>
+			<p>
+				<!-- New password:  -->
+				<label for="new_password">New password:</label>
+				<input type="password" id="new_password" placeholder="New password"></p>
+			<button class="hth-btn" type="submit">Update password</button>
+		</form>
 
-			</div>
+		<hr>
 
-			
+		<a href="{% url 'accounts:user'%}">Return to user page</a>
 
-		</div>
-	<!-- </div> -->
-<!-- </div> -->
+	</div>
+
+</div>
 
 <script src="{% static 'accounts/js/edit_profile.js' %}"></script>
 

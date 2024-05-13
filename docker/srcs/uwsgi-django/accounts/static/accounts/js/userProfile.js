@@ -7,12 +7,12 @@ document.addEventListener("DOMContentLoaded", function() {
 				<li>Email: ${data.email}</li>
 				<li>Nickname: ${data.nickname}</li>
 				${data.has_usable_password ? '<li>Password: ******</li>' : ''}
-				<li><a href="/accounts/edit/">Edit Profile</a></li>
-				<br>
+				<li class="hth-accounts-link" ><a href="/accounts/edit/">Edit Profile</a></li>
+				
 				${data.enable_2fa ?
-						`<li>2FA: ✅Enabled</li><li><a href="/accounts/verify/disable_2fa/">Disable 2FA</a></li>` :
-						`<li>2FA: Disabled</li><li><a href="/accounts/verify/enable_2fa/">Enable 2FA</a></li>`}
-				<br>
+						`<li>2FA: ✅Enabled</li><li class="hth-accounts-link"><a href="/accounts/verify/disable_2fa/">Disable 2FA</a></li>` :
+						`<li>2FA: Disabled</li><li class="hth-accounts-link"><a href="/accounts/verify/enable_2fa/">Enable 2FA</a></li>`}
+				
 				<button class="hth-btn" onclick="handleLogout()">Logout</button>
 			`;
 		})
