@@ -18,7 +18,8 @@
 	background-color: var(--btn-bg-color, #ffb320); 
 	color: var(--btn-text-color, #131313);
 	/* 色変化アニメーション */
-	transition: background-color 0.3s ease, color 0.3s ease; 
+	/* transition-ease-colorの設定も参考ください */
+	transition: background-color 0.5s ease, color 0.5s ease; 
 }
 
 .hth-btn:hover,

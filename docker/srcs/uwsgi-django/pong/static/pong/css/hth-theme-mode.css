@@ -24,6 +24,7 @@
 	--footer-hover-bg-color:	var(--dark-black-131313);
 	--footer-hover-text-color:	var(--light-yellow-ffb320);
 
+	--form-text-color:			var(--dark-black-131313);
 	/* 透過はRGB値 */
 	--transparent-bg-color:		var(--content-box-brown-rgb);
 }
@@ -40,6 +41,8 @@
 	--footer-text-color:		var(--light-yellow-ffb320);
 	--footer-hover-bg-color:	var(--light-yellow-ffb320);
 	--footer-hover-text-color:	var(--dark-black-131313);
+
+	--form-text-color:			var(--light-yellow-ffb320);
 
 	--transparent-bg-color:		var(--dark-black-131313-rgb);
 }

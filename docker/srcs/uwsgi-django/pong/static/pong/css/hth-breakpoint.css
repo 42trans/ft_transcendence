@@ -11,11 +11,13 @@ XX-Large: ≥1400px */
 ただし、上書きされていない場合。
  */
 
+/**
+用途：bootstrap container の挙動に合わせる時に使用する想定
+*/
 /* xxl  */
 @media (min-width: 1400px) {
 
 }
-
 
 /* xl */
 @media (min-width: 1200px) {
@@ -24,32 +26,20 @@ XX-Large: ≥1400px */
 
 /* lg */
 @media (min-width: 992px) {
-	/* #hth-footer-menu li {
-		margin-left: 3rem;
-		font-size: 1rem;
-	} */
+
 }
 
 /* md: Tablet との分岐点*/
 @media (min-width: 768px)  {
-	/* #hth-footer-menu li {
-		margin-left: 2rem;
-		font-size: 1rem;
-	} */
+
 }
 
 /* sm */
 @media (min-width: 576px){
-	/* #hth-footer-menu li {
-		margin-left: 1rem;
-		font-size: 1rem;
-	} */
+
 }
 
 /* -xs */
 @media (min-width: 0px) {
-	/* #hth-footer-menu li {
-		margin-left: 0.3rem;
-		font-size: 0.3rem;
-	} */
+
 }

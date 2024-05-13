@@ -79,7 +79,6 @@ class TournamentEntry
 		deleteButton.onclick = async () => {
 			if (confirm('Delete this tournament?')) {
 				await this.tournamentDeleter.deleteTournament(tournamentId);
-				// location.reload();
 			}
 		}
 		return deleteButton;
