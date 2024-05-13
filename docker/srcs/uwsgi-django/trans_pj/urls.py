@@ -50,7 +50,7 @@ urlpatterns += i18n_patterns(
 
 	# SPA
 	path('', main_views.spa, name='index'),
-	re_path(r'\w*', main_views.spa, name='index'),
+	# re_path(r'\w*', main_views.spa, name='index'),
 
 	prefix_default_language=True
 )
