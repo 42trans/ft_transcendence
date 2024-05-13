@@ -143,3 +143,21 @@ div.user-info-container {
 #user-info {
 	list-style-type: none;
 }
+
+/* アバター画像 */
+.avatar {
+	width: 50px;    /* 幅を30pxに設定 */
+	height: 50px;   /* 高さを30pxに設定 */
+	border-radius: 50%;  /* 角を円形にする */
+	object-fit: cover;   /* 画像のアスペクト比を維持しながら、設定された領域に収まるようにする */
+	margin-right: 10px;  /* 画像とテキストの間の余白 */
+}
+
+/* online status */
+.status.online {
+	color: green;
+}
+
+.status.offline {
+	color: red;
+}
