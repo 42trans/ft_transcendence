@@ -104,7 +104,7 @@ function updateOrCreateFriendListItem(friend) {
         <span id="friend-status-${friend.id}" class="status ${friend.status ? 'online' : 'offline'}">
             ${friend.status ? 'Online' : 'Offline'}
         </span>
-        <button onclick="deleteFriend(${friend.id})">Delete</button>
+        <a href="#" onclick="deleteFriend(${friend.id}); return false;">Delete</a>
     `;
     return listItem;
 }
