@@ -3,22 +3,32 @@
 {% block title %}User profile - hth Pong{% endblock title %}
 {% block content %}
 <!-- <div class="canvas-container"> -->
-	<!-- <div class="hs-text"> -->
-		<div class="container" >
+<!-- <div class="hs-text"> -->
+<div class="container" >
 
-			<div class="user-info-container">
-				<h1>User Page</h1>
-				<ul id="user-info">
-					<!-- JavaScriptで動的に内容が生成される -->
-				</ul>
-			</div>
+    <div class="user-info-container">
+        <h1>User Page</h1>
+        <ul id="user-info">
+            <!-- JavaScriptで動的に内容が生成される -->
+        </ul>
 
-		</div>
-	<!-- </div> -->
+        <ul id="friends-container">
+            <!-- JavaScriptで動的に内容が生成される -->
+        </ul>
+
+        <ul id="requests-container">
+            <!-- JavaScriptで動的に内容が生成される -->
+        </ul>
+    </div>
+
+</div>
+<!-- </div> -->
 <!-- </div> -->
 
 <script src="{% static 'accounts/js/userProfile.js' %}"></script>
 <script src="{% static 'accounts/js/logout.js' %}"></script>
+<script src="{% static 'accounts/js/friend.js' %}"></script>
+<script src="{% static 'accounts/js/online-status.js' %}"></script>
 
 {% endblock %}
 <hr>

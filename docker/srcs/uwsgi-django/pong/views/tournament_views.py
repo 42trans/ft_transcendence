@@ -1,11 +1,14 @@
 # docker/srcs/uwsgi-django/pong/views/tournament_views.py
 import json
+import logging
+from typing import Any, Tuple
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from ..models import Tournament, Match
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.views.decorators.http import require_POST
 from django.utils.dateparse import parse_datetime
 from django.forms.models import model_to_dict
@@ -13,13 +16,38 @@ from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 import random
+
+
+logger = logging.getLogger('django')
+
 
 User = get_user_model()
 
-def assign_winner_to_next_match(current_match, winner):
-	if not winner:
-		return
+
+def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
+	def __is_valid_argument(current_match: Match,
+							winner_nickname: str) -> Tuple[bool, Any]:
+		if not winner_nickname:
+			return False, 'No nickname provided'
+
+		if not current_match or not isinstance(current_match, Match):
+			return False, 'No current_match provided'
+
+		if not current_match.is_finished:
+			return False, 'Current_match not finished'
+
+		if (current_match.player1 != winner_nickname
+				and current_match.player2 != winner_nickname):
+			return False, f'No {winner_nickname} in current match'
+		return True, None
+
+	is_valid, err = __is_valid_argument(current_match, winner_nickname)
+	if not is_valid:
+		raise ValueError(err)
+
 	# 次のラウンドの試合番号を計算
 	next_round_number = current_match.round_number + 1
 	next_match_number = (current_match.match_number + 1) // 2
@@ -33,17 +61,19 @@ def assign_winner_to_next_match(current_match, winner):
 		# 奇数試合番号から来る勝者は player1、偶数試合番号から来る勝者は player2
 		if current_match.match_number % 2 == 1:
 			# 奇数試合番号
-			next_match.player1 = winner
+			next_match.player1 = winner_nickname
 		else:
 			# 偶数試合番号
-			next_match.player2 = winner
+			next_match.player2 = winner_nickname
 		
 		# 次のマッチが開始可能かどうかチェック（両プレイヤーが割り当てられたか）
 		if next_match.player1 and next_match.player2:
 			next_match.can_start = True
 
 		next_match.save()
-		print(f"Updated next match {next_match.id}: {next_match.player1} vs {next_match.player2}")
+		print(f"Updated next match {next_match.id}: "
+			  f"{next_match.player1} vs {next_match.player2}")
+
 
 @csrf_exempt
 @login_required
@@ -77,91 +107,85 @@ def save_game_result(request):
 		traceback.print_exc()  # サーバーのコンソールにエラーのトレースバックを出力
 		return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
-@login_required
-def get_latest_user_ongoing_tournament(request):
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_latest_user_ongoing_tournament(request) -> JsonResponse:
 	"""
 	機能: 「最新」のトーナメントの情報を取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
 	用途: 未終了の主催トーナメントの有無を判定(200 or 204)
 	"""
-	if request.method == 'GET':
-		# 最新の未終了トーナメントを取得
-		tournament = Tournament.objects.filter(
-			organizer=request.user, 
-			is_finished=False
-		).order_by('-date').first()
+	# 最新の未終了トーナメントを取得
+	tournament = Tournament.objects.filter(
+		organizer=request.user,
+		is_finished=False
+	).order_by('-date').first()
 
-		if tournament:
-			# トーナメントオブジェクトを辞書に変換して返す
-			tournament_data = model_to_dict(tournament)
-			return JsonResponse({'tournament': tournament_data}, safe=False)
-		else:
-			# 未終了のトーナメントがない場合は204と空のレスポンスを返す
-			return HttpResponse(status=204)
+	if tournament:
+		# トーナメントオブジェクトを辞書に変換して返す
+		tournament_data = model_to_dict(tournament)
+		return JsonResponse({'tournament': tournament_data}, safe=False)
 	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+		# 未終了のトーナメントがない場合は204と空のレスポンスを返す
+		return JsonResponse({}, status=204)
 
-def get_tournament_data_by_id(request, tournament_id):
-	if request.method == 'GET':
-		""" 機能: ゲストも「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。"""
-		tournament = get_object_or_404(Tournament, pk=tournament_id)
-		# print("Tournament:", tournament)
-		data = {
-			'id': tournament.id,
-			'name': tournament.name,
-			'date': tournament.date.isoformat(), 
-			'player_nicknames': list(tournament.player_nicknames),
-			'is_finished': tournament.is_finished,
-			'organizer': tournament.organizer_id
-		}
-		return JsonResponse(data, safe=False)
-	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
 
-@login_required
-def get_matches_by_round_latest_user_ongoing_tournament(request, round_number):
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_tournament_data_by_id(request, tournament_id) -> JsonResponse:
+	""" 機能: ゲストも「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。"""
+	tournament = get_object_or_404(Tournament, pk=tournament_id)
+	# print("Tournament:", tournament)
+	data = {
+		'id': tournament.id,
+		'name': tournament.name,
+		'date': tournament.date.isoformat(),
+		'player_nicknames': list(tournament.player_nicknames),
+		'organizer': tournament.organizer_id,
+		'is_finished': tournament.is_finished
+	}
+	return JsonResponse(data, safe=False)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_matches_by_round_latest_user_ongoing_tournament(request, round_number) -> JsonResponse:
 	""" 
 	機能: 「round_number」のデータを全て取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
 	用途: Round別のDisplay
 	"""
-	if request.method == 'GET':
-		# ユーザーが主催する未終了のトーナメントに属する指定ラウンドの試合を取得
-		matches = Match.objects.filter(
-			tournament__organizer=request.user,
-			tournament__is_finished=False,
-			round_number=round_number
-		).order_by('match_number')
+	# ユーザーが主催する未終了のトーナメントに属する指定ラウンドの試合を取得
+	matches = Match.objects.filter(
+		tournament__organizer=request.user,
+		tournament__is_finished=False,
+		round_number=round_number
+	).order_by('match_number')
 
-		if not matches:
-			# 試合が見つからない場合はエラー404
-			return JsonResponse({'status': 'error', 'message': 'Round not found'}, status=404)
+	if not matches:
+		# 試合が見つからない場合はエラー404
+		return JsonResponse({'status': 'error', 'message': 'Round not found'}, status=404)
 
-		matches_data = [model_to_dict(match) for match in matches]  # すべてのフィールドを取得
-		# print("matches_data:", matches_data)
-		for match_data in matches_data:
-			if match_data['ended_at']:
-				match_data['ended_at'] = match_data['ended_at'].isoformat()
-			else:
-				match_data['ended_at'] = None
+	matches_data = [model_to_dict(match) for match in matches]  # すべてのフィールドを取得
+	# print("matches_data:", matches_data)
+	for match_data in matches_data:
+		if match_data['ended_at']:
+			match_data['ended_at'] = match_data['ended_at'].isoformat()
+		else:
+			match_data['ended_at'] = None
 
-
-		return JsonResponse({'matches': matches_data}, safe=False)
-	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+	return JsonResponse({'matches': matches_data}, safe=False)
 
 
 # ------------------------------
 # create
 # ------------------------------
-@login_required
-def create_new_tournament_and_matches(request):
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_new_tournament_and_matches(request) -> JsonResponse:
 	""" 
 	- 機能: トーナメントの新規作成
 	- 備考: トーナメントと「全7試合」も同時に作成する。 ログイン中のユーザーが主催者として。
 	"""
-
-	if request.method != 'POST':
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
-
 	try:
 		name					= request.POST.get('name')
 		date_str				= request.POST.get('date')
@@ -169,52 +193,33 @@ def create_new_tournament_and_matches(request):
 		player_nicknames 		= json.loads(player_nicknames_json)
 		randomize				= request.POST.get('randomize', False)
 
-		# print("Received Data:", name, date_str, player_nicknames) 
+		# print("Received Data:", name, date_str, player_nicknames)
 
-		if (
-			not date_str or 
-			not name
-		):
-			return JsonResponse({'status': 'error', 'message': 'Name and date are required.'}, status=400)
-		
-		if (
-			# ニックネームの数が8？
-			len(player_nicknames) != 8 or 
-			# ユニークか？　set():重複登録不可
-			len(set(player_nicknames)) != 8 or 
-			# 空文字列か？
-			any(nickname.strip() == '' for nickname in player_nicknames)
-		):
-			return JsonResponse({'status': 'error', 'message': 'Invalid player nicknames data. Ensure exactly 8 unique, non-empty nicknames.'}, status=400)
-	
-		# 日付のフォーマットを確認 UTC ISO8601
-		aware_datetime = parse_datetime(date_str)
-		# print("Parsed Date:", aware_datetime) 
-		if (
-			aware_datetime is None or 
-			not aware_datetime.tzinfo
-		):
-			return JsonResponse({'status': 'error', 'message': "Invalid: Please use ISO 8601 format."}, status=400)
-		
 		# atomic: このブロック内を一つとして実行。途中でエラーが出たら開始前の状態に戻る
 		with transaction.atomic():
 			tournament = Tournament.objects.create(
 				name=name,
-				date=aware_datetime,
+				date=parse_datetime(date_str),
 				player_nicknames=player_nicknames,
 				organizer=request.user,
 				is_finished=False
 			)
-			matches = create_matches(tournament, player_nicknames, randomize)
+			matches = _create_matches(tournament, player_nicknames, randomize)
 		# ---------------ここまでatomic
 
 		# トーナメントとマッチのIDを含むレスポンスを返す
 		match_data = [{'round_number': m.round_number, 'match_number': m.match_number, 'id': m.id} for m in matches]
 		return JsonResponse({'status': 'success', 'tournament_id': tournament.id, 'matches': match_data})
+
+	except ValidationError as e:
+		logger.error(f'create_new_tournament: ValidationError: {str(e)}')
+		return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 	except Exception as e:
+		logger.error(f'create_new_tournament: Exception: {str(e)}')
 		return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-def create_matches(tournament, player_nicknames, randomize=False):
+
+def _create_matches(tournament, player_nicknames, randomize=False):
 	# test random
 	# randomize = True
 	'''
@@ -271,9 +276,10 @@ def create_matches(tournament, player_nicknames, randomize=False):
 		raise
 	return matches
 
-@login_required
-@require_POST
-def delete_tournament_and_matches(request, tournament_id):
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def delete_tournament_and_matches(request, tournament_id) -> JsonResponse:
 	""" 
 	機能:
 	- 削除: トーナメントと「全7試合」。ログイン中のユーザーが主催者のものを。
@@ -290,7 +296,7 @@ def delete_tournament_and_matches(request, tournament_id):
 				# - on_delete=models.CASCADE でトーナメントが削除されると、自動的に削除される。
 				tournament.matches.all().delete() #つまり、この行は不要。だが、明示的に記述する。
 				tournament.delete()
-				return JsonResponse({'status': 'success', 'message': 'Tournament and related matches deleted successfully.'})
+				return JsonResponse({'status': 'success', 'message': 'Tournament and related matches deleted successfully.'}, status=200)
 			else:
 				return JsonResponse({'status': 'error', 'message': 'Cannot delete finished tournaments.'}, status=400)
 	except Tournament.DoesNotExist:
@@ -299,79 +305,74 @@ def delete_tournament_and_matches(request, tournament_id):
 # ------------------------------
 # option: 現時点では不要
 # ------------------------------
-@login_required
-def get_history_all_user_tournaments(request):
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_history_all_user_tournaments(request) -> JsonResponse:
 	""" 
 	機能: 「ユーザーが主催者」のトーナメントを全て取得
 	用途: result, histoty. 終了したトーナメントも含む過去情報全てを取得
 	"""
-	if request.method == 'GET':
-		# ログインユーザーが主催するトーナメントを全て取得
-		tournaments = Tournament.objects.filter(organizer=request.user)
-		# すべてのフィールドを含む辞書のリストに変換
-		tournaments_data = [model_to_dict(tournament) for tournament in tournaments]
-		return JsonResponse(tournaments_data, safe=False)
-	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+	# ログインユーザーが主催するトーナメントを全て取得
+	tournaments = Tournament.objects.filter(organizer=request.user)
+	# すべてのフィールドを含む辞書のリストに変換
+	tournaments_data = [model_to_dict(tournament) for tournament in tournaments]
+	return JsonResponse(tournaments_data, safe=False)
 
-@login_required
-def get_tournament_id_user_all_ongoing(request):
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_tournament_id_user_all_ongoing(request) -> JsonResponse:
 	""" 
 	機能: ログイン中のユーザーが主催する未終了のトーナメントの「ID」を全て返す。
 	用途: エラーチェック。複数の未終了トーナメントが存在してはならないが、存在する場合はIDを返して削除作業を可能にする。
 	"""
-	if request.method == 'GET':
-		tournaments = Tournament.objects.filter(organizer=request.user, is_finished=False)
-		# 各トーナメントのIDをリストに格納
-		tournament_ids = [tournament.id for tournament in tournaments]
+	tournaments = Tournament.objects.filter(organizer=request.user, is_finished=False)
+	# 各トーナメントのIDをリストに格納
+	tournament_ids = [tournament.id for tournament in tournaments]
 
-		# 未終了のトーナメントが複数存在する場合はエラーメッセージと共にIDを返す
-		if len(tournament_ids) > 1:
-			return JsonResponse({
-				'status': 'error',
-				'message': 'Multiple ongoing tournaments found, which is not allowed.',
-				'tournaments': tournament_ids
-			# 200 OKでクライアントに処理可能なデータを返す
-			}, status=200)
+	# 未終了のトーナメントが複数存在する場合はエラーメッセージと共にIDを返す
+	if len(tournament_ids) > 1:
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Multiple ongoing tournaments found, which is not allowed.',
+			'tournaments': tournament_ids
+		# 200 OKでクライアントに処理可能なデータを返す
+		}, status=200)
 
-		return JsonResponse({'tournaments': tournament_ids}, safe=False)
-	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+	return JsonResponse({'tournaments': tournament_ids}, safe=False)
 
 
-@login_required
-def get_matches_of_latest_tournament_user_ongoing(request):
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_matches_of_latest_tournament_user_ongoing(request) -> JsonResponse:
 	""" 
 	機能:「ユーザーが主催する && 未終了のトーナメント」 に関する全7試合のデータを返す。
 	注意: ユーザーが主催する未終了のトーナメントは一つだけ存在すると想定。
 	用途: トーナメントの試合情報を全て取得する
 	注意: 現在の実装ではRoundごとに必要な情報だけ取得しているので未使用
 	"""
-	if request.method == 'GET':
-		# # ログインユーザーが主催している最新の未終了トーナメントを取得
-		latest_tournament = Tournament.objects.filter(
-			organizer=request.user, 
-			is_finished=False
-		).order_by('-date').first()
+	# ログインユーザーが主催している最新の未終了トーナメントを取得
+	latest_tournament = Tournament.objects.filter(
+		organizer=request.user,
+		is_finished=False
+	).order_by('-date').first()
 
-		# 未終了のトーナメントがない場合
-		if not latest_tournament:
-			return JsonResponse({'status': 'success', 'message': 'No ongoing tournaments found'}, status=204)
-			
-		# 上記トーナメントに属する全試合を取得
-		matches = Match.objects.filter(tournament=latest_tournament).order_by('round_number', 'match_number')
-		# Djangoの `model_to_dict` でフィールドを辞書形式で取得し、関連するトーナメントの名前も取得
-		matches_data = [
-			{
-				**model_to_dict(match),
-				# 関連するトーナメント名を追加
-				'tournament_name': match.tournament.name,
-				# 日付をISO 8601形式に変換
-				'ended_at': match.ended_at.isoformat() if match.ended_at else None,
-				# 'date': match.date.isoformat() if match.date else None,
-			}
-			for match in matches
-		]
-		return JsonResponse({'matches': matches_data}, safe=False)
-	else:
-		return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+	# 未終了のトーナメントがない場合
+	if not latest_tournament:
+		return JsonResponse({'status': 'success', 'message': 'No ongoing tournaments found'}, status=204)
+
+	# 上記トーナメントに属する全試合を取得
+	matches = Match.objects.filter(tournament=latest_tournament).order_by('round_number', 'match_number')
+	# Djangoの `model_to_dict` でフィールドを辞書形式で取得し、関連するトーナメントの名前も取得
+	matches_data = [
+		{
+			**model_to_dict(match),
+			# 関連するトーナメント名を追加
+			'tournament_name': match.tournament.name,
+			# 日付をISO 8601形式に変換
+			'ended_at': match.ended_at.isoformat() if match.ended_at else None,
+			# 'date': match.date.isoformat() if match.date else None,
+		}
+		for match in matches
+	]
+	return JsonResponse({'matches': matches_data}, safe=False, status=200)
