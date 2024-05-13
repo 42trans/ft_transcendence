@@ -245,6 +245,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def is_blocking_user(self, user: CustomUser) -> bool:
         return user in self.blocking_users.all()
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     devices = models.ManyToManyField(TOTPDevice)
