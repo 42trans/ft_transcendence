@@ -48,6 +48,7 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
+	# 'daphne',							# chat, listed before django.contrib.staticfiles
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -60,8 +61,10 @@ INSTALLED_APPS = [
 	'django_otp',  						# 2fa
 	'django_otp.plugins.otp_totp',  	# 2fa
 	'django_otp.plugins.otp_static',  	# 2fa
-	'trans_pj',
-	"corsheaders", #CORS用
+	'channels',							# chat
+	'chat',								# chat
+  'trans_pj',
+  'corsheaders', #CORS用
 ]
 
 
@@ -87,7 +90,7 @@ MIDDLEWARE = [
 	'django_prometheus.middleware.PrometheusAfterMiddleware',
 	# --------------------
 	'django_otp.middleware.OTPMiddleware',  # 2fa
-	'accounts.middleware.JWTAuthenticationMiddleware',  # jwt
+	'accounts.middleware.JWTAuthenticationMiddleware',	# jwt
 ]
 
 
@@ -135,6 +138,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'trans_pj.wsgi.application'
+ASGI_APPLICATION = 'trans_pj.asgi.application'
 
 
 # Database
@@ -199,6 +203,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+# upload file
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -217,7 +224,8 @@ LOGGING = {
 		'class': 'logging.StreamHandler',
 	},
 	'file': {
-		'level': 'WARNING',
+		# 'level': 'WARNING',
+		'level': 'DEBUG',
 		'class': 'logging.FileHandler',
 		'filename': 'django_debug.log',
 	},
@@ -259,14 +267,23 @@ LOGGING = {
 		'level': 'DEBUG',
 		'propagate': False,
 	},
+	'chat': {
+		'handlers': ['console_debug', 'file'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'accounts': {
+		'handlers': ['console_debug', 'file'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
 },
 }
 
-
-# JWT
+# 全てのAPIエンドポイントのデフォルト認証をJWTに設定 -> CSRFトークンのチェックは不要
 REST_FRAMEWORK = {
 	'DEFAULT_AUTHENTICATION_CLASSES': [
-		'rest_framework_simplejwt.authentication.JWTAuthentication',
+		'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT
 	],
 }
 
@@ -288,8 +305,23 @@ LANGUAGES = [
     ('fr', _('French')),
 ]
 
+
 # CORS設定
 CORS_ALLOWED_ORIGINS = [
     "https://localhost",
     "http://localhost:8002",
 ]
+
+# chat
+CHANNEL_LAYERS = {
+    # 'default': {
+    # 	'BACKEND':'channels_redis.core.RedisChannelLayer',
+    # 	'CONFIG': {
+    # 		"hosts": [('127.0.0.1', 6379)],
+    # 	},
+    # },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"  # インメモリを使う場合
+    },
+}
+

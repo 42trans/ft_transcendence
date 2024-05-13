@@ -1,42 +1,6 @@
 
 
 
-.form-signin {
-	margin: auto; /* 中央寄せ */
-	padding: 30px; /* 内側に20pxの余白を設ける */
-	/* max-width: 500px; 最大幅を500pxに設定 */
-	max-width: 330px;
-	background-color: rgba(35, 24, 1, 0.921); 
-	/* color: #999; */
-}
-
-.fw-normal {
-	color: #fff;
-}
-/* .form-signin { */
-	/* padding: 1rem; */
-	/* } */
-.form-check-label {
-	color: #fff;
-}
-
-.form-signin .form-floating:focus-within {
-	z-index: 2;
-}
-
-.form-signin input[type="email"] {
-	margin-bottom: -1px;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
-	/* color: #000; */
-}
-
-.form-signin input[type="password"] {
-	margin-bottom: 10px;
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
-}
-
 
 
 .gw_btn {
@@ -93,8 +57,8 @@
 	color: #000;
 }
 
-button.gw_btn-primary:hover, a.gw_btn-primary:hover {
-	color: white;
+button.gw_btn-primary:hover {
+	color: #131313;
 }
 
 
@@ -181,81 +145,3 @@ Latest News section
 	background: #694eae;
 }
 
-
-/*----------------------
-Tournaments Section
-------------------------*/
-
-.tournaments-section {
-	background-image: url("../img/pattern.png");
-	background-repeat: repeat;
-}
-
-.tournament-title {
-	display: inline-block;
-	padding: 7px 25px;
-	font-size: 12px;
-	font-weight: 500;
-	color: #fff;
-	text-transform: uppercase;
-	background: #fb6e10;
-}
-
-.tournament-item {
-	background: #252525;
-}
-
-.tournament-item .ti-notic {
-	display: inline-block;
-	padding: 8px 21px;
-	font-size: 12px;
-	font-weight: 700;
-	color: #131313;
-	text-transform: uppercase;
-	background: #ffb320;
-}
-
-.tournament-item .ti-content {
-	padding: 38px 24px;
-	overflow: hidden;
-}
-
-.tournament-item .ti-thumb {
-	width: 168px;
-	height: 178px;
-	float: left;
-}
-
-.tournament-item .ti-text {
-	padding-left: 195px;
-}
-
-.tournament-item .ti-text h4 {
-	color: #ffb320;
-	margin-bottom: 20px;
-}
-
-.tournament-item .ti-text ul {
-	list-style: none;
-	margin-bottom: 20px;
-}
-
-.tournament-item .ti-text ul li {
-	color: #fff;
-	font-size: 12px;
-	margin-bottom: 6px;
-}
-
-.tournament-item .ti-text ul li span {
-	color: #9a9a9a;
-}
-
-.tournament-item .ti-text p {
-	font-size: 12px;
-	margin-bottom: 0;
-}
-
-.tournament-item .ti-text p span {
-	font-weight: 500;
-	color: #ffb320;
-}

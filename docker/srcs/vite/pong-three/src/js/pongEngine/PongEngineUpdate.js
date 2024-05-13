@@ -126,7 +126,12 @@ class PongEngineUpdate
 		this.handleCollisions();
 		this.updateBallPosition();
 		this.handlePaddleMovement();
+
+		// TODO_ft
+		// const jsonData = this.serializeState();
+		// this.deserializeAndUpdateState(jsonData);
 	}
+
 }
 
 export default PongEngineUpdate;

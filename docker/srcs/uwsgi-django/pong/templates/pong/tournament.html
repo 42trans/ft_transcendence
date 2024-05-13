@@ -1,76 +1,44 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Tournament - hth Pong{% endblock title %}
-
 {% block content %}
-
+	{% csrf_token %}
 	<div class="canvas-container">
 
-		<div class="container">
-			<h2 class="slideup-text">tournament <span>A</span> </h2>
-			<p class="slideup-text">Glitter Sparkle Rainbow Twinkle, where cupcakes dance and unicorns mingle.</p>
-			<a href="#" class="site-btn">Apply</a>
+		<div class="container" id="tournament-container">
+
+			<div class="user-info-container">
+				<!-- <h1>User</h1> -->
+				<ul id="user-info">
+					<!-- JavaScriptで動的に内容が生成される -->
+				</ul>
+			</div>
+
+			<div id="tournament-round"></div>
+
+			<div id="ongoing-tournament">
+				<!-- JavaScriptで動的に内容が生成される -->
+			</div>
+
+			<p id="error-message" style="color: red;"></p>
+
+			<div id="tournament-form">	
+				<!-- JavaScriptで動的に内容が生成される -->
+			</div>
+			
+			<p id="submit-message" style="color: green;"></p>
+			<button id="back-home" style="display: none;">Back to Home</button>
+			
+			<!-- <ul class="dev-link my-4">
+				<h4>dev用</h4>
+				<li><a href="http://localhost:8002/pong/api/tournament/data/"> (dev)tournament/data/</a></li>
+			</ul> -->
+
 		</div>
 
 	</div>
 
-	<!-- Latest news section -->
-	<div class="latest-news-section">
-		<div class="ln-title">Latest News</div>
-		<div class="news-ticker">
-			<div class="news-ticker-contant">
-				<div class="nt-item"><span class="new">new</span>Glitter Sparkle Rainbow Twinkle, where cupcakes dance and unicorns mingle. </div>
-				<div class="nt-item"><span class="strategy">strategy</span>Glitter Sparkle Rainbow Twinkle, where cupcakes dance and unicorns mingle. </div>
-				<div class="nt-item"><span class="racing">racing</span>Glitter Sparkle Rainbow Twinkle, where cupcakes dance and unicorns mingle. </div>
-			</div>
-		</div>
-	</div>
-	<!-- Latest news section end -->
-
-	<!-- Tournaments section -->
-	<section class="tournaments-section spad">
-		<div class="container">
-			<div class="tournament-title">Tournaments</div>
-			<div class="row">
-				<div class="col-md-6">
-					<div class="tournament-item mb-4 mb-lg-0">
-						<div class="ti-notic">Premium Tournament</div>
-						<div class="ti-content">
-							<div class="ti-thumb set-bg" data-setbg="img/tournament/1.jpg"></div>
-							<div class="ti-text">
-								<h4>World Of WarCraft</h4>
-								<ul>
-									<li><span>Tournament Beggins:</span> June 20, 2018</li>
-									<li><span>Tounament Ends:</span> July 01, 2018</li>
-									<li><span>Participants:</span> 10 teams</li>
-									<li><span>Tournament Author:</span> Admin</li>
-								</ul>
-								<p><span>Prizes:</span> 1st place $2000, 2nd place: $1000, 3rd place: $500</p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="tournament-item">
-						<div class="ti-notic">Premium Tournament</div>
-						<div class="ti-content">
-							<div class="ti-thumb set-bg" data-setbg="img/tournament/2.jpg"></div>
-							<div class="ti-text">
-								<h4>DOOM</h4>
-								<ul>
-									<li><span>Tournament Beggins:</span> June 20, 2018</li>
-									<li><span>Tounament Ends:</span> July 01, 2018</li>
-									<li><span>Participants:</span> 10 teams</li>
-									<li><span>Tournament Author:</span> Admin</li>
-								</ul>
-								<p><span>Prizes:</span> 1st place $2000, 2nd place: $1000, 3rd place: $500</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Tournaments section bg -->
+<!-- 要素のidを変更した場合、ConfigTournament.js を修正してください -->
+<script type="module" src='{% static "pong/js/tournament/tournamentMain.js" %}'></script>
 
 {% endblock %}

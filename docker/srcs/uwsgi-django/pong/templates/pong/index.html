@@ -5,10 +5,8 @@
 <div class="canvas-container">
 	<div class="hs-text">
 		<div class="container">
-			<h2>Unrivaled <span>hth Pong</span> Experience</h2>
-			<!-- <h2 class="slideup-text">Unrivaled <span>hth Pong</span> Experience</h2> -->
-			<p class="slideup-text">This project is about doing something you’ve never done before. Remind yourself the beginning of your journey in computer science. Look at you now. Time to shine!</p>
-			<!-- <h2>🏓 pong 🏓</h2> -->
+			<h2 class="slideup-text">Unrivaled <span>hth Pong</span> Experience</h2>
+			<!-- <p class="slideup-text"> Look at you now. Time to shine!</p> -->
 			{% if nickname %}
 			<h3 class="slideup-text">welcome, [{{ nickname }}]</h3>
 			<ul>
@@ -18,10 +16,10 @@
 			{% else %}
 			<h3 class="slideup-text">welcome, Guest</h3>
 			<p class="slideup-text">For a happier life, let's play the pong game!</p>
-			<ul>
+			<!-- <ul>
 				<li><a href="{% url 'accounts:signup' %}">sign-up</a></li>
 				<li><a href="{% url 'accounts:login' %}">login</a></li>
-			</ul>
+			</ul> -->
 			{% endif %}
 			<hr>
 			<h4>Server/pong</h4>
@@ -30,8 +28,13 @@
 				<li><a href="http://localhost:8002/pong/">Django dev-server</a></li>
 				<li><a href="http://localhost:5184/pong/">Vite dev-server</a></li>
 			</ul>
+			<!-- <h4>Free Play</h4>
+				<ul>
+					<li><a href="/pong/game/">Free Play</a></li>
+				</ul> -->
 			<h4>Incomplete / test</h4>
 			<ul class="dev-link">
+				
 				<!-- <li><a href="{% url 'accounts:oauth_ft' %}">[test] sign-up/login with 42</a></li> -->
 				<!-- <li><a href="/accounts/oauth-ft/">[test] sign-up/login with 42</a></li> -->
 				<!-- <li><a href="/pong/bootstrap_index/">[test] index(bootstrap)</a></li> -->
@@ -46,10 +49,15 @@
 				<li><a href="/accounts/verify/enable_2fa/">accounts/verify/enable_2fa/</a></li>
 				<li><a href="/accounts/verify/verify_2fa/">accounts/verify/verify_2fa/</a></li>
 			</ul>
+			<h5>MEMO:TODO_ft</h5>
+			<ul>
+				<li>パスワードを変更できるように</li>
+			</ul>
+				<li><a href="{% url 'chat:dm_sessions' %}">chat/dm_sessions/</a></li>
+      </ul>
 		
 			<script src="{% static 'accounts/js/logout.js' %}"></script>
 		</div>
 	</div>
 </div>
 {% endblock %}
-

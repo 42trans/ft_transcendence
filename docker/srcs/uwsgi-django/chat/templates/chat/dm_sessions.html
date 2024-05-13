@@ -1,0 +1,38 @@
+<!-- chat/templates/chat/dm_sessions.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DM Partner List</title>
+</head>
+<body>
+<h2>Start DM</h2>
+
+<!-- エラーメッセージの表示 -->
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<!-- DM相手を指定して開始するtext field -->
+<label for="nickname-input">DM with:</label>
+<input id="nickname-input" type="text" size="20">
+<input id="nickname-submit" type="button" value="Enter">
+<hr>
+
+<!-- DM履歴のあるuserとのDMはこちらから-->
+<h2>DM List</h2>
+<ul id="dm-sessions"></ul>
+<hr>
+
+<p><a href="{% url 'accounts:user' %}">return to user page</a></p>
+<hr>
+<script src="{% static 'chat/js/dm-sessions.js' %}"></script>
+
+</body>
+</html>

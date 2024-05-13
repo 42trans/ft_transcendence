@@ -16,12 +16,16 @@ class PongEngine
 {
 	constructor(PongApp) 
 	{
+		this.env		= PongApp.env;
+		this.matchData	= PongApp.matchData;
+		
 		this.init3DEnvironment(PongApp);
 		this.initParameters();
 		this.initGameLogic();
 		
-		this.isRunning = true;
-		this.animate = this.animate.bind(this);
+
+		this.isRunning	= true;
+		this.animate	= this.animate.bind(this);
 		setTimeout(() => this.animate(), 4500);
 	}
 

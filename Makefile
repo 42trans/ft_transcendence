@@ -93,7 +93,7 @@ start:
 
 .PHONY: down
 down:
-	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) down; \
+	COMPOSE_PROFILES=elk,blockchain,monitor,three docker-compose $(COMPOSE_FILES_ARGS) down; \
 	PATTERN='127.0.0.1 $(SERVER_NAME)'; \
 	OSTYPE=`uname -s`; \
 	if [ "$$OSTYPE" = "Darwin" ]; then \
@@ -222,6 +222,10 @@ ELK_certs:
 .PHONY: test_django_test_py
 test_django_test_py:
 	docker exec uwsgi-django /bin/sh -c "python manage.py test --keepdb" > test/result/test_py_results.txt 
+
+# pong/tournament 
+test_tournament_django_all:
+	docker exec -it uwsgi-django bash -c "python manage.py test pong.tournament.tests"
 
 .PHONY: test_main
 test_main:

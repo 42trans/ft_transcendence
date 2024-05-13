@@ -7,7 +7,7 @@ RUN apk update && apk add --no-cache \
 # SSL用ディレクトリ
 RUN mkdir -p /etc/nginx/ssl
 # 静的ファイル
-RUN mkdir -p /var/trans/static
+RUN mkdir -p /var/trans/static /var/trans/media
 # Nginxの設定ファイルを環境変数で設定するためのテンプレート
 COPY ./nginx.conf /
 COPY ./uwsgi_params /

@@ -46,7 +46,7 @@ class EntryGameState extends BaseGameState
 	
 	exit() 
 	{
-		console.log("exit(): EntryGameState");
+		// console.log("exit(): EntryGameState");
 		const targetPosition = new THREE.Vector3();
 		this.magmaFlare.getWorldPosition(targetPosition);
 		this.startDistance = this.camera.position.distanceTo(targetPosition);

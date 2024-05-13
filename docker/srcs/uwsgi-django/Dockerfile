@@ -36,7 +36,6 @@ RUN apt-get purge -y --auto-remove gcc libc6-dev python3-dev
 
 # プロジェクトファイルをコピー
 COPY . .
-RUN mv /code/django-entrypoint.sh /entrypoint.sh
 
 
 # 実行ステージ
@@ -45,20 +44,27 @@ RUN apt-get update && apt-get install -y \
 	tzdata \
 	curl \
     libpq5  \
+    supervisor \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PATH="/usr/local/bin:${PATH}"
+#ENV DJANGO_SETTINGS_MODULE trans_pj.settings
 
 WORKDIR /code
 
 # ビルドステージから必要なファイルをコピー
 COPY --from=builder /usr/local /usr/local
 COPY --from=builder /code /code
-COPY --from=builder /entrypoint.sh /entrypoint.sh
+#COPY --from=builder /entrypoint.sh /entrypoint.sh
+#COPY --from=builder /etc/supervisor/conf.d /etc/supervisor/conf.d
+
+RUN mv /code/django-entrypoint.sh /entrypoint.sh
+RUN mv /code/supervisord.conf /etc/supervisor/conf.d/
 
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT [ "/entrypoint.sh" ]
 
-CMD ["uwsgi", "--ini", "/code/uwsgi.ini"]
+#CMD ["uwsgi", "--ini", "/code/uwsgi.ini"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

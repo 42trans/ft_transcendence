@@ -21,16 +21,22 @@ class PongApp
 {
 	constructor(env) 
 	{
+		this.env = env;
+		
 		document.addEventListener('DOMContentLoaded', () => 
 		{
+			const matchDataElement = document.getElementById('match-data');
+			if (matchDataElement) {
+				this.matchData = JSON.parse(matchDataElement.textContent);
+				// console.log('Match Data:', this.matchData);
+			}
 			this.init();
 			// 無限ループでアニメーションの更新を担当。シングルトン
 			this.renderLoop = LoopManager.getInstance(this);
 			this.renderLoop.start();
 						
 						//dev用　index.jsで`PongApp.main('dev');`で呼び出す
-						if (env === 'dev')
-						{
+						if (env === 'dev'){
 							this.setupDevEnv();
 						}
 		});
@@ -43,7 +49,6 @@ class PongApp
 	 */
 	init() 
 	{
-		THREE.Cache.enabled = true;
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
 		this.renderer = RendererManager.getRenderer();
 		// 全てのシーンのmixerを一元的に管理。シングルトン
@@ -61,18 +66,17 @@ class PongApp
 	{
 		new PongApp(env);
 	}
-
-						// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除
-						setupDevEnv() 
-						{
-							this.gui = new lil.GUI();
-							const contorolsGUI = new ControlsGUI(
-								this.allScenesManager.effectsScene.scene, 
-								this.gui, 
-								this.allScenesManager.effectsScene.camera
-							);
-							contorolsGUI.setupControlsGUI();
-						}
+				// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除
+				setupDevEnv() 
+				{
+					this.gui = new lil.GUI();
+					const contorolsGUI = new ControlsGUI(
+						this.allScenesManager.effectsScene.scene, 
+						this.gui, 
+						this.allScenesManager.effectsScene.camera
+					);
+					contorolsGUI.setupControlsGUI();
+				}
 }
 
 export default PongApp;
