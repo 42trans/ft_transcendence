@@ -2,57 +2,107 @@
 {% load static %}
 {% block title %}Sign up - hth Pong{% endblock title %}
 {% block content %}
-<!-- <div class="canvas-container"> -->
-	<!-- <div class="hs-text"> -->
-		<div class="container " >
 
-			<!-- signup box -->
-			<main class="form-sign m-auto" id="signup-form">
-				<h1 class="slideup-text h3 mb-1 fw-normal">Please sign up</h1>
-				<p id="message-area"></p>
-				<!-- auth form -->
-				<form class="sign-form" onsubmit="signupUser(event)">
-					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="email" placeholder="name@example.com" required>
-						<label for="floatingInput">Email address</label>
-					</div>
-					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="nickname" placeholder="nickname" required>
-						<label for="floatingInput">Nickname</label>
-					</div>
-					<div class="slideup-text form-floating">
-						<input type="password" class="form-control" id="password1" placeholder="password" required>
-						<label for="floatingPassword">Password</label>
-					</div>
-					<div class="slideup-text form-floating">
-						<input type="password" class="form-control" id="password2" placeholder="password confirmation" required>
-						<label for="floatingPassword">Password confirmation</label>
-					</div>
-					<button class="slideup-text sign_btn sign_btn-primary mb-1 w-100 py-2 my-2" id="sign-submit" type="submit">Sign up</button>
-				</form>
-				<hr>
-				<!-- button 42 auth -->
-				<a href="{% url 'accounts:oauth_ft' %}" class="slideup-text sign_btn sign_btn-primary w-100 py-2" role="button">Signing up for a 42 account</a>
-				<!-- login -->
-				<div class="slideup-text form-sign-text pt-4" >
-					<a href="{% url 'accounts:login'%}">Login here</a>
-					<!-- <a href="{% url 'accounts:login'%}">ログインはこちら</a> -->
-				</div>
-				<!-- Password requirements -->
-				<div class="slideup-text form-sign-text py-2" id="password-requirements">Password requirements:</div>
-				<ul class="form-sign-text">
-					<!-- <li class="slideup-text">At least 8 characters</li>
-					<li class="slideup-text">Cannot be a commonly used password</li>
-					<li class="slideup-text">Cannot be all numeric</li> -->
-					<li class="slideup-text">8文字以上</li>
-					<li class="slideup-text">一般的によく使われるパスワードは使用不可</li>
-					<li class="slideup-text">数字のみのパスワードは使用不可</li>
-				</ul>
-			</main>
+<div class="container">
 
+	<div class="
+		hth-accounts-container
+		m-auto
+		" 
+		id="signup-form-container">
+
+		<h1 class="
+			slideup-text 
+			">Please sign up</h1>
+
+		<p id="message-area"></p>
+
+		<!-- auth form -->
+		<form class="hth-sign-form" onsubmit="signupUser(event)">
+			<div class="
+				slideup-text 
+				form-floating">
+				<input class="form-control" 
+				id="email" 
+				type="text"  
+				placeholder="name@example.com" required>
+				<!-- labelはinputの下に記述する: bootstrap templateのアニメーションのため -->
+				<label for="floatingInput">Email address</label>
+			</div>
+			<div class="
+				slideup-text 
+				form-floating">
+				<input class="form-control" 
+				id="nickname" 
+				type="text" 
+				placeholder="nickname" required>
+				<label for="floatingInput">Nickname</label>
+			</div>
+			<div class="
+				slideup-text 
+				form-floating">
+				<input class="form-control" 
+				id="password1" 
+				type="password"
+				placeholder="password" required>
+				<label for="floatingPassword">Password</label>
+			</div>
+			<div class="
+				slideup-text 
+				form-floating">
+				<input class="form-control" 
+				type="password" 
+				id="password2" 
+				placeholder="password confirmation" required>
+				<label for="floatingPassword">Password confirmation</label>
+			</div>
+			<button class="
+				slideup-text 
+				sign_btn 
+				sign_btn-primary 
+				mb-1 
+				w-100 
+				py-2 
+				my-2
+				" 
+				id="sign-submit" 
+				type="submit">Sign up</button>
+		</form>
+
+		<hr>
+
+		<!-- button 42 auth -->
+		<a  class="
+			slideup-text 
+			sign_btn 
+			sign_btn-primary 
+			w-100 
+			py-2
+			" 
+			id="auth42-a-btn" 
+			role="button"
+			href="{% url 'accounts:oauth_ft' %}" 
+			>Signing up for a 42 account</a>
+
+		<!-- link: login here -->
+		<div class="slideup-text form-sign-text pt-4" >
+			<a href="{% url 'accounts:login'%}">Login here</a>
+			<!-- <a href="{% url 'accounts:login'%}">ログインはこちら</a> -->
 		</div>
-	<!-- </div> -->
-<!-- </div> -->
+
+		<!-- text: Password requirements -->
+		<div class="slideup-text form-sign-text text-white py-2" id="password-requirements">Password requirements:</div>
+		<ul class="form-sign-text">
+			<li class="slideup-text">8文字以上</li>
+			<li class="slideup-text">一般的によく使われるパスワードは使用不可</li>
+			<li class="slideup-text">数字のみのパスワードは使用不可</li>
+			<!-- <li class="slideup-text">At least 8 characters</li>
+			<li class="slideup-text">Cannot be a commonly used password</li>
+			<li class="slideup-text">Cannot be all numeric</li> -->
+		</ul>
+
+	</div>
+</div>
 
 <script src="{% static 'accounts/js/signup.js' %}"></script>
 
