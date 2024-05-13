@@ -64,7 +64,7 @@ class TournamentEntry
 	{
 		const naviButton = document.createElement('button');
 		naviButton.id = 'round-navigation';
-		naviButton.className = 'site-btn my-3';
+		naviButton.className = 'hth-btn my-3';
 		naviButton.textContent = 'Round';
 		naviButton.onclick = () => this.roundManager.changeStateToRound(1);
 		return naviButton;
@@ -74,7 +74,7 @@ class TournamentEntry
 	addDeleteButton(tournamentId) {
 		const deleteButton = document.createElement('button');
 		deleteButton.id = 'delete-button';
-		deleteButton.className = 'site-btn my-3';
+		deleteButton.className = 'hth-btn my-3';
 		deleteButton.textContent = 'Delete Tournament';
 		deleteButton.onclick = async () => {
 			if (confirm('Delete this tournament?')) {

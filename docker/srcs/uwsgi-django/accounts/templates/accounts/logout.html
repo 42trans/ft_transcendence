@@ -2,19 +2,19 @@
 {% load static %}
 {% block title %}Log out - hth Pong{% endblock title %}
 {% block content %}
-<div class="canvas-container">
-	<div class="hs-text">
+<!-- <div class="canvas-container">
+	<div class="hs-text"> -->
 		<div class="container">
 
 			<div class="user-info-container">
-				<button onclick="handleLogout()">Logout</button>
+				<button class="hth-btn" onclick="handleLogout()">Logout</button>
 				<hr>
 				<a href="{% url 'accounts:user'%}">return to user page</a>
 			</div>
 			
 		</div>
-	</div>
-</div>
+	<!-- </div>
+</div> -->
 
 <script src="{% static 'accounts/js/logout.js' %}"></script>
 

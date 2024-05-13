@@ -3,7 +3,7 @@
 {% block title %}Tournament - hth Pong{% endblock title %}
 {% block content %}
 	{% csrf_token %}
-	<div class="canvas-container">
+	<!-- <div class="hth-container"> -->
 
 		<div class="container" id="tournament-container">
 
@@ -28,17 +28,14 @@
 			
 			<p id="submit-message" style="color: green;"></p>
 			<button id="back-home" style="display: none;">Back to Home</button>
-			
-			<!-- <ul class="dev-link my-4">
-				<h4>dev用</h4>
-				<li><a href="http://localhost:8002/pong/api/tournament/data/"> (dev)tournament/data/</a></li>
-			</ul> -->
 
 		</div>
 
-	</div>
+	<!-- </div> -->
 
+	<!-- TODO_ft: tournamentIDの有無？でAPI送信をどうするか検討する -->
+	
 <!-- 要素のidを変更した場合、ConfigTournament.js を修正してください -->
-<script type="module" src='{% static "pong/js/tournament/tournamentMain.js" %}'></script>
+<script type="module" src='{% static "pong/js/tournament/TournamentMain.js" %}'></script>
 
 {% endblock %}

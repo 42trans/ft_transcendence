@@ -16,8 +16,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		else {
 			const qrCodeHtml = `
 			<p>Scan this QR Code with your authenticator app:</p>
-			<img src="data:image/png;base64,${data.qr_code_data}" alt="2FA QR Code"><br>
-			<p>Or enter this setup key: ${data.setup_key}</p>
+			<p><img src="data:image/png;base64,${data.qr_code_data}" alt="2FA QR Code"></p>
+			<p>Or enter this setup key: </p>
+			<p class="pb-1">${data.setup_key}</p>
 		`;
 			document.getElementById('qrCodeContainer').innerHTML = qrCodeHtml;
 		}

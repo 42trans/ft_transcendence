@@ -1,27 +1,10 @@
-# docker/srcs/uwsgi-django/pong/views.py
-# import json
-# import requests
-# import secrets
+# docker/srcs/uwsgi-django/pong/views/navi_views.py
 from django.shortcuts import redirect, render
-# from django.conf import settings
-# from django.urls import reverse
 from django.http import JsonResponse
-# from django.http import HttpResponse
-# from django.views.decorators.csrf import csrf_exempt
-# from ..models import PongGameResult
 import logging
-# from django.contrib.auth.decorators import login_required
-# from .tournament.tournament_forms import TournamentForm
 from ..models import Tournament, Match
-# from django.utils import timezone
-# from datetime import datetime
-# from django.core import serializers
-# from django.http import HttpResponseBadRequest
-# from django.views.decorators.http import require_POST
-# from django.contrib.auth import get_user_model
-# from django.core.serializers import serialize
 from django.shortcuts import get_object_or_404
-# from django.db import transaction
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +14,7 @@ def tournament(request):
 		return render(request, 'pong/tournament.html')
 	else:
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
-	
+
 def pong_view(request):
 	if request.user.is_authenticated:
 		param = {
@@ -40,10 +23,10 @@ def pong_view(request):
 		return render(request, 'pong/index.html', param)
 	return render(request, 'pong/index.html')
 
-def results(request):
-	results_list = PongGameResult.objects.all().order_by("-date")
-	context = {'results_list': results_list}
-	return render(request, 'pong/results.html', context)
+# def results(request):
+# 	results_list = PongGameResult.objects.all().order_by("-date")
+# 	context = {'results_list': results_list}
+# 	return render(request, 'pong/results.html', context)
 
 # 3D
 def play_tournament(request, match_id):
@@ -58,8 +41,14 @@ def play_tournament(request, match_id):
 		"player2_score": match.player2_score,
 		"is_finished": match.is_finished
 	}
+	context = {
+		# viteコンテナで作成したjsをDjango dev serverでも使えるようにするため、Django の DEBUG 設定をwindow.に渡す
+		'is_dev_server': settings.DEBUG,
+		'match_json': JsonResponse(match_data, safe=False).content.decode()
+	}
 	# return render(request, 'pong/play-tournament.html', {'match': match})
-	return render(request, 'pong/play-tournament.html', {'match_json': JsonResponse(match_data, safe=False).content.decode()})
+	return render(request, 'pong/play-tournament.html', context)
+	# return render(request, 'pong/play-tournament.html', {'match_json': JsonResponse(match_data, safe=False).content.decode()})
 
 def game(request):
 	return render(request, 'pong/game.html')
