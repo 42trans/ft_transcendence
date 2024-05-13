@@ -1,4 +1,4 @@
-name: Docker Compose CI
+name: Check Containers Starting Up Successfuly
 on: [push]
 jobs:
   docker-compose-ci-test:
