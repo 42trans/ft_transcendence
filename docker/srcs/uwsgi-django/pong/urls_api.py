@@ -17,12 +17,14 @@ from .views.tournament_views import (
 
 # パスはapiが先頭につきます。ex./pong/api/tournament/create/
 urlpatterns = [
+	# ----------------------------------------
+	# Blockchain
+	# ----------------------------------------
 	# testnetを指定する（DB保存なし）
 	path('save_testnet/<str:testnet_name>/', save_testnet.save_testnet, name='save_testnet'),
 	path('fetch_testnet/<str:testnet_name>/', fetch_testnet.fetch_testnet, name='fetch_testnet'),
-
 	# ----------------------------------------
-	# tournament
+	# ofline tournament
 	# ----------------------------------------
 	# 「最新」のトーナメントの情報を取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
 	path("tournament/user/ongoing/latest/", get_latest_user_ongoing_tournament, name="get_latest_user_ongoing_tournament"),
