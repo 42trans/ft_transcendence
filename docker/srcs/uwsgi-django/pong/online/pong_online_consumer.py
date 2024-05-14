@@ -66,6 +66,12 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         # Accept the WebSocket connection
         await self.accept()
 
+        # 接続成功メッセージを送信
+        await self.send(text_data=json.dumps({
+            'type': 'connect()',
+            'message': 'Connected'
+        }))
+
 
     async def disconnect(self, close_code):
         """
