@@ -110,7 +110,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
 
 
         # ゲーム管理クラスの更新処理を受け取るたびに行う？どこでするか後で検討
-        # state = self.game_manager.update_game(json_data)
+        state = self.game_manager.update_game(json_data)
 
 
 

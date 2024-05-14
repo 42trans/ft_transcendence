@@ -76,25 +76,30 @@ class TestPongOnlineConsumer(TransactionTestCase):
     async def test_websocket_connection(self):
         await self.asyncSetUp()
         try:
-            # WebSocket接続が確立されることを確認するためにメッセージを送信してみる
-            message = {"type": "test_connection"}
+            # クライアントからゲーム更新コマンドを送信
+            message = {"paddle1": {"dir_y": 10}}
             await self.communicator.send_json_to(message)
+            # サーバーからのゲーム状態更新を受け取る
             response = await self.communicator.receive_json_from()
-            # 送受信したメッセージが一致することを確認
-            self.assertEqual(response, message)
+
+            self.assertIn("ball", response)
+            self.assertIn("paddle1", response)
+            self.assertIn("paddle2", response)
         finally:
             await self.asyncTearDown()
+
 
     async def test_send_and_receive_message(self):
         await self.asyncSetUp()
         try:
-            message = {"type": "test_message", "content": "hello"}
-            response = await self.send_and_receive_message(message)
+            message = {"paddle1": {"dir_y": 10}}
+            await self.communicator.send_json_to(message)
 
-            self.assertIn("type", response)
-            self.assertEqual(response["type"], "test_message")
-            self.assertIn("content", response)
-            self.assertEqual(response["content"], "hello")
+            response = await self.communicator.receive_json_from()
+
+            self.assertIn("ball", response)
+            self.assertIn("paddle1", response)
+            self.assertIn("paddle2", response)
         finally:
             await self.asyncTearDown()
     

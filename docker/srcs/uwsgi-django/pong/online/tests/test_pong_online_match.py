@@ -1,0 +1,36 @@
+from django.test import TestCase
+from pong.online.pong_online_game_manager import PongOnlineGameManager
+
+class TestPongOnlineMatch(TestCase):
+    def setUp(self):
+        self.game_manager = PongOnlineGameManager(user_id=1)
+        self.game_manager.initialize_game()
+
+    def test_update_score(self):
+        # 初期スコア0であるべき
+        self.assertEqual(self.game_manager.pong_engine_data["state"]["score1"], 0)
+        self.assertEqual(self.game_manager.pong_engine_data["state"]["score2"], 0)
+
+        # スコアを更新　引数はplayer番号
+        self.game_manager.match.update_score(1)
+        self.assertEqual(self.game_manager.match.score1, 1)
+        self.assertEqual(self.game_manager.match.score2, 0)
+
+        # もう一方のプレイヤーのスコアを更新　引数はplayer番号
+        self.game_manager.match.update_score(2)
+        self.assertEqual(self.game_manager.match.score1, 1)
+        self.assertEqual(self.game_manager.match.score2, 1)
+
+    def test_check_match_end(self):
+        # スコアを最大点数の直前に設定
+        self.game_manager.pong_engine_data["state"]["score1"] = self.game_manager.config.game_settings["max_score"] - 1
+        self.game_manager.pong_engine_data["state"]["score2"] = 0
+
+        # スコアを更新して試合終了条件を満たす
+        self.game_manager.match.update_score(1)
+        self.assertFalse(
+            self.game_manager.pong_engine_data["is_running"],
+            "スコアが最大に達したら試合が終了すべき"
+        )
+
+
