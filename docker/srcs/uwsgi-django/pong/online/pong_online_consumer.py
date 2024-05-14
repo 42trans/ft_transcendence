@@ -10,7 +10,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework.permissions import IsAuthenticated
 
 from accounts.models import CustomUser
-
+from .pong_online_game_manager import PongOnlineGameManager
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -34,16 +34,16 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         self.user_id = self.scope['user'].id
         # Get the room group name
         self.room_group_name, err = await self._get_room_group_name(
-                                                                    # model=model,
-                                                                    self.user_id
-                                                                    # user_id=user_id,
-                                                                    # other_user_id=other_user_id
-                                                                    )
+                                    # model=model,
+                                    self.user_id
+                                    # user_id=user_id,
+                                    # other_user_id=other_user_id
+                                    )
         if err is not None:
             # logger.debug(f'[Consumer]: Error: connect: {err}')
             await self.close(code=1007)  # 1007: Invalid data
             return
-        
+
         try:
             # Join room group
             await self.channel_layer.group_add(
@@ -55,7 +55,14 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             # server error
             await self.close(code=1011) 
             return
-        
+
+
+
+        # ゲーム管理クラスの初期化
+        self.game_manager = PongOnlineGameManager(self.user_id)
+
+
+
         # Accept the WebSocket connection
         await self.accept()
 
@@ -94,19 +101,25 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         """
         try:
             json_data = json.loads(text_data)
+            logger.debug(f'Received data: {json_data}')  # ログ追加
         except json.JSONDecodeError:
             logger.error("Invalid JSON received")
             await self.close(code=1007)  # Close connection on invalid data
             return
-        
-        # Send message to room group
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'send_data',
-                'data': json_data
-            }
-        )
+
+
+
+        # ゲーム管理クラスの更新処理を受け取るたびに行う？どこでするか後で検討
+        # state = self.game_manager.update_game(json_data)
+
+
+
+
+        # Send updated state to room group
+        await self.channel_layer.group_send(self.room_group_name, {
+            'type': 'send_data',
+            'data': state
+        })
 
     async def send_data(self, event):
         """
