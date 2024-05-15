@@ -63,22 +63,6 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         
         await self.accept()
 
-        # 初期状態を生成してクライアントに送信
-        # initial_state = self.game_manager.pong_engine_update.serialize_state()
-        # await self.send(text_data=json.dumps(initial_state))
-
-        # ゲームの初期状態を取得してグループに送信
-        initial_state = self.game_manager.pong_engine_update.serialize_state()
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                 # 使用するメソッドを指定
-                'type': 'send_data', 
-                'data': initial_state
-            }
-        )
-
-
 
     async def disconnect(self, close_code):
         """
@@ -114,12 +98,16 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         """
         try:
             json_data = json.loads(text_data)
-            logger.debug(f'Received data: {json_data}')  # ログ追加
         except json.JSONDecodeError:
             logger.error("Invalid JSON received")
             await self.close(code=1007)  # Close connection on invalid data
             return
-
+        
+        if json_data.get("action") == "initialize":
+            initial_state = self.game_manager.get_initial_state()  # 初期状態を取得
+            await self.send(text_data=json.dumps(initial_state))  # クライアントに初期状態を送信
+            logger.debug("Initial state sent to client.")
+            return
 
         # print(f'Received data: {json_data}')
         # ゲーム管理クラスの更新処理を受け取るたびに行う？どこでするか後で検討

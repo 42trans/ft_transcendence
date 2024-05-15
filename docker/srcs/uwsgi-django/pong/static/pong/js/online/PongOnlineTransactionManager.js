@@ -1,28 +1,21 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineTransactionManager.js
+import PongOnlineClientApp from "./PongOnlineClientApp.js";
+
 
 class PongOnlineTransactionManager 
 {
-	constructor(PongOnlineClientApp, gameState, socket) 
+	constructor(app, gameState, socket) 
 	{
 		this.isFirstgameState = gameState;
 		this.socket = socket;
-		this.app = PongOnlineClientApp;
+		this.app = app;
 
 		this.socket.onopen = () => {
-			console.log("WebSocket connection established.");
+			// console.log("WebSocket connection established.");
+			const initData = JSON.stringify({ action: "initialize" });
+			this.socket.send(initData);	
 		};
-		this.socket.onmessage = (event) => {
-			console.log("a4");
-			const data = JSON.parse(event.data);
-			if (!this.gameState) {
-				// this.initializeGameState(data);
-				this.app.iinitializeGameState(data);
-				this.app.gameLoop();
-			} else {
-				this.update(this.gameState, data);
-			}
-			console.log("Received data:", data);
-		};
+		
 		this.socket.onclose = (event) => {
 			console.log("WebSocket connection closed:", event.reason);
 		};
@@ -50,13 +43,13 @@ class PongOnlineTransactionManager
 			gameState.score2 = data.score.player2;
 		}
 
-		console.log("Updated gameState:", gameState);
+		// console.log("Updated gameState:", gameState);
 	}
 
 	send(inputData) 
 	{
 		if (this.socket.readyState === WebSocket.OPEN) {
-			console.log("Sending data:", inputData);
+			// console.log("Sending data:", inputData);
 			this.socket.send(JSON.stringify(inputData));
 		} else {
 			console.log("WebSocket is not open. Current state:", this.socket.readyState);
