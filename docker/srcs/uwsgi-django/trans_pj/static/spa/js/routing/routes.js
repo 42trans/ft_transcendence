@@ -10,7 +10,7 @@ import GameHistory  from "../views/Pong.js";
 
 import UserProfile  from "../views/Pong.js";
 import Friend       from "../views/Pong.js";
-import DM           from "../views/Pong.js";
+import DM           from "../views/DM.js";
 
 import Login        from "../views/Login.js";
 import Signup       from "../views/Signup.js";
@@ -27,22 +27,22 @@ import Script2 from "../views/Script2.js";
 
 
 export const Routes = [
-  { path: "/",            view: Dashboard },
-  { path: "/home",        view: Index },
-  { path: "/pong",        view: Pong },
+  { path: "/",                  view: Dashboard },
+  { path: "/home/",             view: Index },
+  { path: "/pong/",             view: Pong },
 
-  { path: "/pong",        view: FreePlay },
-  { path: "/tournament",  view: Tournament },
-  { path: "/pong",        view: Game1vs1 },
+  { path: "/pong/",             view: FreePlay },
+  { path: "/pong/tournament/",  view: Tournament },
+  { path: "/pong/",             view: Game1vs1 },
 
-  { path: "/history",     view: GameHistory },
+  { path: "/history/",          view: GameHistory },
 
-  { path: "/user",        view: UserProfile },
-  { path: "/friend",      view: Friend },
-  { path: "/dm",          view: DM },
+  { path: "/accounts/user/",    view: UserProfile },
+  { path: "/accounts/user/",    view: Friend },
+  { path: "/chat/dm-sessions/", view: DM },
 
-  { path: "/login",       view: Login },
-  { path: "/signup",      view: Signup },
+  { path: "/accounts/login/",   view: Login },
+  { path: "/accounts/signup/",  view: Signup },
 
   // { path: "/accounts", view: Accounts },
   // { path: "/admin", view: Admin },

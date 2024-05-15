@@ -7,24 +7,25 @@
     <title>Django Index Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=2.0" />
     <link rel="stylesheet" href="{% static 'spa/css/spa.css' %}" />
+    <base href="/" />
   </head>
   <body>
     <h1>SPA TEST link</h1>
-    <a href="/home"       class="nav__link" data-link>Index</a>
-    <a href="/pong"       class="nav__link" data-link>Pong</a>
+    <a href="/home/"              class="nav__link" data-link>Index</a>
+    <a href="/pong/"              class="nav__link" data-link>Pong</a>
 
-    <a href="/pong"       class="nav__link" data-link>FreePlay</a>
-    <a href="/tournament" class="nav__link" data-link>Tournament</a>
-    <a href="/pong"       class="nav__link" data-link>1vs1</a>
+    <a href="/pong/"              class="nav__link" data-link>FreePlay</a>
+    <a href="/pong/tournament/"   class="nav__link" data-link>Tournament</a>
+    <a href="/pong/"              class="nav__link" data-link>1vs1</a>
 
-    <a href="/history"    class="nav__link" data-link>GameHistory</a>
+    <a href="/history"            class="nav__link" data-link>GameHistory</a>
 
-    <a href="/user"       class="nav__link" data-link>UserProfile</a>
-    <a href="/friend"     class="nav__link" data-link>Friend</a>
-    <a href="/dm"         class="nav__link" data-link>DM</a>
+    <a href="/accounts/user/"     class="nav__link" data-link>UserProfile</a>
+    <a href="/accounts/user/"     class="nav__link" data-link>Friend</a>
+    <a href="/chat/dm-sessions/"  class="nav__link" data-link>DM</a>
 
-    <a href="/login"      class="nav__link" data-link>Log-in</a>
-    <a href="/signup"     class="nav__link" data-link>Sign-up</a>
+    <a href="/accounts/login/"    class="nav__link" data-link>Log-in</a>
+    <a href="/accounts/signup/"   class="nav__link" data-link>Sign-up</a>
 
 
 <!--    <a href="/accounts" class="nav__link" data-link>Accounts</a>-->
