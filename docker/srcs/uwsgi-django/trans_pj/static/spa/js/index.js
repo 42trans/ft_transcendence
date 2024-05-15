@@ -19,23 +19,43 @@ const getDisplayedURI = (pathname) => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  console.log(`index.js eventListener: 1`)
   let currentPath = window.location.pathname;
+  console.log(`index.js eventListener: 2: currentPath: ${currentPath}`);
   navigateTo(currentPath);  // URLに基づいて適切なルートをセットアップ
   router();  // コンテンツをロードして表示
 
   document.body.addEventListener("click", (event) => {
     // ページ切替
+    // if (event.target.matches("[data-link]")) {
+    //   event.preventDefault();
+    //   currentPath = event.target.href;
+    //   navigateTo(currentPath);
+    // }
+    // if (event.target.matches("[data-link]")) {
+    //   event.preventDefault();
+    //   let url = event.target.href;
+    //   // i18n prefixを削除
+    //   url = url.replace(/^\/[a-z]{2}\//, "/");
+    //   currentPath = url;
+    //   navigateTo(url);
+    // }
     if (event.target.matches("[data-link]")) {
       event.preventDefault();
-      currentPath = event.target.href;
-      navigateTo(currentPath);
+      let url = event.target.href;
+      const urlObject = new URL(url, window.location.origin);
+      // i18n prefixを削除
+      const cleanedPath = urlObject.pathname.replace(/^\/[a-z]{2}\//, "/");
+      const cleanedUrl = `${window.location.origin}${cleanedPath}${urlObject.search}${urlObject.hash}`;
+      currentPath = cleanedUrl;
+      console.log(`click: url: ${url}, cleanedPath: ${cleanedPath}, cleanedUrl: ${cleanedUrl}`);
+
+      navigateTo(cleanedUrl);
     }
 
     //多言語切替
-    if (
-      event.target.tagName === "INPUT" &&
-      event.target.className === "change-language"
-    ) {
+    if (event.target.tagName === "INPUT"
+        && event.target.className === "change-language") {
       event.preventDefault();
 
       const lang_url = "/i18n/setlang/";

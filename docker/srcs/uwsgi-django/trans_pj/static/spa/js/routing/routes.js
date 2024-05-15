@@ -10,10 +10,11 @@ import GameHistory  from "../views/Pong.js";
 
 import UserProfile  from "../views/Pong.js";
 import Friend       from "../views/Pong.js";
-import DM           from "../views/DM.js";
+import DMSessions   from "../views/DM.js";
 
-import Login        from "../views/Login.js";
 import Signup       from "../views/Signup.js";
+import Login        from "../views/Login.js";
+import Logout       from "../views/Logout.js";
 
 // import Posts from "../views/Posts.js";
 // import PostView from "../views/PostView.js";
@@ -39,10 +40,11 @@ export const Routes = [
 
   { path: "/accounts/user/",    view: UserProfile },
   { path: "/accounts/user/",    view: Friend },
-  { path: "/chat/dm-sessions/", view: DM },
+  { path: "/chat/dm-sessions/", view: DMSessions },
 
-  { path: "/accounts/login/",   view: Login },
   { path: "/accounts/signup/",  view: Signup },
+  { path: "/accounts/login/",   view: Login },
+  { path: "/accounts/logout/",  view: Logout },
 
   // { path: "/accounts", view: Accounts },
   // { path: "/admin", view: Admin },

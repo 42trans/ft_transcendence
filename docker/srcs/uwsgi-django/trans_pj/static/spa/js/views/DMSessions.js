@@ -7,6 +7,7 @@ export default class extends AbstractView {
   constructor(params) {
     super(params);
     this.setTitle("Tournament");
+    this.lang = params.lang; // 言語パラメータを取得
   }
 
   async getHtml() {

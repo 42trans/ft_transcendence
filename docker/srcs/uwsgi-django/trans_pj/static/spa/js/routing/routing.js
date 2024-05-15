@@ -11,23 +11,36 @@ const getParams = (match) => {
     (result) => result[1]
   );
   if (values.length > 0) {
-    alert(values);
+    // alert(values);
   }
   const url = match.result.toString();
 
   return Object.fromEntries(
     keys.map((key, i) => {
-      alert(key);
-      alert(i);
+      // alert(key);
+      // alert(i);
       return [key, values[i]];
     })
   );
 };
 
 export const navigateTo = (url) => {
-  console.log("history pushState:" + url);
-  history.pushState(null, null, url);
+  const urlObject = new URL(url, window.location.origin);
+  const cleanedPath = urlObject.pathname.replace(/^\/[a-z]{2}\//, "/");
+  const cleanedUrl = `${window.location.origin}${cleanedPath}${urlObject.search}${urlObject.hash}`;
+  console.log("history pushState:" + cleanedUrl);
+  history.pushState(null, null, cleanedUrl);
   router();
+
+  // i18n prefixを削除
+  // const cleanedUrl = url.replace(/^\/[a-z]{2}\//, "/");
+  // console.log("history pushState:" + cleanedUrl);
+  // history.pushState(null, null, cleanedUrl);
+  // router();
+
+  // console.log("history pushState:" + url);
+  // history.pushState(null, null, url);
+  // router();
 };
 
 export const router = async () => {
