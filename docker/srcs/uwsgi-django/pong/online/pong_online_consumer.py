@@ -60,17 +60,24 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
 
         # ゲーム管理クラスの初期化
         self.game_manager = PongOnlineGameManager(self.user_id)
-
-
-
-        # Accept the WebSocket connection
+        
         await self.accept()
 
-        # 接続成功メッセージを送信
-        # await self.send(text_data=json.dumps({
-        #     'type': 'connect()',
-        #     'message': 'Connected'
-        # }))
+        # 初期状態を生成してクライアントに送信
+        # initial_state = self.game_manager.pong_engine_update.serialize_state()
+        # await self.send(text_data=json.dumps(initial_state))
+
+        # ゲームの初期状態を取得してグループに送信
+        initial_state = self.game_manager.pong_engine_update.serialize_state()
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                 # 使用するメソッドを指定
+                'type': 'send_data', 
+                'data': initial_state
+            }
+        )
+
 
 
     async def disconnect(self, close_code):
@@ -114,7 +121,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             return
 
 
-
+        # print(f'Received data: {json_data}')
         # ゲーム管理クラスの更新処理を受け取るたびに行う？どこでするか後で検討
         state = self.game_manager.update_game(json_data)
 
@@ -123,6 +130,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
 
         # Send updated state to room group
         await self.channel_layer.group_send(self.room_group_name, {
+            # group_send(): typeに基づいてsend_data()を呼び出す
             'type': 'send_data',
             'data': state
         })

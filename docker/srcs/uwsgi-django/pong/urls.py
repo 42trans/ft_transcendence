@@ -7,10 +7,12 @@ from django.urls import include, path
 # from pong.blockchain import fetch_testnet
 # from pong.blockchain import record_game_result
 from .views.navi_views import tournament, game, pong_view, play_tournament
+from .views.pong_online_view import pong_online
 
 # api/をurls_api.pyに移動(国際化・多言語対応のため)
 
 urlpatterns = [
+	path("online/", pong_online, name="pong_online"),
 	path("tournament/", tournament, name="tournament"),
 	# path('results/', results, name='results'),
 	path("game/", game, name="game"),
