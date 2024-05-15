@@ -35,7 +35,7 @@ class PongOnlineUpdate:
             self.match.update_score(scorer)
 
         if self.physics.is_colliding_with_ceiling_or_floor(ball_y, r, self.field):
-            self.ball["dir_y"] = -self.ball["dir_y"]
+            self.ball["direction"]["y"] = -self.ball["direction"]["y"]
 
         if self.physics.is_ball_colliding_with_paddle(self.ball, self.paddle1):
             self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle1)
@@ -43,8 +43,8 @@ class PongOnlineUpdate:
             self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle2)
 
     def update_ball_position(self):
-        self.ball["position"]["x"] += self.ball["dir_x"] * self.ball["speed"]
-        self.ball["position"]["y"] += self.ball["dir_y"] * self.ball["speed"]
+        self.ball["position"]["x"] += self.ball["direction"]["x"] * self.ball["speed"]
+        self.ball["position"]["y"] += self.ball["direction"]["y"] * self.ball["speed"]
 
     def update_paddle_positions(self):
         self.paddle1["position"]["y"] += self.paddle1["dir_y"] * self.paddle1["speed"]
@@ -52,8 +52,8 @@ class PongOnlineUpdate:
 
     def reset_ball(self, loser):
         self.ball["position"] = {"x": 0, "y": 0}
-        self.ball["dir_x"] = -1 if loser == 1 else 1
-        self.ball["dir_y"] = 0.1
+        self.ball["direction"]["x"] = -1 if loser == 1 else 1
+        self.ball["direction"]["y"] = 0.1
         self.ball["speed"] = self.init_ball_speed
 
     def serialize_state(self):

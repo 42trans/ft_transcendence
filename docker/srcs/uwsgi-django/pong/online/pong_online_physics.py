@@ -34,9 +34,13 @@ class PongOnlinePhysics:
         # print(f"Before adjustment: Ball speed: {ball['speed']}, dir_x: {ball['dir_x']}")
 
         # ボールがパドルに向かって進んでいるかどうかを判定
-        if ((ball["dir_x"] < 0 and ball_x > paddle_x) or (ball["dir_x"] > 0 and ball_x < paddle_x)):
-            ball["dir_x"] = -ball["dir_x"]  # ボールの水平方向を反転
-            ball["dir_y"] += paddle["dir_y"] * 0.05  # パドルの移動方向がボールに影響
+        if ((ball["direction"]["x"] < 0 and ball_x > paddle_x) or 
+            (ball["direction"]["x"] > 0 and ball_x < paddle_x)):
+        # if ((ball["dir_x"] < 0 and ball_x > paddle_x) or (ball["dir_x"] > 0 and ball_x < paddle_x)):
+            ball["direction"]["x"] = -ball["direction"]["x"]  # ボールの水平方向を反転
+            ball["direction"]["y"] += paddle["dir_y"] * 0.05  # パドルの移動方向がボールに影響
+            # ball["dir_x"] = -ball["dir_x"]  # ボールの水平方向を反転
+            # ball["dir_y"] += paddle["dir_y"] * 0.05  # パドルの移動方向がボールに影響
             ball["speed"] = min(ball["speed"] * 1.1, self.max_ball_speed)  # 速度を10%増加させ、最大速度を超えないように制限
 
         # print(f"After adjustment: Ball speed: {ball['speed']}, dir_x: {ball['dir_x']}, Increased by: {ball['speed'] - initial_speed}")

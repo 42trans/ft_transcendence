@@ -18,23 +18,32 @@ class PongOnlineGameManager:
             "state": {"score1": 0, "score2": 0},
             "is_running": True
         }
-        self.pong_engine_init = PongOnlineInit(self.config)
-        self.pong_engine_update = None
-        self.match = None
         self.initialize_game()
 
 
     def initialize_game(self):
-        self.pong_engine_init.init_pong_engine(self.pong_engine_data)
-        self.match = PongOnlineMatch(self.pong_engine_data)
+        """ 
+        ゲームの各コンポーネントを初期化し、依存関係を注入する。
+         - pong_engine_data: 環境・状態・オブジェクトなどgameに関するほとんどの変数を持つ
+         - match:            スコア、終了判定
+         - physics:          衝突・速度計算
+        """
+        init                    = PongOnlineInit(self.config)
+        self.pong_engine_data   = init.init_pong_engine()
+        self.match              = PongOnlineMatch(self.pong_engine_data)
+        self.physics            = PongOnlinePhysics(self.pong_engine_data)
+        #  ゲームの更新メカニズムのセットアップ・依存性注入
         self.pong_engine_update = PongOnlineUpdate(
             self.pong_engine_data,
-            PongOnlinePhysics(self.pong_engine_data),
+            self.physics,
             self.match
         )
+        # print("ready to start.")
+        logger.info("ready to start.")
 
 
     def update_game(self, json_data):
+        """ gameの状態を高速で更新する """
         self.pong_engine_update.update_game(json_data)
         return self.pong_engine_update.serialize_state()
     

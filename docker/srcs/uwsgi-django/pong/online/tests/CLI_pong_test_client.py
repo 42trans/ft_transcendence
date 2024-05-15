@@ -15,9 +15,9 @@ async def pong_test_client():
             print(f"Connected to {uri}")
 
             # 初回メッセージを受信
-            state = await websocket.recv()
-            state = json.loads(state)
-            print("Initial state received:", state)
+            # state = await websocket.recv()
+            # state = json.loads(state)
+            # print("Initial state received:", state)
 
             while True:
                 try:
