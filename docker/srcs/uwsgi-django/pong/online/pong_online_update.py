@@ -1,18 +1,18 @@
 # docker/srcs/uwsgi-django/pong/online/pong_online_update.py
 class PongOnlineUpdate:
     def __init__(self, pong_engine_data, physics, match):
-        self.physics = physics
-        self.match = match
-        self.pong_engine_data = pong_engine_data
+        self.physics            = physics
+        self.match              = match
+        self.pong_engine_data   = pong_engine_data
     
-        self.ball = pong_engine_data["objects"]["ball"]
-        self.paddle1 = pong_engine_data["objects"]["paddle1"]
-        self.paddle2 = pong_engine_data["objects"]["paddle2"]
+        self.ball       = pong_engine_data["objects"]["ball"]
+        self.paddle1    = pong_engine_data["objects"]["paddle1"]
+        self.paddle2    = pong_engine_data["objects"]["paddle2"]
 
-        self.field = pong_engine_data["game_settings"]["field"]
-        self.difficulty = pong_engine_data["game_settings"]["difficulty"]
-        self.max_ball_speed = pong_engine_data["game_settings"]["max_ball_speed"]
-        self.init_ball_speed = pong_engine_data["game_settings"]["init_ball_speed"]
+        self.field              = pong_engine_data["game_settings"]["field"]
+        self.difficulty         = pong_engine_data["game_settings"]["difficulty"]
+        self.max_ball_speed     = pong_engine_data["game_settings"]["max_ball_speed"]
+        self.init_ball_speed    = pong_engine_data["game_settings"]["init_ball_speed"]
 
     def update_game(self, input_data):
         self.handle_input(input_data)
@@ -21,13 +21,17 @@ class PongOnlineUpdate:
         self.update_paddle_positions()
 
     def handle_input(self, input_data):
+        """
+        clienから受信したパドル情報を代入
+        TODO_ft: クライアントとの通信がまだの間、開発用に一旦、Noneの回避目的でデフォルト0を入れている。値がない場合に0*speedで位置変更0な処理で良いか判断が必要。
+        """
         self.paddle1["dir_y"] = input_data.get("paddle1", {}).get("dir_y", 0)
         self.paddle2["dir_y"] = input_data.get("paddle2", {}).get("dir_y", 0)
 
     def handle_collisions(self):
-        r = self.ball["radius"]
-        ball_x = self.ball["position"]["x"]
-        ball_y = self.ball["position"]["y"]
+        r       = self.ball["radius"]
+        ball_x  = self.ball["position"]["x"]
+        ball_y  = self.ball["position"]["y"]
 
         if self.physics.is_colliding_with_side_walls(ball_x, r, self.field):
             scorer = 2 if ball_x < 0 else 1

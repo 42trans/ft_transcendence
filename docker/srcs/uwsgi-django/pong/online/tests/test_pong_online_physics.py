@@ -44,7 +44,6 @@ class TestPongOnlinePhysics(TestCase):
         ball["position"]["x"] = -1  # パドルの左側に配置
         ball["position"]["y"] = 0
         ball["direction"]["x"] = 1  # 右向き
-        # ball["dir_x"] = 1  # 右向き
         initial_speed = ball["speed"]
 
         # 衝突処理を実行
@@ -58,7 +57,6 @@ class TestPongOnlinePhysics(TestCase):
         )
         self.assertEqual(
             ball["direction"]["x"], -1,
-            # ball["dir_x"], -1,
             "X方向が反転すべき"
         )
 
@@ -71,8 +69,7 @@ class TestPongOnlinePhysics(TestCase):
         # ボールをパドルの直前に設定して、左から右へ移動するようにする
         self.game_manager.pong_engine_data["objects"]["ball"]["position"]["x"] = -1
         self.game_manager.pong_engine_data["objects"]["ball"]["position"]["y"] = 0
-        self.game_manager.pong_engine_data["objects"]["ball"]["direction"]["x"] = 1  # 右向き
-        # self.game_manager.pong_engine_data["objects"]["ball"]["dir_x"] = 1  # 右向き
+        self.game_manager.pong_engine_data["objects"]["ball"]["direction"]["x"] = 1
         initial_speed = self.game_manager.pong_engine_data["objects"]["ball"]["speed"]
 
         # 衝突の前にボールを更新
@@ -84,6 +81,5 @@ class TestPongOnlinePhysics(TestCase):
         )
         self.assertEqual(
             self.game_manager.pong_engine_data["objects"]["ball"]["direction"]["x"], -1,
-            # self.game_manager.pong_engine_data["objects"]["ball"]["dir_x"], -1,
             "X方向が反転べき"
         )
