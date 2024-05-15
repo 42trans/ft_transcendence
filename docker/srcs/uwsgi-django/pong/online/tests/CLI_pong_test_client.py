@@ -4,6 +4,11 @@ import json
 import ssl
 
 async def pong_test_client():
+    """
+    ws通信チェック用
+        - クライアントから接続を確認する目的がメイン
+        - 処理自体はまだバグってます。
+    """
     uri = "wss://localhost/ws/pong/online/"
     
     ssl_context = ssl.create_default_context()

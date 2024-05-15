@@ -9,6 +9,19 @@ from typing import Dict, Any
 logger = logging.getLogger('Pong online')
 
 class PongOnlineGameManager:
+    """
+    # テストの実行方法: 
+        - Makefileのあるディレクトリで下記のコマンドを実行
+        - Django Test: Makefile
+            make test_online_pong_django
+            - または、
+                docker exec -it uwsgi-django bash -c "python manage.py test pong.online.tests"
+        - WS Test: CLI
+            - 準備
+                pip install websockets
+            - コマンド
+                python3 docker/srcs/uwsgi-django/pong/online/tests/CLI_pong_test_client.py
+    """
     def __init__(self, user_id):
         self.user_id = user_id
         self.config = PongOnlineConfig()
