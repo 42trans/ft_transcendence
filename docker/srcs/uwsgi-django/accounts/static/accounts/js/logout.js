@@ -1,3 +1,6 @@
+// logout.js
+// import { navigateTo } from "../../../../trans_pj/static/spa/js/routing/routing.js";
+
 function handleLogout() {
 	fetch('/accounts/api/logout/', {
 	method: 'GET',
@@ -13,7 +16,9 @@ function handleLogout() {
 	.then(data => {
 		if (data.message) {
 			alert(data.message);
+			console.log("redirect to " + data.redirect);
 			window.location.href = data.redirect;
+			// navigateTo(data.redirect);
 		} else {
 			throw new Error('No message in response');
 		}
