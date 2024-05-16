@@ -13,7 +13,8 @@ class PongOnlineRenderer
 	static drawPaddle(ctx, paddle) 
 	{
 		ctx.fillStyle = 'white';
-		ctx.fillRect(
+		ctx.fillRect
+		(
 			paddle.position.x - paddle.width / 2,
 			paddle.position.y - paddle.height / 2,
 			paddle.width,
@@ -31,12 +32,26 @@ class PongOnlineRenderer
 
 	static clearField(ctx, field) 
 	{
-		ctx.clearRect(0, 0, field.width, field.height);
+		// 中心を原点とする座標系でキャンバス全体をクリア
+		ctx.clearRect
+		(
+			-field.width / 2, 
+			-field.height / 2, 
+			field.width, 
+			field.height
+		);
+		
+		// 背景色設定
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+		ctx.fillRect(
+			-field.width / 2, 
+			-field.height / 2, 
+			field.width, 
+			field.height
+		);
 	}
 
 }
 
 export default PongOnlineRenderer;
-
-
 

@@ -2,66 +2,78 @@
 	import PongEngineKey from "./PongEngineKey.js";
 	import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 	import PongOnlineRenderer from "./PongOnlineRenderer.js";
-	import PongOnlineTransactionManager from "./PongOnlineTransactionManager.js";
+	import PongOnlineSyncWS from "./PongOnlineSyncWS.js";
 
+	/**
+	 * ## Websocket接続テスト:
+	 * - brew install websocat
+	 * - websocat ws://localhost/ws/pong/online/
+	 */
 	class PongOnlineClientApp 
 	{
 		constructor() 
 		{
-			this.canvasId = "pong-online-canvas-container"
-			this.canvas = document.getElementById(this.canvasId);
+			this.canvasId	= "pong-online-canvas-container"
+			this.canvas 	= document.getElementById(this.canvasId);
 			if (!this.canvas.getContext) {
 				return;
 			}
-			this.ctx = this.canvas.getContext("2d");
-			this.field = { width: 400, height: 300 };
-			this.ctx.fillRect(0, 0, this.field.width, this.field.height);
-
-			this.gameState = null;
-			this.socket = new WebSocket('wss://localhost/ws/pong/online/');
-			console.log(this.socket);
-			this.transactionManager = new PongOnlineTransactionManager(this ,this.gameState, this.socket, () => {});
+			this.ctx		= this.canvas.getContext("2d");
 			
-			this.socket.onmessage = (event) => {
-				const data = JSON.parse(event.data);
-				if (!this.gameState) {
-					// console.log("class PongOnlineTransactionManager", this.gameState);
-					this.iinitializeGameState(data);
-					this.gameLoop();
-				} else {
-					this.transactionManager.update(this.gameState, data);
-				}
-				// console.log("Received data:", data);
-			};
+			// TODO_Ft: serverからfieldの値を取得したい
+			this.field		= { width: 400, height: 300, zoomLevel: 1 };
+			this.updateCanvasSize();
+			window.addEventListener('resize', () => this.updateCanvasSize());
+
+			this.gameState	= null;
+			console.log('constructor begin');
+			this.socket		= new WebSocket('wss://localhost/ws/pong/online/');
+
+			this.syncWS		= new PongOnlineSyncWS(this ,this.gameState, this.socket, () => {});
 			PongEngineKey.listenForEvents();
 		}
-		
-		
-		iinitializeGameState(data) 
-		{
-			// サーバーからの初期データに基づいて gameState を設定
-			console.log("initializeGameState:", data);
-			this.gameState = {
-				paddle1: data.paddle1,
-				paddle2: data.paddle2,
-				ball: data.ball,
-				score: data.score
-			};
 
+		
+		// 座標変換、ウインドウの幅100%、ズーム調整
+		updateCanvasSize() 
+		{
+			// ブラウザウィンドウの寸法を使用
+			this.canvas.width	= window.innerWidth;
+			this.canvas.height	= window.innerHeight;
+
+			// 幅と高さの両方に基づいてズームレベルを計算
+			let zoomLevelWidth	= this.canvas.width / this.field.width;
+			let zoomLevelHeight	= this.canvas.height / this.field.height;
+			// 制約が最も厳しい側（小さい方のスケール）を使用
+			this.field.zoomLevel = Math.min(zoomLevelWidth, zoomLevelHeight);
+
+			// debug---
+			// console.log(this.canvas.width, zoomLevelWidth);
+			// console.log(this.canvas.height, zoomLevelHeight);
+			// console.log(this.field.zoomLevel);
+
+			// デフォルトの変換をリセット
+			this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+			// キャンバスの中心を0,0とするための座標変換
+			this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+			this.ctx.scale(this.field.zoomLevel, this.field.zoomLevel);
 		}
 
 		gameLoop() 
 		{
-			setInterval(() => {
+			setInterval(() => 
+			{
+				// パドル情報更新
 				PongOnlinePaddleMover.handlePaddleMovement(this.field, this.gameState);
-				this.transactionManager.send(this.gameState);
+				// ゲーム状態送信
+				this.syncWS.sendClientState(this.gameState);
+				// 2D描画
 				PongOnlineRenderer.render(this.ctx, this.field, this.gameState);
-			// 約60fpsで更新
+			// TODO_ft:　dev時負荷落とす
 			}, 1000 / 60);
 		}
 
-		static main(env) 
-		{
+		static main(env) {
 			new PongOnlineClientApp(env);
 		}
 	}

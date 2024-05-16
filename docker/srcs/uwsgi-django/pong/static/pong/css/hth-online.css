@@ -1,12 +1,15 @@
 
-.pong-online-canvas-container {
-	margin: auto;
-	padding: 20px; 
-	max-width: 400px;
-	min-width: 300px;
+#pong-online-canvas-container {
+	/* ページのスクロールに関係なくビューポートに固定 */
+	position: fixed;
+	/* ゲームテーブルであることがわかるように余白をつける */
+	width: 90vw;
+	height: 90vh;
 
-	background-color: #ffb320; 
-	/* background-color: rgba(35, 24, 1, 0.921);  */
-	text-shadow: 0px 0px 0px #fff;
-	border-radius: 10px; 
+	aspect-ratio: 4/3;
+	display: block;
+	margin: 0 auto;
+	padding: 0;
+	/* 最前面に浮かせる */
+	z-index: 9999;
 }

@@ -1,3 +1,4 @@
+# docker/srcs/uwsgi-django/pong/routing.py
 from django.urls import path
 from .online.pong_online_consumer import PongOnlineConsumer
 

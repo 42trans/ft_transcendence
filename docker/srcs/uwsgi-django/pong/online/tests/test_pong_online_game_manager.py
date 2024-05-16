@@ -31,3 +31,10 @@ class TestPongOnlineGameManager(TestCase):
             self.game_manager.pong_engine_data["game_settings"]["difficulty"],
             self.game_manager.config.game_settings["difficulty"]
         )
+
+        # パドルの初期位置のテスト
+        # paddle1 = self.game_manager.pong_engine_data["objects"]["paddle1"]
+        # paddle2 = self.game_manager.pong_engine_data["objects"]["paddle2"]
+        # self.assertEqual(paddle1["position"]["x"], -(self.game_manager.config.fields["width"] * 0.95) / 2 + 50)
+        # self.assertEqual(paddle2["position"]["x"], (self.game_manager.config.fields["width"] * 0.95) / 2 - 50)
+

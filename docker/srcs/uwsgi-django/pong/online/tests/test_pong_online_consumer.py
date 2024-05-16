@@ -16,7 +16,6 @@ from rest_framework import status
 
 # ロガーの設定
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
 
 class TestPongOnlineConsumer(TransactionTestCase):
     kUser1Email = 'user1@example.com'
@@ -25,7 +24,6 @@ class TestPongOnlineConsumer(TransactionTestCase):
 
     # async def setUp(self):
     async def asyncSetUp(self):
-        logger.debug("Setting up the test case")
         # テスト用にユーザーを作成してデータベースに登録
         self.client = APIClient()
         self.user1 = await database_sync_to_async(CustomUser.objects.create_user)(
@@ -47,12 +45,10 @@ class TestPongOnlineConsumer(TransactionTestCase):
         await self.communicator.disconnect()
 
     async def _login(self, email, password):
-        logger.debug("Logging in user")
         login_api_path = reverse("api_accounts:api_login")
         login_data = {'email': email, 'password': password}
         response = await database_sync_to_async(self.client.post)(login_api_path, data=login_data)
         if response.status_code == status.HTTP_200_OK and 'Access-Token' in response.cookies:
-            logger.debug("Login successful")
             return response.cookies['Access-Token'].value
         else:
             logger.error("Failed to retrieve JWT token")

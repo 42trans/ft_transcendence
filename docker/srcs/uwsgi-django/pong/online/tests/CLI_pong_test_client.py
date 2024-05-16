@@ -16,7 +16,9 @@ async def pong_test_client():
     ssl_context.verify_mode = ssl.CERT_NONE
 
     try:
+        print(f"start")
         async with websockets.connect(uri, ssl=ssl_context) as websocket:
+            print(f"start2")
             print(f"Connected to {uri}")
 
             # 初回メッセージを受信
