@@ -1,47 +1,20 @@
+{% extends 'base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Django Index Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=2.0" />
-    <link rel="stylesheet" href="{% static 'spa/css/spa.css' %}" />
-    <base href="/" />
-  </head>
-  <body>
-    <h1>SPA TEST link</h1>
-    <a href="/home/"              class="nav__link" data-link>Index</a>
-    <a href="/pong/"              class="nav__link" data-link>Pong</a>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'spa/css/spa.css' %}" />
+{% endblock %}
 
-    <a href="/pong/"              class="nav__link" data-link>FreePlay</a>
-    <a href="/pong/tournament/"   class="nav__link" data-link>Tournament</a>
-    <a href="/pong/"              class="nav__link" data-link>1vs1</a>
-
-    <a href="/history"            class="nav__link" data-link>GameHistory</a>
-
-    <a href="/accounts/user/"     class="nav__link" data-link>UserProfile</a>
-    <a href="/accounts/user/"     class="nav__link" data-link>Friend</a>
-    <a href="/chat/dm-sessions/"  class="nav__link" data-link>DM</a>
-
-    <a href="/accounts/signup/"   class="nav__link" data-link>Sign-up</a>
-    <a href="/accounts/login/"    class="nav__link" data-link>Log-in</a>
-    <a href="/accounts/logout/"   class="nav__link" data-link>Log-out</a>
-
-
-<!--    <a href="/accounts" class="nav__link" data-link>Accounts</a>-->
-<!--    <a href="/admin" class="nav__link" data-link>Admin</a>-->
-<!--    <a href="/posts" class="nav__link" data-link>Posts</a>-->
-<!--    <a href="/settings" class="nav__link" data-link>Settings</a>-->
-<!--    <a href="/login" class="nav__link" data-link>Log_in</a>-->
-    <a href="/lang" class="nav__link" data-link>Lang</a>
-    <a href="/script" class="nav__link" data-link>Script</a>
-    <a href="/script2" class="nav__link" data-link>Script2</a>
-
-    <h1>SPA Area</h1>
-    <div id="spa" class="spa_area">
-      <div id="app"></div>
+{% block content %}
+{% include 'header.html' %}
+<h1>SPA Area</h1>
+<div id="spa" class="spa_area">
+    <div id="app">
+        <!-- SPA AREA 動的に生成される内容を表示 -->
     </div>
-    <script type="module" src="{% static 'spa/js/index.js' %}"></script>
-  </body>
-</html>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'spa/js/index.js' %}"></script>
+{% endblock %}
