@@ -6,11 +6,11 @@ import { executeScriptTab } from "../utility/script.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Accounts");
+    this.setTitle("Friend");
   }
 
   async getHtml() {
-    const uri = getUrl("accounts/");
+    const uri = getUrl("/accounts/user/");
     const data = await fetchData(uri);
     return data;
   }

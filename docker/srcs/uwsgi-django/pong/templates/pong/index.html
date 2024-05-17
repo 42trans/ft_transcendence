@@ -1,8 +1,5 @@
-{% extends 'base.html' %}
+<!-- pong/index.html -->
 {% load static %}
-{% block title %}Home - hth Pong{% endblock title %}
-{% block content %}
-
 <!-- TODO_ft: bugfooter hover color がbg同じ -->
 
 <!-- TODO_ft:gameではcontainerが邪魔になるのでbase.htmlに入れられない -->
@@ -13,17 +10,17 @@
 		">Unrivaled <span>hth Pong</span> Experience</h2>
 
 	{% if nickname %}
-		<h3 class="
+	<h3 class="
 			slideup-text
 			text-shadow-primary
 			">Welcome, [{{ nickname }}]</h3>
-		<!-- <p class="slideup-text"><a href="{% url 'accounts:user' %}">User profile</a></p> -->
+	<!-- <p class="slideup-text"><a href="{% url 'accounts:user' %}">User profile</a></p> -->
 	{% else %}
-		<h3 class="
+	<h3 class="
 			slideup-text
 			text-shadow-primary
 			">Welcome, Guest</h3>
-		<p class="
+	<p class="
 			slideup-text
 			text-shadow-secondary
 			">For a happier life, let's play the pong game!</p>
@@ -34,4 +31,3 @@
 </div>
 
 <script src="{% static 'accounts/js/logout.js' %}"></script>
-{% endblock %}

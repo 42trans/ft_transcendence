@@ -25,6 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
   navigateTo(currentPath);  // URLに基づいて適切なルートをセットアップ
   router();  // コンテンツをロードして表示
 
+  // リロード時の処理を追加
+  window.addEventListener("load", () => {
+    console.log(`index.js load: ${currentPath}`);
+    currentPath = window.location.pathname;
+    navigateTo(currentPath);
+    router();
+  });
+
   document.body.addEventListener("click", (event) => {
     // ページ切替
     // if (event.target.matches("[data-link]")) {
@@ -48,7 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const cleanedPath = urlObject.pathname.replace(/^\/[a-z]{2}\//, "/");
       const cleanedUrl = `${window.location.origin}${cleanedPath}${urlObject.search}${urlObject.hash}`;
       currentPath = cleanedUrl;
-      console.log(`click: url: ${url}, cleanedPath: ${cleanedPath}, cleanedUrl: ${cleanedUrl}`);
+      console.log(`click: url: ${url}`);
+      console.log(`click: url: cleanedPath: ${cleanedPath}`);
+      console.log(`click: url: cleanedUrl: ${cleanedUrl}`);
 
       navigateTo(cleanedUrl);
     }

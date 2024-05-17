@@ -1,2 +1,2 @@
 console.log("test.js Replace Test ");
-document.getElementById("replace").textContent = "AAAAAAAABBBBBBDDDDD";
+document.getElementById("replace-area").textContent = "AAAAAAAABBBBBBDDDDD";

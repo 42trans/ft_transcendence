@@ -1,10 +1,12 @@
 {% load static %}
-<!doctype html>
-<html lang="en" class="h-100" data-bs-theme="auto">
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="3D-Pong">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}{% endblock %}</title>
+
 	<!-- Stylesheets -->
 	<link rel="stylesheet" href="{% static 'pong/css/bootstrap/bootstrap.min.css' %}"/>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
@@ -20,29 +22,11 @@
 	<link rel="stylesheet" href="{% static 'pong/css/hth-accounts.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/hth-match-history.css' %}">
 	<link rel="stylesheet" href="{% static 'pong/css/hth-btn.css' %}">
-	<!-- 追加css: Game用 -->
+
 	{% block extra_css %}{% endblock %}
-	<!-- title -->
-	<title>{% block title %}{% endblock %}</title>
 </head>
-
-<body class="d-flex flex-column h-100">
-	<!-- color mode -->
-	{% include 'icons.html' %}
-	{% include 'theme-toggle.html' %}
-	<header>{% include 'header.html' %}</header>
-	<main id="hth-main" class="flex-shrink-0">
-		<div class="hth-container">
-			<!-- <div class="container-fluid px-0"> -->
-				{% block content %}{% endblock %}
-			<!-- </div> -->
-		</div>
-	</main>
-	<footer>{% include 'footer.html' %}</footer>
-
-<script src="{% static 'pong/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'pong/js/bootstrap/color-modes.js' %}"></script>
-<script src="{% static 'accounts/js/logout.js' %}"></script>
+<body>
+{% block content %}{% endblock %}
+{% block extra_js %}{% endblock %}
 </body>
-
 </html>

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}User profile - hth Pong{% endblock title %}
-{% block content %}
+<!--{% block title %}User profile - hth Pong{% endblock title %}-->
+<!--{% block content %}-->
 <!-- <div class="canvas-container"> -->
 <!-- <div class="hs-text"> -->
 <div class="container" >
@@ -33,7 +33,5 @@
 {% endblock %}
 <hr>
 <br>
-<p><a href="{% url 'chat:dm_list' %}">DM</a></p>
-<a href="/pong/">🏓 Pong Index Page</a>
-</body>
-</html>
+<p><a href="{% url 'chat:dm_list' %}" class="nav__link" data-link>DM</a></p>
+<a href="/pong/" class="nav__link" data-link>🏓 Pong Index Page</a>

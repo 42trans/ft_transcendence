@@ -9,8 +9,9 @@ function makeRequest(method, url) {
 
 export default async function fetchData(url) {
   try {
-    const response = await makeRequest("GET", url);
-    return response;
+    const response_text = await makeRequest("GET", url);
+    console.log("Response Text:", response_text); // レスポンスのテキストをコンソールに出力
+    return response_text;
   } catch (error) {
     console.error(error);
   }

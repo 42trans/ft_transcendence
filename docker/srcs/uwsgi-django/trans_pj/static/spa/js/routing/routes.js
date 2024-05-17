@@ -3,14 +3,15 @@ import Index        from "../views/Index.js";
 import Pong         from "../views/Pong.js";
 
 import FreePlay     from "../views/Pong.js";
-import Tournament   from "../views/Pong.js";
+import Tournament   from "../views/Tournament.js";
 import Game1vs1     from "../views/Pong.js";
 
-import GameHistory  from "../views/Pong.js";
+import GameHistory  from "../views/UserProfile.js";
 
-import UserProfile  from "../views/Pong.js";
-import Friend       from "../views/Pong.js";
-import DMSessions   from "../views/DM.js";
+import UserProfile  from "../views/UserProfile.js";
+import EditProfile  from "../views/UserProfile.js";
+import Friend       from "../views/Friend.js";
+import DMSessions   from "../views/DMSessions.js";
 
 import Signup       from "../views/Signup.js";
 import Login        from "../views/Login.js";
@@ -39,6 +40,7 @@ export const Routes = [
   { path: "/history/",          view: GameHistory },
 
   { path: "/accounts/user/",    view: UserProfile },
+  { path: "/accounts/edit/",    view: EditProfile },
   { path: "/accounts/user/",    view: Friend },
   { path: "/chat/dm-sessions/", view: DMSessions },
 
