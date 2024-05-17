@@ -18,7 +18,7 @@ class PongOnlineUpdate:
         self.handle_input(input_data)
         self.handle_collisions()
         self.update_ball_position()
-        self.update_paddle_positions()
+        # self.update_paddle_positions()
 
     def handle_input(self, input_data):
         """
@@ -27,6 +27,8 @@ class PongOnlineUpdate:
         """
         self.paddle1["dir_y"] = input_data.get("paddle1", {}).get("dir_y", 0)
         self.paddle2["dir_y"] = input_data.get("paddle2", {}).get("dir_y", 0)
+        self.paddle1["position"]["y"] = input_data.get("paddle1", {}).get("position", {}).get("y")
+        self.paddle2["position"]["y"] = input_data.get("paddle2", {}).get("position", {}).get("y")
 
     def handle_collisions(self):
         r       = self.ball["radius"]
@@ -50,9 +52,9 @@ class PongOnlineUpdate:
         self.ball["position"]["x"] += self.ball["direction"]["x"] * self.ball["speed"]
         self.ball["position"]["y"] += self.ball["direction"]["y"] * self.ball["speed"]
 
-    def update_paddle_positions(self):
-        self.paddle1["position"]["y"] += self.paddle1["dir_y"] * self.paddle1["speed"]
-        self.paddle2["position"]["y"] += self.paddle2["dir_y"] * self.paddle2["speed"]
+    # def update_paddle_positions(self):
+    #     self.paddle1["position"]["y"] += self.paddle1["dir_y"] * self.paddle1["speed"]
+    #     self.paddle2["position"]["y"] += self.paddle2["dir_y"] * self.paddle2["speed"]
 
     def reset_ball(self, loser):
         self.ball["position"] = {"x": 0, "y": 0}

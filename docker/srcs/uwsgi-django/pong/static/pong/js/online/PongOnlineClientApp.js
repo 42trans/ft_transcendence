@@ -13,6 +13,7 @@
 	{
 		constructor() 
 		{
+			// console.log('PongOnlineClientApp constructor begin');
 			this.canvasId	= "pong-online-canvas-container"
 			this.canvas 	= document.getElementById(this.canvasId);
 			if (!this.canvas.getContext) {
@@ -26,10 +27,9 @@
 			window.addEventListener('resize', () => this.updateCanvasSize());
 
 			this.gameState	= null;
-			console.log('constructor begin');
 			this.socket		= new WebSocket('wss://localhost/ws/pong/online/');
 
-			this.syncWS		= new PongOnlineSyncWS(this ,this.gameState, this.socket, () => {});
+			this.syncWS		= new PongOnlineSyncWS(this ,this.gameState, this.socket);
 			PongEngineKey.listenForEvents();
 		}
 
@@ -70,7 +70,7 @@
 				// 2D描画
 				PongOnlineRenderer.render(this.ctx, this.field, this.gameState);
 			// TODO_ft:　dev時負荷落とす
-			}, 1000 / 60);
+			}, 1000 / 30);
 		}
 
 		static main(env) {
