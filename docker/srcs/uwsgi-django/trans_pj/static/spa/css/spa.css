@@ -5,7 +5,11 @@ body {
 }
 
 .spa_area {
-  border: solid black 1px;
+  /*border: solid black 1px;*/
+  border: solid #00ff00 5px;
+  margin-top: calc(var(--header-height) + 40px);
+  position: relative;
+  z-index: 1021; /* ヘッダーよりも下に表示されるようにz-indexを設定 */
 }
 
 #app {
