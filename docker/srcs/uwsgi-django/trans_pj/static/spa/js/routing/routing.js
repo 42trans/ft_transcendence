@@ -2,80 +2,49 @@ import { Routes } from "./routes.js";
 import { getUrl } from "../utility/url.js";
 import { isLogined } from "../utility/user.js";
 
-const pathToRegex = (path) =>
-  new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
+const ROOT_INDEX = 0;
+const LOGIN_PATH = '/login/';
 
-const getParams = (match) => {
-  const values = match.result.slice(1);
-  const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(
-    (result) => result[1]
-  );
-  if (values.length > 0) {
-    // alert(values);
-  }
-  const url = match.result.toString();
-
-  return Object.fromEntries(
-    keys.map((key, i) => {
-      // alert(key);
-      // alert(i);
-      return [key, values[i]];
-    })
-  );
-};
 
 export const navigateTo = (url) => {
-  const urlObject = new URL(url, window.location.origin);
-  const cleanedPath = urlObject.pathname.replace(/^\/[a-z]{2}\//, "/");
-  const cleanedUrl = `${window.location.origin}${cleanedPath}${urlObject.search}${urlObject.hash}`;
-  console.log("history pushState:" + cleanedUrl);
-  history.pushState(null, null, cleanedUrl);
+  console.log("history pushState:" + url);
+  history.pushState(null, null, url);
   router();
-
-  // i18n prefixを削除
-  // const cleanedUrl = url.replace(/^\/[a-z]{2}\//, "/");
-  // console.log("history pushState:" + cleanedUrl);
-  // history.pushState(null, null, cleanedUrl);
-  // router();
-
-  // console.log("history pushState:" + url);
-  // history.pushState(null, null, url);
-  // router();
 };
 
+
+const getSelectedRoute = (currentPath, routes, isLogined) => {
+  // routes配列から、現在のパスネームにマッチするルートを見つける
+  const matchedRoute = routes.find((route) => route.path === currentPath);
+
+  if (matchedRoute) {
+    // マッチするルートが見つかった場合は、そのルートを選択
+    return matchedRoute;
+  } else if (isLogined) {
+    // マッチするルートが見つからず、ログインしている場合は、デフォルトのルートを選択
+    return routes[ROOT_INDEX];
+  } else {
+    // マッチするルートが見つからず、ログインしていない場合は、ログインページのルートを選択
+    return routes.find((route) => route.path === LOGIN_PATH);
+  }
+};
+
+
 export const router = async () => {
-  const potentialMatches = Routes.map((route) => {
-    return {
-      route: route,
-      result: location.pathname.match(pathToRegex(route.path)),
-    };
-  });
+  const currentPath = location.pathname;
 
-  let match = potentialMatches.find(
-    (potentialMatch) => potentialMatch.result !== null
-  );
+  // 選択されたルートを取得
+  const selectedRoute = getSelectedRoute(currentPath, Routes, isLogined());
 
-  if (!match) {
-    match = {
-      route: Routes[0],
-      result: [getUrl(Routes[0].path)],
-    };
-  }
-
-  if (isLogined() == false) {
-    match = {
-      route: Routes[0],
-      result: [getUrl(Routes[0].path)],
-    };
-  }
-  const view = new match.route.view(getParams(match));
-
+  // 選択されたルートに対応するビューを描画
+  const view = new selectedRoute.view();
   const html = await view.getHtml();
   document.querySelector("#app").innerHTML = html;
 
+  // ビューに関連するスクリプトを実行
   try {
     view.executeScript();
   } catch (error) {
-    //console.error(error);
+    console.error(`Error executing view script: ${error}`);
   }
 };

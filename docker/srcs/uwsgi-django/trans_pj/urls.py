@@ -53,14 +53,17 @@ urlpatterns += _set_i18n_url(
 		path('chat/', include(chat.urls)),
 
 		# テスト用　削除予定
-		path('home', main_views.index, name='home'),
-		path('lang', main_views.lang, name='lang'),
-		path('script', main_views.script, name='script'),
-		path('script2', main_views.script2, name='script2'),
+		# path('home', main_views.index, name='home'),
+		path('api/home/', main_views.home, name='home'),
+		path('lang/', main_views.lang, name='lang'),
+		path('api/script1/', main_views.script1, name='script1'),
+		path('script2/', main_views.script2, name='script2'),
 
 		# SPA
 		path('', main_views.spa, name='index'),
-		# re_path(r'\w*', main_views.spa, name='index'),
+
+		# SPA保持のために全てのURLにマッチしindex.jsを呼び出す
+		re_path(r'\w*', main_views.spa, name='index'),
 	],
 	enabled_i18n=False
 )

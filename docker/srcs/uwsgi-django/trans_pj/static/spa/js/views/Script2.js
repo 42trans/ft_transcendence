@@ -10,8 +10,8 @@ export default class extends AbstractView {
   }
 
   async getHtml() {
-    const uri = getUrl("/script2");
-    const data = await fetchData(uri);
+    // const uri = getUrl("/script2");
+    const data = await fetchData("/script2");
     return data;
   }
 

@@ -1,5 +1,5 @@
 import Dashboard    from "../views/Dashboard.js";
-import Index        from "../views/Index.js";
+import Home        from "../views/Home.js";
 import Pong         from "../views/Pong.js";
 
 import FreePlay     from "../views/Pong.js";
@@ -24,13 +24,13 @@ import Logout       from "../views/Logout.js";
 // import Admin from "../views/Admin.js";
 
 import Lang from "../views/Lang.js";
-import Script from "../views/Script.js";
+import Script1 from "../views/Script1.js";
 import Script2 from "../views/Script2.js";
 
 
 export const Routes = [
   { path: "/",                  view: Dashboard },
-  { path: "/home/",             view: Index },
+  { path: "/home/",             view: Home },
   { path: "/pong/",             view: Pong },
 
   { path: "/pong/",             view: FreePlay },
@@ -55,6 +55,6 @@ export const Routes = [
   // { path: "/settings", view: Settings },
   // { path: "/ja/settings", view: Settings },
   { path: "/lang", view: Lang },
-  { path: "/script", view: Script },
-  { path: "/script2", view: Script2 },
+  { path: "/script1/", view: Script1 },  // SPA用 ≠ django urls
+  { path: "/script2/", view: Script2 },
 ];
