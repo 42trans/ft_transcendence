@@ -5,9 +5,9 @@ from .pong_online_physics import PongOnlinePhysics
 from .pong_online_match import PongOnlineMatch
 import logging
 from typing import Dict, Any
+from ..utils.async_logger import async_log, sync_log
 
-logger = logging.getLogger(__name__)
-# logger = logging.getLogger('Pong online')
+# logger = logging.getLogger(__name__)
 
 class PongOnlineGameManager:
     """
@@ -24,7 +24,7 @@ class PongOnlineGameManager:
                 python3 docker/srcs/uwsgi-django/pong/online/tests/CLI_pong_test_client.py
     """
     def __init__(self, user_id):
-        logger.debug("物理判定init")
+        # logger.debug("物理判定init")
         self.user_id = user_id
         self.config = PongOnlineConfig()
         self.pong_engine_data: Dict[str, Any] = {
@@ -43,6 +43,7 @@ class PongOnlineGameManager:
          - match:            スコア、終了判定
          - physics:          衝突・速度計算
         """
+        sync_log("物理判定init")
         init                    = PongOnlineInit(self.config)
         self.pong_engine_data   = init.init_pong_engine()
         self.match              = PongOnlineMatch(self.pong_engine_data)
@@ -53,7 +54,7 @@ class PongOnlineGameManager:
             self.physics,
             self.match
         )
-        logger.info("ready to start.")
+        # logger.info("ready to start.")
 
 
     def update_game(self, json_data):

@@ -1,12 +1,17 @@
+from ..utils.async_logger import async_log, sync_log
+
 import logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
+
+
 
 class PongOnlineInit:
     def __init__(self, config):
         self.config = config
 
     def init_pong_engine(self):
+        sync_log("物理判定init")
         data = {
             "game_settings": {
                 "max_score": self.config.game_settings["max_score"],

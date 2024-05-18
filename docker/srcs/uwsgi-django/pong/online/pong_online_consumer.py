@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from accounts.models import CustomUser
 from .pong_online_game_manager import PongOnlineGameManager
 
-"""channelsなのかwsなのか、機能しなかったlogger"""
+# """channelsなのかwsなのか、機能しなかったlogger"""
 # import sys
 # from channels.routing import get_default_application
 # from channels.worker import Worker
@@ -44,13 +44,13 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         """
         await async_log("ws接続されました")
         # logger.debug("ws接続されました")
-        # logger.info(f'WebSocket connected: {self.channel_name}')
 
         self.user_id = self.scope['user'].id
         self.room_group_name, err = await self._get_room_group_name(self.user_id)
         if err is not None:
             await self.close(code=1007)
             return
+        
         try:
             await self.channel_layer.group_add(
                 self.room_group_name,
@@ -61,26 +61,25 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             return
 
         self.game_manager = PongOnlineGameManager(self.user_id)
+        await async_log("game_managerが作成されました")
         await self.accept()
 
     async def receive(self, text_data=None):
         try:
-            # text_data（WebSocket から受け取った生の文字列データ）を json
+            await async_log(text_data)
             json_data = json.loads(text_data)
+            await async_log(json.dumps(json_data))
         except json.JSONDecodeError:
             await self.close(code=1007)
             return
 
         # 初回通信: クライアントから合図を受け取って初期状態を送信
-        # if json_data.get("action") == "initialize":
-        #     initial_state = self.game_manager.get_initial_state()
-        #     await self.send(text_data=json.dumps(initial_state))
-        #     return
         if 'action' in json_data and json_data['action'] == 'initialize':
-            # 初期状態を送信
+            # 初期状態を取得してJSON文字列に変換
             initial_state = self.game_manager.initialize_game()
-            # logger.debug("initial_state:", initial_state)
-            await self.send(text_data=json.dumps({"message": "Sending initial state", "state": initial_state}))
+            initial_state_json = json.dumps({"message": "Sending initial state", "state": initial_state})
+            await async_log(json.dumps(initial_state_json))
+            await self.send(text_data=initial_state_json)
         elif 'paddle1' in json_data or 'ball' in json_data:
             # ゲームの状態を更新
             updated_state = self.game_manager.update_game(json_data)
@@ -89,12 +88,6 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
                 'data': updated_state
             })
 
-        state = self.game_manager.update_game(json_data)
-        await self.channel_layer.group_send(self.room_group_name, {
-            # group_send(): typeに基づいてsend_data()を呼び出す
-            'type': 'send_data',
-            'data': state
-        })
 
     async def send_data(self, event):
         await self.send(text_data=json.dumps(event['data']))
@@ -122,13 +115,11 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         一人用または二人用のセッションの検索または作成のために使用
         other_user_idはオプション
         """
-        # return "test_room_group", None
         try:
             if other_user_id:
                 room_group_name = f"room_{user_id}_{other_user_id}"
             else:
                 room_group_name = f"room_{user_id}"
-            # logging.info(f"Room group name generated successfully: {room_group_name}")
             return room_group_name, None
         except Exception as e:
             return None, str(e)
