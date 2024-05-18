@@ -9,8 +9,8 @@ from .pong_online_game_manager import PongOnlineGameManager
 from ..utils.async_logger import async_log
 
 class PongOnlineConsumer(AsyncWebsocketConsumer):
-    permission_classes = [AllowAny]
-    # permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     async def connect(self):
         """
@@ -37,8 +37,9 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             return
 
         await async_log("game_managerをこれから作ります")
+        self.user_id_str = str(self.user_id)
+        await async_log("self.user_id:" + self.user_id_str)
         await async_log("game_managerをこれから作ります2")
-        await async_log("self.user_id:" + self.user_id)
         self.game_manager = PongOnlineGameManager(self.user_id)
         await async_log("game_managerが作成されました")
 

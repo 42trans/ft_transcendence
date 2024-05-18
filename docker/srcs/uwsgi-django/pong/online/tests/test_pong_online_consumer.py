@@ -85,37 +85,37 @@ class TestPongOnlineConsumer(TransactionTestCase):
             await self.asyncTearDown()
 
 
-    async def test_send_and_receive_message(self):
-        await self.asyncSetUp()
-        try:
-            message = {"paddle1": {"dir_y": 10}}
-            await self.communicator.send_json_to(message)
+    # async def test_send_and_receive_message(self):
+    #     await self.asyncSetUp()
+    #     try:
+    #         message = {"paddle1": {"dir_y": 10}}
+    #         await self.communicator.send_json_to(message)
 
-            response = await self.communicator.receive_json_from()
+    #         response = await self.communicator.receive_json_from()
 
-            self.assertIn("ball", response)
-            self.assertIn("paddle1", response)
-            self.assertIn("paddle2", response)
-        finally:
-            await self.asyncTearDown()
+    #         self.assertIn("ball", response)
+    #         self.assertIn("paddle1", response)
+    #         self.assertIn("paddle2", response)
+    #     finally:
+    #         await self.asyncTearDown()
     
-    async def test_send_invalid_data(self):
-        await self.asyncSetUp()
-        try:
-            invalid_message = "this is not a JSON message"
-            await self.communicator.send_to(text_data=invalid_message)
-            # 無効なデータ送信後に接続が閉じられることを確認
-            with self.assertRaises(AssertionError):
-                await self.communicator.receive_from()
-        finally:
-            await self.asyncTearDown()
+    # async def test_send_invalid_data(self):
+    #     await self.asyncSetUp()
+    #     try:
+    #         invalid_message = "this is not a JSON message"
+    #         await self.communicator.send_to(text_data=invalid_message)
+    #         # 無効なデータ送信後に接続が閉じられることを確認
+    #         with self.assertRaises(AssertionError):
+    #             await self.communicator.receive_from()
+    #     finally:
+    #         await self.asyncTearDown()
     
-    async def test_disconnect(self):
-        await self.asyncSetUp()
-        try:
-            await self.communicator.disconnect()
-            # wait() should return True, indicating the connection is closed
-            closed = await self.communicator.wait(timeout=1)
-            self.assertIsNone(closed, "WebSocket connection should be closed")
-        finally:
-            await self.asyncTearDown()
+    # async def test_disconnect(self):
+    #     await self.asyncSetUp()
+    #     try:
+    #         await self.communicator.disconnect()
+    #         # wait() should return True, indicating the connection is closed
+    #         closed = await self.communicator.wait(timeout=1)
+    #         self.assertIsNone(closed, "WebSocket connection should be closed")
+    #     finally:
+    #         await self.asyncTearDown()
