@@ -29,24 +29,24 @@ import Script2 from "../views/Script2.js";
 
 
 export const Routes = [
-  { path: "/",                  view: Dashboard },
-  { path: "/home/",             view: Home },
-  { path: "/pong/",             view: Pong },
+  { path: "/",              view: Dashboard },
+  { path: "/home/",         view: Home },
+  { path: "/game/",         view: Pong },
 
-  { path: "/pong/",             view: FreePlay },
-  { path: "/pong/tournament/",  view: Tournament },
-  { path: "/pong/",             view: Game1vs1 },
+  { path: "/game/",         view: FreePlay },
+  { path: "/tournament/",   view: Tournament },
+  { path: "/game/",         view: Game1vs1 },
 
-  { path: "/history/",          view: GameHistory },
+  { path: "/game-history/", view: GameHistory },
 
-  { path: "/accounts/user/",    view: UserProfile },
-  { path: "/accounts/edit/",    view: EditProfile },
-  { path: "/accounts/user/",    view: Friend },
-  { path: "/chat/dm-sessions/", view: DMSessions },
+  { path: "/user-profile/", view: UserProfile },
+  { path: "/edit-profile/", view: EditProfile },
+  { path: "/user-friend/",  view: Friend },
+  { path: "/dm/",           view: DMSessions },
 
-  { path: "/accounts/signup/",  view: Signup },
-  { path: "/accounts/login/",   view: Login },
-  { path: "/accounts/logout/",  view: Logout },
+  { path: "/signup/",       view: Signup },
+  { path: "/login/",        view: Login },
+  { path: "/logout/",       view: Logout },
 
   // { path: "/accounts", view: Accounts },
   // { path: "/admin", view: Admin },
@@ -54,7 +54,7 @@ export const Routes = [
   // { path: "/posts/:id", view: PostView },
   // { path: "/settings", view: Settings },
   // { path: "/ja/settings", view: Settings },
-  { path: "/lang", view: Lang },
-  { path: "/script1/", view: Script1 },  // SPA用 ≠ django urls
-  { path: "/script2/", view: Script2 },
+  { path: "/lang/",         view: Lang },
+  { path: "/script1/",      view: Script1 },  // SPA用 ≠ django urls
+  { path: "/script2/",      view: Script2 },
 ];

@@ -11,7 +11,7 @@ export default class extends AbstractView {
 
   async getHtml() {
     // const uri = getUrl("/script1");
-    const data = await fetchData("/api/script1/");
+    const data = await fetchData("/spa/script1/");
     return data;
   }
   async executeScript() {
