@@ -1,3 +1,4 @@
+// docker/srcs/uwsgi-django/pong/static/pong/js/online/PongEngineKey.js
 class PongEngineKey 
 {
 	static keys = {/** empty */};
@@ -8,12 +9,14 @@ class PongEngineKey
 		{
 			const key = event.key.toUpperCase();
 			PongEngineKey.keys[key] = true;
+			// console.log(`Key down: ${key}`);
 		});
 
 		window.addEventListener('keyup', (event) => 
 		{
 			const key = event.key.toUpperCase();
 			PongEngineKey.keys[key] = false;
+			// console.log(`Key down: ${key}`);
 		});
 	}
 
@@ -22,8 +25,5 @@ class PongEngineKey
 		return PongEngineKey.keys[key.toUpperCase()];
 	}
 }
-
-// キーイベントのリスニングを開始
-PongEngineKey.listenForEvents([/** empty */]);
 
 export default PongEngineKey;

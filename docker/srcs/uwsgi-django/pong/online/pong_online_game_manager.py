@@ -51,7 +51,6 @@ class PongOnlineGameManager:
             self.physics,
             self.match
         )
-        # print("ready to start.")
         logger.info("ready to start.")
 
 
