@@ -36,6 +36,9 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             await self.close(code=1011) 
             return
 
+        await async_log("game_managerをこれから作ります")
+        await async_log("game_managerをこれから作ります2")
+        await async_log("self.user_id:" + self.user_id)
         self.game_manager = PongOnlineGameManager(self.user_id)
         await async_log("game_managerが作成されました")
 

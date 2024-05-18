@@ -24,6 +24,7 @@ class PongOnlineGameManager:
                 python3 docker/srcs/uwsgi-django/pong/online/tests/CLI_pong_test_client.py
     """
     def __init__(self, user_id):
+        sync_log("__init__: PongOnlineGameManager")
         self.user_id = user_id
         self.config = PongOnlineConfig()
         self.pong_engine_data: Dict[str, Any] = {
