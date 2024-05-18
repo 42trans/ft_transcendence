@@ -238,11 +238,6 @@ LOGGING = {
 	},
 },
 'loggers': {
-	'': {  # 'root' ロガー
-		'handlers': ['file'],
-		'level': 'WARNING',
-		'propagate': True,
-	},
 	'django.request': {
 		'handlers': ['logstash'],
 		'level': 'DEBUG',
@@ -273,6 +268,13 @@ LOGGING = {
 		'level': 'DEBUG',
 		'propagate': False,
 	},
+	# 'root' ロガー: 一番下に書く
+	'': { 
+		'handlers': ['file'],
+		'level': 'WARNING',
+		'propagate': True,
+	},
+
 },
 }
 

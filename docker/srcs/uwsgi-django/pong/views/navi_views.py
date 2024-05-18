@@ -16,6 +16,7 @@ def tournament(request):
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
 def pong_view(request):
+	# logger.debug("Test logger: pong_view() start")
 	if request.user.is_authenticated:
 		param = {
 			'nickname': request.user.nickname
