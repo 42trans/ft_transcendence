@@ -6,15 +6,29 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from accounts.models import CustomUser
 from .pong_online_game_manager import PongOnlineGameManager
-import sys
 
+"""channelsなのかwsなのか、機能しなかったlogger"""
+# import sys
 # from channels.routing import get_default_application
 # from channels.worker import Worker
-
-logger = logging.getLogger("django.channels.worker")
+# logger = logging.getLogger("django.channels.worker")
 # logger = logging.getLogger(__name__)
 # logger = logging.getLogger('ss-pong')
 # logger = logging.getLogger("PongOnlineConsumer")
+
+# # ---------------
+# """機能した非同期カスタムロガー"""
+# import aiofiles
+# import asyncio
+# import datetime
+# async def async_log(message: str, file_path: str = "/code/pong/online/async_log.log"):
+#     """非同期にメッセージをログファイルに書き込む"""
+#     async with aiofiles.open(file_path, mode='a') as log_file:
+#         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+#         await log_file.write(f"{timestamp} - {message}\n")
+# # ---------------
+
+from ..utils.async_logger import async_log
 
 class PongOnlineConsumer(AsyncWebsocketConsumer):
     permission_classes = [AllowAny]
@@ -28,8 +42,9 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
          - self.channel_name: AsyncWebsocketConsumerの属性 unique ID
          - self.accept(): WebSocket接続を受け入れて送受信可能にする
         """
-        logger.debug("ws接続されました")
-        logger.info(f'WebSocket connected: {self.channel_name}')
+        await async_log("ws接続されました")
+        # logger.debug("ws接続されました")
+        # logger.info(f'WebSocket connected: {self.channel_name}')
 
         self.user_id = self.scope['user'].id
         self.room_group_name, err = await self._get_room_group_name(self.user_id)
@@ -64,6 +79,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         if 'action' in json_data and json_data['action'] == 'initialize':
             # 初期状態を送信
             initial_state = self.game_manager.initialize_game()
+            # logger.debug("initial_state:", initial_state)
             await self.send(text_data=json.dumps({"message": "Sending initial state", "state": initial_state}))
         elif 'paddle1' in json_data or 'ball' in json_data:
             # ゲームの状態を更新

@@ -40,6 +40,9 @@ docker/srcs/webpack2/ft_trans/public
 docker/srcs/webpack2/ft_trans/docs
 docker/srcs/vite/pong-three/public
 
+# log
+docker/srcs/uwsgi-django/pong/utils/async_log.log
+
 #### init/ #####
 
 

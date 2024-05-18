@@ -41,3 +41,7 @@ pytest-asyncio==0.23.6
 
 # avater
 pillow==10.3.0
+
+# SS-Pong
+# pip install aiofiles
+aiofiles-23.2.1

@@ -244,37 +244,8 @@ LOGGING = {
 		'level': 'DEBUG',
 		'propagate': False,
 	},
-	# 'channels': {
-	# 	'handlers': ['console', 'file'],
-	# 	'level': 'DEBUG',
-	# 	'propagate': False,
-	# },
-	'django.channels.worker': {
-		'handlers': ['console'],
-		'level': 'DEBUG',
-		# 'propagate': False,
-		'propagate': True,
-	},
-	'django.channels': {
-		'handlers': ['console', 'file'],
-		'level': 'WARNING',
-		'propagate': True,
-	},
-	
-	'django.request': {
-		'handlers': ['console'],
-		# 'handlers': ['logstash'],
-		'level': 'DEBUG',
-		'propagate': True,
-	},
-	'django': { # Django's default logger
-			'handlers': ['console', 'file'],
-			'level': 'DEBUG',
-			# 'level': 'WARNING',
-			'propagate': True,
-	},
-	'pong': {  # 'pong' はアプリケーション固有のロガーの名前 filterとして特定の場所のdebugに使用する
-		'handlers': ['console', 'file'],
+	'pong.online': {
+		'handlers': ['console_debug', 'file'],
 		'level': 'DEBUG',
 		'propagate': False,
 	},
@@ -283,8 +254,8 @@ LOGGING = {
 		'level': 'DEBUG',
 		'propagate': False,
 	},
-	'pong.online': {
-		'handlers': ['console_debug', 'file'],
+	'pong': {  # 'pong' はアプリケーション固有のロガーの名前 filterとして特定の場所のdebugに使用する
+		'handlers': ['console', 'file'],
 		'level': 'DEBUG',
 		'propagate': False,
 	},
@@ -298,11 +269,41 @@ LOGGING = {
 		'level': 'DEBUG',
 		'propagate': False,
 	},
-	'PongOnlineConsumer': {
-		'handlers': ['console', 'file'],
+
+	# 'channels': {
+	# 	'handlers': ['console', 'file'],
+	# 	'level': 'DEBUG',
+	# 	'propagate': False,
+	# },
+	# 'django.channels.worker': {
+	# 	'handlers': ['console'],
+	# 	'level': 'DEBUG',
+	# 	# 'propagate': False,
+	# 	'propagate': True,
+	# },
+	# 'django.channels': {
+	# 	'handlers': ['console', 'file'],
+	# 	'level': 'WARNING',
+	# 	'propagate': True,
+	# },
+	
+	'django.request': {
+		'handlers': ['console'],
+		# 'handlers': ['logstash'],
 		'level': 'DEBUG',
-		'propagate': False,
+		'propagate': True,
 	},
+	'django': { # Django's default logger
+			'handlers': ['console', 'file'],
+			# 'level': 'DEBUG',
+			'level': 'WARNING',
+			'propagate': True,
+	},
+	# 'PongOnlineConsumer': {
+	# 	'handlers': ['console', 'file'],
+	# 	'level': 'DEBUG',
+	# 	'propagate': False,
+	# },
 	# 一番下に書く
 	'': {  # 'root' ロガー
 		'handlers': ['file'],

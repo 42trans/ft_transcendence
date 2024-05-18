@@ -6,7 +6,8 @@ from .pong_online_match import PongOnlineMatch
 import logging
 from typing import Dict, Any
 
-logger = logging.getLogger('Pong online')
+logger = logging.getLogger(__name__)
+# logger = logging.getLogger('Pong online')
 
 class PongOnlineGameManager:
     """
@@ -23,6 +24,7 @@ class PongOnlineGameManager:
                 python3 docker/srcs/uwsgi-django/pong/online/tests/CLI_pong_test_client.py
     """
     def __init__(self, user_id):
+        logger.debug("物理判定init")
         self.user_id = user_id
         self.config = PongOnlineConfig()
         self.pong_engine_data: Dict[str, Any] = {

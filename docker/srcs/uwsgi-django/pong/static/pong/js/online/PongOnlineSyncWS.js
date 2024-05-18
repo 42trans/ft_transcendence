@@ -29,7 +29,7 @@ class PongOnlineSyncWS
 	// ルーチン:受信
 	// ------------------------------
 	onSocketMessage(event) {
-		// console.log("WebSocket onmessage.", event.data);
+		console.log("WebSocket onmessage.", event.data);
 		const data = JSON.parse(event.data);
 		// TODO_ft:負の値が入らないことを確認する
 		// console.log("transformedData to client:", JSON.stringify(transformedData, null, 2));
@@ -164,8 +164,8 @@ class PongOnlineSyncWS
 	// 非ルーチンなデータ受信時のメソッド
 	// ------------------------------
 	onSocketOpen() {
-		// console.log("WebSocket connection established.");
 		const initData = JSON.stringify({ action: "initialize" });
+		console.log("WebSocket connection established. initData:", initData);
 		this.socket.send(initData);
 	}
 	
