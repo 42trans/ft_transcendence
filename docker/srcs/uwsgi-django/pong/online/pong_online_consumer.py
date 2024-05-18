@@ -6,6 +6,15 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from accounts.models import CustomUser
 from .pong_online_game_manager import PongOnlineGameManager
+import sys
+
+# from channels.routing import get_default_application
+# from channels.worker import Worker
+
+logger = logging.getLogger("django.channels.worker")
+# logger = logging.getLogger(__name__)
+# logger = logging.getLogger('ss-pong')
+# logger = logging.getLogger("PongOnlineConsumer")
 
 class PongOnlineConsumer(AsyncWebsocketConsumer):
     permission_classes = [AllowAny]
@@ -19,6 +28,9 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
          - self.channel_name: AsyncWebsocketConsumerの属性 unique ID
          - self.accept(): WebSocket接続を受け入れて送受信可能にする
         """
+        logger.debug("ws接続されました")
+        logger.info(f'WebSocket connected: {self.channel_name}')
+
         self.user_id = self.scope['user'].id
         self.room_group_name, err = await self._get_room_group_name(self.user_id)
         if err is not None:

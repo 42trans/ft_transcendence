@@ -9,6 +9,7 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 def pong_online(request):
+	logger.debug("pong_online スタート")
 	if request.method == 'GET':
 		return render(request, 'pong/pong-online.html')
 	else:

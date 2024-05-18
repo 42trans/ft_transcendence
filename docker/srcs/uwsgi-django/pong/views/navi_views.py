@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
-# logger = logging.getLogger('pong online')
 
 # @login_required
 def tournament(request):
@@ -17,7 +16,7 @@ def tournament(request):
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
 def pong_view(request):
-	logger.debug("ログ動いてますね")
+	logger.debug("ログ動いてます")
 	if request.user.is_authenticated:
 		param = {
 			'nickname': request.user.nickname
