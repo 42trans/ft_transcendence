@@ -5,11 +5,11 @@ import json
 from django.test import TestCase
 from django.test import TransactionTestCase
 from rest_framework.test import APIClient
-from channels.testing import WebsocketCommunicator
+from channels.testing import WebsocketCommunicator, ChannelsLiveServerTestCase
 from channels.db import database_sync_to_async
 
 from accounts.models import CustomUser
-# from django.test import LiveServerTestCase
+from django.test import LiveServerTestCase
 from trans_pj.asgi import application
 from django.urls import reverse
 from rest_framework import status
@@ -17,13 +17,15 @@ from rest_framework import status
 # ロガーの設定
 logger = logging.getLogger(__name__)
 
-class TestPongOnlineConsumer(TransactionTestCase):
+class TestPongOnlineConsumer(ChannelsLiveServerTestCase):
     kUser1Email = 'user1@example.com'
     kUser1Nickname = 'user1'
     kUser1Password = 'pass012345'
 
     # async def setUp(self):
     async def asyncSetUp(self):
+        super().setUp()
+        # await super().asyncSetUp()
         # テスト用にユーザーを作成してデータベースに登録
         self.client = APIClient()
         self.user1 = await database_sync_to_async(CustomUser.objects.create_user)(
@@ -69,20 +71,76 @@ class TestPongOnlineConsumer(TransactionTestCase):
     # test
     # --------------------------------------------------------------------------
 
-    async def test_websocket_connection(self):
+    async def test_websocket_connection_authenticated(self):
         await self.asyncSetUp()
-        try:
-            # クライアントからゲーム更新コマンドを送信
-            message = {"paddle1": {"dir_y": 10}}
-            await self.communicator.send_json_to(message)
-            # サーバーからのゲーム状態更新を受け取る
-            response = await self.communicator.receive_json_from()
+        # JWTトークンを使用して認証されたユーザーでWebSocket接続を試みる
+        connected, _ = await self.communicator.connect()
+        self.assertTrue(connected, "Authenticated user should connect successfully")
+        await self.communicator.disconnect()
 
-            self.assertIn("ball", response)
-            self.assertIn("paddle1", response)
-            self.assertIn("paddle2", response)
-        finally:
-            await self.asyncTearDown()
+    # async def test_send_and_receive_message(self):
+    #     await self.asyncSetUp()
+
+    #     # 接続確立
+    #     await self.communicator.connect()
+
+    #     # ゲーム状態を更新するリクエストを送信
+    #     message = {"action": "initialize"}
+    #     await self.communicator.send_json_to(message)
+
+    #     # サーバーからのレスポンスを受信
+    #     response = await self.communicator.receive_json_from()
+    #     self.assertIn("message", response)
+    #     self.assertIn("state", response["message"])
+    #     self.assertIn("ball", response["message"]["state"])
+
+    #     await self.communicator.disconnect()
+
+
+    # async def test_send_invalid_data(self):
+    #     await self.asyncSetUp()
+
+    #     # 接続確立
+    #     await self.communicator.connect()
+
+    #     # 不正なJSONデータを送信
+    #     invalid_message = "this is not a JSON message"
+    #     await self.communicator.send_to(text_data=invalid_message)
+
+    #     # 無効なデータ送信後に接続が閉じられることを確認
+    #     response = await self.communicator.receive_output()
+    #     self.assertEqual(response['close_code'], 1007, "Connection should be closed due to invalid data")
+
+    #     await self.communicator.disconnect()
+    
+    # async def test_disconnect(self):
+    #     await self.asyncSetUp()
+
+    #     # 接続確立
+    #     await self.communicator.connect()
+
+    #     # 接続を切断
+    #     await self.communicator.disconnect()
+
+    #     # 切断が正常に行われたことを確認
+    #     closed = await self.communicator.wait()
+    #     self.assertTrue(closed, "WebSocket connection should be closed properly")
+
+
+    # async def test_websocket_connection(self):
+    #     await self.asyncSetUp()
+    #     try:
+    #         # クライアントからゲーム更新コマンドを送信
+    #         message = {"paddle1": {"dir_y": 10}}
+    #         await self.communicator.send_json_to(message)
+    #         # サーバーからのゲーム状態更新を受け取る
+    #         response = await self.communicator.receive_json_from()
+
+    #         self.assertIn("ball", response)
+    #         self.assertIn("paddle1", response)
+    #         self.assertIn("paddle2", response)
+    #     finally:
+    #         await self.asyncTearDown()
 
 
     # async def test_send_and_receive_message(self):

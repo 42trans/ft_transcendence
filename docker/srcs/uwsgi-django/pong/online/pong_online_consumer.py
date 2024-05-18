@@ -9,7 +9,6 @@ from .pong_online_game_manager import PongOnlineGameManager
 from ..utils.async_logger import async_log
 
 class PongOnlineConsumer(AsyncWebsocketConsumer):
-    # permission_classes = [AllowAny]
     permission_classes = [IsAuthenticated]
 
     async def connect(self):
@@ -20,8 +19,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
          - self.channel_name: AsyncWebsocketConsumerの属性 unique ID
          - self.accept(): WebSocket接続を受け入れて送受信可能にする
         """
-        await async_log("ws接続されました")
-
+        # await async_log("ws接続されました")
         self.user_id = self.scope['user'].id
         self.room_group_name, err = await self._get_room_group_name(self.user_id)
         if err is not None:
@@ -35,14 +33,10 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             await self.close(code=1011) 
             return
-
-        await async_log("game_managerをこれから作ります")
-        self.user_id_str = str(self.user_id)
-        await async_log("self.user_id:" + self.user_id_str)
-        await async_log("game_managerをこれから作ります2")
+        # await async_log("room_group_nameが作成されました: " + self.room_group_name)
         self.game_manager = PongOnlineGameManager(self.user_id)
-        await async_log("game_managerが作成されました")
-
+        await self.game_manager.initialize_game()
+        # await async_log("game_managerが作成されました")
         await self.accept()
 
     async def receive(self, text_data=None):
@@ -60,7 +54,8 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         #     return
         if 'action' in json_data and json_data['action'] == 'initialize':
             # 初期状態を送信
-            initial_state = self.game_manager.initialize_game()
+            # initial_state = self.game_manager.initialize_game()
+            initial_state  = self.game_manager.pong_engine_data
             await self.send(text_data=json.dumps({"message": "Sending initial state", "state": initial_state}))
         elif 'paddle1' in json_data or 'ball' in json_data:
             # ゲームの状態を更新

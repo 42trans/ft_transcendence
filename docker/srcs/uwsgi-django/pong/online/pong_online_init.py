@@ -25,19 +25,19 @@ class PongOnlineInit:
                     "position": {"x": 0, "y": 0},
                     "direction": self.config.ball["direction"],
                 },
-                # "paddle1": self.create_paddle(self.config.paddle1),
-                # "paddle2": self.create_paddle(self.config.paddle2)
                 "paddle1": self.create_paddle(self.config.paddle1, is_paddle1=True),
                 "paddle2": self.create_paddle(self.config.paddle2, is_paddle1=False)
             },
             "state": {
                 "score1": 0,
                 "score2": 0,
+            },
+            "is_running": {
+                True
             }
         }
         return data
 
-    # def create_paddle(self, config):
     def create_paddle(self, config, is_paddle1):
         if is_paddle1:
             x_position = -(self.config.fields["width"] * 0.95) / 2 + 50
@@ -49,7 +49,6 @@ class PongOnlineInit:
             "dir_y": config["dir_y"],
             "width": config["width"],
             "height": config["height"],
-            # "position": {"x": 0, "y": 0}
             "position": {"x": x_position, "y": 0}
         }
 
