@@ -6,6 +6,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from accounts.models import CustomUser
 from .pong_online_game_manager import PongOnlineGameManager
+from ..utils.async_logger import async_log
 
 class PongOnlineConsumer(AsyncWebsocketConsumer):
     permission_classes = [AllowAny]
@@ -19,6 +20,8 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
          - self.channel_name: AsyncWebsocketConsumerの属性 unique ID
          - self.accept(): WebSocket接続を受け入れて送受信可能にする
         """
+        await async_log("ws接続されました")
+
         self.user_id = self.scope['user'].id
         self.room_group_name, err = await self._get_room_group_name(self.user_id)
         if err is not None:
@@ -34,6 +37,8 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             return
 
         self.game_manager = PongOnlineGameManager(self.user_id)
+        await async_log("game_managerが作成されました")
+
         await self.accept()
 
     async def receive(self, text_data=None):
