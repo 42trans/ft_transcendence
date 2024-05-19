@@ -17,6 +17,6 @@ export default class extends AbstractView {
     return data;
   }
   async executeScript() {
-    //executeScriptTab("");
+    executeScriptTab("/static/accounts/js/login.js");
   }
 }
