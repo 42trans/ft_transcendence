@@ -60,7 +60,8 @@ class PongOnlineSyncWS
 		// 参考:【clearInterval() - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/clearInterval>
 		const intervalId = setInterval(() => 
 		{
-			if (this.gameStateManager.getState() && this.gameStateManager.getState().is_running) {
+			if (this.gameStateManager.getState() && this.gameStateManager.getState().is_running) 
+			{
 				// パドル情報更新
 				PongOnlinePaddleMover.handlePaddleMovement(this.pongOnlineClientApp.field, this.gameStateManager.getState());
 				// ゲーム状態送信

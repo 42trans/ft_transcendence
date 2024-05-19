@@ -1,9 +1,9 @@
 {
     "game_settings": {
-        "max_score": 10,
-        "init_ball_speed": 1.0,
-        "max_ball_speed": 2.5,
-        "difficulty": "medium",
+        "max_score": 15,
+        "init_ball_speed": 2,
+        "max_ball_speed": 9.9,
+        "difficulty": 0.5,
         "field": {
             "width": 400,
             "height": 300
@@ -11,38 +11,26 @@
     },
     "objects": {
         "ball": {
-            "radius": 10,
-            "speed": 1.0,
-            "position": {
-                "x": 0,
-                "y": 0
-            },
-            "direction": 45
+            "radius": 5,
+            "speed": 2,
+            "position": {"x": 0, "y": 0},
+            "direction": {"x": 1, "y": 0.1},
         },
         "paddle1": {
-            "speed": 2.0,
+            "speed": 10,
             "dir_y": 0,
             "width": 10,
-            "height": 100,
-            "position": {
-                "x": -375,
-                "y": 0
-            }
+            "height": 30,
+            "position": {"x": -140.0, "y": 0}
         },
         "paddle2": {
-            "speed": 2.0,
+            "speed": 10,
             "dir_y": 0,
             "width": 10,
-            "height": 100,
-            "position": {
-                "x": 375,
-                "y": 0
-            }
+            "height": 30,
+            "position": {"x": 140.0, "y": 0}
         }
     },
-    "state": {
-        "score1": 0,
-        "score2": 0
-    },
-	"is_running": True
+    "state": {"score1": 0, "score2": 0},
+    "is_running": True
 }
