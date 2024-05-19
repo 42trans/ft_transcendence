@@ -1,9 +1,9 @@
 // userProfile.js
 
-console.log("userProfile.js has been loaded and executed.");
+import { createFriendsList } from "./online-status.js"
+
 
 export function fetchUserProfile() {
-	console.log('fetchUserProfile 1')
 	fetch("/accounts/api/user/profile/", {
 		headers: {
 			'Content-Type': 'application/json',
@@ -12,7 +12,6 @@ export function fetchUserProfile() {
 	})
 		.then(response => response.json())
 		.then(data => {
-			console.log('fetchUserProfile 2')
 			const userInfo = document.getElementById("user-info");
 			userInfo.innerHTML = `
                 <li>Email: ${data.email}</li>
@@ -31,15 +30,13 @@ export function fetchUserProfile() {
                 `;
 				// SPA DM pageへの遷移なのでchat/dm-sessions/ではなく/dm/を指定
 
-			console.log('fetchUserProfile 3')
 			// setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
 		})
 		.catch(error => console.error("Error:", error));
-	console.log('fetchUserProfile 4')
 }
 
 
-export function fetchFrinedList() {
+export function fetchFriendList() {
 	fetch('/accounts/api/friend/list/', {
 		headers: {
 			'Content-Type': 'application/json',
@@ -138,12 +135,12 @@ function createActionButton(text, action) {
 }
 
 
-document.addEventListener("DOMContentLoaded", function() {
-	console.log("userProfile.js 1");
-	fetchUserProfile()
-	console.log("userProfile.js 2");
-	fetchFrinedList()
-	console.log("userProfile.js 3");
-	fetchFriendRequestList()
-	console.log("userProfile.js 4");
-});
+// document.addEventListener("DOMContentLoaded", function() {
+// 	console.log("userProfile.js 1");
+// 	fetchUserProfile()
+// 	console.log("userProfile.js 2");
+// 	fetchFriendList()
+// 	console.log("userProfile.js 3");
+// 	fetchFriendRequestList()
+// 	console.log("userProfile.js 4");
+// });

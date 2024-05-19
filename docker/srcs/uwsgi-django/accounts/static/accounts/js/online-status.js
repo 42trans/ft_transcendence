@@ -65,7 +65,7 @@ function updateFriendStatus(event) {
 }
 
 
-function createFriendsList(friendsData) {
+export function createFriendsList(friendsData) {
     const friendsContainer = document.getElementById("friends-container");
     let friendsList = document.getElementById("friends-list");
 
