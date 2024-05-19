@@ -15,6 +15,6 @@ export default class extends AbstractView {
     return data;
   }
   async executeScript() {
-    //executeScriptTab("");
+    executeScriptTab("/static/accounts/js/signup.js");
   }
 }

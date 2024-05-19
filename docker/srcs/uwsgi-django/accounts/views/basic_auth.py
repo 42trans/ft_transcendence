@@ -19,7 +19,7 @@ from accounts.views.jwt import get_jwt_response
 
 class SignupTemplateView(View):
     template_name = "accounts/signup.html"
-    authenticated_redirect_to = "/game/"
+    authenticated_redirect_to = "/pong/"  # djangoで/pong/にrender -> SPA /game/
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -29,7 +29,7 @@ class SignupTemplateView(View):
 
 class SignupAPIView(APIView):
     permission_classes = [AllowAny]
-    authenticated_redirect_to = "/game/"
+    authenticated_redirect_to = "/pong/"  # djangoで/pong/にrender -> SPA /game/
 
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -73,7 +73,7 @@ class LoginTemplateView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('/pong/')
+            return redirect('/pong/')  # djangoで/pong/にrender -> SPA /game/
         return super().dispatch(request, *args, **kwargs)
 
 
