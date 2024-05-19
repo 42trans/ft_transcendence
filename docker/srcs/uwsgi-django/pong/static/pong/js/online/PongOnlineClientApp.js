@@ -73,7 +73,8 @@ class PongOnlineClientApp
 		// 終了時の描画状態（スコア表示）を維持する: 状態の更新を強制するために再描画をトリガーする
 		const state = this.gameStateManager.getState();
 		if (state && 
-			(state.state.score1 !== 0 || state.state.score2 !== 0) &&
+			(state.state.score1 > 0 || state.state.score2 > 0) &&
+			// (state.state.score1 !== 0 || state.state.score2 !== 0) &&
 			!this.gameStateManager.getIsGameLoopStarted())
 		{
 			setTimeout(() => {
