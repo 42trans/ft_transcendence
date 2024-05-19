@@ -15,11 +15,11 @@
 // }
 
 export function executeScriptTab(path) {
-  console.log("executeScriptTab 関数が呼び出されました。パス: " + path);
+  console.log("executeScriptTab: path: " + path);
 
   const app = document.querySelector("#app");
   if (!app) {
-    console.error("エラー: #app 要素が見つかりません。");
+    console.error("Error: cannot find #app");
     return;
   }
 
@@ -27,19 +27,17 @@ export function executeScriptTab(path) {
   var scripts = app.getElementsByTagName("script");
 
   if (scripts.length > 0) {
-    console.log("既存のスクリプトが見つかりました。詳細: ", scripts[0]);
+    console.log("executeScriptTab: find script: ", scripts[0]);
 
     if (scripts[0].src !== "") {
       newDiv.src = path;
-      console.log("新しいスクリプトのsrcを設定しました: " + path);
     } else if (scripts[0].innerHTML !== "") {
       newDiv.textContent = scripts[0].innerHTML;
-      console.log("新しいスクリプトにインラインコンテンツを設定しました。");
     }
 
     document.body.appendChild(newDiv);
-    console.log("新しいスクリプト要素が body に追加されました。", newDiv);
+    console.log("executeScriptTab appendChild", newDiv);
   } else {
-    console.error("エラー: #app 内にスクリプト要素が見つかりませんでした。");
+    console.error("Error: cannot find script in #app");
   }
 }

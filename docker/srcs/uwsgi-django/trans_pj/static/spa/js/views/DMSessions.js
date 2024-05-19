@@ -10,7 +10,7 @@ export default class extends AbstractView {
   }
 
   async getHtml() {
-    const uri = getUrl("/chat/dm-sessions/");
+    const uri = "/chat/dm-sessions/";
     const data = await fetchData(uri);
     //console.log("Pong:" + data);
     return data;

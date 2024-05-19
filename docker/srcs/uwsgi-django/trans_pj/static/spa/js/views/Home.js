@@ -10,7 +10,8 @@ export default class extends AbstractView {
   }
 
   async getHtml() {
-    const data = await fetchData("/spa/home/");
+    const uri = "/view/home/";
+    const data = await fetchData(uri);
     return data;
   }
   async executeScript() {

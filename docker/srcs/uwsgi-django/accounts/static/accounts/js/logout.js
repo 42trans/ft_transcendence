@@ -1,5 +1,4 @@
 // logout.js
-// import { navigateTo } from "/static/spa/js/routing/routing.js";
 
 function handleLogout() {
 	fetch('/accounts/api/logout/', {
@@ -17,9 +16,7 @@ function handleLogout() {
 		if (data.message) {
 			alert(data.message);
 			console.log("redirect to " + data.redirect);
-			// window.location.href = data.redirect;
-			// navigateTo(data.redirect);
-			navigateTo("/pong/");
+			window.location.href = data.redirect;
 		} else {
 			throw new Error('No message in response');
 		}

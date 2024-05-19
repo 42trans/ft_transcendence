@@ -35,7 +35,7 @@
 				<a href="{% url 'accounts:oauth_ft' %}" class="slideup-text sign_btn sign_btn-primary w-100 py-2" role="button">Signing up for a 42 account</a>
 				<!-- login -->
 				<div class="slideup-text form-sign-text pt-4" >
-					<a href="{% url 'accounts:login'%}">Login here</a>
+					<a href="/login/" class="nav__link" data-link>Login here</a>
 					<!-- <a href="{% url 'accounts:login'%}">ログインはこちら</a> -->
 				</div>
 				<!-- Password requirements -->
@@ -57,4 +57,3 @@
 <script src="{% static 'accounts/js/signup.js' %}"></script>
 
 {% endblock %}
-

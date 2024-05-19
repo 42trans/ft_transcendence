@@ -10,7 +10,7 @@ export default class extends AbstractView {
   }
 
   async getHtml() {
-    const uri = getUrl("/lang");
+    const uri = getUrl("/view/lang/");
     const data = await fetchData(uri);
     return data;
   }

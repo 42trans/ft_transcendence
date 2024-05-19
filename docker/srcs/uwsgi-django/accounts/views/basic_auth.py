@@ -18,7 +18,7 @@ from accounts.views.jwt import get_jwt_response
 
 class SignupTemplateView(View):
     template_name = "accounts/signup.html"
-    authenticated_redirect_to = "/pong/"
+    authenticated_redirect_to = "/game/"
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -28,7 +28,7 @@ class SignupTemplateView(View):
 
 class SignupAPIView(APIView):
     permission_classes = [AllowAny]
-    authenticated_redirect_to = "/pong/"
+    authenticated_redirect_to = "/game/"
 
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -87,7 +87,7 @@ class LoginAPIView(APIView):
         if request.user.is_authenticated:
             data = {
                 'message': 'already logged in',
-                'redirect': '/pong/'
+                'redirect': '/game/',  # SPA /game/にリダイレクト
             }
             return JsonResponse(data, status=200)
 
@@ -110,7 +110,7 @@ class LoginAPIView(APIView):
             # login(request, user)
             data = {
                 'message': 'Basic authentication successful',
-                'redirect': '/accounts/user/'
+                'redirect': '/game/',  # SPA /game/にリダイレクト
             }
             return get_jwt_response(user, data)
 
@@ -125,7 +125,7 @@ class LogoutAPIView(APIView):
     def get(self, request, *args, **kwargs):
         data = {
             'message': 'You have been successfully logout',
-            'redirect': '/pong/'
+            'redirect': '/game/',  # SPA /game/にリダイレクト
         }
         response = JsonResponse(data, status=200)
 

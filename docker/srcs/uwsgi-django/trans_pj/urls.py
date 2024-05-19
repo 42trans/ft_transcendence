@@ -54,10 +54,10 @@ urlpatterns += _set_i18n_url(
 
 		# テスト用　削除予定
 		# path('home', main_views.index, name='home'),
-		path('spa/home/', main_views.home, name='home'),
-		path('spa/lang/', main_views.lang, name='lang'),
-		path('spa/script1/', main_views.script1, name='script1'),
-		path('spa/script2/', main_views.script2, name='script2'),
+		path('view/home/', main_views.home, name='home'),
+		path('view/lang/', main_views.lang, name='lang'),
+		path('view/script1/', main_views.script1, name='script1'),
+		path('view/script2/', main_views.script2, name='script2'),
 
 		# SPA
 		path('', main_views.spa, name='index'),
