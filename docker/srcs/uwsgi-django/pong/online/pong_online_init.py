@@ -1,4 +1,4 @@
-from ..utils.async_logger import async_log, sync_log
+from ..utils.async_logger import async_log
 
 import logging
 logger = logging.getLogger(__name__)
@@ -11,7 +11,7 @@ class PongOnlineInit:
         self.config = config
 
     def init_pong_engine(self):
-        sync_log("物理判定init")
+        # sync_log("物理判定init")
         data = {
             "game_settings": {
                 "max_score": self.config.game_settings["max_score"],

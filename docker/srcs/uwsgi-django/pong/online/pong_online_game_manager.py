@@ -49,7 +49,7 @@ class PongOnlineGameManager:
          - match:            スコア、終了判定
          - physics:          衝突・速度計算
         """
-        sync_log("物理判定init")
+        # sync_log("物理判定init")
         init                    = PongOnlineInit(self.config)
         self.pong_engine_data   = init.init_pong_engine()
         self.match              = PongOnlineMatch(self.pong_engine_data)
