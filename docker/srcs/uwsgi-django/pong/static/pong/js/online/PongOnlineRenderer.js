@@ -1,5 +1,10 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineRenderer.js
 
+/**
+ * <canvas>への描画（ピクセルに色を出力）を担当する
+ * 
+ * 参考:【テキストの描画 - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/Canvas_API/Tutorial/Drawing_text>
+ */
 class PongOnlineRenderer 
 {
 	static render(ctx, field, gameState) 

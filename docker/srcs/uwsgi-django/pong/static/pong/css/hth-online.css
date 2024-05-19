@@ -11,5 +11,17 @@
 	margin: 0 auto;
 	padding: 0;
 	/* 最前面に浮かせる */
+	z-index: 8888;
+}
+
+#hth-pong-online-back-to-home-Btn {
+	position: absolute;
+	/* bottom: 20px; */
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 10px 20px;
+	font-size: 16px;
+	cursor: pointer;
 	z-index: 9999;
 }
