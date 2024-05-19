@@ -64,10 +64,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
                 initial_state = self.game_manager.pong_engine_data
                 # json: key==全て(game_settingsを含む)
                 await async_log("初回engine_data: " + json.dumps(initial_state))
-                await self.send(text_data=json.dumps({
-                        "message": "Sending initial state", 
-                        "data": initial_state
-                    }))
+                await self.send(text_data=json.dumps(initial_state))
             elif 'objects' in json_data:
                 await async_log("更新時処理----")
                 # json: key==objectsのみ

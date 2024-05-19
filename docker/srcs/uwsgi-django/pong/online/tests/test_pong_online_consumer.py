@@ -87,11 +87,12 @@ class TestPongOnlineConsumer(ChannelsLiveServerTestCase):
         response = await self.communicator.receive_json_from()
 
         expected_initial_state = {"score1": 0, "score2": 0}
-        actual_scores = response.get("data", {}).get("state", {})
+        actual_scores = response['state']
 
         # 応答データの検証
         self.assertEqual(actual_scores, expected_initial_state, "Scores did not match expected scores.")
         await self.communicator.disconnect()
+
 
     async def test_game_state_update(self):
         await self.asyncSetUp()

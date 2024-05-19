@@ -5,39 +5,37 @@ class PongOnlinePaddleMover
 {
 	static 	handlePaddleMovement(field, gameState) 
 	{
-		PongOnlinePaddleMover._updatePaddlePosition(field, gameState.paddle1, 'E', 'F');
-		PongOnlinePaddleMover._updatePaddlePosition(field, gameState.paddle2, 'I', 'J');
+		if (!gameState || !gameState.objects || !gameState.objects.paddle1) {
+			console.error('Invalid gameState:', this.gameState);
+			return;
+		}
+		
+		PongOnlinePaddleMover._updatePaddlePosition(field, gameState.objects.paddle1, 'E', 'F');
+		PongOnlinePaddleMover._updatePaddlePosition(field, gameState.objects.paddle2, 'I', 'J');
 	}
 	
-	/**
-	 * 座標は左上が0,0 ※サーバーは中央が0,0
-	 */
 	static _updatePaddlePosition(field, paddle, keyUp, keyDown) 
 	{
-		// console.log("HM field H:", field.height);
 		if (PongEngineKey.isDown(keyDown) 
-			&& paddle.position.y < field.height - paddle.height / 2) 
+			&& paddle.position.y < field.height / 2 - paddle.height / 2) 
 		{
-			paddle.dirY = paddle.speed;
+			paddle.dir_y = paddle.speed;
 		} 
 		else if (PongEngineKey.isDown(keyUp) 
-				&& paddle.position.y > 0 + paddle.height / 2) 
+				&& paddle.position.y > -field.height / 2 + paddle.height / 2) 
 		{
-			paddle.dirY = -paddle.speed;
+			paddle.dir_y = -paddle.speed;
 		} 
 		else 
 		{
-			paddle.dirY = 0;
+			paddle.dir_y = 0;
 		}
-		let nextPositionY = paddle.position.y + paddle.dirY;
+		let nextPositionY = paddle.position.y + paddle.dir_y;
 		// パドルがフィールドの上端または下端を超えないようにmax,min()で補正する
 		// 理由：衝突の直前の最後の一回はspeed分だけ動くのでフィールドからはみ出る場合がある。
-		let minTop = 0  + paddle.height / 2;
-		let maxBottom = field.height  - paddle.height / 2;
-		paddle.position.y = Math.max(Math.min(nextPositionY, maxBottom), minTop);
-
-		// サーバーに送信されるパドル情報
-		// console.log(`Updated paddle position: ${paddle.position.y}, Direction: ${paddle.dirY}`);
+		let maxTop			= -field.height / 2 + paddle.height / 2;
+		let maxBottom		= field.height / 2 - paddle.height / 2;
+		paddle.position.y	= Math.max(Math.min(nextPositionY, maxBottom), maxTop);
 	}	
 
 }
@@ -45,4 +43,29 @@ class PongOnlinePaddleMover
 export default PongOnlinePaddleMover;
 
 
+
+	// // 特定のキー入力に基づいてパドルを動かす
+	// updatePaddlePosition(paddle, keyUp, keyDown) 
+	// {
+	// 	if (PongEngineKey.isDown(keyDown) 
+	// 		&& paddle.position.y < this.field.height / 2 - paddle.height / 2) 
+	// 	{
+	// 		paddle.dirY = paddle.speed;
+	// 	} 
+	// 	else if (PongEngineKey.isDown(keyUp) 
+	// 			&& paddle.position.y > -this.field.height / 2 + paddle.height / 2) 
+	// 	{
+	// 		paddle.dirY = -paddle.speed;
+	// 	} 
+	// 	else 
+	// 	{
+	// 		paddle.dirY = 0;
+	// 	}
+	// 	let nextPositionY = paddle.position.y + paddle.dirY;
+	// 	// パドルがフィールドの上端または下端を超えないようにmax,min()で補正する
+	// 	// 理由：衝突の直前の最後の一回はspeed分だけ動くのでフィールドからはみ出る場合がある。
+	// 	let maxTop = -this.field.height / 2 + paddle.height / 2;
+	// 	let maxBottom = this.field.height / 2 - paddle.height / 2;
+	// 	paddle.position.y = Math.max(Math.min(nextPositionY, maxBottom), maxTop);
+	// }	
 
