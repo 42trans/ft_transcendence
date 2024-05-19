@@ -8,6 +8,8 @@
 	 * ## Websocket接続テスト:
 	 * - brew install websocat
 	 * - websocat ws://localhost/ws/pong/online/
+	 * 
+	 * - 座標変換: 参考:【CanvasRenderingContext2D: setTransform() method - Web APIs | MDN】 <https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setTransform>
 	 */
 	class PongOnlineClientApp 
 	{
@@ -29,7 +31,7 @@
 			this.gameState	= null;
 			this.socket		= new WebSocket('wss://localhost/ws/pong/online/');
 
-			this.syncWS		= new PongOnlineSyncWS(this ,this.gameState, this.socket);
+			this.syncWS		= new PongOnlineSyncWS(this, this.socket);
 			PongEngineKey.listenForEvents();
 		}
 
@@ -52,10 +54,13 @@
 			// console.log(this.canvas.height, zoomLevelHeight);
 			// console.log(this.field.zoomLevel);
 
-			// デフォルトの変換をリセット
+
+			// 1,0,0,1,0,0 スケーリングを変更せず、回転もせず、平行移動も加えない
+			// 元の状態（リセット状態）に戻す
 			this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-			// キャンバスの中心を0,0とするための座標変換
+			// 平行移動 キャンバスの中心を0,0とするための座標変換
 			this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+			// 拡大縮小
 			this.ctx.scale(this.field.zoomLevel, this.field.zoomLevel);
 		}
 
@@ -70,7 +75,7 @@
 				// 2D描画
 				PongOnlineRenderer.render(this.ctx, this.field, this.gameState);
 			// TODO_ft:　dev時負荷落とす
-			}, 1000 / 30);
+			}, 1000 / 1);
 		}
 
 		static main(env) {

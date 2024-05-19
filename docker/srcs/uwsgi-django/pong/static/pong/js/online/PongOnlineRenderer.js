@@ -5,9 +5,16 @@ class PongOnlineRenderer
 	static render(ctx, field, gameState) 
 	{
 		PongOnlineRenderer.clearField(ctx, field);
-		PongOnlineRenderer.drawPaddle(ctx, gameState.paddle1);
-		PongOnlineRenderer.drawPaddle(ctx, gameState.paddle2);
-		PongOnlineRenderer.drawBall(ctx, gameState.ball);
+		PongOnlineRenderer.drawPaddle(ctx, gameState.objects.paddle1);
+		PongOnlineRenderer.drawPaddle(ctx, gameState.objects.paddle2);
+		PongOnlineRenderer.drawBall(ctx, gameState.objects.ball);
+		// console.log("--------------")
+		// console.log("field: ",field)
+		// console.log("p1 x: ",gameState.objects.paddle1.position.x)
+		// console.log("p2 x: ",gameState.objects.paddle2.position.x)
+		// console.log("ball x: ",gameState.objects.ball.position.x)
+		// console.log("ball y: ",gameState.objects.ball.position.y)
+		// console.log("--------------")
 	}
 
 	static drawPaddle(ctx, paddle) 
@@ -25,14 +32,20 @@ class PongOnlineRenderer
 	static drawBall(ctx, ball) 
 	{
 		ctx.beginPath();
-		ctx.arc(ball.position.x, ball.position.y, ball.radius, 0, 2 * Math.PI, false);
+		ctx.arc
+		(
+			ball.position.x, 
+			ball.position.y, 
+			ball.radius, 
+			0, 
+			2 * Math.PI, false
+		);
 		ctx.fillStyle = 'white';
 		ctx.fill();
 	}
 
 	static clearField(ctx, field) 
 	{
-		// 中心を原点とする座標系でキャンバス全体をクリア
 		ctx.clearRect
 		(
 			-field.width / 2, 
@@ -43,7 +56,8 @@ class PongOnlineRenderer
 		
 		// 背景色設定
 		ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-		ctx.fillRect(
+		ctx.fillRect
+		(
 			-field.width / 2, 
 			-field.height / 2, 
 			field.width, 
