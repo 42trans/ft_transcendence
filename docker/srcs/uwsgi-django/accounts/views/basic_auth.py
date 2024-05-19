@@ -1,6 +1,7 @@
 # accounts/views/basic_auth.py
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
@@ -115,7 +116,7 @@ class LoginAPIView(APIView):
             return get_jwt_response(user, data)
 
 
-class LogoutTemplateView(TemplateView):
+class LogoutTemplateView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/logout.html"
 
 
