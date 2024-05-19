@@ -18,7 +18,6 @@ class PongOnlineSyncWS
 	{
 		// ルーチン: 受信
 		this.socket.onmessage = (event) => this.onSocketMessage(event);
-
 		// 初回のみ
 		this.socket.onopen = () => this.onSocketOpen();
 		// エラーハンドリング
@@ -39,7 +38,7 @@ class PongOnlineSyncWS
 		
 		try {
 			this.pongOnlineClientApp.gameState = recvData;
-			// console.log("data client:", JSON.stringify(this.pongOnlineClientApp.gameState, null, 2));
+			console.log("data client:", JSON.stringify(this.pongOnlineClientApp.gameState, null, 2));
 			if (!this.gameLoopStarted) 
 			{
 				this.pongOnlineClientApp.gameLoop();
@@ -50,7 +49,7 @@ class PongOnlineSyncWS
 		}
 	}
 	// ------------------------------
-	// ルーチン:送信　※loopで呼び出し
+	// ルーチン:送信　※gameLoop() から呼ばれる
 	// ------------------------------
 	sendClientState(gameState) 
 	{

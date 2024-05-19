@@ -1,4 +1,6 @@
 # docker/srcs/uwsgi-django/pong/online/pong_online_update.py
+from ..utils.async_logger import async_log
+
 class PongOnlineUpdate:
     def __init__(self, pong_engine_data, physics, match):
         self.physics            = physics
@@ -37,7 +39,8 @@ class PongOnlineUpdate:
         if self.physics.is_colliding_with_side_walls(ball_x, r, self.field):
             scorer = 2 if ball_x < 0 else 1
             self.reset_ball(scorer)
-            self.match.update_score(scorer)
+            # await async_log(f"a scorer:  {scorer}")
+            await self.match.update_score(scorer)
 
         if self.physics.is_colliding_with_ceiling_or_floor(ball_y, r, self.field):
             self.ball["direction"]["y"] = -self.ball["direction"]["y"]

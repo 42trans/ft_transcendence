@@ -32,8 +32,8 @@ class PongOnlineGameManager:
         self.user_id = user_id
         self.config = PongOnlineConfig()
         self.pong_engine_data: Dict[str, Any] = {
-            "game_settings": {},
             "objects": {},
+            "game_settings": {},
             "state": {},
             "is_running": None
         }
@@ -59,8 +59,8 @@ class PongOnlineGameManager:
             self.match
         )
         # logger.debug("initialize_game() end")
-        await async_log("initialize_game().pong_engine_data: ")
-        await async_log(self.pong_engine_data)
+        # await async_log("initialize_game().pong_engine_data: ")
+        # await async_log(self.pong_engine_data)
         return self
 
 
@@ -70,7 +70,7 @@ class PongOnlineGameManager:
         json: key==objectsだけをやり取りする
         """
         await self.pong_engine_update.update_game(json_data)
-        serialized_data = self.pong_engine_update.serialize_state()
-        await async_log("update_game().serialized_data: ")
-        await async_log(serialized_data)
+        # serialized_data = self.pong_engine_update.serialize_state()
+        # await async_log("update_game().serialized_data: ")
+        # await async_log(serialized_data)
         return self

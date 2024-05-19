@@ -8,6 +8,7 @@ class PongOnlineRenderer
 		PongOnlineRenderer.drawPaddle(ctx, gameState.objects.paddle1);
 		PongOnlineRenderer.drawPaddle(ctx, gameState.objects.paddle2);
 		PongOnlineRenderer.drawBall(ctx, gameState.objects.ball);
+		PongOnlineRenderer.drawScore(ctx, field, gameState.state);
 		// console.log("--------------")
 		// console.log("field: ",field)
 		// console.log("p1 x: ",gameState.objects.paddle1.position.x)
@@ -17,11 +18,27 @@ class PongOnlineRenderer
 		// console.log("--------------")
 	}
 
+	static drawScore(ctx, field, state)
+	{
+		// ctx: Canvas 2D コンテキストオブジェクト
+		ctx.font = '40px Arial';
+		ctx.fillStyle = 'white';
+		// 指定したx座標がテキストの中央
+		ctx.textAlign = 'center';
+		let scoreText = `${state.score1} - ${state.score2}`;
+		// 第1引数:描画テキスト、第2,第3引数:x,y座標
+		ctx.fillText(
+			scoreText, 
+			0, 
+			-field.height / 2 + 30);
+	}
+
 	static drawPaddle(ctx, paddle) 
 	{
 		ctx.fillStyle = 'white';
 		ctx.fillRect
 		(
+			// パドルの厚みを差し引いた場所（左上）から描き始める
 			paddle.position.x - paddle.width / 2,
 			paddle.position.y - paddle.height / 2,
 			paddle.width,
@@ -31,16 +48,22 @@ class PongOnlineRenderer
 
 	static drawBall(ctx, ball) 
 	{
+		// ctx.beginPath(): 新しいパスを開始
 		ctx.beginPath();
+		// ctx.arc(): 円
 		ctx.arc
 		(
 			ball.position.x, 
 			ball.position.y, 
 			ball.radius, 
+			// 開始角度、終了角度、描画方向
 			0, 
-			2 * Math.PI, false
+			2 * Math.PI, 
+			false
 		);
+		// ctx.fillStyle: 図形の塗りつぶし色
 		ctx.fillStyle = 'white';
+		// ctx.fill(): 塗りつぶし
 		ctx.fill();
 	}
 

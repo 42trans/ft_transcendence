@@ -43,5 +43,6 @@
     "state": {
         "score1": 0,
         "score2": 0
-    }
+    },
+	"is_running": True
 }

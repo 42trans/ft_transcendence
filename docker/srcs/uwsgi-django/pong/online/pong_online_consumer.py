@@ -19,7 +19,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
          - self.channel_name: AsyncWebsocketConsumerの属性 unique ID
          - self.accept(): WebSocket接続を受け入れて送受信可能にする
         """
-        # await async_log("ws接続されました")
+        await async_log("ws接続されました")
         self.user_id = self.scope['user'].id
         self.room_group_name, err = await self._get_room_group_name(self.user_id)
         if err is not None:
@@ -33,10 +33,10 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             await self.close(code=1011) 
             return
-        await async_log("room_group_nameが作成されました: " + self.room_group_name)
+        # await async_log("room_group_nameが作成されました: " + self.room_group_name)
         self.game_manager = PongOnlineGameManager(self.user_id)
         await self.game_manager.initialize_game()
-        await async_log("game_managerが作成されました")
+        # await async_log("game_managerが作成されました")
         await self.accept()
 
 
@@ -47,8 +47,8 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         - クライエントへの送信は 全て（スコアなど）
         - Status Code: 参考:【RFC 6455 - The WebSocket Protocol】 <https://datatracker.ietf.org/doc/html/rfc6455#section-7.4.2>
         """
-        await async_log("receive(): 開始")
-        await async_log("クライアントからのtext_data受信: " + text_data)
+        # await async_log("receive(): 開始")
+        # await async_log("クライアントからのtext_data受信: " + text_data)
         try:
             # text_data（WebSocket から受け取った生の文字列データ）を jsonに変換
             json_data = json.loads(text_data)
@@ -58,21 +58,21 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
 
         try:
             if 'action' in json_data and json_data['action'] == 'initialize':
-                await async_log("初回の処理----")
+                # await async_log("初回の処理----")
                 # json: key==actionのみ
-                await async_log("初回クライアントからの受信: " + json.dumps(json_data))
+                # await async_log("初回クライアントからの受信: " + json.dumps(json_data))
                 initial_state = self.game_manager.pong_engine_data
                 # json: key==全て(game_settingsを含む)
-                await async_log("初回engine_data: " + json.dumps(initial_state))
+                # await async_log("初回engine_data: " + json.dumps(initial_state))
                 await self.send(text_data=json.dumps(initial_state))
             elif 'objects' in json_data:
-                await async_log("更新時処理----")
+                # await async_log("更新時処理----")
                 # json: key==objectsのみ
-                await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
+                # await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
                 await self.game_manager.update_game(json_data['objects'])
                 updated_state = self.game_manager.pong_engine_data
                 # json: key==全て(game_settingsを含む)
-                await async_log("更新時engine_data: " + json.dumps(updated_state))
+                # await async_log("更新時engine_data: " + json.dumps(updated_state))
                 await self.channel_layer.group_send(self.room_group_name, {
                     'type': 'send_data',
                     'data': updated_state

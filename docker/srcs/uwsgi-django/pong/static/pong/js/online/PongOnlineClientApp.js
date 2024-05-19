@@ -54,7 +54,6 @@
 			// console.log(this.canvas.height, zoomLevelHeight);
 			// console.log(this.field.zoomLevel);
 
-
 			// 1,0,0,1,0,0 スケーリングを変更せず、回転もせず、平行移動も加えない
 			// 元の状態（リセット状態）に戻す
 			this.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -75,7 +74,7 @@
 				// 2D描画
 				PongOnlineRenderer.render(this.ctx, this.field, this.gameState);
 			// TODO_ft:　dev時負荷落とす
-			}, 1000 / 1);
+			}, 1000 / 30);
 		}
 
 		static main(env) {
