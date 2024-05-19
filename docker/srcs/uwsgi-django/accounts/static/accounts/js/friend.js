@@ -1,6 +1,6 @@
 // static/accounts/js/friend.js
 
-function sendFriendRequest(userId) {
+export function sendFriendRequest(userId) {
     fetch(`/accounts/api/friend/send-request/${userId}/`, {
         method: 'POST',
         headers: {
@@ -27,7 +27,7 @@ function sendFriendRequest(userId) {
 }
 
 
-function cancelFriendRequest(userId) {
+export function cancelFriendRequest(userId) {
     fetch(`/accounts/api/friend/cancel-request/${userId}/`, {
         method: 'POST',
         headers: {
@@ -54,7 +54,7 @@ function cancelFriendRequest(userId) {
 }
 
 
-function acceptFriendRequest(userId) {
+export function acceptFriendRequest(userId) {
     fetch(`/accounts/api/friend/accept-request/${userId}/`, {
         method: 'POST',
         headers: {
@@ -81,7 +81,7 @@ function acceptFriendRequest(userId) {
 }
 
 
-function rejectFriendRequest(userId) {
+export function rejectFriendRequest(userId) {
     if (confirm('Are you sure you want to reject this request ?')) {
         fetch(`/accounts/api/friend/reject-request/${userId}/`, {
             method: 'POST',
@@ -112,7 +112,7 @@ function rejectFriendRequest(userId) {
 }
 
 
-function deleteFriend(userId) {
+export function deleteFriend(userId) {
     if (confirm('Are you sure you want to delete this friend ?')) {
         fetch(`/accounts/api/friend/delete/${userId}/`, {
             method: 'POST',

@@ -42,11 +42,14 @@
 //   }
 // }
 
-export function executeScriptTab(path) {
+export function executeScriptTab(path, isModule = false) {
   console.log("executeScriptTab: path: " + path);
 
   const script = document.createElement('script');
   script.src = path;
+  if (isModule) {
+    script.type = 'module';
+  }
 
   script.onerror = function() {
     console.error(`Failed to load script: ${path}`);

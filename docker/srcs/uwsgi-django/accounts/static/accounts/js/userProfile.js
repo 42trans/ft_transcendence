@@ -1,7 +1,7 @@
 // userProfile.js
 
 import { createFriendsList } from "./online-status.js"
-
+import { cancelFriendRequest, rejectFriendRequest, acceptFriendRequest } from "./friend.js"
 
 export function fetchUserProfile() {
 	fetch("/accounts/api/user/profile/", {
@@ -62,10 +62,11 @@ export function fetchFriendRequestList() {
 		.then(response => response.json())
 		.then(data => {
 			const requestsContainer = document.getElementById("requests-container");
+			requestsContainer.innerHTML = '';
 
 			// 送信したフレンドリクエスト
 			const sentRequestsDiv = document.createElement('div');
-			sentRequestsDiv.innerHTML = "<h3>Sent Friend Requests</h3>";
+			sentRequestsDiv.innerHTML = "<h4>Sent Friend Requests</h4>";
 
 			const sentRequestsUl = document.createElement('ul');
 			data.sent_requests.forEach(req => {
@@ -80,7 +81,7 @@ export function fetchFriendRequestList() {
 
 			// 受信したフレンドリクエスト
 			const receivedRequestsDiv = document.createElement('div');
-			receivedRequestsDiv.innerHTML = "<h3>Received Friend Requests</h3>";
+			receivedRequestsDiv.innerHTML = "<h4>Received Friend Requests</h4>";
 
 			const receivedRequestsUl = document.createElement('ul');
 			data.received_requests.forEach(req => {
@@ -133,14 +134,3 @@ function createActionButton(text, action) {
 	};
 	return actionLink;
 }
-
-
-// document.addEventListener("DOMContentLoaded", function() {
-// 	console.log("userProfile.js 1");
-// 	fetchUserProfile()
-// 	console.log("userProfile.js 2");
-// 	fetchFriendList()
-// 	console.log("userProfile.js 3");
-// 	fetchFriendRequestList()
-// 	console.log("userProfile.js 4");
-// });

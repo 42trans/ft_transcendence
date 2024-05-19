@@ -19,10 +19,8 @@ export default class extends AbstractView {
   }
 
   async executeScript() {
-    // executeScriptTab("/static/accounts/js/userProfile.js");
-    executeScriptTab("/static/accounts/js/logout.js");
     // executeScriptTab("/static/accounts/js/friend.js");
-    // executeScriptTab("/static/accounts/js/online-status.js");
+    // executeScriptTab("/static/accounts/js/online-status.js", true);
 
     import("/static/accounts/js/userProfile.js")
         .then(module => {
