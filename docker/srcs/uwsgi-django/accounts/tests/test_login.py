@@ -19,6 +19,7 @@ class LoginAPIViewTestCase(TestCase):
     kUser2Password = 'pass012345'
 
     kLoginAPIName = "api_accounts:api_login"
+    kHomeURL = "/game/"
 
     def setUp(self):
         self.client = APIClient()
@@ -77,7 +78,7 @@ class LoginAPIViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Basic authentication successful', response_json['message'])
-        self.assertIn('/accounts/user/', response_json['redirect'])
+        self.assertIn(self.kHomeURL, response_json['redirect'])
 
         self.assertIn('Access-Token', response.cookies)
         self.assertIn('Refresh-Token', response.cookies)
