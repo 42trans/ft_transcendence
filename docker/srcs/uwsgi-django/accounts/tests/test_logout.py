@@ -12,7 +12,7 @@ class LogoutAPITests(TestCase):
     kLogoutAPIName = "api_accounts:api_logout"
     kLoginURL = "accounts/login.html"
     kLogoutURL = "accounts/logout.html"
-    kHomeURL = "/pong/"
+    kHomeURL = "/game/"
 
     kUserEmail = "test@example.com"
     kUserNickname = "test"
@@ -43,7 +43,7 @@ class LogoutAPITests(TestCase):
 
         response_json = response.json()
         self.assertIn('You have been successfully logout', response_json['message'])
-        self.assertIn('/pong/', response_json['redirect'])
+        self.assertIn(self.kHomeURL, response_json['redirect'])
 
         self.assertTrue(response.cookies.get('Access-Token', '').value == '')
         self.assertTrue(response.cookies.get('Refresh-Token', '').value == '')
