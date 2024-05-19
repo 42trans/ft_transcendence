@@ -5,7 +5,7 @@ from .pong_online_physics import PongOnlinePhysics
 from .pong_online_match import PongOnlineMatch
 import logging
 from typing import Dict, Any
-from ..utils.async_logger import async_log, sync_log
+from ..utils.async_logger import async_log
 
 logger = logging.getLogger(__name__)
 
@@ -41,9 +41,6 @@ class PongOnlineGameManager:
         self.physics = None
         self.pong_engine_update = None
 
-        # self.initialize_game()
-
-
     async def initialize_game(self):
         """ 
         ゲームの各コンポーネントを初期化し、依存関係を注入する。
@@ -62,12 +59,18 @@ class PongOnlineGameManager:
             self.match
         )
         # logger.debug("initialize_game() end")
+        await async_log("initialize_game().pong_engine_data: ")
         await async_log(self.pong_engine_data)
         return self
 
 
-    def update_game(self, json_data):
-        """ gameの状態を高速で更新する """
-        self.pong_engine_update.update_game(json_data)
-        return self.pong_engine_update.serialize_state()
-    
+    async def update_game(self, json_data):
+        """ 
+        gameの状態を高速で更新する
+        json: key==objectsだけをやり取りする
+        """
+        await self.pong_engine_update.update_game(json_data)
+        serialized_data = self.pong_engine_update.serialize_state()
+        await async_log("update_game().serialized_data: ")
+        await async_log(serialized_data)
+        return self

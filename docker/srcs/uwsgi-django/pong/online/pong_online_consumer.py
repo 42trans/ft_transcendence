@@ -33,45 +33,63 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             await self.close(code=1011) 
             return
-        # await async_log("room_group_nameが作成されました: " + self.room_group_name)
+        await async_log("room_group_nameが作成されました: " + self.room_group_name)
         self.game_manager = PongOnlineGameManager(self.user_id)
         await self.game_manager.initialize_game()
-        # await async_log("game_managerが作成されました")
+        await async_log("game_managerが作成されました")
         await self.accept()
 
+
     async def receive(self, text_data=None):
+        """
+        クライアントからの受信に応じて、初期情報や更新情報(物理判定後)をsendするメソッド
+        - クライアントからの受信は key == objects (paddle, ball) のみ
+        - クライエントへの送信は 全て（スコアなど）
+        - Status Code: 参考:【RFC 6455 - The WebSocket Protocol】 <https://datatracker.ietf.org/doc/html/rfc6455#section-7.4.2>
+        """
+        await async_log("receive(): 開始")
+        await async_log("クライアントからのtext_data受信: " + text_data)
         try:
-            # text_data（WebSocket から受け取った生の文字列データ）を json
+            # text_data（WebSocket から受け取った生の文字列データ）を jsonに変換
             json_data = json.loads(text_data)
         except json.JSONDecodeError:
             await self.close(code=1007)
             return
 
-        # 初回通信: クライアントから合図を受け取って初期状態を送信
-        # if json_data.get("action") == "initialize":
-        #     initial_state = self.game_manager.get_initial_state()
-        #     await self.send(text_data=json.dumps(initial_state))
-        #     return
-        if 'action' in json_data and json_data['action'] == 'initialize':
-            # 初期状態を送信
-            # initial_state = self.game_manager.initialize_game()
-            initial_state  = self.game_manager.pong_engine_data
-            await self.send(text_data=json.dumps({"message": "Sending initial state", "state": initial_state}))
-        elif 'paddle1' in json_data or 'ball' in json_data:
-            # ゲームの状態を更新
-            updated_state = self.game_manager.update_game(json_data)
-            await self.channel_layer.group_send(self.room_group_name, {
-                'type': 'send_data',
-                'data': updated_state
-            })
-
-        state = self.game_manager.update_game(json_data)
-        await self.channel_layer.group_send(self.room_group_name, {
-            # group_send(): typeに基づいてsend_data()を呼び出す
-            'type': 'send_data',
-            'data': state
-        })
-
+        try:
+            if 'action' in json_data and json_data['action'] == 'initialize':
+                await async_log("初回の処理----")
+                # json: key==actionのみ
+                await async_log("初回クライアントからの受信: " + json.dumps(json_data))
+                initial_state = self.game_manager.pong_engine_data
+                # json: key==全て(game_settingsを含む)
+                await async_log("初回engine_data: " + json.dumps(initial_state))
+                await self.send(text_data=json.dumps({
+                        "message": "Sending initial state", 
+                        "data": initial_state
+                    }))
+            elif 'objects' in json_data:
+                await async_log("更新時処理----")
+                # json: key==objectsのみ
+                await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
+                await self.game_manager.update_game(json_data['objects'])
+                updated_state = self.game_manager.pong_engine_data
+                # json: key==全て(game_settingsを含む)
+                await async_log("更新時engine_data: " + json.dumps(updated_state))
+                await self.channel_layer.group_send(self.room_group_name, {
+                    'type': 'send_data',
+                    'data': updated_state
+                })
+            else:
+                # 期待されるキーが含まれていない場合
+                await self.send(text_data=json.dumps({"error": "Invalid request format"}))\
+                # カスタム: RFC6455 WebSocket app 4000 + 400 Bad Request
+                await self.close(code=4400)  
+        except Exception as e:
+            await self.send(text_data=json.dumps({"error": "Internal server error", "details": str(e)}))
+            # カスタム: RFC6455 WebSocket app 4000 + 500 Internal server error
+            await self.close(code=4500) 
+    
     async def send_data(self, event):
         await self.send(text_data=json.dumps(event['data']))
 

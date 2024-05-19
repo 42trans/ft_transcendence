@@ -78,102 +78,44 @@ class TestPongOnlineConsumer(ChannelsLiveServerTestCase):
         self.assertTrue(connected, "Authenticated user should connect successfully")
         await self.communicator.disconnect()
 
-    # async def test_send_and_receive_message(self):
-    #     await self.asyncSetUp()
 
-    #     # 接続確立
-    #     await self.communicator.connect()
+    async def test_initial_communication(self):
+        await self.asyncSetUp()
+        # サーバーへ クライアント側から初期化リクエストを送信
+        await self.communicator.send_json_to({'action': 'initialize'})
+        # クライアントへ サーバーからの初期状態応答を受信
+        response = await self.communicator.receive_json_from()
 
-    #     # ゲーム状態を更新するリクエストを送信
-    #     message = {"action": "initialize"}
-    #     await self.communicator.send_json_to(message)
+        expected_initial_state = {"score1": 0, "score2": 0}
+        actual_scores = response.get("data", {}).get("state", {})
 
-    #     # サーバーからのレスポンスを受信
-    #     response = await self.communicator.receive_json_from()
-    #     self.assertIn("message", response)
-    #     self.assertIn("state", response["message"])
-    #     self.assertIn("ball", response["message"]["state"])
+        # 応答データの検証
+        self.assertEqual(actual_scores, expected_initial_state, "Scores did not match expected scores.")
+        await self.communicator.disconnect()
 
-    #     await self.communicator.disconnect()
+    async def test_game_state_update(self):
+        await self.asyncSetUp()
+        # ゲームの状態更新リクエスト
+        update_data = {
+            "objects": {
+                "ball": {"position": {"x": 100, "y": 150}, "direction": {"x": 1, "y": 1}, "speed": 2, "radius": 5},
+                "paddle1": {"position": {"x": 50, "y": 50}, "dir_y": 1, "speed": 10},
+                "paddle2": {"position": {"x": 50, "y": 200}, "dir_y": -1, "speed": 10}
+            }
+        }
+        await self.communicator.send_json_to(update_data)
 
+        # 更新されたゲーム状態を受信
+        updated_data = await self.communicator.receive_json_from()
 
-    # async def test_send_invalid_data(self):
-    #     await self.asyncSetUp()
+        # 更新後のデータ検証
+        assert "objects" in updated_data, "The key 'objects' is missing in the response"
+        assert "ball" in updated_data["objects"], "The key 'ball' is missing in the response"
+        assert "position" in updated_data["objects"]["ball"], "The key 'position' is missing for 'ball'"
+        assert "direction" in updated_data["objects"]["ball"], "The key 'direction' is missing for 'ball'"
+        assert "paddle1" in updated_data["objects"], "The key 'paddle1' is missing in the response"
+        assert "position" in updated_data["objects"]["paddle1"], "The key 'position' is missing for 'paddle1'"
+        assert "paddle2" in updated_data["objects"], "The key 'paddle2' is missing in the response"
+        assert "position" in updated_data["objects"]["paddle2"], "The key 'position' is missing for 'paddle2'"
 
-    #     # 接続確立
-    #     await self.communicator.connect()
-
-    #     # 不正なJSONデータを送信
-    #     invalid_message = "this is not a JSON message"
-    #     await self.communicator.send_to(text_data=invalid_message)
-
-    #     # 無効なデータ送信後に接続が閉じられることを確認
-    #     response = await self.communicator.receive_output()
-    #     self.assertEqual(response['close_code'], 1007, "Connection should be closed due to invalid data")
-
-    #     await self.communicator.disconnect()
-    
-    # async def test_disconnect(self):
-    #     await self.asyncSetUp()
-
-    #     # 接続確立
-    #     await self.communicator.connect()
-
-    #     # 接続を切断
-    #     await self.communicator.disconnect()
-
-    #     # 切断が正常に行われたことを確認
-    #     closed = await self.communicator.wait()
-    #     self.assertTrue(closed, "WebSocket connection should be closed properly")
-
-
-    # async def test_websocket_connection(self):
-    #     await self.asyncSetUp()
-    #     try:
-    #         # クライアントからゲーム更新コマンドを送信
-    #         message = {"paddle1": {"dir_y": 10}}
-    #         await self.communicator.send_json_to(message)
-    #         # サーバーからのゲーム状態更新を受け取る
-    #         response = await self.communicator.receive_json_from()
-
-    #         self.assertIn("ball", response)
-    #         self.assertIn("paddle1", response)
-    #         self.assertIn("paddle2", response)
-    #     finally:
-    #         await self.asyncTearDown()
-
-
-    # async def test_send_and_receive_message(self):
-    #     await self.asyncSetUp()
-    #     try:
-    #         message = {"paddle1": {"dir_y": 10}}
-    #         await self.communicator.send_json_to(message)
-
-    #         response = await self.communicator.receive_json_from()
-
-    #         self.assertIn("ball", response)
-    #         self.assertIn("paddle1", response)
-    #         self.assertIn("paddle2", response)
-    #     finally:
-    #         await self.asyncTearDown()
-    
-    # async def test_send_invalid_data(self):
-    #     await self.asyncSetUp()
-    #     try:
-    #         invalid_message = "this is not a JSON message"
-    #         await self.communicator.send_to(text_data=invalid_message)
-    #         # 無効なデータ送信後に接続が閉じられることを確認
-    #         with self.assertRaises(AssertionError):
-    #             await self.communicator.receive_from()
-    #     finally:
-    #         await self.asyncTearDown()
-    
-    # async def test_disconnect(self):
-    #     await self.asyncSetUp()
-    #     try:
-    #         await self.communicator.disconnect()
-    #         # wait() should return True, indicating the connection is closed
-    #         closed = await self.communicator.wait(timeout=1)
-    #         self.assertIsNone(closed, "WebSocket connection should be closed")
-    #     finally:
-    #         await self.asyncTearDown()
+        await self.communicator.disconnect()

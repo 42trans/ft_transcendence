@@ -29,11 +29,11 @@ class PongOnlineSyncWS
 	// ルーチン:受信
 	// ------------------------------
 	onSocketMessage(event) {
-		// console.log("WebSocket onmessage.", event.data);
-		const data = JSON.parse(event.data);
+		console.log("onSocketMessage()", event.data);
+		const recvData = JSON.parse(event.data);
 		// TODO_ft:負の値が入らないことを確認する
-		// console.log("transformedData to client:", JSON.stringify(transformedData, null, 2));
-		const transformedData = this.transformRecvData(data);
+		const transformedData = this.transformRecvData(recvData.data);
+		console.log("transformedData to client:", JSON.stringify(transformedData, null, 2));
 		this.applyGameState(transformedData);
 	}
 
@@ -44,36 +44,9 @@ class PongOnlineSyncWS
 			// main loop
 			this.pongOnlineClientApp.gameLoop();
 		}
-		this.updateGameState(this.app.gameState, transformedData);
+		this.updateGameState(this.pongOnlineClientApp.gameState, transformedData);
 	}
 
-	/**
-	 * type:
-		{
-			"ball": {
-				"radius": 5,
-				"speed": 2.2,
-				"position": {"x": 114.59999999999998, "y": 14.53999999999999},
-				"direction": {"x": -1, "y": 0.1}
-			},
-			"paddle1": {
-				"speed": 10,
-				"dir_y": 0,
-				"width": 10,
-				"height": 30,
-				"position": {"x": -140.0, "y": 0}
-			},
-			"paddle2": {
-				"speed": 10,
-				"dir_y": 0,
-				"width": 10,
-				"height": 30,
-				"position": {"x": 140.0, "y": 0}
-			},
-			"score1": 0,
-			"score2": 0
-			}
-	*/
 	updateGameState(gameState, transformedData) 
 	{
 		gameState.ball = transformedData.ball;
@@ -87,19 +60,58 @@ class PongOnlineSyncWS
 	// ------------------------------
 	// ルーチン:送信
 	// ------------------------------
-	sendClientState(gameState) 
-	{
-		if (this.socket.readyState === WebSocket.OPEN) 
-		{
-			gameState.ball.position = this.toCenteredCoords(gameState.ball.position.x, gameState.ball.position.y, this.app.field);
-			gameState.paddle1.position = this.toCenteredCoords(gameState.paddle1.position.x, gameState.paddle1.position.y, this.app.field);
-			gameState.paddle2.position = this.toCenteredCoords(gameState.paddle2.position.x, gameState.paddle2.position.y, this.app.field);
-			// console.log("Sending data to server:", JSON.stringify(gameState, null, 2));
-			this.socket.send(JSON.stringify(gameState));
+	sendClientState(gameState) {
+		if (this.socket.readyState === WebSocket.OPEN) {
+			// オブジェクトのプロパティを明示的にコピーして新しいオブジェクトを作成
+			var ballPosition = this.toCenteredCoords(gameState.ball.position.x, gameState.ball.position.y, this.pongOnlineClientApp.field);
+			var paddle1Position = this.toCenteredCoords(gameState.paddle1.position.x, gameState.paddle1.position.y, this.pongOnlineClientApp.field);
+			var paddle2Position = this.toCenteredCoords(gameState.paddle2.position.x, gameState.paddle2.position.y, this.pongOnlineClientApp.field);
+	
+			var gameStateObj = {
+				objects: {
+					ball: {
+						direction: {
+							x: gameState.ball.direction.x,
+							y: gameState.ball.direction.y
+						},
+						position: {
+							x: ballPosition.x,
+							y: ballPosition.y
+						},
+						radius: gameState.ball.radius,
+						speed: gameState.ball.speed
+					},
+					paddle1: {
+						speed: gameState.paddle1.speed,
+						dir_y: gameState.paddle1.dir_y,
+						width: gameState.paddle1.width,
+						height: gameState.paddle1.height,
+						position: {
+							x: paddle1Position.x,
+							y: paddle1Position.y
+						}
+					},
+					paddle2: {
+						speed: gameState.paddle2.speed,
+						dir_y: gameState.paddle2.dir_y,
+						width: gameState.paddle2.width,
+						height: gameState.paddle2.height,
+						position: {
+							x: paddle2Position.x,
+							y: paddle2Position.y
+						}
+					}
+				}
+			};
+	
+			console.log("Sending data to server:", JSON.stringify(gameStateObj, null, 2));
+			this.socket.send(JSON.stringify(gameStateObj));
 		} else {
 			console.log("WebSocket is not open:", this.socket.readyState);
 		}
 	}
+	
+	
 
 
 	// ------------------------------
@@ -125,28 +137,31 @@ class PongOnlineSyncWS
 	transformRecvData(data) {
 		const ball = {
 			direction: {
-				x: data.ball.direction.x,
-				y: data.ball.direction.y
+				x: data.objects.ball.direction.x,
+				y: data.objects.ball.direction.y
 			},
-			position: this.fromCenteredCoords(data.ball.position.x, data.ball.position.y, this.app.field),
-			radius: data.ball.radius,
-			speed: data.ball.speed
+			position: this.fromCenteredCoords(
+				data.objects.ball.position.x, 
+				data.objects.ball.position.y, 
+				this.pongOnlineClientApp.field),
+			radius: data.objects.ball.radius,
+			speed: data.objects.ball.speed
 		};
 	
 		const paddle1 = {
-			speed: data.paddle1.speed,
-			dir_y: data.paddle1.dir_y,
-			width: data.paddle1.width,
-			height: data.paddle1.height,
-			position: this.fromCenteredCoords(data.paddle1.position.x, data.paddle1.position.y, this.app.field),
+			speed: data.objects.paddle1.speed,
+			dir_y: data.objects.paddle1.dir_y,
+			width: data.objects.paddle1.width,
+			height: data.objects.paddle1.height,
+			position: this.fromCenteredCoords(data.objects.paddle1.position.x, data.objects.paddle1.position.y, this.pongOnlineClientApp.field),
 		};
 	
 		const paddle2 = {
-			speed: data.paddle2.speed,
-			dir_y: data.paddle2.dir_y,
-			width: data.paddle2.width,
-			height: data.paddle2.height,
-			position: this.fromCenteredCoords(data.paddle2.position.x, data.paddle2.position.y, this.app.field),
+			speed: data.objects.paddle2.speed,
+			dir_y: data.objects.paddle2.dir_y,
+			width: data.objects.paddle2.width,
+			height: data.objects.paddle2.height,
+			position: this.fromCenteredCoords(data.objects.paddle2.position.x, data.objects.paddle2.position.y, this.pongOnlineClientApp.field),
 		};
 	
 		const transformedData = {
@@ -164,9 +179,10 @@ class PongOnlineSyncWS
 	// 非ルーチンなデータ受信時のメソッド
 	// ------------------------------
 	onSocketOpen() {
-		// console.log("WebSocket connection established.");
+		console.log("WebSocket connection established.");
 		const initData = JSON.stringify({ action: "initialize" });
 		this.socket.send(initData);
+		console.log("initData: ", initData);
 	}
 	
 	onSocketClose(event) {

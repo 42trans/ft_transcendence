@@ -32,9 +32,7 @@ class PongOnlineInit:
                 "score1": 0,
                 "score2": 0,
             },
-            "is_running": {
-                True
-            }
+            "is_running": True
         }
         return data
 

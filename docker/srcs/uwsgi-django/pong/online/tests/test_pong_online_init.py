@@ -53,7 +53,7 @@ class TestPongOnlineInit(TestCase):
                 }
             },
             "state": {"score1": 0, "score2": 0},
-            "is_running": {True}
+            "is_running": True
         }
         print("initial_state:", initial_state)
         self.assertEqual(initial_state, expected_state)
