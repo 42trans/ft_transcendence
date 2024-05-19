@@ -12,16 +12,23 @@ export default class extends AbstractView {
   }
 
   async getHtml() {
-    const uri = getUrl("/accounts/user/");
+    // const uri = getUrl("/accounts/user/");
+    const uri = "/accounts/user/";
     const data = await fetchData(uri);
     return data;
   }
 
   async executeScript() {
-    executeScriptTab("../static/accounts/js/userProfile.js");
-    executeScriptTab("../static/accounts/js/logout.js");
-    executeScriptTab("../static/accounts/js/friend.js");
-    executeScriptTab("../static/accounts/js/online-status.js");
+    // executeScriptTab("/static/accounts/js/userProfile.js");
+    // executeScriptTab("/static/accounts/js/logout.js");
+    // executeScriptTab("/static/accounts/js/friend.js");
+    // executeScriptTab("/static/accounts/js/online-status.js");
+    import("/static/accounts/js/userProfile.js").then(module => {
+      module.fetchUserProfile();
+      module.fetchFriendList();
+      module.fetchFriendRequestList();
+    });
+
   }
 
 }

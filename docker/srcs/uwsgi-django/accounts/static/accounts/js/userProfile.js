@@ -1,7 +1,18 @@
-function fetchUserProfile() {
-	fetch("/accounts/api/user/profile/")
+// userProfile.js
+
+console.log("userProfile.js has been loaded and executed.");
+
+export function fetchUserProfile() {
+	console.log('fetchUserProfile 1')
+	fetch("/accounts/api/user/profile/", {
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+		}
+	})
 		.then(response => response.json())
 		.then(data => {
+			console.log('fetchUserProfile 2')
 			const userInfo = document.getElementById("user-info");
 			userInfo.innerHTML = `
                 <li>Email: ${data.email}</li>
@@ -16,17 +27,25 @@ function fetchUserProfile() {
 				`<li>2FA: ✅Enabled</li><li><a href="/accounts/verify/disable_2fa/">Disable 2FA</a></li>` :
 				`<li>2FA: Disabled</li><li><a href="/accounts/verify/enable_2fa/">Enable 2FA</a></li>`}
                 <hr>
-                <li><a href="/chat/dm-sessions/">DM List</a></li>
+                <li><a href="/dm/" class="nav__link" data-link>DM List</a></li> 
                 `;
+				// SPA DM pageへの遷移なのでchat/dm-sessions/ではなく/dm/を指定
 
-			setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
+			console.log('fetchUserProfile 3')
+			// setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
 		})
 		.catch(error => console.error("Error:", error));
+	console.log('fetchUserProfile 4')
 }
 
 
-function fetchFrinedList() {
-	fetch('/accounts/api/friend/list/')
+export function fetchFrinedList() {
+	fetch('/accounts/api/friend/list/', {
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+		}
+	})
 		.then(response => response.json())
 		.then(data => {
 			createFriendsList(data);
@@ -35,9 +54,14 @@ function fetchFrinedList() {
 }
 
 
-function fetchFriendRequestList() {
+export function fetchFriendRequestList() {
 	// フレンド申請リストの一覧
-	fetch("/accounts/api/friend/requests/")
+	fetch("/accounts/api/friend/requests/", {
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+		}
+	})
 		.then(response => response.json())
 		.then(data => {
 			const requestsContainer = document.getElementById("requests-container");
@@ -115,7 +139,11 @@ function createActionButton(text, action) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
+	console.log("userProfile.js 1");
 	fetchUserProfile()
+	console.log("userProfile.js 2");
 	fetchFrinedList()
+	console.log("userProfile.js 3");
 	fetchFriendRequestList()
+	console.log("userProfile.js 4");
 });

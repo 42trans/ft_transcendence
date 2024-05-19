@@ -6,15 +6,16 @@ import { executeScriptTab } from "../utility/script.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Script1");
+    this.setTitle("Game1vs1");
   }
 
   async getHtml() {
-    const uri = "/view/script1/";
+    const uri = "/pong/game/";
     const data = await fetchData(uri);
+    //console.log("Pong:" + data);
     return data;
   }
   async executeScript() {
-    executeScriptTab("/static/spa/js/script/test.js");
+    executeScriptTab("/static/pong/three/assets/index.js");
   }
 }

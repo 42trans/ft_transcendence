@@ -4,7 +4,7 @@ import Pong         from "../views/Pong.js";
 
 import FreePlay     from "../views/Pong.js";
 import Tournament   from "../views/Tournament.js";
-import Game1vs1     from "../views/Pong.js";
+import Game1vs1     from "../views/Game1vs1.js";
 
 import GameHistory  from "../views/UserProfile.js";
 
@@ -35,7 +35,7 @@ export const Routes = [
 
   { path: "/game/",         view: FreePlay },
   { path: "/tournament/",   view: Tournament },
-  { path: "/game/",         view: Game1vs1 },
+  { path: "/game-1vs1/",    view: Game1vs1 },
 
   { path: "/game-history/", view: GameHistory },
 

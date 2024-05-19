@@ -14,30 +14,47 @@
 //   }
 // }
 
+// export function executeScriptTab(path) {
+//   console.log("executeScriptTab: 1 path: " + path);
+//
+//   const app = document.querySelector("#app");
+//   if (!app) {
+//     console.error("Error: cannot find #app");
+//     return;
+//   }
+//
+//   var newDiv = document.createElement("script");
+//   var scripts = app.getElementsByTagName("script");
+//
+//   if (scripts.length > 0) {
+//     // console.log("executeScriptTab: 2 find script: ", scripts[0]);
+//
+//     if (scripts[0].src !== "") {
+//       newDiv.src = path;
+//       console.log("executeScriptTab: 2 scripts[0].src: ", scripts[0].src);
+//     } else if (scripts[0].innerHTML !== "") {
+//       newDiv.textContent = scripts[0].innerHTML;
+//       console.log("executeScriptTab: 2 newDiv.textContent: ", newDiv.textContent);
+//     }
+//     document.body.appendChild(newDiv);
+//   } else {
+//     console.error("Error: cannot find script in #app");
+//   }
+// }
+
 export function executeScriptTab(path) {
   console.log("executeScriptTab: path: " + path);
 
-  const app = document.querySelector("#app");
-  if (!app) {
-    console.error("Error: cannot find #app");
-    return;
-  }
+  const script = document.createElement('script');
+  script.src = path;
 
-  var newDiv = document.createElement("script");
-  var scripts = app.getElementsByTagName("script");
+  script.onerror = function() {
+    console.error(`Failed to load script: ${path}`);
+  };
 
-  if (scripts.length > 0) {
-    console.log("executeScriptTab: find script: ", scripts[0]);
+  script.onload = function() {
+    console.log(`Script loaded successfully: ${path}`);
+  };
 
-    if (scripts[0].src !== "") {
-      newDiv.src = path;
-    } else if (scripts[0].innerHTML !== "") {
-      newDiv.textContent = scripts[0].innerHTML;
-    }
-
-    document.body.appendChild(newDiv);
-    console.log("executeScriptTab appendChild", newDiv);
-  } else {
-    console.error("Error: cannot find script in #app");
-  }
+  document.body.appendChild(script);
 }

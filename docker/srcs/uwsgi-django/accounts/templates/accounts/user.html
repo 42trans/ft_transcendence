@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+<!-- user.html -->
+
 {% load static %}
-<!--{% block title %}User profile - hth Pong{% endblock title %}-->
-<!--{% block content %}-->
+
 <!-- <div class="canvas-container"> -->
 <!-- <div class="hs-text"> -->
 <div class="container" >
@@ -25,13 +25,7 @@
 <!-- </div> -->
 <!-- </div> -->
 
-<script src="{% static 'accounts/js/userProfile.js' %}"></script>
-<script src="{% static 'accounts/js/logout.js' %}"></script>
+<script type="module" src="{% static 'accounts/js/userProfile.js' %}"></script>
+<script type="module" src="{% static 'accounts/js/logout.js' %}"></script>
 <script src="{% static 'accounts/js/friend.js' %}"></script>
 <script src="{% static 'accounts/js/online-status.js' %}"></script>
-
-{% endblock %}
-<hr>
-<br>
-<p><a href="/dm/" class="nav__link" data-link>DM</a></p>
-<p><a href="/game/" class="nav__link" data-link>🏓 Pong Index Page</a></p>>
