@@ -17,6 +17,7 @@ export default class extends AbstractView {
     return data;
   }
   async executeScript() {
-    executeScriptTab("/static/accounts/js/verify_2fa.js");
+    executeScriptTab("/static/accounts/js/verify_2fa.js", true);
+
   }
 }

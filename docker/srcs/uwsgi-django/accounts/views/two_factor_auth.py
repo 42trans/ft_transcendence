@@ -15,9 +15,11 @@ from django_otp import devices_for_user
 from django_otp.oath import TOTP
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.util import random_hex
+from django.utils.decorators import method_decorator
 from django.utils.timezone import make_aware
 from django.shortcuts import render, redirect
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from rest_framework import status
 from rest_framework.views import APIView
@@ -50,8 +52,8 @@ class Enable2FaAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     template_name = 'verify/enable_2fa.html'
-    enabled_redirect_to = '/accounts/user/'
-    authenticated_redirect_to = "/pong/"
+    enabled_redirect_to = '/user-profile/'
+    authenticated_redirect_to = "/game/"
 
     def get(self, request, *args, **kwargs):
         if request.user.enable_2fa:
@@ -157,16 +159,27 @@ class Enable2FaAPIView(APIView):
         user.save()
 
 
+@method_decorator(csrf_exempt, name='dispatch')  # todo: 一時的に無効化
 class Disable2FaView(APIView):
     permission_classes = [IsAuthenticated]
-    redirect_to = 'accounts:user'
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         user = request.user
-        if user.enable_2fa:
-            self._delete_totp_devices(user)
-            self._disable_user_2fa(user)
-        return redirect(self.redirect_to)
+
+        if not user.enable_2fa:
+            data = {
+                'message': 'No valid 2FA session',
+                'redirect': '/user-profile/',
+            }
+            return Response(data, status=400)
+
+        self._delete_totp_devices(user)
+        self._disable_user_2fa(user)
+        data = {
+            'message': '2FA disable successful',
+            'redirect': '/user-profile/',
+        }
+        return Response(data, status=200)
 
     def _delete_totp_devices(self, user):
         devices = TOTPDevice.objects.filter(user=user, confirmed=True)
@@ -197,7 +210,7 @@ class Verify2FaAPIView(APIView):
         if user is None:
             data = {
                 'error': 'No valid session found',
-                'redirect': '/accounts/login/',
+                'redirect': '/login/',
             }
             return Response(data, status=401)
 
@@ -208,7 +221,7 @@ class Verify2FaAPIView(APIView):
                 del request.session['tmp_auth_user_id']
                 data = {
                     'message': '2FA verification successful',
-                    'redirect': '/accounts/user/'
+                    'redirect': '/user-profile/'
                 }
                 return get_jwt_response(user, data)
 

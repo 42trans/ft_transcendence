@@ -30,6 +30,12 @@ export default class extends AbstractView {
         })
         .catch(error => console.error("Failed to load user profile scripts:", error));
 
+    import("/static/accounts/js/disable_2fa.js")
+      .then(module => {
+          document.querySelector('button').addEventListener('click', module.disableToken)
+      })
+      .catch(error => console.error("Failed to load user profile scripts:", error));
+
   }
 
 }

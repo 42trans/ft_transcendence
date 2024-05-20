@@ -91,3 +91,6 @@ export function verifyToken() {
 		console.error("Fetch error:", error);
 		});
 }
+
+
+window.verifyToken = verifyToken;

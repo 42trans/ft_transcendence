@@ -29,7 +29,7 @@ class SignupTemplateView(View):
 
 class SignupAPIView(APIView):
     permission_classes = [AllowAny]
-    authenticated_redirect_to = "/pong/"  # djangoで/pong/にrender -> SPA /game/
+    authenticated_redirect_to = "/game/"  # SPA /game/にリダイレクト
 
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -104,7 +104,7 @@ class LoginAPIView(APIView):
             request.session['tmp_auth_user_id'] = user.id
             data = {
                 'message': '2fa authentication needed',
-                'redirect': '/accounts/verify/verify_2fa/'
+                'redirect': '/verify-2fa/'
             }
             return JsonResponse(data, status=200)
         else:

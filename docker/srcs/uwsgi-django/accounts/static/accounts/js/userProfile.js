@@ -1,7 +1,9 @@
 // userProfile.js
 
+import { disable2FA } from "./disable_2fa.js"
 import { createFriendsList } from "./online-status.js"
 import { cancelFriendRequest, rejectFriendRequest, acceptFriendRequest } from "./friend.js"
+
 
 export function fetchUserProfile() {
 	fetch("/accounts/api/user/profile/", {
@@ -23,7 +25,9 @@ export function fetchUserProfile() {
                 <a href="/change-avatar/">Edit Avatar</a></li>
                 <hr>
                 ${data.enable_2fa ?
-				`<li>2FA: ✅Enabled</li><li><a href="/disable-2fa/">Disable 2FA</a></li>` :
+				
+				`<li>2FA: ✅Enabled</li><li><a href="#" onclick="disable2FA(); return false;">Disable 2FA</a></li>` :
+
 				`<li>2FA: Disabled</li><li><a href="/enable-2fa/">Enable 2FA</a></li>`}
                 <hr>
                 <li><a href="/dm/" class="nav__link" data-link>DM List</a></li> 

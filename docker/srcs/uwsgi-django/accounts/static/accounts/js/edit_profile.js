@@ -32,6 +32,7 @@ function updateNickname(event) {
 		.catch(error => console.error('Error:', error));
 }
 
+
 function updatePassword(event) {
 	event.preventDefault();
 	const currentPassword = document.getElementById('current_password').value;

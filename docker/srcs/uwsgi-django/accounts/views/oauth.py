@@ -80,7 +80,7 @@ class OAuthWith42(View):
 
         if user.enable_2fa:
             request.session['tmp_auth_user_id'] = user.id
-            return redirect(to='accounts:verify_2fa')
+            return redirect(to='/verify-2fa/')
 
         # login(request, user, backend='django.contrib.auth.backends.ModelBackend')  # jwt: login() unused
         response = redirect(to=self.authenticated_redirect_to)

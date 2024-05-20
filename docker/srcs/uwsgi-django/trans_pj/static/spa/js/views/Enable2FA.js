@@ -18,12 +18,12 @@ export default class extends AbstractView {
   }
 
   async executeScript() {
-    // executeScriptTab("/static/accounts/js/enable_2fa.js", true);
+    executeScriptTab("/static/accounts/js/enable_2fa.js", true);
 
     import("/static/accounts/js/enable_2fa.js")
         .then(module => {
           module.fetchEnable2FA();
-          module.verifyToken();
+　        document.querySelector('button').addEventListener('click', module.verifyToken)
         })
         .catch(error => console.error("Failed to load user profile scripts:", error));
   }

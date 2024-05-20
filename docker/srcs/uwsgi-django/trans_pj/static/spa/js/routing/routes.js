@@ -55,7 +55,6 @@ export const Routes = [
   { path: "/edit-profile/",         view: EditProfile },
   { path: "/change-avatar/",        view: ChangeAvatar },  // todo: edit-profileに統合
   { path: "/enable-2fa/",           view: Enable2FA },
-  { path: "/disable-2fa/",          view: Disable2FA },
   { path: "/verify-2fa/",           view: Verify2FA },
 
   { path: "/signup/",       view: Signup },
