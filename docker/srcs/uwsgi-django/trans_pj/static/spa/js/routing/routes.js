@@ -10,11 +10,15 @@ import GameHistory  from "../views/UserProfile.js";
 
 import UserProfile  from "../views/UserProfile.js";
 import UserInfo     from "../views/UserInfo.js";
-import EditProfile  from "../views/EditProfile.js";
-import ChangeAvatar from "../views/ChangeAvatar.js";
 import Friend       from "../views/Friend.js";
 import DMSessions   from "../views/DMSessions.js";
 import DMwithUser   from "../views/DMwithUser.js";
+
+import EditProfile  from "../views/EditProfile.js";
+import ChangeAvatar from "../views/ChangeAvatar.js";
+import Enable2FA    from "../views/Enable2FA.js";
+import Disable2FA   from "../views/Disable2FA.js";
+import Verify2FA    from "../views/Verify2FA.js";
 
 import Signup       from "../views/Signup.js";
 import Login        from "../views/Login.js";
@@ -44,11 +48,15 @@ export const Routes = [
 
   { path: "/user-profile/",         view: UserProfile },  // private profile
   { path: "/user-info/:nickname/",  view: UserInfo },     // public profile
-  { path: "/edit-profile/",         view: EditProfile },
-  { path: "/change-avatar/",        view: ChangeAvatar },  // todo: edit-profileに統合
   { path: "/user-friend/",          view: Friend },
   { path: "/dm/",                   view: DMSessions },
   { path: "/dm-with/:nickname/",    view: DMwithUser },
+
+  { path: "/edit-profile/",         view: EditProfile },
+  { path: "/change-avatar/",        view: ChangeAvatar },  // todo: edit-profileに統合
+  { path: "/enable-2fa/",           view: Enable2FA },
+  { path: "/disable-2fa/",          view: Disable2FA },
+  { path: "/verify-2fa/",           view: Verify2FA },
 
   { path: "/signup/",       view: Signup },
   { path: "/login/",        view: Login },

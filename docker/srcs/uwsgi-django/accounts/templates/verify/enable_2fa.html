@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+<!-- enable_2fa.html -->
+
 {% load static %}
-{% block title %}Log in - hth Pong{% endblock title %}
-{% block content %}
+
 <!-- <div class="canvas-container"> -->
 	<!-- <div class="hs-text"> -->
 		<div class="container">
@@ -16,16 +16,12 @@
 						<input type="text" id="token" name="token" required>
 					</div>
 					<button class="hth-btn" type="button" onclick="verifyToken()">Enable 2FA</button>
+<!--					<button class="hth-btn" type="button">Enable 2FA</button>-->
 				</form>
-				<hr>
-				<a href="/accounts/user/">Return to user page</a>
-				<br>
 			</div>
 
 		</div>
 	<!-- </div> -->
 <!-- </div> -->
 
-<script src="{% static 'accounts/js/enable_2fa.js' %}"></script>
-
-{% endblock %}
+<script type="module" src="{% static 'accounts/js/enable_2fa.js' %}"></script>
