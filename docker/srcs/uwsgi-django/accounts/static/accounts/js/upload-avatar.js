@@ -41,7 +41,7 @@ function handleResponse(response) {
 function showSuccess(data) {
     console.log('Success:', data);
     alert('Avatar updated successfully');
-    window.location.href = '/accounts/user/';
+    window.location.href = '/user-profile/';
 }
 
 function handleError(error) {

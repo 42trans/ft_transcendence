@@ -26,6 +26,7 @@ function updateNickname(event) {
 			} else {
 				document.getElementById('message-area').textContent = data.message;
 				console.log('Success:', data.message);
+				window.location.href = '/user-profile/';
 			}
 		})
 		.catch(error => console.error('Error:', error));
@@ -54,6 +55,7 @@ function updatePassword(event) {
 			} else {
 				document.getElementById('message-area').textContent = data.message;
 				console.log('Success:', data.message);
+				window.location.href = '/user-profile/';
 			}
 		})
 		.catch(error => console.error('Error:', error));

@@ -17,10 +17,10 @@ export function fetchUserProfile() {
                 <li>Email: ${data.email}</li>
                 <li>Nickname: ${data.nickname}</li>
                 ${data.has_usable_password ? '<li>Password: ******</li>' : ''}
-                <li><a href="/accounts/edit/">Edit Profile</a></li>
+                <li><a href="/edit-profile/">Edit Profile</a></li>
                 <hr>
                 <li>Avatar: <img src="${data.avatar_url}" alt="User Avatar" class="avatar">
-                <a href="/accounts/change-avatar/">Edit Avatar</a></li>
+                <a href="/change-avatar/">Edit Avatar</a></li>
                 <hr>
                 ${data.enable_2fa ?
 				`<li>2FA: ✅Enabled</li><li><a href="/accounts/verify/disable_2fa/">Disable 2FA</a></li>` :

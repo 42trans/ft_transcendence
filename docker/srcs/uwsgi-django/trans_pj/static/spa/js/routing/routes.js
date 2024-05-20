@@ -10,7 +10,8 @@ import GameHistory  from "../views/UserProfile.js";
 
 import UserProfile  from "../views/UserProfile.js";
 import UserInfo     from "../views/UserInfo.js";
-import EditProfile  from "../views/UserProfile.js";
+import EditProfile  from "../views/EditProfile.js";
+import ChangeAvatar from "../views/ChangeAvatar.js";
 import Friend       from "../views/Friend.js";
 import DMSessions   from "../views/DMSessions.js";
 import DMwithUser   from "../views/DMwithUser.js";
@@ -44,6 +45,7 @@ export const Routes = [
   { path: "/user-profile/",         view: UserProfile },  // private profile
   { path: "/user-info/:nickname/",  view: UserInfo },     // public profile
   { path: "/edit-profile/",         view: EditProfile },
+  { path: "/change-avatar/",        view: ChangeAvatar },  // todo: edit-profileに統合
   { path: "/user-friend/",          view: Friend },
   { path: "/dm/",                   view: DMSessions },
   { path: "/dm-with/:nickname/",    view: DMwithUser },
