@@ -1,6 +1,5 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineClientApp.js
 import PongEngineKey from "./PongEngineKey.js";
-import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "./PongOnlineRenderer.js";
 import PongOnlineSyncWS from "./PongOnlineSyncWS.js";
 import PongOnlineGameStateManager from "./PongOnlineGameStateManager.js"
@@ -20,9 +19,19 @@ class PongOnlineClientApp
 	constructor() 
 	{
 		// console.log('PongOnlineClientApp constructor begin');
+		// websocketが先
 		this.initWebSocket();
-		this.initCanvas();		
+		this.initCanvas();
 		window.addEventListener('resize', () => this.resizeForAllDevices());
+	}
+
+
+	initWebSocket()
+	{
+		this.socketUrl				= 'wss://localhost/ws/pong/online/';
+		this.gameStateManager		= new PongOnlineGameStateManager();
+		this.syncWS					= new PongOnlineSyncWS(this, this.gameStateManager, this.socketUrl);
+		PongEngineKey.listenForEvents();
 	}
 
 	initCanvas()
@@ -37,15 +46,6 @@ class PongOnlineClientApp
 		this.field		= { width: 400, height: 300, zoomLevel: 1 };
 		this.resizeForAllDevices();
 	}
-
-	initWebSocket()
-	{
-		this.socket				= new WebSocket('wss://localhost/ws/pong/online/');
-		this.gameStateManager	= new PongOnlineGameStateManager();
-		this.syncWS				= new PongOnlineSyncWS(this, this.gameStateManager, this.socket);
-		PongEngineKey.listenForEvents();
-	}
-	
 
 	// ウインドウのサイズに合わせて動的に描画サイズを変更
 	resizeForAllDevices() 
@@ -74,7 +74,6 @@ class PongOnlineClientApp
 		const state = this.gameStateManager.getState();
 		if (state && 
 			(state.state.score1 > 0 || state.state.score2 > 0) &&
-			// (state.state.score1 !== 0 || state.state.score2 !== 0) &&
 			!this.gameStateManager.getIsGameLoopStarted())
 		{
 			setTimeout(() => {

@@ -2,9 +2,7 @@
 
 /**
  * Gameに必要なデータ(paddle,ballなどのオブジェクト、試合のスコアや状態など)を格納
- * 
  * - gameStae: serverと同じデータ構造
- * 
  */
 class PongOnlineGameStateManager 
 {
