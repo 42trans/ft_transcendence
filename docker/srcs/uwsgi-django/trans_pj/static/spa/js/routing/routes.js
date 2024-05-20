@@ -9,6 +9,7 @@ import Game1vs1     from "../views/Game1vs1.js";
 import GameHistory  from "../views/UserProfile.js";
 
 import UserProfile  from "../views/UserProfile.js";
+import UserInfo     from "../views/UserInfo.js";
 import EditProfile  from "../views/UserProfile.js";
 import Friend       from "../views/Friend.js";
 import DMSessions   from "../views/DMSessions.js";
@@ -43,6 +44,11 @@ export const Routes = [
   { path: "/edit-profile/", view: EditProfile },
   { path: "/user-friend/",  view: Friend },
   { path: "/dm/",           view: DMSessions },
+  { path: "/user-profile/",         view: UserProfile },  // private profile
+  { path: "/user-info/:nickname/",  view: UserInfo },     // public profile
+  { path: "/edit-profile/",         view: EditProfile },
+  { path: "/user-friend/",          view: Friend },
+  { path: "/dm/",                   view: DMSessions },
 
   { path: "/signup/",       view: Signup },
   { path: "/login/",        view: Login },

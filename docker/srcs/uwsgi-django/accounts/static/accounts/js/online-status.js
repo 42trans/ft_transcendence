@@ -100,7 +100,7 @@ function updateOrCreateFriendListItem(friend) {
     }
 
     listItem.innerHTML = `
-        <a href="/accounts/info/${friend.nickname}/">${friend.nickname}</a>
+        <a href="/user-info/${friend.nickname}/" class="nav__link" data-link>${friend.nickname}</a>
         <span id="friend-status-${friend.id}" class="status ${friend.status ? 'online' : 'offline'}">
             ${friend.status ? 'Online' : 'Offline'}
         </span>
