@@ -70,9 +70,6 @@ class PongOnlineGameManager:
         json: key==objectsだけをやり取りする
         """
         await self.pong_engine_update.update_game(json_data)
-        # serialized_data = self.pong_engine_update.serialize_state()
-        # await async_log("update_game().serialized_data: ")
-        # await async_log(serialized_data)
         return self
 
 

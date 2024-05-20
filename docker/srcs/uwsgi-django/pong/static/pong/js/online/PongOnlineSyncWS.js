@@ -256,7 +256,7 @@ class PongOnlineSyncWS
 		{
 			setTimeout(() => 
 			{
-				this.setupWebSocketConnection();
+				this.clientApp.setupWebSocketConnection();
 				this.reconnectAttempts++;
 			}, this.reconnectInterval);
 		} else {

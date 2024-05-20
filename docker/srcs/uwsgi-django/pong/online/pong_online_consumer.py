@@ -9,7 +9,8 @@ from .pong_online_game_manager import PongOnlineGameManager
 from ..utils.async_logger import async_log
 
 class PongOnlineConsumer(AsyncWebsocketConsumer):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+    # permission_classes = [IsAuthenticated]
 
     async def connect(self):
         """
@@ -33,10 +34,10 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             await self.close(code=1011) 
             return
-        # await async_log("room_group_nameが作成されました: " + self.room_group_name)
+        await async_log("room_group_nameが作成されました: " + self.room_group_name)
         self.game_manager = PongOnlineGameManager(self.user_id)
         await self.game_manager.initialize_game()
-        # await async_log("game_managerが作成されました")
+        await async_log("game_managerが作成されました")
         await self.accept()
 
 
@@ -60,11 +61,11 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         try:
             if 'action' in json_data and json_data['action'] == 'initialize':
                 # json: key==actionのみ
-                # await async_log("初回クライアントからの受信: " + json.dumps(json_data))
+                await async_log("初回クライアントからの受信: " + json.dumps(json_data))
                 initial_state = self.game_manager.pong_engine_data
 
                 # json: key==全て(game_settingsを含む)
-                # await async_log("初回engine_data: " + json.dumps(initial_state))
+                await async_log("初回engine_data: " + json.dumps(initial_state))
                 await self.send(text_data=json.dumps(initial_state))
 
             elif 'action' in json_data and json_data['action'] == 'reconnect':
