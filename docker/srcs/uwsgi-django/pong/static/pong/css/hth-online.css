@@ -13,12 +13,25 @@
 	/* 最前面に浮かせる */
 	z-index: 8888;
 }
+
 #hth-pong-online-start-game-btn,
 #hth-pong-online-back-to-home-Btn {
 	position: absolute;
 	/* bottom: 20px; */
 	top: 50%;
 	left: 50%;
+	transform: translateX(-50%);
+	padding: 10px 20px;
+	font-size: 16px;
+	cursor: pointer;
+	z-index: 9999;
+}
+
+/* for dev: websocket test button  */
+#hth-pong-online-close-ws-btn{
+	position: absolute;
+	top: 85%;
+	left: 20%;
 	transform: translateX(-50%);
 	padding: 10px 20px;
 	font-size: 16px;

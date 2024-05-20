@@ -42,6 +42,8 @@ docker/srcs/vite/pong-three/public
 
 # async カスタムlogger
 docker/srcs/uwsgi-django/pong/utils
+# Pong online用
+js-tests
 
 #### init/ #####
 

@@ -24,8 +24,19 @@ class PongOnlineSyncWS
 		this.gameLoopStarted	= false;
 		// サーバーから受信してから次のリクエストを送信するためのフラグ
 		this.readyToSendNext	= true;
+
+		// 再接続用の変数
+		// 単位: ミリ秒
+		this.reconnectInterval = 3000; 
+		this.reconnectAttempts = 0;
+		this.maxReconnectAttempts = 5;
+
 		// websocket接続開始のためのスタートボタン
 		this.initStartButton();
+
+						// TODO_fr: 本番時削除
+						// dev用 websocket接続を閉じるためのボタン
+						this.devTestCloseButton();
 	}
 
 	initStartButton() 
@@ -39,6 +50,20 @@ class PongOnlineSyncWS
 			// クリックされたら接続を開始
 			this.setupWebSocketConnection();
 			startBtn.remove();
+		});
+	}
+
+	/** dev用 再接続チェック用 */
+	devTestCloseButton()
+	{
+		const closeBtn			= document.createElement('button');
+		closeBtn.textContent	= 'Test Close WebSocket';
+		closeBtn.id				= 'hth-pong-online-close-ws-btn';
+		closeBtn.classList.add('hth-btn');
+		document.getElementById('hth-main').appendChild(closeBtn);
+		closeBtn.addEventListener('click', () => {
+			// クリックされたら接続を閉じる
+			this.socket.close();
 		});
 	}
 
@@ -137,7 +162,7 @@ class PongOnlineSyncWS
 			this.socket.send(JSON.stringify(gameState));
 			this.readyToSendNext = false;
 		} else {
-			console.error("WebSocket is not open:", this.socket.readyState);
+			console.log("sendClientState() failed:");
 		}
 	}
 	// ------------------------------
@@ -145,15 +170,33 @@ class PongOnlineSyncWS
 	// ------------------------------
 	onSocketOpen() 
 	{
-		// console.log("WebSocket connection established.");
+		console.log("WebSocket connection established.");
 		const initData = JSON.stringify({ action: "initialize" });
 
 		this.socket.send(initData);
 		// console.log("initData: ", initData);
+
+		// 接続成功時に再接続試行回数をリセット
+		this.reconnectAttempts = 0;
+	}
+	onSocketClose(event) 
+	{
+		console.error("WebSocket connection closed:", event.reason, "Code:", event.code);
+		this.attemptReconnect();
 	}
 	
-	onSocketClose(event) {
-		console.error("WebSocket connection closed:", event.reason, "Code:", event.code);
+	/** close時: 自動再接続 */
+	attemptReconnect() {
+		if (this.reconnectAttempts < this.maxReconnectAttempts) {
+			setTimeout(() => {
+				this.setupWebSocketConnection();
+				this.reconnectAttempts++;
+			}, this.reconnectInterval);
+		} else {
+			console.error("Max reconnect attempts reached.");
+			// 最大試行回数に達したらリセット
+			this.reconnectAttempts = 0;
+		}
 	}
 
 	onSocketError(event) {
