@@ -44,11 +44,14 @@ class SendFriendRequestAPI(APIView):
 
     def post(self, request, user_id) -> Response:
         try:
+            logger.error(f"SendFriendRequestAPI 1")
             user, friend_request_target, err = _get_user_and_friend(request, user_id)
             if err is not None:
+                logger.error(f"SendFriendRequestAPI 2")
                 response = {'error': err}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
+            logger.error(f"SendFriendRequestAPI 3")
             if Friend.is_friend(user, friend_request_target):
                 response = {'error': 'Already friend'}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)

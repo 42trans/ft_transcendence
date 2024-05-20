@@ -1,29 +1,55 @@
 // static/accounts/js/friend.js
 
+
+// export function sendFriendRequest(userId) {
+//     console.log("sendFriendRequest 1")
+//     fetch(`/accounts/api/friend/send-request/${userId}/`, {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+//         }
+//     }).then(response => {
+//             return response.json().then(data => {
+//                 if (!response.ok) {
+//                     console.error('Error:', data.error)
+//                     throw new Error(data.error);
+//                 }
+//                 return data;
+//             });
+//         }).then(data => {
+//             alert(data.status);
+//             window.location.reload();  // ページをリロード
+//         }).catch(error => {
+//             console.error('Error:', error);
+//             alert(error.message);
+//         });
+//     console.log("sendFriendRequest 2")
+// }
+
 export function sendFriendRequest(userId) {
+    console.log("sendFriendRequest 1");
     fetch(`/accounts/api/friend/send-request/${userId}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
-    })
-        .then(response => {
-            return response.json().then(data => {
-                if (!response.ok) {
-                    throw new Error(data.error);
-                }
-                return data;
-            });
-        })
-        .then(data => {
-            alert(data.status);
-            window.location.reload();  // ページをリロード
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert(error.message);
+    }).then(response => {
+        return response.json().then(data => {
+            if (!response.ok) {
+                console.error('Error:', data.error);
+                throw new Error(data.error);
+            }
+            const event = new CustomEvent('FriendRequestSent', { detail: data });
+            document.dispatchEvent(event);
+            return data;
         });
+    }).catch(error => {
+        console.error('Error:', error);
+        const errorEvent = new CustomEvent('FriendRequestError', { detail: error });
+        document.dispatchEvent(errorEvent);
+    });
 }
 
 
@@ -142,3 +168,10 @@ export function deleteFriend(userId) {
         alert('Friend deletion has been canceled');
     }
 }
+
+
+window.sendFriendRequest = sendFriendRequest;
+window.cancelFriendRequest = cancelFriendRequest;
+window.acceptFriendRequest = acceptFriendRequest;
+window.rejectFriendRequest = rejectFriendRequest;
+window.deleteFriend = deleteFriend;
