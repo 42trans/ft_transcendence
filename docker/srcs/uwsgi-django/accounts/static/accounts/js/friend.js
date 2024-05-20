@@ -43,6 +43,7 @@ export function sendFriendRequest(userId) {
             }
             const event = new CustomEvent('FriendRequestSent', { detail: data });
             document.dispatchEvent(event);
+            window.location.reload();  // ページをリロード
             return data;
         });
     }).catch(error => {
