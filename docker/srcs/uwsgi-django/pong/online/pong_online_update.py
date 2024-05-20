@@ -1,11 +1,16 @@
 # docker/srcs/uwsgi-django/pong/online/pong_online_update.py
 from ..utils.async_logger import async_log
+import asyncio
+import random
 
 class PongOnlineUpdate:
     def __init__(self, pong_engine_data, physics, match):
         self.physics            = physics
         self.match              = match
         self.pong_engine_data   = pong_engine_data
+
+        # 得点時に間を空ける
+        self.reset_interval     = 1
     
         self.ball       = pong_engine_data["objects"]["ball"]
         self.paddle1    = pong_engine_data["objects"]["paddle1"]
@@ -38,7 +43,7 @@ class PongOnlineUpdate:
 
         if self.physics.is_colliding_with_side_walls(ball_x, r, self.field):
             scorer = 2 if ball_x < 0 else 1
-            self.reset_ball(scorer)
+            await self.reset_ball(scorer)
             # await async_log(f"a scorer:  {scorer}")
             await self.match.update_score(scorer)
 
@@ -54,32 +59,11 @@ class PongOnlineUpdate:
         self.ball["position"]["x"] += self.ball["direction"]["x"] * self.ball["speed"]
         self.ball["position"]["y"] += self.ball["direction"]["y"] * self.ball["speed"]
 
-    def reset_ball(self, loser):
+    async def reset_ball(self, loser):
+        # 1秒間の遅延を挿入
+        await asyncio.sleep(self.reset_interval)
         self.ball["position"] = {"x": 0, "y": 0}
         self.ball["direction"]["x"] = -1 if loser == 1 else 1
-        self.ball["direction"]["y"] = 0.1
+        self.ball["direction"]["y"] = random.uniform(-0.5, 0.5)
+        # self.ball["direction"]["y"] = 0.1
         self.ball["speed"] = self.init_ball_speed
-
-    def serialize_state(self):
-        return {
-            "objects": {
-                "ball": {
-                    "position": self.ball["position"],
-                    "direction": self.ball["direction"],
-                    "speed": self.ball["speed"]
-                },
-                "paddle1": {
-                    "position": self.paddle1["position"],
-                    "dir_y": self.paddle1["dir_y"]
-                },
-                "paddle2": {
-                    "position": self.paddle2["position"],
-                    "dir_y": self.paddle2["dir_y"]
-                }
-            },
-            "state": {
-                "score1": self.pong_engine_data["state"]["score1"],
-                "score2": self.pong_engine_data["state"]["score2"]
-            },
-            "is_running": self.pong_engine_data["is_running"]
-        }
