@@ -1,5 +1,4 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineSyncWS.js
-import PongOnlineClientApp from "./PongOnlineClientApp.js";
 import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "./PongOnlineRenderer.js";
 
@@ -18,13 +17,10 @@ class PongOnlineSyncWS
 {
 	constructor(clientApp, gameStateManager, socketUrl) 
 	{
-		this.socketUrl			= socketUrl;
-		this.gameStateManager	= gameStateManager;
 		this.clientApp			= clientApp;
+		this.gameStateManager	= gameStateManager;
+		this.socketUrl			= socketUrl;
 		this.gameLoopStarted	= false;
-
-		// websocket接続開始のためのスタートボタン
-		this.initStartButton();
 
 		// サーバーから受信してから次のリクエストを送信するためのフラグ
 		this.readyToSendNext	= true;
@@ -39,55 +35,15 @@ class PongOnlineSyncWS
 						// TODO_fr: 本番時削除
 						// dev用 websocket接続を閉じるためのボタン
 						this.devTestCloseButton();
-						
 	}
 
-	createButton(text, id, onClickHandler) 
-	{
-		const button = document.createElement('button');
-		button.textContent = text;
-		button.id = id;
-		button.classList.add('hth-btn');
-		document.getElementById('hth-main').appendChild(button);
-		button.addEventListener('click', onClickHandler);
-	}
-
-	initStartButton() 
-	{
-		this.createButton('Start Game', 'hth-pong-online-start-game-btn', () => {
-			this.setupWebSocketConnection();
-			document.getElementById('hth-pong-online-start-game-btn').remove();
-		});
-	}
-
-	// // ゲーム終了時に Back to Home ボタンリンクを表示する
-	createEndGameButton() 
-	{
-		this.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {
-			window.location.href = '/pong/';
-		});
-	}
 
 	/** dev用 再接続チェック用 */
 	devTestCloseButton()
 	{
-		this.createButton('Test Close WebSocket', 'hth-pong-online-close-ws-btn', () => {
+		this.clientApp.createButton('Test Close WebSocket', 'hth-pong-online-close-ws-btn', () => {
 			this.socket.close();
 		});
-	}
-
-	/** Start buttonをクリックしてからWebsocket接続 */
-	setupWebSocketConnection()
-	{
-		this.socket				= new WebSocket(this.socketUrl);
-
-		// ルーチン
-		this.socket.onmessage	= (event) => this.onSocketMessage(event);
-		// 初回のみ
-		this.socket.onopen		= () => this.onSocketOpen();
-		// エラー時
-		this.socket.onclose		= (event) => this.onSocketClose(event);
-		this.socket.onerror		= (event) => this.onSocketError(event);
 	}
 
 	// ------------------------------
@@ -101,17 +57,24 @@ class PongOnlineSyncWS
 		if (recvData && recvData.objects && recvData.state)
 		{
 			try {
-				// 再接続時の場合、クライアント（.js, ブラウザ）のデータで上書き
-				if (this.isReconnecting) {
+				// 再接続の場合: 何もしない
+				if (this.isReconnecting) 
+				{
 					// console.log("reconnect--------");
+					// クライアント（.js, ブラウザ）のデータで上書きするのでここでは更新しない
 					this.isReconnecting = false;
 				} else {
+					// ルーチン: 受信データで更新
 					this.gameStateManager.updateState(recvData);
 				}
-
-				// this.gameStateManager.updateState(recvData);
-				// 初回のgameStateに関するjsonを受信してから、loopを起動
-				if (!this.gameLoopStarted) {
+				
+				// 初回の場合: ループ開始前　
+				if (!this.gameLoopStarted) 
+				{
+					// gameStateに関するjsonを受信してから、loopを起動
+					// 受信データからフィールドのサイズを取得してCanvasを初期化
+					this.initCanvas(recvData.field);
+					window.addEventListener('resize', () => this.resizeForAllDevices());
 					this.startGameLoop();
 				}
 			} catch (error) {
@@ -122,6 +85,58 @@ class PongOnlineSyncWS
 			console.error("Invalid data:", recvData);
 		}
 	}
+
+		
+	initCanvas()
+	{
+		this.canvasId	= "pong-online-canvas-container"
+		this.canvas 	= document.getElementById(this.canvasId);
+		if (!this.canvas.getContext) {
+			return;
+		}
+		this.ctx		= this.canvas.getContext("2d");
+		// TODO_Ft: serverからfieldの値を取得したい
+		// this.field		= { width: 400, height: 300, zoomLevel: 1 };
+		this.field		= this.gameStateManager.getState().game_settings.field;
+		console.log('this.fie: ', this.field);
+		this.resizeForAllDevices();
+	}
+
+	// ウインドウのサイズに合わせて動的に描画サイズを変更
+	resizeForAllDevices() 
+	{
+		// ブラウザウィンドウの寸法を使用
+		this.canvas.width		= window.innerWidth;
+		this.canvas.height		= window.innerHeight;
+		// 幅と高さの両方に基づいてズームレベルを計算
+		let zoomLevelWidth		= this.canvas.width / this.field.width;
+		let zoomLevelHeight		= this.canvas.height / this.field.height;
+		// 制約が最も厳しい側（小さい方のスケール）を使用
+		this.field.zoomLevel	= Math.min(zoomLevelWidth, zoomLevelHeight);
+		// debug---
+		// console.log(this.canvas.width, zoomLevelWidth);
+		// console.log(this.canvas.height, zoomLevelHeight);
+		// console.log(this.field.zoomLevel);
+		// ---
+		// 元の状態（リセット状態）に戻す
+		// 1,0,0,1,0,0 スケーリングを変更せず、回転もせず、平行移動も加えない
+		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+		// 平行移動 キャンバスの中心を0,0とするための座標変換
+		this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+		// 拡大縮小
+		this.ctx.scale(this.field.zoomLevel, this.field.zoomLevel);
+		// 終了時の描画状態（スコア表示）を維持する: 状態の更新を強制するために再描画をトリガーする
+		const state = this.gameStateManager.getState();
+		if (state && 
+			(state.state.score1 > 0 || state.state.score2 > 0) &&
+			!this.gameStateManager.getIsGameLoopStarted())
+		{
+			setTimeout(() => {
+				PongOnlineRenderer.render(this.ctx, this.field, this.gameStateManager.getState());
+			}, 16);
+		}
+	}
+
 
 	startGameLoop() 
 	{
@@ -141,23 +156,32 @@ class PongOnlineSyncWS
 			{
 				// console.log(this.reconnectGameState);
 				// パドル情報更新
-				PongOnlinePaddleMover.handlePaddleMovement(this.clientApp.field, gameState);
+				PongOnlinePaddleMover.handlePaddleMovement(this.field, gameState);
 				// ゲーム状態送信
 				this.sendClientState(gameState);
 				// 2D描画
-				PongOnlineRenderer.render(this.clientApp.ctx, this.clientApp.field, gameState);
+				PongOnlineRenderer.render(this.ctx, this.field, gameState);
 			}
+
 			// 終了時
 			if (!gameState.is_running) 
 			{
 				// 最終スコアの表示: 終了フラグ受信後に、最後に一度だけ描画する
-				PongOnlineRenderer.render(this.clientApp.ctx, this.clientApp.field, this.gameStateManager.getState());
+				PongOnlineRenderer.render(this.ctx, this.field, this.gameStateManager.getState());
 
 				 // ゲーム終了時に Back to Home ボタンリンクを表示する
 				this.createEndGameButton();
 				clearInterval(intervalId);
 			}
 		}, 1000 / 30);
+	}
+
+	// ゲーム終了時に Back to Home ボタンリンクを表示する
+	createEndGameButton() 
+	{
+		this.clientApp.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {
+			window.location.href = '/pong/';
+		});
 	}
 
 	// ------------------------------
