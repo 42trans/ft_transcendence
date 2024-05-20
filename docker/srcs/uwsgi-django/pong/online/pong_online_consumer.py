@@ -59,27 +59,40 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
 
         try:
             if 'action' in json_data and json_data['action'] == 'initialize':
-                # await async_log("初回の処理----")
                 # json: key==actionのみ
                 # await async_log("初回クライアントからの受信: " + json.dumps(json_data))
-
                 initial_state = self.game_manager.pong_engine_data
 
                 # json: key==全て(game_settingsを含む)
                 # await async_log("初回engine_data: " + json.dumps(initial_state))
-
                 await self.send(text_data=json.dumps(initial_state))
-            elif 'objects' in json_data:
 
-                # await async_log("更新時処理----")
+            elif 'action' in json_data and json_data['action'] == 'reconnect':
+                # await async_log("再接続時の処理----")
                 # json: key==全て(game_settingsを含む)
-                # await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
+                await async_log("再接続時: クライアントからの受信: " + json.dumps(json_data))
+                await self.game_manager.restore_game_state(json_data)
+                restored_state = self.game_manager.pong_engine_data
+                
+                # json: key==全て(game_settingsを含む)
+                await async_log("再接続時: engine_data: " + json.dumps(restored_state))
+
+                await self.channel_layer.group_send(self.room_group_name, {
+                    'type': 'send_data',
+                    'data': restored_state
+                })
+
+            elif 'action' in json_data and json_data['action'] == 'update':
+            # elif 'objects' in json_data:
+
+                # json: key==全て(game_settingsを含む)
+                await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
 
                 await self.game_manager.update_game(json_data['objects'])
                 updated_state = self.game_manager.pong_engine_data
 
                 # json: key==全て(game_settingsを含む)
-                # await async_log("更新時engine_data: " + json.dumps(updated_state))
+                await async_log("更新時engine_data: " + json.dumps(updated_state))
 
                 await self.channel_layer.group_send(self.room_group_name, {
                     'type': 'send_data',

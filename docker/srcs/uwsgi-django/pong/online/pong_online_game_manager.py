@@ -74,3 +74,23 @@ class PongOnlineGameManager:
         # await async_log("update_game().serialized_data: ")
         # await async_log(serialized_data)
         return self
+
+
+    async def restore_game_state(self, client_json_state):
+        """
+        クライアントから送信されたゲーム状態でサーバーの状態を更新する。
+        """
+        if "game_settings" in client_json_state:
+            self.pong_engine_data["game_settings"].update(client_json_state["game_settings"])
+        if "objects" in client_json_state:
+            for key in ["ball", "paddle1", "paddle2"]:
+                if key in client_json_state["objects"]:
+                    self.pong_engine_data["objects"][key].update(client_json_state["objects"][key])
+        if "state" in client_json_state:
+            self.pong_engine_data["state"].update(client_json_state["state"])
+        if "is_running" in client_json_state:
+            self.pong_engine_data["is_running"] = client_json_state["is_running"]
+        # ログ出力
+        # await async_log("Game state restored from client.")
+        return self
+

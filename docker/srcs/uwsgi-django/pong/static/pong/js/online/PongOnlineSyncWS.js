@@ -22,47 +22,56 @@ class PongOnlineSyncWS
 		this.gameStateManager	= gameStateManager;
 		this.clientApp			= clientApp;
 		this.gameLoopStarted	= false;
-		// サーバーから受信してから次のリクエストを送信するためのフラグ
-		this.readyToSendNext	= true;
-
-		// 再接続用の変数
-		// 単位: ミリ秒
-		this.reconnectInterval = 3000; 
-		this.reconnectAttempts = 0;
-		this.maxReconnectAttempts = 5;
 
 		// websocket接続開始のためのスタートボタン
 		this.initStartButton();
 
+		// サーバーから受信してから次のリクエストを送信するためのフラグ
+		this.readyToSendNext	= true;
+
+		// 再接続用のフラグ・変数
+		this.isReconnecting = false;
+		this.reconnectAttempts = 0;
+		this.maxReconnectAttempts = 5;
+		// 単位: ミリ秒
+		this.reconnectInterval = 3000;
+
 						// TODO_fr: 本番時削除
 						// dev用 websocket接続を閉じるためのボタン
 						this.devTestCloseButton();
+						
+	}
+
+	createButton(text, id, onClickHandler) 
+	{
+		const button = document.createElement('button');
+		button.textContent = text;
+		button.id = id;
+		button.classList.add('hth-btn');
+		document.getElementById('hth-main').appendChild(button);
+		button.addEventListener('click', onClickHandler);
 	}
 
 	initStartButton() 
 	{
-		const startBtn			= document.createElement('button');
-		startBtn.textContent	= 'Start Game';
-		startBtn.id				= 'hth-pong-online-start-game-btn'
-		startBtn.classList.add('hth-btn');
-		document.getElementById('hth-main').appendChild(startBtn);
-		startBtn.addEventListener('click', () => {
-			// クリックされたら接続を開始
+		this.createButton('Start Game', 'hth-pong-online-start-game-btn', () => {
 			this.setupWebSocketConnection();
-			startBtn.remove();
+			document.getElementById('hth-pong-online-start-game-btn').remove();
+		});
+	}
+
+	// // ゲーム終了時に Back to Home ボタンリンクを表示する
+	createEndGameButton() 
+	{
+		this.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {
+			window.location.href = '/pong/';
 		});
 	}
 
 	/** dev用 再接続チェック用 */
 	devTestCloseButton()
 	{
-		const closeBtn			= document.createElement('button');
-		closeBtn.textContent	= 'Test Close WebSocket';
-		closeBtn.id				= 'hth-pong-online-close-ws-btn';
-		closeBtn.classList.add('hth-btn');
-		document.getElementById('hth-main').appendChild(closeBtn);
-		closeBtn.addEventListener('click', () => {
-			// クリックされたら接続を閉じる
+		this.createButton('Test Close WebSocket', 'hth-pong-online-close-ws-btn', () => {
 			this.socket.close();
 		});
 	}
@@ -92,8 +101,16 @@ class PongOnlineSyncWS
 		if (recvData && recvData.objects && recvData.state)
 		{
 			try {
-				this.gameStateManager.updateState(recvData);
-				// 初回のgameStateに関するjsonを受信してから、loopが起動
+				// 再接続時の場合、クライアント（.js, ブラウザ）のデータで上書き
+				if (this.isReconnecting) {
+					// console.log("reconnect--------");
+					this.isReconnecting = false;
+				} else {
+					this.gameStateManager.updateState(recvData);
+				}
+
+				// this.gameStateManager.updateState(recvData);
+				// 初回のgameStateに関するjsonを受信してから、loopを起動
 				if (!this.gameLoopStarted) {
 					this.startGameLoop();
 				}
@@ -106,7 +123,8 @@ class PongOnlineSyncWS
 		}
 	}
 
-	startGameLoop() {
+	startGameLoop() 
+	{
 		this.gameLoopStarted = true;
 		this.gameLoop();
 	}
@@ -121,6 +139,7 @@ class PongOnlineSyncWS
 
 			if (gameState && gameState.is_running) 
 			{
+				// console.log(this.reconnectGameState);
 				// パドル情報更新
 				PongOnlinePaddleMover.handlePaddleMovement(this.clientApp.field, gameState);
 				// ゲーム状態送信
@@ -133,23 +152,14 @@ class PongOnlineSyncWS
 			{
 				// 最終スコアの表示: 終了フラグ受信後に、最後に一度だけ描画する
 				PongOnlineRenderer.render(this.clientApp.ctx, this.clientApp.field, this.gameStateManager.getState());
+
+				 // ゲーム終了時に Back to Home ボタンリンクを表示する
 				this.createEndGameButton();
 				clearInterval(intervalId);
 			}
 		}, 1000 / 30);
 	}
 
-	// ゲーム終了時に Back to Home ボタンリンクを表示する
-	createEndGameButton() {
-		const backToHomeBtn			= document.createElement('button');
-		backToHomeBtn.id			= 'hth-pong-online-back-to-home-Btn';
-		backToHomeBtn.textContent	= 'Back to Home';
-		backToHomeBtn.classList.add('hth-btn');
-		document.getElementById('hth-main').appendChild(backToHomeBtn);
-		backToHomeBtn.addEventListener('click', () => {
-			window.location.href = '/pong/';
-		});
-	}
 	// ------------------------------
 	// ルーチン:送信　※gameLoop() から呼ばれる
 	// ------------------------------
@@ -158,10 +168,19 @@ class PongOnlineSyncWS
 		if (this.socket.readyState === WebSocket.OPEN &&
 			this.readyToSendNext === true) 
 		{
-			// console.log("Sending data to server:", JSON.stringify(gameState, null, 2));
-			this.socket.send(JSON.stringify(gameState));
+			// 更新時:
+
+			const dataToSend = JSON.stringify
+			({
+				action: "update", 
+				...gameState
+			});
+	
+			// console.log("Sending data to server:", JSON.stringify(dataToSend, null, 2));
+			this.socket.send(dataToSend);
 			this.readyToSendNext = false;
 		} else {
+			// 遅延もあるのでエラー出力ではない
 			console.log("sendClientState() failed:");
 		}
 	}
@@ -171,14 +190,32 @@ class PongOnlineSyncWS
 	onSocketOpen() 
 	{
 		console.log("WebSocket connection established.");
-		const initData = JSON.stringify({ action: "initialize" });
+		// 初回 or 再接続時(wsがサーバーによって予期せずcloseされた後) の判定
+		if (this.isReconnecting)
+		{
+			// 再接続時の処理
 
-		this.socket.send(initData);
-		// console.log("initData: ", initData);
+			console.log("WebSocket connection re-established.");
+			const initData = JSON.stringify
+			({
+				action: "reconnect",
+				...this.gameStateManager.getState() 
+			});
+			// console.log("Sending data to server:", JSON.stringify(dataToSend, null, 2));
+			this.socket.send(initData);
+			// 接続成功時に再接続試行回数をリセット
+			this.reconnectAttempts = 0;
+		} else {
 
-		// 接続成功時に再接続試行回数をリセット
-		this.reconnectAttempts = 0;
+			// 初回の接続時:
+			
+			// action: "initialize"のみ
+			const initData = JSON.stringify({ action: "initialize" });
+			// console.log("initData: ", initData);
+			this.socket.send(initData);
+		}
 	}
+
 	onSocketClose(event) 
 	{
 		console.error("WebSocket connection closed:", event.reason, "Code:", event.code);
@@ -186,16 +223,23 @@ class PongOnlineSyncWS
 	}
 	
 	/** close時: 自動再接続 */
-	attemptReconnect() {
-		if (this.reconnectAttempts < this.maxReconnectAttempts) {
-			setTimeout(() => {
+	attemptReconnect() 
+	{
+		// 再接続処理中を表すフラグを立てる
+		this.isReconnecting = true;
+		// コンストラクタで指定した回数試みる
+		if (this.reconnectAttempts < this.maxReconnectAttempts) 
+		{
+			setTimeout(() => 
+			{
 				this.setupWebSocketConnection();
 				this.reconnectAttempts++;
 			}, this.reconnectInterval);
 		} else {
-			console.error("Max reconnect attempts reached.");
+			console.error("Reconnect failed.");
 			// 最大試行回数に達したらリセット
 			this.reconnectAttempts = 0;
+			this.isReconnecting = false;
 		}
 	}
 
