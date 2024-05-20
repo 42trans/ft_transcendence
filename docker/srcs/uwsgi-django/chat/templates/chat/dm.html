@@ -107,9 +107,9 @@
 <body>
 
 {% if not isSystemUser %}
-    <h1>DM with <a href="{% url 'accounts:info' target_nickname %}">{{ target_nickname }}</a></h1>
+    <h2>DM with <a href="/user-info/{{ target_nickname }}/">{{ target_nickname }}</a></h2>
 {% else %}
-    <h1>System Message</h1>
+    <h2>System Message</h2>
 {% endif %}
 
 
@@ -143,9 +143,6 @@
     <p>[blocking user]</p>
 {% endif %}
 
-<hr>
-
-<p><a href="{% url 'chat:dm_sessions' %}">dm_sessions</a></p>
 
 {{ target_nickname|json_script:"target_nickname" }}
 

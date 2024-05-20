@@ -13,6 +13,7 @@ import UserInfo     from "../views/UserInfo.js";
 import EditProfile  from "../views/UserProfile.js";
 import Friend       from "../views/Friend.js";
 import DMSessions   from "../views/DMSessions.js";
+import DMwithUser   from "../views/DMwithUser.js";
 
 import Signup       from "../views/Signup.js";
 import Login        from "../views/Login.js";
@@ -40,15 +41,12 @@ export const Routes = [
 
   { path: "/game-history/", view: GameHistory },
 
-  { path: "/user-profile/", view: UserProfile },
-  { path: "/edit-profile/", view: EditProfile },
-  { path: "/user-friend/",  view: Friend },
-  { path: "/dm/",           view: DMSessions },
   { path: "/user-profile/",         view: UserProfile },  // private profile
   { path: "/user-info/:nickname/",  view: UserInfo },     // public profile
   { path: "/edit-profile/",         view: EditProfile },
   { path: "/user-friend/",          view: Friend },
   { path: "/dm/",                   view: DMSessions },
+  { path: "/dm-with/:nickname/",    view: DMwithUser },
 
   { path: "/signup/",       view: Signup },
   { path: "/login/",        view: Login },

@@ -6,24 +6,18 @@ import { executeScriptTab } from "../utility/script.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("DMSessions");
+    this.params = params
+    this.setTitle("DMwith");
   }
 
   async getHtml() {
-    const uri = "/chat/dm-sessions/";
+    const nickname = this.params.nickname;
+    const uri = `/chat/dm-with/${nickname}/`;
     const data = await fetchData(uri);
     //console.log("Pong:" + data);
     return data;
   }
   async executeScript() {
-    // executeScriptTab("/static/chat/js/dm-sessions.js", true);
-
-    import("/static/chat/js/dm-sessions.js")
-        .then(module => {
-          module.fetchDMList();
-          module.startDMwithUser();
-        })
-        .catch(error => console.error("Failed to load user profile scripts:", error));
-
+    executeScriptTab("/static/chat/js/dm-sessions.js", true);
   }
 }

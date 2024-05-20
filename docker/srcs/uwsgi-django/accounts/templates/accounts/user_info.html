@@ -8,7 +8,7 @@
     <li>History: history here</li>
     <li>xxx: xxx</li>
     <li>xxx: xxx</li>
-    <li><a href="{% url 'chat:dm' user_data.info_user_nickname%}">DM with {{ user_data.info_user_nickname }}</a></li>
+    <li><a href="/dm-with/{{ user_data.info_user_nickname }}">DM with {{ user_data.info_user_nickname }}</a></li>
     <br>
     {% if not user_data.isBlockingUser %}
     <li><a href="#" onclick="blockUser('{{ user_data.info_user_nickname }}'); return false;">block</a></li>
