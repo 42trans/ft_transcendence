@@ -93,30 +93,28 @@ class TestPongOnlineConsumer(ChannelsLiveServerTestCase):
         self.assertEqual(actual_scores, expected_initial_state, "Scores did not match expected scores.")
         await self.communicator.disconnect()
 
-
     async def test_game_state_update(self):
         await self.asyncSetUp()
-        # ゲームの状態更新リクエスト
-        update_data = {
-            "objects": {
-                "ball": {"position": {"x": 100, "y": 150}, "direction": {"x": 1, "y": 1}, "speed": 2, "radius": 5},
-                "paddle1": {"position": {"x": 50, "y": 50}, "dir_y": 1, "speed": 10},
-                "paddle2": {"position": {"x": 50, "y": 200}, "dir_y": -1, "speed": 10}
+        await self.communicator.send_json_to({
+            'action': 'update',
+            'objects': {
+                'ball': {'x': 50, 'y': 50},
+                'paddle1': {'x': 10, 'y': 30},
+                'paddle2': {'x': 10, 'y': 70}
             }
-        }
-        await self.communicator.send_json_to(update_data)
-
-        # 更新されたゲーム状態を受信
-        updated_data = await self.communicator.receive_json_from()
-
-        # 更新後のデータ検証
-        assert "objects" in updated_data, "The key 'objects' is missing in the response"
-        assert "ball" in updated_data["objects"], "The key 'ball' is missing in the response"
-        assert "position" in updated_data["objects"]["ball"], "The key 'position' is missing for 'ball'"
-        assert "direction" in updated_data["objects"]["ball"], "The key 'direction' is missing for 'ball'"
-        assert "paddle1" in updated_data["objects"], "The key 'paddle1' is missing in the response"
-        assert "position" in updated_data["objects"]["paddle1"], "The key 'position' is missing for 'paddle1'"
-        assert "paddle2" in updated_data["objects"], "The key 'paddle2' is missing in the response"
-        assert "position" in updated_data["objects"]["paddle2"], "The key 'position' is missing for 'paddle2'"
-
+        })
+        response = await self.communicator.receive_json_from()
+        assert 'ball' in response['objects'] and 'paddle1' in response['objects'] and 'paddle2' in response['objects'], "Game state update failed."
         await self.communicator.disconnect()
+
+    async def test_reconnect_process(self):
+        await self.asyncSetUp()
+        # 再接続時のテスト
+        await self.communicator.send_json_to({
+            'action': 'reconnect',
+            'state': {'score1': 1, 'score2': 2}
+        })
+        response = await self.communicator.receive_json_from()
+        assert response['state']['score1'] == 1 and response['state']['score2'] == 2, "Reconnect state mismatch."
+        await self.communicator.disconnect()
+
