@@ -66,7 +66,7 @@ class LoginAPIViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('2fa authentication needed', response_json['message'])
-        self.assertIn('/accounts/verify/verify_2fa/', response_json['redirect'])
+        self.assertIn('/verify-2fa/', response_json['redirect'])
 
     def test_basic_authentication_successful(self):
         login_data = {

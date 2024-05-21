@@ -32,7 +32,7 @@ class SignUpAPITests(TestCase):
         response = self.client.post(self.signup_api_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Already logged in", response.json()['message'])
-        self.assertIn("/pong/", response.json()['redirect'])
+        self.assertIn("/game/", response.json()['redirect'])
 
     def test_password_mismatch(self):
         user_data = self.user_data.copy()

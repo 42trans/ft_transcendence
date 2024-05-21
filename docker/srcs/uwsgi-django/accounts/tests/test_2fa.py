@@ -45,7 +45,7 @@ class Enable2FaAPITests(TestCase):
         response = self.client.get(self.enable_2fa_api_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Already enabled 2FA", response.json()['message'])
-        self.assertIn("/pong/", response.json()['redirect'])
+        self.assertIn("/game/", response.json()['redirect'])
 
     def test_get_disable_user(self):
         response = self.client.get(self.enable_2fa_api_url)
@@ -68,7 +68,7 @@ class Enable2FaAPITests(TestCase):
         response = self.client.post(self.enable_2fa_api_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Already enabled 2FA", response.json()['message'])
-        self.assertIn("/pong/", response.json()['redirect'])
+        self.assertIn("/game/", response.json()['redirect'])
 
     def test_post_succeed_enable_2fa(self):
         self.user.refresh_from_db()
@@ -82,7 +82,7 @@ class Enable2FaAPITests(TestCase):
         response = self.client.post(self.enable_2fa_api_url, {'token': otp_token})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("2FA has been enabled successfully", response.json()['message'])
-        self.assertIn("/accounts/user/", response.json()['redirect'])
+        self.assertIn("/user-profile/", response.json()['redirect'])
 
         self.user.refresh_from_db()
         self.assertTrue(self.user.enable_2fa)  # enable
@@ -204,7 +204,7 @@ class Verify2FaAPITests(TestCase):
         response = self.client.post(self.verify_2fa_api_url, {'token': self.otp_token})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("2FA verification successful", response.json()['message'])
-        self.assertIn("/accounts/user/", response.json()['redirect'])
+        self.assertIn("/user-profile/", response.json()['redirect'])
 
         self.assertIn('Access-Token', response.cookies)
         self.assertIn('Refresh-Token', response.cookies)
@@ -236,7 +236,7 @@ class Verify2FaAPITests(TestCase):
         response = self.client.post(self.verify_2fa_api_url, {'token': '012345'})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertIn('No valid session found', response.json()['error'])
-        self.assertIn('/accounts/login/', response.json()['redirect'])
+        self.assertIn('/login/', response.json()['redirect'])
 
     # helper
     def _login(self):
