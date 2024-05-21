@@ -73,7 +73,7 @@ export const renderView = async (path) => {
 
   // HTMLの描画 <div id="app">
   const html_src = await view.getHtml();
-  document.querySelector("#app").innerHTML = html_src;
+  document.querySelector("#spa").innerHTML = html_src;
 
   // スクリプトの読み込みと実行
   view.executeScript();
