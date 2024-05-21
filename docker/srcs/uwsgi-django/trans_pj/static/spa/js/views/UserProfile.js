@@ -6,36 +6,39 @@ import { getUrl } from "../utility/url.js";
 import { loadAndExecuteScript } from "../utility/script.js";
 
 export default class extends AbstractView {
-  constructor(params) {
-    super(params);
-    this.setTitle("UserProfile");
-  }
+    constructor(params) {
+        super(params);
+        this.setTitle("UserProfile");
+    }
 
-  async getHtml() {
-    // const uri = getUrl("/accounts/user/");
-    const uri = "/accounts/user/";
-    const data = await fetchData(uri);
-    return data;
-  }
+    async getHtml() {
+        const uri = "/accounts/user/";
+        const data = await fetchData(uri);
+        return data;
+    }
 
-  async executeScript() {
-    // executeScriptTab("/static/accounts/js/friend.js");
-    // executeScriptTab("/static/accounts/js/online-status.js", true);
+    async executeScript() {
+        console.log('executeScript: Loading scripts...');
+        await loadAndExecuteScript("/static/accounts/js/userProfile.js", true);
+        await loadAndExecuteScript("/static/accounts/js/friend.js", true);
+        await loadAndExecuteScript("/static/accounts/js/online-status.js", true);
 
-    import("/static/accounts/js/userProfile.js")
-        .then(module => {
-          module.fetchUserProfile();
-          module.fetchFriendList();
-          module.fetchFriendRequestList();
-        })
-        .catch(error => console.error("Failed to load user profile scripts:", error));
+        console.log('executeScript: Scripts loaded, setting up event listeners...');
 
-    import("/static/accounts/js/disable_2fa.js")
-      .then(module => {
-          document.querySelector('button').addEventListener('click', module.disableToken)
-      })
-      .catch(error => console.error("Failed to load user profile scripts:", error));
+        const userProfileModule = await import("/static/accounts/js/userProfile.js");
+        userProfileModule.fetchUserProfile();
+        userProfileModule.fetchFriendList();
+        userProfileModule.fetchFriendRequestList();
 
-  }
+        const disable2FAModule = await import("/static/accounts/js/disable_2fa.js");
+        disable2FAModule.setupDisable2FAModuleEventListeners();
 
+        const friendModule = await import("/static/accounts/js/friend.js");
+        friendModule.setupFriendEventListeners();
+
+        // const onlineStatusModule = await import("/static/accounts/js/online-status.js");
+        // onlineStatusModule.setupDeleteFriendEventListeners();
+
+        console.log('executeScript: Event listeners setup complete.');
+    }
 }

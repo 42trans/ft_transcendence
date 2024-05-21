@@ -146,22 +146,37 @@ export function deleteFriend(userId) {
 
 export function setupFriendEventListeners() {
     document.querySelectorAll('.sendFriendRequestButton').forEach(button => {
-        button.addEventListener('click', () => sendFriendRequest(button.dataset.userid));
+        button.addEventListener('click', () => {
+            console.log('sendFriendRequestButton clicked', button.dataset.userid);
+            sendFriendRequest(button.dataset.userid);
+        });
     });
     document.querySelectorAll('.cancelFriendRequestButton').forEach(button => {
-        button.addEventListener('click', () => cancelFriendRequest(button.dataset.userid));
+        button.addEventListener('click', () => {
+            console.log('cancelFriendRequestButton clicked', button.dataset.userid);
+            cancelFriendRequest(button.dataset.userid);
+        });
     });
     document.querySelectorAll('.acceptFriendRequestButton').forEach(button => {
-        button.addEventListener('click', () => acceptFriendRequest(button.dataset.userid));
+        button.addEventListener('click', () => {
+            console.log('acceptFriendRequestButton clicked', button.dataset.userid);
+            acceptFriendRequest(button.dataset.userid);
+        });
     });
     document.querySelectorAll('.rejectFriendRequestButton').forEach(button => {
-        button.addEventListener('click', () => rejectFriendRequest(button.dataset.userid));
+        button.addEventListener('click', () => {
+            console.log('rejectFriendRequestButton clicked', button.dataset.userid);
+            rejectFriendRequest(button.dataset.userid);
+        });
     });
     document.querySelectorAll('.deleteFriendButton').forEach(button => {
-        button.addEventListener('click', () => deleteFriend(button.dataset.userid));
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            console.log('deleteFriendButton clicked', button.dataset.userid);
+            deleteFriend(button.dataset.userid);
+        });
     });
 }
-
 
 // window.sendFriendRequest = sendFriendRequest;
 // window.cancelFriendRequest = cancelFriendRequest;

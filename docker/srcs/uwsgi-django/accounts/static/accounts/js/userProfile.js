@@ -2,7 +2,7 @@
 
 import { disable2FA } from "./disable_2fa.js"
 import { createFriendsList } from "./online-status.js"
-import { cancelFriendRequest, rejectFriendRequest, acceptFriendRequest } from "./friend.js"
+import { cancelFriendRequest, rejectFriendRequest, acceptFriendRequest, setupFriendEventListeners } from "./friend.js"
 
 
 export function fetchUserProfile() {
@@ -95,6 +95,8 @@ export function fetchFriendRequestList() {
 
 			receivedRequestsDiv.appendChild(receivedRequestsUl);
 			requestsContainer.appendChild(receivedRequestsDiv);
+			setupFriendEventListeners();  // Delete有効化のためイベントリスナーを設定する
+
 		})
 		.catch(error => console.error("Error:", error));
 }
