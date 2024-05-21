@@ -1,4 +1,4 @@
-import { Routes } from "./routes.js";
+import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
 import { isLogined } from "../utility/user.js";
 
@@ -56,7 +56,7 @@ export const renderView = async () => {
   console.log("renderView: currentPath: " + currentPath)
 
   // 選択されたルートを取得
-  const selectedRoute = getSelectedRoute(currentPath, Routes, isLogined());
+  const selectedRoute = getSelectedRoute(currentPath, routeTable, isLogined());
   console.log("renderView: selectedRoute.path: " + selectedRoute.path)
 
   // 選択されたルートに対応するビューを描画

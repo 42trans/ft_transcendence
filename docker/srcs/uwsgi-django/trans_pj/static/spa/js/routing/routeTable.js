@@ -35,7 +35,7 @@ import Script1 from "../views/Script1.js";
 import Script2 from "../views/Script2.js";
 
 
-export const Routes = [
+export const routeTable = [
   { path: "/",              view: Dashboard },
   { path: "/home/",         view: Home },
   { path: "/game/",         view: Pong },
