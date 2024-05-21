@@ -5,6 +5,7 @@ import fetchData from "../utility/fetch.js";
 import { getUrl } from "../utility/url.js";
 import { executeScriptTab } from "../utility/script.js";
 
+
 export default class extends AbstractView {
   constructor(params) {
     super(params);
@@ -18,12 +19,5 @@ export default class extends AbstractView {
   }
   async executeScript() {
     executeScriptTab("/static/accounts/js/disable_2fa.js");
-
-    // import("/static/accounts/js/disable_2fa.js")
-    //     .then(module => {
-    //       document.querySelector('button').addEventListener('click', module.disableToken)
-    //     })
-    //     .catch(error => console.error("Failed to load user profile scripts:", error));
-
   }
 }

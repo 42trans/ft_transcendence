@@ -6,10 +6,10 @@ const ROOT_INDEX = 0;
 const LOGIN_PATH = '/login/';
 
 
-export const navigateTo = (url) => {
+export const switchPage = (url) => {
   console.log("history pushState:" + url);
   history.pushState(null, null, url);
-  router();
+  renderView();
 };
 
 
@@ -51,18 +51,20 @@ const getSelectedRoute = (currentPath, routes, isLogined) => {
 };
 
 
-export const router = async () => {
+export const renderView = async () => {
   const currentPath = location.pathname;
-  console.log("router path: " + currentPath)
+  console.log("renderView: currentPath: " + currentPath)
 
   // 選択されたルートを取得
   const selectedRoute = getSelectedRoute(currentPath, Routes, isLogined());
-  console.log("router selectedRoute.path: " + selectedRoute.path)
+  console.log("renderView: selectedRoute.path: " + selectedRoute.path)
 
   // 選択されたルートに対応するビューを描画
   // const view = new selectedRoute.view();
   // 選択されたルートに対応するビューをインスタンス化して、paramsを渡す
-  const view = new selectedRoute.view(selectedRoute.params);
+  const params = selectedRoute.params;
+  const view = new selectedRoute.view(params);
+
   const html = await view.getHtml();
   document.querySelector("#app").innerHTML = html;
 

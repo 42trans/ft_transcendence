@@ -25,13 +25,13 @@
 <ul>
     <h4>friendship</h4>
     {% if user_data.is_friend %}
-        <li>Friend -> <a href="#" onclick="deleteFriend('{{ user_data.info_user_id }}'); return false;">Delete</a></li>
+        <li>Friend -> <a href="#" class="deleteFriendButton" data-userid="{{ user_data.info_user_id }}">Delete</a></li>
     {% elif user_data.friend_request_sent_status == "pending" %}
-        <li>Request sent (pending) -> <a href="#" onclick="cancelFriendRequest('{{ user_data.info_user_id }}'); return false;">Cancel</a></li>
+        <li>Request sent (pending) -> <a href="#" class="cancelFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Cancel</a></li>
     {% elif user_data.friend_request_received_status == "pending" %}
         <li>Request received (pending)</li>
     {% else %}
-        <li><a href="#" onclick="sendFriendRequest('{{ user_data.info_user_id }}'); return false;">Send Friend Request</a></li>
+        <li><a href="#" class="sendFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Send Friend Reques</a></li>
     {% endif %}
 </ul>
 

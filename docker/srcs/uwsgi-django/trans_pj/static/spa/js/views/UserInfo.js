@@ -48,5 +48,24 @@ export default class extends AbstractView {
                   button.addEventListener('click', () => module.deleteFriend(button.dataset.userid));
               });
       }).catch(error => console.error("Failed to load user profile scripts:", error));
+
+
+
+      // `friend.js`を動的にインポートし、適切な要素にイベントリスナーを設定する
+      import("/static/accounts/js/disable_2fa.js")
+          .then(module => {
+            // すべての友達リクエスト関連の要素にイベントを設定
+            document.querySelectorAll('.disable2FAButton').forEach(button => {
+              button.addEventListener('click', () => module.disable2FA());
+            });
+          }).catch(error => console.error("Failed to load user profile scripts:", error));
+
+      // import("/static/accounts/js/disable_2fa.js")
+      //     .then(module => {
+      //       document.querySelector('button').addEventListener('click', module.disable2FA)
+      //     })
+      //     .catch(error => console.error("Failed to load user profile scripts:", error));
+
+
   }
 }

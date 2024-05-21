@@ -1,4 +1,4 @@
-import { navigateTo, router } from "../routing/routing.js";
+import { switchPage, renderView } from "../routing/renderView.js";
 
 export async function changingLanguage(url, form, current_uri) {
   try {
@@ -9,8 +9,8 @@ export async function changingLanguage(url, form, current_uri) {
 
     const result = await response.text();
     if (result) {
-      navigateTo(current_uri);
-      router();
+      switchPage(current_uri);
+      renderView();
     } else {
       console.error("Failure");
     }
