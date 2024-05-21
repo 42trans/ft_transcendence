@@ -76,5 +76,5 @@ export const renderView = async (path) => {
   document.querySelector("#spa").innerHTML = html_src;
 
   // スクリプトの読み込みと実行
-  view.executeScript();
+  await view.executeScript();
 };

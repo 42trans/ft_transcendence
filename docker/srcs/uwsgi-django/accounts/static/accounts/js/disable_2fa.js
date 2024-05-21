@@ -28,4 +28,12 @@ export function disable2FA() {
 		});
 }
 
+
+// export function setupDisable2FAModuleEventListeners() {
+// 	document.querySelectorAll('.disable2FAButton').forEach(button => {
+// 		button.addEventListener('click', () => disable2FA());
+// 	});
+// }
+
+
 window.disable2FA = disable2FA;

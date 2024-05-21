@@ -144,8 +144,27 @@ export function deleteFriend(userId) {
 }
 
 
-window.sendFriendRequest = sendFriendRequest;
-window.cancelFriendRequest = cancelFriendRequest;
-window.acceptFriendRequest = acceptFriendRequest;
-window.rejectFriendRequest = rejectFriendRequest;
-window.deleteFriend = deleteFriend;
+export function setupFriendEventListeners() {
+    document.querySelectorAll('.sendFriendRequestButton').forEach(button => {
+        button.addEventListener('click', () => sendFriendRequest(button.dataset.userid));
+    });
+    document.querySelectorAll('.cancelFriendRequestButton').forEach(button => {
+        button.addEventListener('click', () => cancelFriendRequest(button.dataset.userid));
+    });
+    document.querySelectorAll('.acceptFriendRequestButton').forEach(button => {
+        button.addEventListener('click', () => acceptFriendRequest(button.dataset.userid));
+    });
+    document.querySelectorAll('.rejectFriendRequestButton').forEach(button => {
+        button.addEventListener('click', () => rejectFriendRequest(button.dataset.userid));
+    });
+    document.querySelectorAll('.deleteFriendButton').forEach(button => {
+        button.addEventListener('click', () => deleteFriend(button.dataset.userid));
+    });
+}
+
+
+// window.sendFriendRequest = sendFriendRequest;
+// window.cancelFriendRequest = cancelFriendRequest;
+// window.acceptFriendRequest = acceptFriendRequest;
+// window.rejectFriendRequest = rejectFriendRequest;
+// window.deleteFriend = deleteFriend;

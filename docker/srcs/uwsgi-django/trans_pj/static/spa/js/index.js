@@ -3,7 +3,12 @@
 import { switchPage, renderView } from "./routing/renderView.js";
 
 const setupPopStateListener = () => {
-  window.addEventListener("popstate", renderView);
+  console.log('pop state listener: path: ' + window.location.pathname);
+
+  window.addEventListener("popstate", (event) => {
+    const path = window.location.pathname;
+    renderView(path);
+  });
 };
 
 

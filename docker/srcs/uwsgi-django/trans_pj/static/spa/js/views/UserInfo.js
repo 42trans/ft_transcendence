@@ -3,7 +3,7 @@
 import AbstractView from "./AbstractView.js";
 import fetchData from "../utility/fetch.js";
 import { getUrl } from "../utility/url.js";
-import { loadAndExecuteScript } from "../utility/script.js";
+import { loadAndExecuteScript, setupEventListeners } from "../utility/script.js";
 
 
 export default class extends AbstractView {
@@ -22,50 +22,43 @@ export default class extends AbstractView {
   }
 
   async executeScript() {
-      loadAndExecuteScript("/static/accounts/js/block-user.js");
-      loadAndExecuteScript("/static/accounts/js/unblock-user.js");
-      loadAndExecuteScript("/static/chat/js/test-system-message.js");
-      // executeScriptTab("/static/accounts/js/friend.js");
+      console.log('executeScript: Loading scripts...');
+
+      await loadAndExecuteScript("/static/accounts/js/block-user.js");
+      await loadAndExecuteScript("/static/accounts/js/unblock-user.js");
+      // loadAndExecuteScript("/static/chat/js/test-system-message.js");
+      await loadAndExecuteScript("/static/accounts/js/friend.js", true);
+
+      console.log('executeScript: Scripts loaded, setting up event listeners...');
 
 
-      // `friend.js`を動的にインポートし、適切な要素にイベントリスナーを設定する
-      import("/static/accounts/js/friend.js")
-          .then(module => {
-              // すべての友達リクエスト関連の要素にイベントを設定
-              document.querySelectorAll('.sendFriendRequestButton').forEach(button => {
-                  button.addEventListener('click', () => module.sendFriendRequest(button.dataset.userid));
-              });
-              document.querySelectorAll('.cancelFriendRequestButton').forEach(button => {
-                  button.addEventListener('click', () => module.cancelFriendRequest(button.dataset.userid));
-              });
-              document.querySelectorAll('.acceptFriendRequestButton').forEach(button => {
-                  button.addEventListener('click', () => module.acceptFriendRequest(button.dataset.userid));
-              });
-              document.querySelectorAll('.rejectFriendRequestButton').forEach(button => {
-                  button.addEventListener('click', () => module.rejectFriendRequest(button.dataset.userid));
-              });
-              document.querySelectorAll('.deleteFriendButton').forEach(button => {
-                  button.addEventListener('click', () => module.deleteFriend(button.dataset.userid));
-              });
-      }).catch(error => console.error("Failed to load user profile scripts:", error));
+      // スクリプトのロード完了後にイベントリスナーを設定
+      console.log('executeScript: Event listeners setup complete.');
 
+      // イベントリスナーの設定　関数化すると動かない？
+      // await setupEventListeners(
+      //     "/static/accounts/js/friend.js",
+      //     "setupFriendEventListeners"
+      // );
+      // try {
+      //     await setupEventListeners("/static/accounts/js/friend.js", "setupFriendEventListeners");
+      // } catch (error) {
+      //     console.error('Error in setting up event listeners:', error);
+      // }
 
+      // スクリプトのロード完了後にイベントリスナーを設定
+      try {
+          const module = await import("/static/accounts/js/friend.js");
+          if (module.setupFriendEventListeners) {
+              module.setupFriendEventListeners();
+          } else {
+              console.error('setupFriendEventListeners is not defined in the module.');
+          }
+      } catch (error) {
+          console.error(`Failed to import module: /static/accounts/js/friend.js`, error);
+      }
 
-      // `friend.js`を動的にインポートし、適切な要素にイベントリスナーを設定する
-      import("/static/accounts/js/disable_2fa.js")
-          .then(module => {
-            // すべての友達リクエスト関連の要素にイベントを設定
-            document.querySelectorAll('.disable2FAButton').forEach(button => {
-              button.addEventListener('click', () => module.disable2FA());
-            });
-          }).catch(error => console.error("Failed to load user profile scripts:", error));
-
-      // import("/static/accounts/js/disable_2fa.js")
-      //     .then(module => {
-      //       document.querySelector('button').addEventListener('click', module.disable2FA)
-      //     })
-      //     .catch(error => console.error("Failed to load user profile scripts:", error));
-
+      console.log('executeScript: Event listeners setup complete.');
 
   }
 }
