@@ -5,9 +5,11 @@ from django.http import JsonResponse
 # from ..models import Tournament, Match
 from django.shortcuts import get_object_or_404
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 
+@login_required
 def pong_online(request):
 	if request.method == 'GET':
 		return render(request, 'pong/pong-online.html')
