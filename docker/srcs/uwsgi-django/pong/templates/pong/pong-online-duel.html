@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" crossorigin href="{% static 'pong/css/hth-online.css' %}">
+{% endblock %}
+{% block title %}Play - hth Pong{% endblock title %}
+{% block content %}
+	{% csrf_token %}
+
+	<h2>Start Duel</h2>
+	<!-- DM相手を指定して開始するtext field -->
+	<label for="nickname-input">Duel with</label>
+	<input id="nickname-input" type="text" size="20">
+	<input id="nickname-submit" class="hth-btn" type="button" value="Request Duel">
+	<hr>
+
+<!-- <script type="module" crossorigin src="{% static 'pong/js/online/PongOnlineIndex.js' %}"></script> -->
+{% endblock %}
+
+<!-- views/のLoginRequiredMixinでログインをチェックする -->
