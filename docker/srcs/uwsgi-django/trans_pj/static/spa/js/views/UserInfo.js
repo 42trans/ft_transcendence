@@ -3,7 +3,7 @@
 import AbstractView from "./AbstractView.js";
 import fetchData from "../utility/fetch.js";
 import { getUrl } from "../utility/url.js";
-import { executeScriptTab } from "../utility/script.js";
+import { loadAndExecuteScript } from "../utility/script.js";
 
 
 export default class extends AbstractView {
@@ -22,9 +22,9 @@ export default class extends AbstractView {
   }
 
   async executeScript() {
-      executeScriptTab("/static/accounts/js/block-user.js");
-      executeScriptTab("/static/accounts/js/unblock-user.js");
-      executeScriptTab("/static/chat/js/test-system-message.js");
+      loadAndExecuteScript("/static/accounts/js/block-user.js");
+      loadAndExecuteScript("/static/accounts/js/unblock-user.js");
+      loadAndExecuteScript("/static/chat/js/test-system-message.js");
       // executeScriptTab("/static/accounts/js/friend.js");
 
 

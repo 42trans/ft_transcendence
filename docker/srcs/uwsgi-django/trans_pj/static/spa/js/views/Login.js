@@ -3,7 +3,7 @@
 import AbstractView from "./AbstractView.js";
 import fetchData from "../utility/fetch.js";
 import { getUrl } from "../utility/url.js";
-import { executeScriptTab } from "../utility/script.js";
+import { loadAndExecuteScript } from "../utility/script.js";
 
 export default class extends AbstractView {
   constructor(params) {
@@ -17,6 +17,6 @@ export default class extends AbstractView {
     return data;
   }
   async executeScript() {
-    executeScriptTab("/static/accounts/js/login.js");
+    loadAndExecuteScript("/static/accounts/js/login.js");
   }
 }

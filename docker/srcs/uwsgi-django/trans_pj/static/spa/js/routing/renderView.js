@@ -55,26 +55,26 @@ const getSelectedRoute = (currentPath, routes, isLogined) => {
 };
 
 
-export const renderView = async (path) => {
-  console.log("renderView: path: " + path)
-
+function get_view(path) {
   // 選択されたルートを取得
   const selectedRoute = getSelectedRoute(path, routeTable, isLogined());
   console.log("renderView: selectedRoute.path: " + selectedRoute.path)
 
-  // 選択されたルートに対応するビューを描画
-  // const view = new selectedRoute.view();
   // 選択されたルートに対応するビューをインスタンス化して、paramsを渡す
-  const params = selectedRoute.params;
-  const view = new selectedRoute.view(params);
+  const url_params = selectedRoute.params;
+  console.log("renderView: params: " + JSON.stringify(url_params));
+  const view = new selectedRoute.view(url_params);
+  return view
+}
 
-  const html = await view.getHtml();
-  document.querySelector("#app").innerHTML = html;
+export const renderView = async (path) => {
+  console.log("renderView: path: " + path)
+  const view = get_view(path)
 
-  // ビューに関連するスクリプトを実行
-  try {
-    view.executeScript();
-  } catch (error) {
-    console.error(`Error executing view script: ${error}`);
-  }
+  // HTMLの描画 <div id="app">
+  const html_src = await view.getHtml();
+  document.querySelector("#app").innerHTML = html_src;
+
+  // スクリプトの読み込みと実行
+  view.executeScript();
 };

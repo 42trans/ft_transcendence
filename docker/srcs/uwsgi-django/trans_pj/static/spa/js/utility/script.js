@@ -1,63 +1,37 @@
-// export function executeScriptTab(path) {
-//   const app = document.querySelector("#app");
-//   var newDiv = document.createElement("script");
-//
-//   var script = app.getElementsByTagName("script");
-//   if (script !== undefined && script[0] !== undefined) {
-//     if (script[0].src !== "") {
-//       newDiv.src = path;
-//     } else if (script[0].innerHTML !== "") {
-//       newDiv.textContent = script[0].innerHTML;
-//     }
-//
-//     document.body.appendChild(newDiv);
-//   }
-// }
+// script.js
 
-// export function executeScriptTab(path) {
-//   console.log("executeScriptTab: 1 path: " + path);
-//
-//   const app = document.querySelector("#app");
-//   if (!app) {
-//     console.error("Error: cannot find #app");
-//     return;
-//   }
-//
-//   var newDiv = document.createElement("script");
-//   var scripts = app.getElementsByTagName("script");
-//
-//   if (scripts.length > 0) {
-//     // console.log("executeScriptTab: 2 find script: ", scripts[0]);
-//
-//     if (scripts[0].src !== "") {
-//       newDiv.src = path;
-//       console.log("executeScriptTab: 2 scripts[0].src: ", scripts[0].src);
-//     } else if (scripts[0].innerHTML !== "") {
-//       newDiv.textContent = scripts[0].innerHTML;
-//       console.log("executeScriptTab: 2 newDiv.textContent: ", newDiv.textContent);
-//     }
-//     document.body.appendChild(newDiv);
-//   } else {
-//     console.error("Error: cannot find script in #app");
-//   }
-// }
-
-export function executeScriptTab(path, isModule = false) {
-  console.log("executeScriptTab: path: " + path);
-
-  const script = document.createElement('script');
-  script.src = path;
+function getScriptElement(path, isModule) {
+  const scriptElement = document.createElement('script');
+  scriptElement.src = path;
   if (isModule) {
-    script.type = 'module';
+    scriptElement.type = 'module';
   }
+  return scriptElement
+}
 
-  script.onerror = function() {
-    console.error(`Failed to load script: ${path}`);
+
+function loadScript(scriptElement) {
+  scriptElement.onerror = function () {
+    console.error('Failed to load script: ' + path);
   };
 
-  script.onload = function() {
-    console.log(`Script loaded successfully: ${path}`);
+  scriptElement.onload = function () {
+    console.log('Script loaded successfully: ' + path);
   };
+}
 
-  document.body.appendChild(script);
+
+/**
+ * 指定されたパスからスクリプトを読み込み、実行する
+ *
+ * @param {string} path - スクリプトファイルのパス
+ * @param {boolean} [isModule=false] - スクリプトをモジュールとして読み込むかどうか
+ */
+export function loadAndExecuteScript(path, isModule = false) {
+  console.log("loadAndExecuteScript: path: " + path);
+
+  // <script src="path"></script>
+  const scriptElement = getScriptElement(path, isModule)
+  loadScript(scriptElement)
+  document.body.appendChild(scriptElement);
 }

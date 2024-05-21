@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { executeScriptTab } from "../utility/script.js";
+import { loadAndExecuteScript } from "../utility/script.js";
 
 export default class extends AbstractView {
   constructor(params) {

@@ -3,7 +3,7 @@
 import AbstractView from "./AbstractView.js";
 import fetchData from "../utility/fetch.js";
 import { getUrl } from "../utility/url.js";
-import { executeScriptTab } from "../utility/script.js";
+import { loadAndExecuteScript } from "../utility/script.js";
 
 export default class extends AbstractView {
   constructor(params) {
@@ -18,7 +18,7 @@ export default class extends AbstractView {
   }
 
   async executeScript() {
-    executeScriptTab("/static/accounts/js/enable_2fa.js", true);
+    loadAndExecuteScript("/static/accounts/js/enable_2fa.js", true);
 
     import("/static/accounts/js/enable_2fa.js")
         .then(module => {
