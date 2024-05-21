@@ -10,7 +10,6 @@ export async function changingLanguage(url, form, current_uri) {
     const result = await response.text();
     if (result) {
       switchPage(current_uri);
-      renderView();
     } else {
       console.error("Failure");
     }

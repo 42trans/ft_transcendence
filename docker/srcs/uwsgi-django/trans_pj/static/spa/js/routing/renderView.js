@@ -9,7 +9,11 @@ const LOGIN_PATH = '/login/';
 export const switchPage = (url) => {
   console.log("history pushState:" + url);
   history.pushState(null, null, url);
-  renderView();
+
+  let currentPath = window.location.pathname;
+  console.log('switchPage url:' + url)
+  console.log('switchPage currentPath:' + currentPath)
+  renderView(currentPath);
 };
 
 
@@ -51,12 +55,11 @@ const getSelectedRoute = (currentPath, routes, isLogined) => {
 };
 
 
-export const renderView = async () => {
-  const currentPath = location.pathname;
-  console.log("renderView: currentPath: " + currentPath)
+export const renderView = async (path) => {
+  console.log("renderView: path: " + path)
 
   // 選択されたルートを取得
-  const selectedRoute = getSelectedRoute(currentPath, routeTable, isLogined());
+  const selectedRoute = getSelectedRoute(path, routeTable, isLogined());
   console.log("renderView: selectedRoute.path: " + selectedRoute.path)
 
   // 選択されたルートに対応するビューを描画
