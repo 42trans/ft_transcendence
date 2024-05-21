@@ -9,8 +9,8 @@ from .pong_online_game_manager import PongOnlineGameManager
 from ..utils.async_logger import async_log
 
 class PongOnlineConsumer(AsyncWebsocketConsumer):
-    permission_classes = [AllowAny]
-    # permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     async def connect(self):
         """
@@ -19,8 +19,16 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
          - self.channel_layer.group_add:複数の WebSocket 接続に対してメッセージを一斉に配信
          - self.channel_name: AsyncWebsocketConsumerの属性 unique ID
          - self.accept(): WebSocket接続を受け入れて送受信可能にする
+         - CloseEvent status code: 参考:【CloseEvent: code プロパティ - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/CloseEvent/code>
         """
         await async_log("ws接続されました")
+
+        # ユーザーが認証されていない場合、接続を拒否
+        if not self.scope["user"].is_authenticated:
+            await async_log("認証されていないユーザーによる接続試み")
+            await self.close(code=1008)
+            return
+        
         self.user_id = self.scope['user'].id
         self.room_group_name, err = await self._get_room_group_name(self.user_id)
         if err is not None:
