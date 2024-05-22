@@ -91,6 +91,7 @@ MIDDLEWARE = [
 	# --------------------
 	'django_otp.middleware.OTPMiddleware',  # 2fa
 	'accounts.middleware.JWTAuthenticationMiddleware',	# jwt
+	'accounts.middleware.DisableCSRFForJWT'
 ]
 
 
@@ -324,4 +325,3 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"  # インメモリを使う場合
     },
 }
-
