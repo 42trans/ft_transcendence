@@ -26,10 +26,7 @@ export function fetchUserProfile() {
 				
 				`<li>2FA: ✅Enabled</li><li><a href="#" class="disable2FAButton">Disable 2FA</a></li>` :
 				`<li>2FA: Disabled</li><li><a href="/enable-2fa/">Enable 2FA</a></li>`}
-                <hr>
-                <li><a href="/dm/" class="nav__link" data-link>DM List</a></li> 
                 `;
-				// SPA DM pageへの遷移なのでchat/dm-sessions/ではなく/dm/を指定
 
 			setupDisable2FAModuleEventListeners()  // disable2FAButtonを有効化
 			// setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
