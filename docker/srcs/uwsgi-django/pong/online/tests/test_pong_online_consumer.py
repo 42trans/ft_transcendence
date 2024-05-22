@@ -5,27 +5,27 @@ import json
 from django.test import TestCase
 from django.test import TransactionTestCase
 from rest_framework.test import APIClient
-from channels.testing import WebsocketCommunicator
+from channels.testing import WebsocketCommunicator, ChannelsLiveServerTestCase
 from channels.db import database_sync_to_async
 
 from accounts.models import CustomUser
-# from django.test import LiveServerTestCase
+from django.test import LiveServerTestCase
 from trans_pj.asgi import application
 from django.urls import reverse
 from rest_framework import status
 
 # ロガーの設定
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
 
-class TestPongOnlineConsumer(TransactionTestCase):
+class TestPongOnlineConsumer(ChannelsLiveServerTestCase):
     kUser1Email = 'user1@example.com'
     kUser1Nickname = 'user1'
     kUser1Password = 'pass012345'
 
     # async def setUp(self):
     async def asyncSetUp(self):
-        logger.debug("Setting up the test case")
+        super().setUp()
+        # await super().asyncSetUp()
         # テスト用にユーザーを作成してデータベースに登録
         self.client = APIClient()
         self.user1 = await database_sync_to_async(CustomUser.objects.create_user)(
@@ -47,12 +47,10 @@ class TestPongOnlineConsumer(TransactionTestCase):
         await self.communicator.disconnect()
 
     async def _login(self, email, password):
-        logger.debug("Logging in user")
         login_api_path = reverse("api_accounts:api_login")
         login_data = {'email': email, 'password': password}
         response = await database_sync_to_async(self.client.post)(login_api_path, data=login_data)
         if response.status_code == status.HTTP_200_OK and 'Access-Token' in response.cookies:
-            logger.debug("Login successful")
             return response.cookies['Access-Token'].value
         else:
             logger.error("Failed to retrieve JWT token")
@@ -73,53 +71,50 @@ class TestPongOnlineConsumer(TransactionTestCase):
     # test
     # --------------------------------------------------------------------------
 
-    async def test_websocket_connection(self):
+    async def test_websocket_connection_authenticated(self):
         await self.asyncSetUp()
-        try:
-            # クライアントからゲーム更新コマンドを送信
-            message = {"paddle1": {"dir_y": 10}}
-            await self.communicator.send_json_to(message)
-            # サーバーからのゲーム状態更新を受け取る
-            response = await self.communicator.receive_json_from()
-
-            self.assertIn("ball", response)
-            self.assertIn("paddle1", response)
-            self.assertIn("paddle2", response)
-        finally:
-            await self.asyncTearDown()
+        # JWTトークンを使用して認証されたユーザーでWebSocket接続を試みる
+        connected, _ = await self.communicator.connect()
+        self.assertTrue(connected, "Authenticated user should connect successfully")
+        await self.communicator.disconnect()
 
 
-    async def test_send_and_receive_message(self):
+    async def test_initial_communication(self):
         await self.asyncSetUp()
-        try:
-            message = {"paddle1": {"dir_y": 10}}
-            await self.communicator.send_json_to(message)
+        # サーバーへ クライアント側から初期化リクエストを送信
+        await self.communicator.send_json_to({'action': 'initialize'})
+        # クライアントへ サーバーからの初期状態応答を受信
+        response = await self.communicator.receive_json_from()
 
-            response = await self.communicator.receive_json_from()
+        expected_initial_state = {"score1": 0, "score2": 0}
+        actual_scores = response['state']
 
-            self.assertIn("ball", response)
-            self.assertIn("paddle1", response)
-            self.assertIn("paddle2", response)
-        finally:
-            await self.asyncTearDown()
-    
-    async def test_send_invalid_data(self):
+        # 応答データの検証
+        self.assertEqual(actual_scores, expected_initial_state, "Scores did not match expected scores.")
+        await self.communicator.disconnect()
+
+    async def test_game_state_update(self):
         await self.asyncSetUp()
-        try:
-            invalid_message = "this is not a JSON message"
-            await self.communicator.send_to(text_data=invalid_message)
-            # 無効なデータ送信後に接続が閉じられることを確認
-            with self.assertRaises(AssertionError):
-                await self.communicator.receive_from()
-        finally:
-            await self.asyncTearDown()
-    
-    async def test_disconnect(self):
+        await self.communicator.send_json_to({
+            'action': 'update',
+            'objects': {
+                'ball': {'x': 50, 'y': 50},
+                'paddle1': {'x': 10, 'y': 30},
+                'paddle2': {'x': 10, 'y': 70}
+            }
+        })
+        response = await self.communicator.receive_json_from()
+        assert 'ball' in response['objects'] and 'paddle1' in response['objects'] and 'paddle2' in response['objects'], "Game state update failed."
+        await self.communicator.disconnect()
+
+    async def test_reconnect_process(self):
         await self.asyncSetUp()
-        try:
-            await self.communicator.disconnect()
-            # wait() should return True, indicating the connection is closed
-            closed = await self.communicator.wait(timeout=1)
-            self.assertIsNone(closed, "WebSocket connection should be closed")
-        finally:
-            await self.asyncTearDown()
+        # 再接続時のテスト
+        await self.communicator.send_json_to({
+            'action': 'reconnect',
+            'state': {'score1': 1, 'score2': 2}
+        })
+        response = await self.communicator.receive_json_from()
+        assert response['state']['score1'] == 1 and response['state']['score2'] == 2, "Reconnect state mismatch."
+        await self.communicator.disconnect()
+

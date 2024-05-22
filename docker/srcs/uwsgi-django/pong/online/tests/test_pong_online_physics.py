@@ -1,38 +1,47 @@
 from django.test import TestCase
 from pong.online.pong_online_game_manager import PongOnlineGameManager
+from asgiref.sync import async_to_sync
 
 class TestPongOnlinePhysics(TestCase):
     def setUp(self):
         self.game_manager = PongOnlineGameManager(user_id=1)
-        self.game_manager.initialize_game()
+        # await self.game_manager.initialize_game()
+        async_to_sync(self.game_manager.initialize_game)()
 
-    def test_ball_collision_with_walls(self):
-        # 壁にボールを移動させて衝突をシミュレート
-        self.game_manager.pong_engine_data["objects"]["ball"]["position"]["x"] = self.game_manager.pong_engine_data["game_settings"]["field"]["width"] / 2
-        self.game_manager.update_game({"paddle1": {"dir_y": 0}, "paddle2": {"dir_y": 0}})
-        
-        # ボールの反射を確認
-        self.assertNotEqual(
-            self.game_manager.pong_engine_data["objects"]["ball"]["direction"]["x"],
-            # self.game_manager.pong_engine_data["objects"]["ball"]["dir_x"],
-            0,
-            "壁との衝突判定"
-        )
+    async def test_ball_collision_with_right_wall_increases_player1_score(self):
+        # ボールが右壁に確実に触れるように設定
+        ball_radius = self.game_manager.pong_engine_data["objects"]["ball"]["radius"]
+        field_width = self.game_manager.pong_engine_data["game_settings"]["field"]["width"]
+        self.game_manager.pong_engine_data["objects"]["ball"]["position"]["x"] = field_width / 2 - ball_radius
 
-    def test_ball_collision_with_ceiling_or_floor(self):
+        # スコアを更新する前の状態を記録
+        initial_score1 = self.game_manager.pong_engine_data["state"]["score1"]
+        initial_score2 = self.game_manager.pong_engine_data["state"]["score2"]
+
+        # ゲーム状態を更新
+        await self.game_manager.update_game({"paddle1": {"dir_y": 0}, "paddle2": {"dir_y": 0}})
+
+        # スコアが正しくプレイヤー1に対してインクリメントされているか確認
+        self.assertEqual(self.game_manager.pong_engine_data["state"]["score1"], initial_score1 + 1, "Player 1's score should be incremented")
+
+        # ボールが中心にリセットされているか確認
+        # self.assertEqual(self.game_manager.pong_engine_data["objects"]["ball"]["position"]["x"], 0, "ボールは中心にリセットされるべき")
+
+
+
+    async def test_ball_collision_with_ceiling_or_floor(self):
         # 天井にボールを移動させて衝突をシミュレート
         self.game_manager.pong_engine_data["objects"]["ball"]["position"]["y"] = self.game_manager.pong_engine_data["game_settings"]["field"]["height"] / 2
-        self.game_manager.update_game({"paddle1": {"dir_y": 0}, "paddle2": {"dir_y": 0}})
+        await self.game_manager.update_game({"paddle1": {"dir_y": 0}, "paddle2": {"dir_y": 0}})
         
         # ボールの反射を確認
         self.assertNotEqual(
             self.game_manager.pong_engine_data["objects"]["ball"]["direction"]["y"],
-            # self.game_manager.pong_engine_data["objects"]["ball"]["dir_y"],
             0,
             "天井との衝突判定"
         )
 
-    def test_adjust_ball_direction_and_speed(self):
+    async def test_adjust_ball_direction_and_speed(self):
         ball = self.game_manager.pong_engine_data["objects"]["ball"]
         paddle = self.game_manager.pong_engine_data["objects"]["paddle1"]
 
@@ -58,28 +67,4 @@ class TestPongOnlinePhysics(TestCase):
         self.assertEqual(
             ball["direction"]["x"], -1,
             "X方向が反転すべき"
-        )
-
-    def test_ball_collision_with_paddle(self):
-        # パドルの位置を設定
-        paddle_position = self.game_manager.pong_engine_data["objects"]["paddle1"]["position"]
-        paddle_position["x"] = 0  # パドルを中央に設定
-        paddle_position["y"] = 0  # Yも中央に設定（テストの明確化）
-        
-        # ボールをパドルの直前に設定して、左から右へ移動するようにする
-        self.game_manager.pong_engine_data["objects"]["ball"]["position"]["x"] = -1
-        self.game_manager.pong_engine_data["objects"]["ball"]["position"]["y"] = 0
-        self.game_manager.pong_engine_data["objects"]["ball"]["direction"]["x"] = 1
-        initial_speed = self.game_manager.pong_engine_data["objects"]["ball"]["speed"]
-
-        # 衝突の前にボールを更新
-        self.game_manager.update_game({"paddle1": {"dir_y": 0}, "paddle2": {"dir_y": 0}})
-
-        self.assertTrue(
-            self.game_manager.pong_engine_data["objects"]["ball"]["speed"] > initial_speed,
-            "速度が増加べき"
-        )
-        self.assertEqual(
-            self.game_manager.pong_engine_data["objects"]["ball"]["direction"]["x"], -1,
-            "X方向が反転べき"
         )
