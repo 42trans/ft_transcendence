@@ -104,10 +104,11 @@ class TournamentManager
 
 	/** ゲストユーザーへ表示する内容 */
 	_handleGuestUser() {
-		document.getElementById('tournament-container').innerHTML = `
-			<p>Please log in to manage or create tournaments.</p>
-			<p><a href="/accounts/login">Log in</a> or <a href="/accounts/signup">Sign up</a></p>
-		`;
+		window.location.href = "/login/"  // loginへ移動
+		// document.getElementById('tournament-container').innerHTML = `
+		// 	<p>Please log in to manage or create tournaments.</p>
+		// 	<p><a href="/accounts/login">Log in</a> or <a href="/accounts/signup">Sign up</a></p>
+		// `;
 	}
 }
 
