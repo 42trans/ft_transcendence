@@ -1,6 +1,63 @@
 // userProfile.js
 
 import { disable2FA } from "./disable_2fa.js"
+import { createActionButton } from "./friend.js"
+
+
+function drawUserProfile(data) {
+	const userInfo = document.getElementById("user-info");
+	userInfo.innerHTML = '';
+
+	const emailItem = document.createElement('li');
+	emailItem.textContent = `Email: ${data.email}`;
+	userInfo.appendChild(emailItem);
+
+	const nicknameItem = document.createElement('li');
+	nicknameItem.textContent = `Nickname: ${data.nickname}`;
+	userInfo.appendChild(nicknameItem);
+
+	if (data.has_usable_password) {
+		const passwordItem = document.createElement('li');
+		passwordItem.textContent = 'Password: ******';
+		userInfo.appendChild(passwordItem);
+	}
+
+	const editProfileItem = document.createElement('li');
+	const editProfileLink = document.createElement('a');
+	editProfileLink.href = '/edit-profile/';
+	editProfileLink.textContent = 'Edit Profile';
+	editProfileItem.appendChild(editProfileLink);
+	userInfo.appendChild(editProfileItem);
+
+	userInfo.appendChild(document.createElement('hr'));
+
+	const avatarItem = document.createElement('li');
+	avatarItem.innerHTML = `Avatar: <img src="${data.avatar_url}" alt="User Avatar" class="avatar">`;
+	const changeAvatarLink = document.createElement('a');
+	changeAvatarLink.href = '/change-avatar/';
+	changeAvatarLink.textContent = 'Edit Avatar';
+	avatarItem.appendChild(changeAvatarLink);
+	userInfo.appendChild(avatarItem);
+
+	userInfo.appendChild(document.createElement('hr'));
+
+	if (data.enable_2fa) {
+		const twoFAItem = document.createElement('li');
+		twoFAItem.id = '2fa-status';
+		twoFAItem.textContent = '2FA: ✅Enabled ';
+		const disable2FAButton = createActionButton('Disable2FA', disable2FA);
+		twoFAItem.appendChild(disable2FAButton);
+		userInfo.appendChild(twoFAItem);
+	} else {
+		const twoFAItem = document.createElement('li');
+		twoFAItem.textContent = '2FA: Disabled ';
+		const enable2FALink = document.createElement('a');
+		enable2FALink.href = '/enable-2fa/';
+		enable2FALink.textContent = 'Enable2FA';
+		twoFAItem.appendChild(enable2FALink);
+		userInfo.appendChild(twoFAItem);
+	}
+}
 
 
 export function fetchUserProfile() {
@@ -12,44 +69,23 @@ export function fetchUserProfile() {
 	})
 		.then(response => response.json())
 		.then(data => {
-			const userInfo = document.getElementById("user-info");
-			userInfo.innerHTML = `
-                <li>Email: ${data.email}</li>
-                <li>Nickname: ${data.nickname}</li>
-                ${data.has_usable_password ? '<li>Password: ******</li>' : ''}
-                <li><a href="/edit-profile/">Edit Profile</a></li>
-                <hr>
-                <li>Avatar: <img src="${data.avatar_url}" alt="User Avatar" class="avatar">
-                <a href="/change-avatar/">Edit Avatar</a></li>
-                <hr>
-                ${data.enable_2fa ?
-				
-				`<li>2FA: ✅Enabled  <a href="#" class="disable2FAButton">Disable2FA</a></li>` :
-				`<li>2FA: Disabled  <a href="/enable-2fa/">Enable2FA</a></li>`}
-                `;
-
-			setupDisable2FAEventListener()  // disable2FAButtonを有効化
+			drawUserProfile(data);
+			setupDisable2FAEventListener()  // disable2FA Buttonのイベントリスナーを設定
 			// setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
 		})
 		.catch(error => console.error("Error:", error));
 }
 
 
-export function setupDisable2FAEventListener() {
-	console.log("removeDisable2FAEventListener");
+function setupDisable2FAEventListener() {
 	document.querySelectorAll('.disable2FAButton').forEach(button => {
 		button.replaceWith(button.cloneNode(true));
 	});
 
-
-	console.log("setupDisable2FAEventListener 1");
 	document.querySelectorAll('.disable2FAButton').forEach(button => {
-		console.log("setupDisable2FAEventListener 2");
-		button.addEventListener('click', (event) => {
-			event.preventDefault();
+		button.addEventListener('click', () => {
 			console.log('disable2FAButton clicked');
 			disable2FA()
 		});
 	});
-	console.log("setupDisable2FAEventListener 3");
 }
