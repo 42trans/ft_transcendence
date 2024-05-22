@@ -147,8 +147,18 @@ export function deleteFriend(userId) {
 }
 
 
-export function setupFriendEventListeners() {
-    removeFriendEventListeners()
+function setupFriendListEventListener() {
+    console.log("Setup friend event listeners");
+    document.querySelectorAll('.deleteFriendButton').forEach(button => {
+        button.addEventListener('click', () => {
+            console.log('deleteFriendButton clicked', button.dataset.userid);
+            deleteFriend(button.dataset.userid);
+        });
+    });
+}
+
+
+export function setupFriendRequestListEventListeners() {
     console.log("Setup friend event listeners");
 
     document.querySelectorAll('.sendFriendRequestButton').forEach(button => {
@@ -175,33 +185,6 @@ export function setupFriendEventListeners() {
             rejectFriendRequest(button.dataset.userid);
         });
     });
-    document.querySelectorAll('.deleteFriendButton').forEach(button => {
-        button.addEventListener('click', () => {
-            console.log('deleteFriendButton clicked', button.dataset.userid);
-            deleteFriend(button.dataset.userid);
-        });
-    });
-}
-
-
-function removeFriendEventListeners() {
-    console.log("Remove friend event listeners");
-
-    document.querySelectorAll('.sendFriendRequestButton').forEach(button => {
-        button.replaceWith(button.cloneNode(true));
-    });
-    document.querySelectorAll('.cancelFriendRequestButton').forEach(button => {
-        button.replaceWith(button.cloneNode(true));
-    });
-    document.querySelectorAll('.acceptFriendRequestButton').forEach(button => {
-        button.replaceWith(button.cloneNode(true));
-    });
-    document.querySelectorAll('.rejectFriendRequestButton').forEach(button => {
-        button.replaceWith(button.cloneNode(true));
-    });
-    document.querySelectorAll('.deleteFriendButton').forEach(button => {
-        button.replaceWith(button.cloneNode(true));
-    });
 }
 
 
@@ -215,54 +198,43 @@ export function fetchFriendList() {
         .then(response => response.json())
         .then(data => {
             createFriendsList(data);
+            setupFriendListEventListener()
         })
         .catch(error => console.error('Error:', error));
 }
 
 
-export function fetchFriendRequestList() {
-    // フレンド申請リストの一覧
-    fetch("/accounts/api/friend/requests/", {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
-    })
-        .then(response => response.json())
-        .then(data => {
-            const requestsContainer = document.getElementById("requests-container");
-            requestsContainer.innerHTML = '';
+function createFriendRequestList(data) {
+    const requestsContainer = document.getElementById("requests-container");
+    requestsContainer.innerHTML = '';
 
-            // 送信したフレンドリクエスト
-            const sentRequestsDiv = document.createElement('div');
-            sentRequestsDiv.innerHTML = "<h4>Sent Friend Requests</h4>";
+    // 送信したフレンドリクエスト
+    const sentRequestsDiv = document.createElement('div');
+    sentRequestsDiv.innerHTML = "<h4>Sent Friend Requests</h4>";
 
-            const sentRequestsUl = document.createElement('ul');
-            data.sent_requests.forEach(req => {
-                const li = document.createElement('li');
-                li.appendChild(createRequestLink(req.nickname, req.friend_id, true));
-                sentRequestsUl.appendChild(li);
-            });
+    const sentRequestsUl = document.createElement('ul');
+    data.sent_requests.forEach(req => {
+        const li = document.createElement('li');
+        li.appendChild(createRequestLink(req.nickname, req.friend_id, true));
+        sentRequestsUl.appendChild(li);
+    });
 
-            sentRequestsDiv.appendChild(sentRequestsUl);
-            requestsContainer.appendChild(sentRequestsDiv);
+    sentRequestsDiv.appendChild(sentRequestsUl);
+    requestsContainer.appendChild(sentRequestsDiv);
 
-            // 受信したフレンドリクエスト
-            const receivedRequestsDiv = document.createElement('div');
-            receivedRequestsDiv.innerHTML = "<h4>Received Friend Requests</h4>";
+    // 受信したフレンドリクエスト
+    const receivedRequestsDiv = document.createElement('div');
+    receivedRequestsDiv.innerHTML = "<h4>Received Friend Requests</h4>";
 
-            const receivedRequestsUl = document.createElement('ul');
-            data.received_requests.forEach(req => {
-                const li = document.createElement('li');
-                li.appendChild(createRequestLink(req.nickname, req.friend_id, false));
-                receivedRequestsUl.appendChild(li);
-            });
+    const receivedRequestsUl = document.createElement('ul');
+    data.received_requests.forEach(req => {
+        const li = document.createElement('li');
+        li.appendChild(createRequestLink(req.nickname, req.friend_id, false));
+        receivedRequestsUl.appendChild(li);
+    });
 
-            receivedRequestsDiv.appendChild(receivedRequestsUl);
-            requestsContainer.appendChild(receivedRequestsDiv);
-
-        })
-        .catch(error => console.error("Error:", error));
+    receivedRequestsDiv.appendChild(receivedRequestsUl);
+    requestsContainer.appendChild(receivedRequestsDiv);
 }
 
 
@@ -302,4 +274,21 @@ export function createActionButton(text, action) {
         action();
     };
     return actionLink;
+}
+
+
+export function fetchFriendRequestList() {
+    // フレンド申請リストの一覧
+    fetch("/accounts/api/friend/requests/", {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            createFriendRequestList(data);
+            setupFriendRequestListEventListeners()
+        })
+        .catch(error => console.error("Error:", error));
 }

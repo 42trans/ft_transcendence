@@ -46,7 +46,7 @@ export default class extends AbstractView {
       // }
 
       const friendModule = await import("/static/accounts/js/friend.js");
-      friendModule.setupFriendEventListeners();
+      friendModule.setupFriendRequestListEventListeners();
 
       console.log('executeScript: Event listeners setup complete.');
 
