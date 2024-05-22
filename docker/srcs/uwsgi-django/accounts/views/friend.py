@@ -1,13 +1,17 @@
 import logging
 from django.http import JsonResponse
 from accounts.models import CustomUser, Friend, UserStatus
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
 from django.db.models import F, Q
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from accounts.views.jwt import is_valid_jwt
+
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -15,6 +19,19 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger('accounts')
+
+
+class UserFriendsView(TemplateView):
+    template_name = "accounts/friends.html"
+
+    def get(self, request, *args, **kwargs):
+        print(f'UserFriendsView 1')
+        if not is_valid_jwt(request):
+            print(f'UserFriendsView 2')
+            return redirect('accounts:login')
+
+        print(f'UserFriendsView 3')
+        return super().get(request, *args, **kwargs)
 
 
 def _get_user_and_friend(request, friend_user_id):
@@ -51,7 +68,7 @@ class SendFriendRequestAPI(APIView):
                 response = {'error': err}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-            logger.error(f"SendFriendRequestAPI 3")
+            logger.error(f"SendFriendRequestAPI 3 {user.nickname} -> {friend_request_target.nickname}")
             if Friend.is_friend(user, friend_request_target):
                 response = {'error': 'Already friend'}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
@@ -72,6 +89,7 @@ class SendFriendRequestAPI(APIView):
             error_msg = f'Unexpected error: {str(e)}'
             error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
         response = {'error': error_msg}
+        logger.error(f"SendFriendRequestAPI error: {error_msg}")
         return Response(response, status=error_status)
 
 
@@ -108,6 +126,7 @@ class CancelFriendRequestAPI(APIView):
             error_msg = f'Unexpected error: {str(e)}'
             error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
         response = {'error': error_msg}
+        logger.error(f"CancelFriendRequestAPI error: {error_msg}")
         return Response(response, status=error_status)
 
 
@@ -118,20 +137,26 @@ class AcceptFriendRequestAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, user_id) -> Response:
+        logger.error(f"AcceptFriendRequestAPI 1")
         try:
             user, request_sender, err = _get_user_and_friend(request, user_id)
             if err is not None:
+                logger.error(f"AcceptFriendRequestAPI 2")
                 response = {'error': err}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
+            logger.error(f"AcceptFriendRequestAPI {request_sender.nickname} -> {user.nickname}")
             # request_sender -> user へのPending状態のリクエストリクエストを取得
             friend_request = Friend.objects.get(sender=request_sender,
                                                 receiver=user,
                                                 status='pending')
 
+            logger.error(f"AcceptFriendRequestAPI 3")
             # リクエストのステータスを更新
             friend_request.status = Friend.FriendStatus.ACCEPTED
+            logger.error(f"AcceptFriendRequestAPI 4")
             friend_request.save()
+            logger.error(f"AcceptFriendRequestAPI 5")
             response = {'status': 'Success: accept request'}
             return Response(response, status=status.HTTP_200_OK)
 
@@ -145,6 +170,7 @@ class AcceptFriendRequestAPI(APIView):
             error_msg = f'Unexpected error: {str(e)}'
             error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
         response = {'error': error_msg}
+        logger.error(f"AcceptFriendRequestAPI error: {error_msg}")
         return Response(response, status=error_status)
 
 
@@ -181,8 +207,8 @@ class RejectFriendRequestAPI(APIView):
             error_msg = f'Unexpected error: {str(e)}'
             error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
         response = {'error': error_msg}
+        logger.error(f"RejectFriendRequestAPI error: {error_msg}")
         return Response(response, status=error_status)
-
 
 
 class DeleteFriendAPI(APIView):

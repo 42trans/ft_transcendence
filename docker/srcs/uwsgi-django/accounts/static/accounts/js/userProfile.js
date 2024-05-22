@@ -1,8 +1,6 @@
 // userProfile.js
 
-import { disable2FA } from "./disable_2fa.js"
-import { createFriendsList } from "./online-status.js"
-import { cancelFriendRequest, rejectFriendRequest, acceptFriendRequest, setupFriendEventListeners } from "./friend.js"
+import { setupDisable2FAModuleEventListeners } from "./disable_2fa.js"
 
 
 export function fetchUserProfile() {
@@ -33,109 +31,8 @@ export function fetchUserProfile() {
                 `;
 				// SPA DM pageへの遷移なのでchat/dm-sessions/ではなく/dm/を指定
 
+			setupDisable2FAModuleEventListeners()  // disable2FAButtonを有効化
 			// setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
 		})
 		.catch(error => console.error("Error:", error));
-}
-
-
-export function fetchFriendList() {
-	fetch('/accounts/api/friend/list/', {
-		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-		}
-	})
-		.then(response => response.json())
-		.then(data => {
-			createFriendsList(data);
-		})
-		.catch(error => console.error('Error:', error));
-}
-
-
-export function fetchFriendRequestList() {
-	// フレンド申請リストの一覧
-	fetch("/accounts/api/friend/requests/", {
-		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-		}
-	})
-		.then(response => response.json())
-		.then(data => {
-			const requestsContainer = document.getElementById("requests-container");
-			requestsContainer.innerHTML = '';
-
-			// 送信したフレンドリクエスト
-			const sentRequestsDiv = document.createElement('div');
-			sentRequestsDiv.innerHTML = "<h4>Sent Friend Requests</h4>";
-
-			const sentRequestsUl = document.createElement('ul');
-			data.sent_requests.forEach(req => {
-				const li = document.createElement('li');
-				li.appendChild(createRequestLink(req.nickname, req.friend_id, true));
-				sentRequestsUl.appendChild(li);
-			});
-
-			sentRequestsDiv.appendChild(sentRequestsUl);
-			requestsContainer.appendChild(sentRequestsDiv);
-
-
-			// 受信したフレンドリクエスト
-			const receivedRequestsDiv = document.createElement('div');
-			receivedRequestsDiv.innerHTML = "<h4>Received Friend Requests</h4>";
-
-			const receivedRequestsUl = document.createElement('ul');
-			data.received_requests.forEach(req => {
-				const li = document.createElement('li');
-				li.appendChild(createRequestLink(req.nickname, req.friend_id, false));
-				receivedRequestsUl.appendChild(li);
-			});
-
-			receivedRequestsDiv.appendChild(receivedRequestsUl);
-			requestsContainer.appendChild(receivedRequestsDiv);
-			setupFriendEventListeners();  // Delete有効化のためイベントリスナーを設定する
-
-		})
-		.catch(error => console.error("Error:", error));
-}
-
-
-function createRequestLink(nickname, friend_id, isSent) {
-	const link = document.createElement('a');
-	link.href = `/accounts/info/${nickname}/`;
-	link.textContent = nickname;
-
-	const textNode = document.createTextNode(isSent ? 'Request sent to ' : 'Request from ');
-
-	const fragment = document.createDocumentFragment();
-	fragment.appendChild(textNode);
-	fragment.appendChild(link);
-	fragment.appendChild(document.createTextNode(' '));
-
-	if (isSent) {
-		const cancelButton = createActionButton("Cancel", () => cancelFriendRequest(friend_id));
-		fragment.appendChild(cancelButton);
-	} else {
-		const acceptButton = createActionButton("Accept", () => acceptFriendRequest(friend_id));
-		const rejectButton = createActionButton("Reject", () => rejectFriendRequest(friend_id));
-		fragment.appendChild(acceptButton);
-		fragment.appendChild(document.createTextNode(' '));
-		fragment.appendChild(rejectButton);
-	}
-
-	return fragment;
-}
-
-
-function createActionButton(text, action) {
-	const actionLink = document.createElement('a');
-	actionLink.textContent = text;
-	actionLink.href = "#";
-	actionLink.onclick = function(event) {
-		event.preventDefault();
-		action();
-	};
-	return actionLink;
 }

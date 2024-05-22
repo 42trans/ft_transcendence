@@ -272,6 +272,14 @@ class Friend(models.Model):
                               default=FriendStatus.PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        print(f"Saving Friend: sender={self.sender}, receiver={self.receiver}")
+        if self._state.adding:  # 新規作成の場合の場合に重複チェック
+            if (Friend.objects.filter(sender=self.sender, receiver=self.receiver).exists()
+                    or Friend.objects.filter(sender=self.receiver, receiver=self.sender).exists()):
+                print("Duplicate friend request detected")
+                raise ValidationError('Duplicate friend request')
+        super(Friend, self).save(*args, **kwargs)
 
     @classmethod
     def is_friend(cls, user1, user2) -> bool:
@@ -283,7 +291,6 @@ class Friend(models.Model):
             status=cls.FriendStatus.ACCEPTED
         ).exists()
 
-
     @classmethod
     def is_already_sent(cls, sender, receiver) -> bool:
         """
@@ -292,7 +299,6 @@ class Friend(models.Model):
         return cls.objects.filter(sender=sender,
                                   receiver=receiver,
                                   status=cls.FriendStatus.PENDING).exists()
-
 
     @classmethod
     def is_already_received(cls, sender, receiver) -> bool:
@@ -318,7 +324,6 @@ class Friend(models.Model):
         ).values(
             'nickname', 'friend_id'
         ).order_by('nickname'))
-
 
     @classmethod
     def get_friends_as_receiver(cls, user, status) -> List[Dict[str, Any]]:

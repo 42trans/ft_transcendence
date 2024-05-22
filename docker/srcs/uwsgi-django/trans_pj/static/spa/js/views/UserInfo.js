@@ -7,27 +7,26 @@ import { loadAndExecuteScript, setupEventListeners } from "../utility/script.js"
 
 
 export default class extends AbstractView {
-  constructor(params) {
-    super(params);
-    this.params = params
-    this.setTitle("UserInfo");
-  }
+    constructor(params) {
+        super(params);
+        this.params = params
+        this.setTitle("UserInfo");
+    }
 
-  async getHtml() {
-    const nickname = this.params.nickname;
-    const uri = `/accounts/info/${nickname}/`;
-    console.log('UserInfo: uri: ' + uri)
-    const data = await fetchData(uri);
-    return data;
-  }
+    async getHtml() {
+        const nickname = this.params.nickname;
+        const uri = `/accounts/info/${nickname}/`;
+        console.log('UserInfo: uri: ' + uri)
+        const data = await fetchData(uri);
+        return data;
+    }
 
-  async executeScript() {
+    async executeScript() {
       console.log('executeScript: Loading scripts...');
 
       await loadAndExecuteScript("/static/accounts/js/block-user.js");
       await loadAndExecuteScript("/static/accounts/js/unblock-user.js");
-      // loadAndExecuteScript("/static/chat/js/test-system-message.js");
-      await loadAndExecuteScript("/static/accounts/js/friend.js", true);
+      // loadAndExecuteScript("/static/chat/js/test-system-message.js");// await loadAndExecuteScript("/static/accounts/js/friend.js", true);
 
       console.log('executeScript: Scripts loaded, setting up event listeners...');
 
@@ -46,19 +45,10 @@ export default class extends AbstractView {
       //     console.error('Error in setting up event listeners:', error);
       // }
 
-      // スクリプトのロード完了後にイベントリスナーを設定
-      try {
-          const module = await import("/static/accounts/js/friend.js");
-          if (module.setupFriendEventListeners) {
-              module.setupFriendEventListeners();
-          } else {
-              console.error('setupFriendEventListeners is not defined in the module.');
-          }
-      } catch (error) {
-          console.error(`Failed to import module: /static/accounts/js/friend.js`, error);
-      }
+      const friendModule = await import("/static/accounts/js/friend.js");
+      friendModule.setupFriendEventListeners();
 
       console.log('executeScript: Event listeners setup complete.');
 
-  }
+    }
 }
