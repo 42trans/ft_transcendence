@@ -134,8 +134,10 @@ def get_latest_user_ongoing_tournament(request) -> JsonResponse:
 @permission_classes([AllowAny])
 def get_tournament_data_by_id(request, tournament_id) -> JsonResponse:
 	""" 機能: ゲストも「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。"""
+	print('fetchTournamentDetail: 1')
 	tournament = get_object_or_404(Tournament, pk=tournament_id)
 	# print("Tournament:", tournament)
+	print('fetchTournamentDetail: 2')
 	data = {
 		'id': tournament.id,
 		'name': tournament.name,
@@ -144,6 +146,7 @@ def get_tournament_data_by_id(request, tournament_id) -> JsonResponse:
 		'organizer': tournament.organizer_id,
 		'is_finished': tournament.is_finished
 	}
+	print('fetchTournamentDetail: 3')
 	return JsonResponse(data, safe=False)
 
 

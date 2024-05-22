@@ -71,7 +71,7 @@ class TournamentManager
 		}
 		try {
 			const response = await fetch(this.API_URLS.ongoingLatestTour, {
-				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
+				headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
 			});
 
 			// ongoingが見つからない場合は204が返ってくるので、ここではそれ以外のエラーを処理する。

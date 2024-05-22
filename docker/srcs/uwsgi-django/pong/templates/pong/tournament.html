@@ -1,7 +1,5 @@
-{% extends 'base.html' %}
 {% load static %}
-{% block title %}Tournament - hth Pong{% endblock title %}
-{% block content %}
+
 	{% csrf_token %}
 	<!-- <div class="hth-container"> -->
 
@@ -34,8 +32,6 @@
 	<!-- </div> -->
 
 	<!-- TODO_ft: tournamentIDの有無？でAPI送信をどうするか検討する -->
-	
-<!-- 要素のidを変更した場合、ConfigTournament.js を修正してください -->
-<script type="module" src='{% static "pong/js/tournament/TournamentMain.js" %}'></script>
 
-{% endblock %}
+<!-- 要素のidを変更した場合、ConfigTournament.js を修正してください -->
+<!--<script type="module" src='{% static "pong/js/tournament/TournamentMain.js" %}'></script>-->
