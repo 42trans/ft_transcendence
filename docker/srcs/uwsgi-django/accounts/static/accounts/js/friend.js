@@ -176,8 +176,7 @@ export function setupFriendEventListeners() {
         });
     });
     document.querySelectorAll('.deleteFriendButton').forEach(button => {
-        button.addEventListener('click', (event) => {
-            event.preventDefault();
+        button.addEventListener('click', () => {
             console.log('deleteFriendButton clicked', button.dataset.userid);
             deleteFriend(button.dataset.userid);
         });
@@ -204,14 +203,6 @@ function removeFriendEventListeners() {
         button.replaceWith(button.cloneNode(true));
     });
 }
-
-// window.sendFriendRequest = sendFriendRequest;
-// window.cancelFriendRequest = cancelFriendRequest;
-// window.acceptFriendRequest = acceptFriendRequest;
-// window.rejectFriendRequest = rejectFriendRequest;
-// window.deleteFriend = deleteFriend;
-
-
 
 
 export function fetchFriendList() {
@@ -251,13 +242,6 @@ export function fetchFriendRequestList() {
                 const li = document.createElement('li');
                 li.appendChild(createRequestLink(req.nickname, req.friend_id, true));
                 sentRequestsUl.appendChild(li);
-                // const existingRequest = document.querySelector(`#sent-request-${req.friend_id}`);
-                // if (!existingRequest) {  // 重複チェックを追加
-                // 	const li = document.createElement('li');
-                // 	li.id = `sent-request-${req.friend_id}`;
-                // 	li.appendChild(createRequestLink(req.nickname, req.friend_id, true));
-                // 	sentRequestsUl.appendChild(li);
-                // }
             });
 
             sentRequestsDiv.appendChild(sentRequestsUl);
@@ -272,18 +256,10 @@ export function fetchFriendRequestList() {
                 const li = document.createElement('li');
                 li.appendChild(createRequestLink(req.nickname, req.friend_id, false));
                 receivedRequestsUl.appendChild(li);
-                // const existingRequest = document.querySelector(`#received-request-${req.friend_id}`);
-                // if (!existingRequest) {  // 重複チェックを追加
-                // 	const li = document.createElement('li');
-                // 	li.id = `received-request-${req.friend_id}`;
-                // 	li.appendChild(createRequestLink(req.nickname, req.friend_id, false));
-                // 	receivedRequestsUl.appendChild(li);
-                // }
             });
 
             receivedRequestsDiv.appendChild(receivedRequestsUl);
             requestsContainer.appendChild(receivedRequestsDiv);
-            // setupFriendEventListeners();  // Delete有効化のためイベントリスナーを設定する
 
         })
         .catch(error => console.error("Error:", error));
@@ -317,7 +293,7 @@ function createRequestLink(nickname, friend_id, isSent) {
 }
 
 
-function createActionButton(text, action) {
+export function createActionButton(text, action) {
     const actionLink = document.createElement('a');
     actionLink.textContent = text;
     actionLink.href = "#";

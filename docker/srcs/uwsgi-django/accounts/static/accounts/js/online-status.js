@@ -1,3 +1,5 @@
+import { deleteFriend, createActionButton } from "./friend.js"
+
 // online-status.js
 
 function setUpOnlineStatusWebSocket(userId) {
@@ -91,20 +93,32 @@ export function createFriendsList(friendsData) {
     });
 }
 
+
 // 変更があった部分のみを更新する
 function updateOrCreateFriendListItem(friend) {
     let listItem = document.getElementById('friend-item-' + friend.id);
     if (!listItem) {
         listItem = document.createElement('li');
         listItem.id = 'friend-item-' + friend.id;
+    } else {
+        listItem.innerHTML = ''; // 既存の内容をクリア
     }
 
-    listItem.innerHTML = `
-        <a href="/user-info/${friend.nickname}/" class="nav__link" data-link>${friend.nickname}</a>
-        <span id="friend-status-${friend.id}" class="status ${friend.status ? 'online' : 'offline'}">
-            ${friend.status ? 'Online' : 'Offline'}
-        </span>
-        <a href="#" class="deleteFriendButton" data-userid="${friend.id}">Delete</a>
-    `;
+    const link = document.createElement('a');
+    link.href = `/user-info/${friend.nickname}/`;
+    link.className = 'nav__link';
+    link.setAttribute('data-link', '');
+    link.textContent = friend.nickname;
+    listItem.appendChild(link);
+
+    const statusSpan = document.createElement('span');
+    statusSpan.id = `friend-status-${friend.id}`;
+    statusSpan.className = `status ${friend.status ? 'online' : 'offline'}`;
+    statusSpan.textContent = friend.status ? 'Online' : 'Offline';
+    listItem.appendChild(statusSpan);
+
+    const deleteButton = createActionButton("Delete", () => deleteFriend(friend.id));
+    listItem.appendChild(deleteButton);
+
     return listItem;
 }
