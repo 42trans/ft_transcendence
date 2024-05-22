@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" crossorigin href="{% static 'pong/css/hth-online.css' %}">
+{% endblock %}
+{% block title %}Duel session - hth Pong{% endblock title %}
+{% block content %}
+	{% csrf_token %}
+
+	<h2>Specify Duel Opponent</h2>
+	<!-- Duel相手を指定して開始するtext field -->
+	<label for="nickname-input">Duel with</label>
+	<input id="nickname-input" type="text" size="20">
+	<input id="nickname-submit" class="hth-btn" type="button" value="Go to Request Page">
+	<hr>
+	<!-- Duel相手をリストからクリックして開始する -->
+	<h5>Duel a Friend</h5>
+	<ul id="duel-sessions"></ul>
+	<hr>
+	
+	<script src="{% static 'pong/js/online/duel/duel-sessions.js' %}"></script>
+{% endblock %}

@@ -18,6 +18,11 @@ from .views.tournament_views import (
 # パスはapiが先頭につきます。ex./pong/api/tournament/create/
 urlpatterns = [
 	# ----------------------------------------
+	# Online
+	# ----------------------------------------
+	# path('online/duel/duel-sessions/', GetDuelSessionsAPI.as_view(), name='dm_sessions'),
+	# path('online/duel/system-message/', DuelSystemMessageAPI.as_view(), name='dm_system'),
+	# ----------------------------------------
 	# Blockchain
 	# ----------------------------------------
 	# testnetを指定する（DB保存なし）

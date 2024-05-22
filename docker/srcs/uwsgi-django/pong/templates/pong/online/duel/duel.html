@@ -1,0 +1,32 @@
+<!-- chat/templates/chat/dm.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" crossorigin href="{% static 'pong/css/hth-online.css' %}">
+{% endblock %}
+{% block title %}Duel Room - hth Pong{% endblock title %}
+{% block content %}
+	{% csrf_token %}
+
+	<canvas id="pong-online-duel-canvas-container"></canvas>
+	{{ target_nickname|json_script:"target_nickname" }}
+	<script type="module" crossorigin src="{% static 'pong/js/online/duel/PongOnlineDuelIndex.js' %}"></script>
+{% endblock %}
+<!-- 
+
+{% if not isSystemUser %}
+<h2>Duel with <a href="{% url 'accounts:info' target_nickname %}">{{ target_nickname }}</a></h2>
+{% else %}
+<h3>System Message</h3>
+{% endif %}
+{% if not isBlockingUser %}
+{% if not isSystemUser %}
+<input id="start-duel-btn" type="button" value="Start Duel ">
+{% endif %}
+{% else %}
+<p>[blocking user]</p>
+{% endif %}
+<hr>
+<p><a href="{% url 'pong:duel_session' %}">duel session</a></p>
+{{ target_nickname|json_script:"target_nickname" }}
+<script type="module" src="{% static 'pong/js/online/duel/duel.js' %}"></script> -->

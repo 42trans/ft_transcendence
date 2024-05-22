@@ -34,6 +34,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         if err is not None:
             await self.close(code=1007)
             return
+        
         try:
             await self.channel_layer.group_add(
                 self.room_group_name,
@@ -42,6 +43,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             await self.close(code=1011) 
             return
+        
         await async_log("room_group_nameが作成されました: " + self.room_group_name)
         self.game_manager = PongOnlineGameManager(self.user_id)
         await self.game_manager.initialize_game()
