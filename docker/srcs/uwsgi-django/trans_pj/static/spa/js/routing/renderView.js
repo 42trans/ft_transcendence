@@ -68,13 +68,15 @@ function get_view(path) {
 }
 
 export const renderView = async (path) => {
-  console.log("renderView: path: " + path)
+  console.log("    renderView 1: path: " + path)
   const view = get_view(path)
 
   // HTMLの描画 <div id="app">
   const html_src = await view.getHtml();
   document.querySelector("#spa").innerHTML = html_src;
+  console.log("    renderView 2")
 
   // スクリプトの読み込みと実行
   await view.executeScript();
+  console.log("    renderView 3")
 };
