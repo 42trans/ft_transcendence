@@ -159,11 +159,12 @@ class Enable2FaAPIView(APIView):
         user.save()
 
 
-@method_decorator(csrf_exempt, name='dispatch')  # todo: 一時的に無効化
+# @method_decorator(csrf_exempt, name='dispatch')  # todo: 一時的に無効化
 class Disable2FaView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        print("disable_2fa 1")
         user = request.user
 
         if not user.enable_2fa:

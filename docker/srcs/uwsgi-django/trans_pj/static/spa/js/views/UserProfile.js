@@ -19,17 +19,12 @@ export default class extends AbstractView {
     }
 
     async executeScript() {
-        console.log('executeScript: Loading scripts...');
-        await loadAndExecuteScript("/static/accounts/js/userProfile.js", true);
-
-        console.log('executeScript: Scripts loaded, setting up event listeners...');
-
+        // await loadAndExecuteScript("/static/accounts/js/userProfile.js", true);
         const userProfileModule = await import("/static/accounts/js/userProfile.js");
         userProfileModule.fetchUserProfile();
+        // userProfileModule.setupDisable2FAEventListener();
 
-        const disable2FAModule = await import("/static/accounts/js/disable_2fa.js");
-        disable2FAModule.setupDisable2FAModuleEventListeners();
-
-        console.log('executeScript: Event listeners setup complete.');
+        // const disable2FAModule = await import("/static/accounts/js/disable_2fa.js");
+        // disable2FAModule.setupDisable2FAEventListener();
     }
 }

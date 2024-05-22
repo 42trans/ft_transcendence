@@ -33,7 +33,6 @@ urlpatterns = [
 
     path('info/<str:nickname>/', get_user_info, name='info'),
 
-    path('verify/disable_2fa/', Disable2FaView.as_view(), name='disable_2fa'),
     path('verify/enable_2fa/', Enable2FaTemplateView.as_view(), name='enable_2fa'),
     path('verify/verify_2fa/', Verify2FaTepmlateView.as_view(), name='verify_2fa'),
 ]
