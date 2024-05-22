@@ -23,15 +23,6 @@ function loadScript(scriptElement) {
   });
 }
 
-// function loadScript(scriptElement) {
-//   scriptElement.onerror = function () {
-//     console.error('Failed to load script: ' + path);
-//   };
-//
-//   scriptElement.onload = function () {
-//     console.log('Script loaded successfully: ' + path);
-//   };
-// }
 
 /**
  * 指定されたパスからスクリプトを読み込み、実行する

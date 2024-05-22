@@ -14,7 +14,7 @@ export default async function fetchData(url) {
     // console.log("Response Text:", response_text); // レスポンスのテキストをコンソールに出力
     return response_text;
   } catch (error) {
-    // console.error(error);
-    console.error("Failed to fetch home page");
-    return "<p>Failed to load home page</p>";  }
+    console.error("Failed to fetch page: error: ", error);
+    console.error("Failed to fetch page: url  : ", url);
+    return "<p>Failed to load page</p>";  }
 }
