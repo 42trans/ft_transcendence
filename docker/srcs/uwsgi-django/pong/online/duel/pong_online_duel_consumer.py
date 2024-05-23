@@ -23,26 +23,26 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 
         await async_log("DuelConsumer: ws接続されました")
         if not self.scope["user"].is_authenticated:
-            await async_log("認証されていないユーザーによる接続")
             await self.close(code=1008)
             return
         
         try:
-            err = await self._get_duel_consumer_params()
-            if err is not None:
-                await async_log("eror 1007")
-                await self.close(code=1007)  # 1007: Invalid data
-                return
+            # err = await self._get_duel_consumer_params()
+            # if err is not None:
+            #     await async_log("eror 1007")
+            #     await self.close(code=1007)  # 1007: Invalid data
+            #     return
             
-            await async_log("終了: self.user.id: " + str(self.user.id))
-            await async_log("終了: self.other_user.id: " + str(self.other_user.id))
+            # await async_log("終了: self.user.id: " + str(self.user.id))
+            # await async_log("終了: self.other_user.id: " + str(self.other_user.id))
 
-            await async_log("開始:room_group_name ")
-            self.room_group_name, err = await self._get_room_group_name(
-                                            self.user.id,
-                                            self.other_user.id
-                                            )
-            await async_log("終了:room_group_name " + self.room_group_name)
+            # http APIに移動
+            # await async_log("開始:room_group_name ")
+            # self.room_group_name, err = await self._get_room_group_name(
+            #                                 self.user.id,
+            #                                 self.other_user.id
+            #                                 )
+            # await async_log("終了:room_group_name " + self.room_group_name)
 
             try:
                 await async_log("開始:group_add ")
@@ -55,7 +55,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                 await self.close(code=1011) 
                 return
             
-            await async_log("room_group_nameが作成されました: " + self.room_group_name)
+            # await async_log("room_group_nameが作成されました: " + self.room_group_name)
             self.game_manager = PongOnlineDuelGameManager(self.user_id)
             await self.game_manager.initialize_game()
             # await async_log("game_managerが作成されました")
@@ -85,37 +85,37 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 
 
 
-    async def _get_duel_consumer_params(self):
-        self.user, self.other_user, err = await self._get_users()
-        await async_log("self.user: " + str(self.user))
-        await async_log("self.other_user: " + str(self.other_user))
+    # async def _get_duel_consumer_params(self):
+    #     self.user, self.other_user, err = await self._get_users()
+    #     await async_log("self.user: " + str(self.user))
+    #     await async_log("self.other_user: " + str(self.other_user))
 
-        if err is not None:
-            return err
-        self.is_system_message = self.scope['url_route']['kwargs'].get('is_system_message', False)
-        return None
+    #     if err is not None:
+    #         return err
+    #     self.is_system_message = self.scope['url_route']['kwargs'].get('is_system_message', False)
+    #     return None
     
-    async def _get_users(self):
-        try:
-            user_nickname = self.scope['user'].nickname
-            other_user_nickname = self.scope['url_route']['kwargs']['nickname']
+    # async def _get_users(self):
+    #     try:
+    #         user_nickname = self.scope['user'].nickname
+    #         other_user_nickname = self.scope['url_route']['kwargs']['nickname']
 
-            user = await self._get_user_by_nickname(nickname=user_nickname)
-            await async_log("user: " + str(user))
-            other_user = await self._get_user_by_nickname(nickname=other_user_nickname)
-            await async_log("other_user: " + str(other_user))
-            if user == other_user:
-                raise ValueError('user and other_user must be a different user')
+    #         user = await self._get_user_by_nickname(nickname=user_nickname)
+    #         await async_log("user: " + str(user))
+    #         other_user = await self._get_user_by_nickname(nickname=other_user_nickname)
+    #         await async_log("other_user: " + str(other_user))
+    #         if user == other_user:
+    #             raise ValueError('user and other_user must be a different user')
 
-            return user, other_user, None
+    #         return user, other_user, None
 
-        except CustomUser.DoesNotExist:
-            await async_log("except Does not:")
-            err = "user does not exist"
-            return None, None, err
-        except Exception as e:
-            await async_log(f"except e: {e}")
-            return None, None, str(e)
+    #     except CustomUser.DoesNotExist:
+    #         await async_log("except Does not:")
+    #         err = "user does not exist"
+    #         return None, None, err
+    #     except Exception as e:
+    #         await async_log(f"except e: {e}")
+    #         return None, None, str(e)
 
     @database_sync_to_async
     def _get_user_by_nickname(self, nickname: str):
@@ -123,23 +123,23 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     
 
 
-    # @database_sync_to_async
-    async def _get_room_group_name(self, user_id, other_user_id=None):
-        """
-        SessionModel.get_sessionからroom_group_nameを取得する関数
-        一人用または二人用のセッションの検索または作成のために使用
-        other_user_idはオプション
-        """
-        try:
-            if other_user_id:
-                room_group_name = f"room_{user_id}_{other_user_id}"
-            else:
-                room_group_name = f"room_{user_id}"
+    # # @database_sync_to_async
+    # async def _get_room_group_name(self, user_id, other_user_id=None):
+    #     """
+    #     SessionModel.get_sessionからroom_group_nameを取得する関数
+    #     一人用または二人用のセッションの検索または作成のために使用
+    #     other_user_idはオプション
+    #     """
+    #     try:
+    #         if other_user_id:
+    #             room_group_name = f"room_{user_id}_{other_user_id}"
+    #         else:
+    #             room_group_name = f"room_{user_id}"
             
-            await async_log(f"_get_room_group_name().room_group_name {room_group_name}")
-            return room_group_name, None
-        except Exception as e:
-            return None, str(e)
+    #         await async_log(f"_get_room_group_name().room_group_name {room_group_name}")
+    #         return room_group_name, None
+    #     except Exception as e:
+    #         return None, str(e)
 
 
 

@@ -14,12 +14,14 @@ from .views.tournament_views import (
 	get_tournament_id_user_all_ongoing, get_latest_user_ongoing_tournament,
 	save_game_result
 )
+from .views.online.duel.create_room_view import CreateRoomView
 
 # パスはapiが先頭につきます。ex./pong/api/tournament/create/
 urlpatterns = [
 	# ----------------------------------------
 	# Online
 	# ----------------------------------------
+	path('online/duel/rooms/create/', CreateRoomView.as_view(), name='create_room'),
 	# path('online/duel/duel-sessions/', GetDuelSessionsAPI.as_view(), name='dm_sessions'),
 	# path('online/duel/system-message/', DuelSystemMessageAPI.as_view(), name='dm_system'),
 	# ----------------------------------------

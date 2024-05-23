@@ -9,7 +9,7 @@ from ...utils.async_logger import async_log
 
 logger = logging.getLogger(__name__)
 
-class PongOnlineGameManager:
+class PongOnlineDuelGameManager:
     def __init__(self, user_id):
         self.user_id = user_id
         self.config = PongOnlineConfig()

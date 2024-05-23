@@ -26,7 +26,7 @@ class PongOnlineDuelClientApp
 	initWebSocket(duelTargetNickname)
 	{
 		// room-nameに変更
-		this.socketUrl = 'wss://' + window.location.host + '/ws/pong/online/duel/duel-with/' + duelTargetNickname + '/';
+		// this.socketUrl = 'wss://' + window.location.host + '/ws/pong/online/duel/' + room-name + '/';
 		this.gameStateManager		= new PongOnlineGameStateManager();
 		this.syncWS					= new PongOnlineSyncWS(this, this.gameStateManager, this.socketUrl);
 		PongEngineKey.listenForEvents();
