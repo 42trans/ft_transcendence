@@ -1,6 +1,8 @@
 // index.js
 
 import { switchPage, renderView } from "./routing/renderView.js";
+import { setOnlineStatus } from "/static/accounts/js/online-status.js";
+
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
@@ -9,6 +11,7 @@ const setupPopStateListener = () => {
   window.addEventListener("popstate", (event) => {
     const path = window.location.pathname;
     renderView(path);
+    setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 
@@ -22,6 +25,8 @@ const setupDOMContentLoadedListener = () => {
 
     // リンククリック時の遷移を設定
     setupBodyClickListener();
+
+    setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 
@@ -33,10 +38,20 @@ const setupBodyClickListener = () => {
       event.preventDefault();
       const url = event.target.href;
       switchPage(url);
+      setOnlineStatus();  // WebSocket接続を再確立
     }
+  });
+};
+
+
+// ページリロード時に発火
+const setupLoadListener = () => {
+  window.addEventListener("load", () => {
+    setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 
 
 setupPopStateListener();
 setupDOMContentLoadedListener();
+setupLoadListener()

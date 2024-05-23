@@ -22,6 +22,8 @@ export function connectOnlineStatusWebSocket(userId) {
     socket.onopen = () => handleOpen(socket, userId);
     socket.onclose = () => handleClose(socket, userId);
     socket.onerror = handleError;
+
+    // alert('connectOnlineStatusWebSocket completed')
 }
 
 
@@ -152,7 +154,7 @@ function updateOrCreateFriendListItem(friend) {
 
 
 export function setOnlineStatus() {
-    console.log('setOnlineStatus');
+    console.log('setOnlineStatus called');
 
     const userIdElement = document.getElementById('user-id');
     if (!userIdElement) {
@@ -165,7 +167,6 @@ export function setOnlineStatus() {
     function onPageLoad() {
         if (userId) {
             connectOnlineStatusWebSocket(userId);
-            alert('connectOnlineStatusWebSocket completed')
         }
     }
 

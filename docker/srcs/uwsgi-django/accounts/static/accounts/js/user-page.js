@@ -19,7 +19,6 @@ function fetchUserProfile() {
                 <button onclick="handleLogout()">Logout</button>
                 <br>
                 `;
-            // setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
         })
         .catch(error => console.error("Error:", error));
 }
