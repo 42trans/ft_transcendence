@@ -1,6 +1,7 @@
 # docker/srcs/uwsgi-django/pong/online/pong_online_consumers.py
 import json
 import logging
+import asyncio
 from channels.db import database_sync_to_async
 # from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -11,45 +12,108 @@ from ...utils.async_logger import async_log
 from accounts.models import CustomUser
 from chat.models import DMSession, Message
 
+import os
+import redis
+# Redis クライアントの初期化
+redis_host = os.getenv('REDIS_HOST', 'redis')
+redis_port = os.getenv('REDIS_PORT', 6379)
+
+# redis_client = redis.Redis(host=redis_host, port=redis_port)
+
 class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
+    '''
+    参考:【チャンネル レイヤー — Channels 4.0.0 ドキュメント】 <https://channels.readthedocs.io/en/stable/topics/channel_layers.html>
+    '''
     permission_classes = [IsAuthenticated]
-    # クラスレベルの辞書を使用して部屋ごとの接続数を追跡
-    connected_clients = {}
 
     async def connect(self):
-        await async_log("開始:connect() ")
-        # ルーム名を取得
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = f'duel_room_{self.room_name}'
-        # ルームごとに接続数を初期化
-        if self.room_group_name not in PongOnlineDuelConsumer.connected_clients:
-            PongOnlineDuelConsumer.connected_clients[self.room_group_name] = 0
-        # await async_log("終了:room_group_name ")
-
         try:
-            await self.channel_layer.group_add(
-                self.room_group_name,
-                self.channel_name
-            )
+            await async_log("開始:connect() ")
+
+            # ユーザーがログインしていることを確認
+            if not self.scope["user"].is_authenticated:
+                await self.close(code=1008)
+                return
+            
+            # ルーム名を取得
+            self.room_name = self.scope['url_route']['kwargs']['room_name']
+            self.room_group_name = f'duel_room_{self.room_name}'
+            # URLからuser_idとother_user_idを抽出
+            path_segments = self.scope['url_route']['kwargs']['room_name'].split('_')
+            user_id, other_user_id = int(path_segments[1]), int(path_segments[2])
+            # 現在のユーザーIDを取得
+            current_user_id = self.scope["user"].id
+
+             # ユーザーIDが一致しない場合は接続を拒否
+            if (
+                (current_user_id != user_id and current_user_id != other_user_id) 
+            ):
+                await async_log(f"無効なユーザーID: current_user_id:{current_user_id}, user_id:{user_id}")
+                await self.close()
+                return
+
+
+            await async_log("開始:redis ")
+            # Redis への接続をリトライ
+            for _ in range(5):  # 最大5回リトライ (適宜調整)
+                try:
+                    await async_log(f"接続ユーザーID: {current_user_id}")
+                    self.redis_client = redis.Redis(host=redis_host, port=redis_port)
+                    added = await database_sync_to_async(self.redis_client.sadd)(self.room_group_name, current_user_id)
+
+
+                    # exists = await database_sync_to_async(self.redis_client.sismember)(self.room_group_name, current_user_id)
+                    # if exists:
+                    #     await async_log(f"ユーザー {current_user_id} は既に存在します")
+                    # else:
+                    #     added = await database_sync_to_async(self.redis_client.sadd)(self.room_group_name, current_user_id)
+                    #     if not added:
+                    #         await async_log(f"ユーザー {current_user_id} を追加できませんでした")
+                    
+                    members = await database_sync_to_async(self.redis_client.smembers)(self.room_group_name)
+                    await async_log(f"セットのメンバー: {members}")
+
+
+                    if not added:
+                        await async_log(f"ユーザーは既にルームにいます: {current_user_id}")
+                        await self.close()
+                        return
+                    break  # 接続成功
+                except redis.exceptions.ConnectionError:
+                    await async_log("Redis への接続に失敗しました。リトライします...")
+                    await asyncio.sleep(1)  # 1秒待機 (適宜調整)
+            else:
+                await async_log("Redis への接続に失敗しました。")
+                await self.close(code=1011)  # サーバーエラー
+                return
+            await async_log("終了:redis ")
+            
+            await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+            await async_log(f"使用するセット名: {self.room_group_name}")
+            await async_log("終了:group_add ")
         except Exception as e:
             await async_log(f"Error: {str(e)}") 
             await self.close(code=1011) 
             return
-        # await async_log("終了:group_add ")
-
-        # ユーザーがログインしていることを確認
-        if not self.scope["user"].is_authenticated:
-            await self.close(code=1008)
-            return
-        await async_log(f'DuelConsumer: ws接続されました{self.scope["user"]}')
+        
         await self.accept()
+        await async_log(f'DuelConsumer: ws接続されました{self.scope["user"]}')
 
-        # 接続数をインクリメント
-        PongOnlineDuelConsumer.connected_clients[self.room_group_name] += 1
-        connected_clients = PongOnlineDuelConsumer.connected_clients[self.room_group_name]
-        await async_log(f"開始: 人数を数える {self.connected_clients}")
+        # 接続されているユーザー数を取得
+        try:
+            # client_count = await self.redis_client.scard(self.room_group_name)
+            client_count = await database_sync_to_async(self.redis_client.scard)(self.room_group_name)
+            await async_log(f"開始: 人数を数える {client_count}")
+        except Exception as e:
+            await async_log(f"Redis operation error: {str(e)}")
+            await self.close(code=1011)
+            return
+
+        # client_count = await self.redis_client.scard(self.room_group_name)
+            
+        await async_log(f"開始: 人数を数える {client_count}")
         # 2人揃ったらゲーム開始の合図を送信
-        if connected_clients == 2: 
+        if client_count == 2: 
             try:
                 await async_log("2名がinしました")
                 self.game_manager = PongOnlineDuelGameManager()
@@ -59,7 +123,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                 await self.channel_layer.group_send(
                     self.room_group_name,
                     {
-                        'type': 'game.start',
+                        'type': 'duel.ready',
                     }
                 )
             except Exception as e:
@@ -68,8 +132,8 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                 return
         else:  # まだ1人目の場合
             await self.send(text_data=json.dumps({
-                'type': 'waiting_opponent',
-                'message': 'Waiting for opponent...'
+                'type': 'duel.waiting_opponent',
+                'message': 'Incoming hotshot! Better get your game face on...'
             }))
 
         await async_log("終了: connect()処理が正常終了")
@@ -166,17 +230,18 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event['data']))
 
     async def disconnect(self, close_code):
-        PongOnlineDuelConsumer.connected_clients[self.room_group_name] -= 1
+        async with asyncio.Lock():
+            await database_sync_to_async(self.redis_client.srem)(self.room_group_name, self.scope["user"].id)
+            
+            await self.channel_layer.group_discard(
+                self.room_group_name,
+                self.channel_name
+            )
 
-        # ルームが空になったらエントリーを削除
-        if PongOnlineDuelConsumer.connected_clients[self.room_group_name] == 0:
-            del PongOnlineDuelConsumer.connected_clients[self.room_group_name]
-
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
-
+            await self.clear_redis_room()
+        
+    async def clear_redis_room(self):
+        await database_sync_to_async(self.redis_client.delete)(self.room_group_name)
 
 
     @database_sync_to_async

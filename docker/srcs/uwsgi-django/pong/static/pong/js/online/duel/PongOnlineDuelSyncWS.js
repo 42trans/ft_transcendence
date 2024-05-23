@@ -1,15 +1,8 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/duel/PongOnlineDuelSyncWS.js
 import PongOnlinePaddleMover from "../PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "../PongOnlineRenderer.js";
+import PongOnlineDuelUtil from "./PongOnlineDuelUtil.js";
 
-/**
- * Websocketのイベントで動くメソッドを担当
- * 
- * ## クライアント側の処理の流れ（編集中）
- * - loop内で送信, 送信後に「送信準備可能フラグ」を折る
- * - 次回のonmessage: サーバーから受信した後、「送信準備可能フラグ」を立てる
- * - ※フラグの目的: クライアントからの送信に制限をかける
- */
 class PongOnlineDuelSyncWS 
 {
 	constructor(clientApp, gameStateManager, socketUrl) 
@@ -18,30 +11,14 @@ class PongOnlineDuelSyncWS
 		this.gameStateManager	= gameStateManager;
 		this.socketUrl			= socketUrl;
 		this.gameLoopStarted	= false;
-
-		// サーバーから受信してから次のリクエストを送信するためのフラグ
 		this.readyToSendNext	= true;
-
-		// 再接続用のフラグ・変数
 		this.isReconnecting = false;
 		this.reconnectAttempts = 0;
 		this.maxReconnectAttempts = 5;
-		// 単位: ミリ秒
-		this.reconnectInterval = 3000;
-
+		this.reconnectIntervalMilliSec = 3000;
 						// TODO_fr: 本番時削除
-						// dev用 websocket接続を閉じるためのボタン
-						this.devTestCloseButton();
+						PongOnlineDuelUtil.devTestCloseButton();
 	}
-
-	/** dev用 再接続チェック用 */
-	devTestCloseButton()
-	{
-		this.createButton('Test Close WebSocket', 'hth-pong-online-close-ws-btn', () => {
-			this.socket.close();
-		});
-	}
-
 	// ------------------------------
 	// ルーチン:受信
 	// ------------------------------
@@ -50,11 +27,12 @@ class PongOnlineDuelSyncWS
 	{
 		console.log("onSocketMessage()", event);
 		const recvData = JSON.parse(event.data);
-		if (recvData.type === 'waiting_opponent') {
+		if (recvData.type === 'duel.waiting_opponent') {
+			console.log("waiting_opponent")
 			this.showWaitingMessage();
-		} else if (recvData.type === 'game.start') {
-			// game.start: サーバーから2名connect完了の合図
-			this.hideWaitingMessage();
+		} else if (recvData.type === 'duel.ready') {
+			console.log("duel.ready")
+			PongOnlineDuelUtil.hideWaitingMessage('waiting-message');
 			this.initStartButton();
 		} else if (recvData && recvData.objects && recvData.state){
 			try {
@@ -92,19 +70,9 @@ class PongOnlineDuelSyncWS
 	// ゲーム開始OKを意味するスタートボタン
 	initStartButton() 
 	{
-		this.createButton('Start Game', 'hth-pong-online-start-game-btn', () => {
+		PongOnlineDuelUtil.createButton('Start Game', 'hth-pong-online-start-game-btn', () => {
 			document.getElementById('hth-pong-online-start-game-btn').remove();
 		});
-	}
-
-	createButton(text, id, onClickHandler) 
-	{
-		const button		= document.createElement('button');
-		button.textContent	= text;
-		button.id			= id;
-		button.classList.add('hth-btn');
-		document.getElementById('hth-main').appendChild(button);
-		button.addEventListener('click', onClickHandler);
 	}
 
 	showWaitingMessage() {
@@ -115,14 +83,6 @@ class PongOnlineDuelSyncWS
 		document.getElementById('hth-main').appendChild(waitingMessage);
 	}
 	
-	hideWaitingMessage() {
-		const waitingMessage = document.getElementById('waiting-message');
-		if (waitingMessage) {
-			waitingMessage.remove();
-		}
-	}
-
-
 	initCanvas()
 	{
 		this.canvasId	= "pong-online-canvas-container"
@@ -135,42 +95,7 @@ class PongOnlineDuelSyncWS
 		// this.field		= { width: 400, height: 300, zoomLevel: 1 };
 		this.field		= this.gameStateManager.getState().game_settings.field;
 		console.log('this.fie: ', this.field);
-		this.resizeForAllDevices();
-	}
-
-	// ウインドウのサイズに合わせて動的に描画サイズを変更
-	resizeForAllDevices() 
-	{
-		// ブラウザウィンドウの寸法を使用
-		this.canvas.width		= window.innerWidth;
-		this.canvas.height		= window.innerHeight;
-		// 幅と高さの両方に基づいてズームレベルを計算
-		let zoomLevelWidth		= this.canvas.width / this.field.width;
-		let zoomLevelHeight		= this.canvas.height / this.field.height;
-		// 制約が最も厳しい側（小さい方のスケール）を使用
-		this.field.zoomLevel	= Math.min(zoomLevelWidth, zoomLevelHeight);
-		// debug---
-		// console.log(this.canvas.width, zoomLevelWidth);
-		// console.log(this.canvas.height, zoomLevelHeight);
-		// console.log(this.field.zoomLevel);
-		// ---
-		// 元の状態（リセット状態）に戻す
-		// 1,0,0,1,0,0 スケーリングを変更せず、回転もせず、平行移動も加えない
-		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-		// 平行移動 キャンバスの中心を0,0とするための座標変換
-		this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
-		// 拡大縮小
-		this.ctx.scale(this.field.zoomLevel, this.field.zoomLevel);
-		// 終了時の描画状態（スコア表示）を維持する: 状態の更新を強制するために再描画をトリガーする
-		const state = this.gameStateManager.getState();
-		if (state && 
-			(state.state.score1 > 0 || state.state.score2 > 0) &&
-			!this.gameStateManager.getIsGameLoopStarted())
-		{
-			setTimeout(() => {
-				PongOnlineRenderer.render(this.ctx, this.field, this.gameStateManager.getState());
-			}, 16);
-		}
+		PongOnlineDuelUtil.resizeForAllDevices(ctx, this.gameStateManager.getState());
 	}
 
 
@@ -215,7 +140,7 @@ class PongOnlineDuelSyncWS
 	// ゲーム終了時に Back to Home ボタンリンクを表示する
 	createEndGameButton() 
 	{
-		this.clientApp.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {
+		PongOnlineDuelUtil.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {
 			window.location.href = '/pong/';
 		});
 	}
@@ -249,27 +174,22 @@ class PongOnlineDuelSyncWS
 	// ------------------------------
 	onSocketOpen() 
 	{
-		console.log("WebSocket connection established.");
-		// 初回 or 再接続時(wsがサーバーによって予期せずcloseされた後) の判定
 		if (this.isReconnecting)
 		{
-				// 再接続時の処理
-				
-				console.log("WebSocket connection re-established.");
-				const initData = JSON.stringify
-				({
-					action: "reconnect",
-					...this.gameStateManager.getState() 
-				});
-				// console.log("Sending data to server:", JSON.stringify(dataToSend, null, 2));
-				this.socket.send(initData);
-				// 接続成功時に再接続試行回数をリセット
-				this.reconnectAttempts = 0;
+			// 再接続時の処理
+			console.log("WebSocket connection re-established.");
+			const initData = JSON.stringify
+			({
+				action: "reconnect",
+				...this.gameStateManager.getState() 
+			});
+			// console.log("Sending data to server:", JSON.stringify(dataToSend, null, 2));
+			this.socket.send(initData);
+			// 接続成功時に再接続試行回数をリセット
+			this.reconnectAttempts = 0;
 		} else {
-				
-				// 初回の接続時:
-				console.log("開始: 初回の接続時 処理");
-				
+			// 初回の接続時:
+			console.log("WebSocket connection established.");
 			// action: "initialize"のみ
 			// const initData = JSON.stringify({ action: "initialize" });
 			// console.log("initData: ", initData);
@@ -277,33 +197,11 @@ class PongOnlineDuelSyncWS
 		}
 	}
 
-	onSocketClose(event) 
-	{
+	onSocketClose(event) {
 		console.error("WebSocket connection closed:", event.reason, "Code:", event.code);
-		this.attemptReconnect();
+		PongOnlineDuelUtil.attemptReconnect();
 	}
 	
-	/** close時: 自動再接続 */
-	attemptReconnect() 
-	{
-		// 再接続処理中を表すフラグを立てる
-		this.isReconnecting = true;
-		// コンストラクタで指定した回数試みる
-		if (this.reconnectAttempts < this.maxReconnectAttempts) 
-		{
-			setTimeout(() => 
-			{
-				this.clientApp.setupWebSocketConnection();
-				this.reconnectAttempts++;
-			}, this.reconnectInterval);
-		} else {
-			console.error("Reconnect failed.");
-			// 最大試行回数に達したらリセット
-			this.reconnectAttempts = 0;
-			this.isReconnecting = false;
-		}
-	}
-
 	onSocketError(event) {
 		console.error("WebSocket error:", event);
 	}

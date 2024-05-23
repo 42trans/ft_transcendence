@@ -31,10 +31,6 @@ class CreateRoomView(LoginRequiredMixin, View):
             room_group_name, err = self._get_room_group_name(self.request.user.id, self.other_user.id)
             if err:
                 return JsonResponse({'error': err}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
-            # DBに一旦保存する場合
-            # room = await sync_to_async(GameRoom.objects.create)(name=room_group_name)
-            # return JsonResponse({'room_name': room_group_name, 'room_id': room.id}, status=status.HTTP_201_CREATED)
 
             # 対戦ルームURLへのリンクを双方にDM送信
             await self.send_duel_invitations(request, room_group_name)
@@ -46,20 +42,20 @@ class CreateRoomView(LoginRequiredMixin, View):
 
     async def send_duel_invitations(self, request, room_group_name):
         system_user = await sync_to_async(CustomUser.objects.get)(email='system@example.com')
-
+        duel_room_url = f"/pong/online/duel/room/{room_group_name}/"
         # 招待者へのメッセージ (request.user)
         message_text = format_html(
-            "🏓⚔️🏓 Duel challenge sent to {} ! <a href='{url}'>Join</a>",
-            self.other_user.nickname,
-            url=room_group_name  
+            "🏓⚔️🏓 Duel challenge sent to {user_name} ! <a href='{url}'>Join</a>",
+            user_name=self.other_user.nickname,
+            url=duel_room_url
         )
         await self.send_dm_to_user(system_user, request.user, message_text)
 
         # 被招待者へのメッセージ (self.other_user)
         message_text = format_html(
-            "🏓⚔️🏓 Duel request from {}! <a href='{url}'>Accept</a>",
-            request.user.nickname,
-            url=room_group_name  
+            "🏓⚔️🏓 Duel request from {user_name}! <a href='{url}'>Accept</a>",
+            user_name=request.user.nickname,
+            url=duel_room_url
         )
         await self.send_dm_to_user(system_user, self.other_user, message_text)
 
@@ -83,7 +79,8 @@ class CreateRoomView(LoginRequiredMixin, View):
     def _get_room_group_name(self, user_id, other_user_id=None):
         try:
             if other_user_id:
-                room_group_name = f"room_{user_id}_{other_user_id}"
+                sorted_ids = sorted([user_id, other_user_id])
+                room_group_name = f"room_{sorted_ids[0]}_{sorted_ids[1]}"
             else:
                 room_group_name = f"room_{user_id}"
             return room_group_name, None
