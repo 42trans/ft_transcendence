@@ -1,23 +1,38 @@
-import { deleteFriend, createActionButton } from "./friend.js"
-
 // online-status.js
 
-function setUpOnlineStatusWebSocket(userId) {
+import { deleteFriend, createActionButton } from "./friend.js"
+
+
+let socket = null;
+
+
+export function connectOnlineStatusWebSocket(userId) {
+    console.log('Connecting WebSocket: userId: ' + userId);
+
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        console.log('WebSocket already connected');
+        return;
+    }
+
     const websocketUrl = 'wss://' + window.location.host + '/ws/online/';
+    console.log(`connectOnlineStatusWebSocket websocketUrl:${websocketUrl}`);
 
-    console.log(`setUpOnlineStatusWebSocket websocketUrl:${websocketUrl}`);
-
-    const socket = new WebSocket(websocketUrl);
-
+    socket = new WebSocket(websocketUrl);
     socket.onmessage = handleMessage;
     socket.onopen = () => handleOpen(socket, userId);
     socket.onclose = () => handleClose(socket, userId);
     socket.onerror = handleError;
+}
 
-    // ページ離脱時にオフラインステータスを送信
-    window.addEventListener('beforeunload', function() {
+
+export function disconnectOnlineStatusWebSocket(userId) {
+    console.log('Disconnecting WebSocket: userId: ' + userId);
+    if (socket) {
+        console.log(' socket exist -> disconnect');
         sendStatusUpdate(socket, false, userId);
-    });
+        socket.close();
+        socket = null;
+    }
 }
 
 
@@ -37,6 +52,8 @@ function handleClose(socket, userId) {
     console.log('Websocket closed');
     if (socket.readyState === WebSocket.OPEN) {
         sendStatusUpdate(socket, false, userId);  // 切断時にオフラインステータスとユーザーIDを送信
+        socket.close();
+        socket = null;
     }
 }
 
@@ -131,4 +148,34 @@ function updateOrCreateFriendListItem(friend) {
     listItem.appendChild(deleteButton);
 
     return listItem;
+}
+
+
+export function setOnlineStatus() {
+    console.log('setOnlineStatus');
+
+    const userIdElement = document.getElementById('user-id');
+    if (!userIdElement) {
+        console.log('User ID not found');
+        return;
+    }
+
+    const userId = userIdElement.value;
+
+    function onPageLoad() {
+        if (userId) {
+            connectOnlineStatusWebSocket(userId);
+            alert('connectOnlineStatusWebSocket completed')
+        }
+    }
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        onPageLoad();
+    } else {
+        window.addEventListener('load', onPageLoad);
+    }
+
+    window.addEventListener('popstate', function(event) {
+        onPageLoad();
+    });
 }

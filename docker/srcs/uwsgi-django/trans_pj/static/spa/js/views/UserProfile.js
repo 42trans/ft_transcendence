@@ -19,11 +19,7 @@ export default class extends AbstractView {
     }
 
     async executeScript() {
-        // await loadAndExecuteScript("/static/accounts/js/userProfile.js", true);
         const userProfileModule = await import("/static/accounts/js/userProfile.js");
         userProfileModule.fetchUserProfile();
-
-        // const disable2FAModule = await import("/static/accounts/js/disable_2fa.js");
-        // disable2FAModule.setupDisable2FAEventListener();
     }
 }

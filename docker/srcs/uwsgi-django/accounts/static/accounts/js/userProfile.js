@@ -70,8 +70,7 @@ export function fetchUserProfile() {
 		.then(response => response.json())
 		.then(data => {
 			drawUserProfile(data);
-			setupDisable2FAEventListener()  // disable2FA Buttonのイベントリスナーを設定
-			// setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
+			setupDisable2FAEventListener()  		// disable2FA Buttonのイベントリスナーを設定
 		})
 		.catch(error => console.error("Error:", error));
 }

@@ -72,6 +72,7 @@ class LoginTemplateView(TemplateView):
     template_name = "accounts/login.html"
 
     def dispatch(self, request, *args, **kwargs):
+        print('loginView 1')
         if request.user.is_authenticated:
             return redirect('/pong/')  # djangoで/pong/にrender -> SPA /game/
         return super().dispatch(request, *args, **kwargs)
@@ -83,8 +84,8 @@ class LoginAPIView(APIView):
     """
     permission_classes = [AllowAny]
 
-    # @csrf_exempt
     def post(self, request, *args, **kwargs) -> JsonResponse:
+        print('loginAPI 1')
         if request.user.is_authenticated:
             data = {
                 'message': 'already logged in',
@@ -110,8 +111,9 @@ class LoginAPIView(APIView):
         else:
             # login(request, user)
             data = {
-                'message': 'Basic authentication successful',
-                'redirect': '/game/',  # SPA /game/にリダイレクト
+                'message'   : 'Basic authentication successful',
+                'redirect'  : '/game/',     # SPA /game/にリダイレクト
+                'user_id'   : user.id,      # OnlineStatusWebSocketの接続に使用
             }
             return get_jwt_response(user, data)
 
@@ -125,8 +127,9 @@ class LogoutAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
         data = {
-            'message': 'You have been successfully logout',
-            'redirect': '/game/',  # SPA /game/にリダイレクト
+            'message'   : 'You have been successfully logout',
+            'redirect'  : '/game/',         # SPA /game/にリダイレクト
+            'user_id'   : request.user.id,  # OnlineStatusWebSocketの切断に使用
         }
         response = JsonResponse(data, status=200)
 

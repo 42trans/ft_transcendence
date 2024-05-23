@@ -30,6 +30,11 @@
 
 	{% include 'pong/dev-link.html' %}
 
+
+	{% if user_id %}
+	<input type="hidden" id="user-id" value="{{ user_id }}">
+	{% endif %}
 </div>
 
-<script src="{% static 'accounts/js/logout.js' %}"></script>
+
+<!--<script src="{% static 'accounts/js/logout.js' %}"></script>-->

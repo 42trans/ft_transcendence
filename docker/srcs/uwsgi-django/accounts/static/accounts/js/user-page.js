@@ -19,8 +19,7 @@ function fetchUserProfile() {
                 <button onclick="handleLogout()">Logout</button>
                 <br>
                 `;
-
-            setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
+            // setUpOnlineStatusWebSocket(data.id);  // OnlieStatusWebSocketに接続
         })
         .catch(error => console.error("Error:", error));
 }
@@ -103,7 +102,7 @@ function createRequestLink(nickname, friend_id, isSent) {
 }
 
 
-function createActionButton(text, action) {
+export function createActionButton(text, action) {
     const actionLink = document.createElement('a');
     actionLink.textContent = text;
     actionLink.href = "#";

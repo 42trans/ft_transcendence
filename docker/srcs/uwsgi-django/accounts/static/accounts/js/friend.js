@@ -188,6 +188,7 @@ export function setupFriendRequestListEventListeners() {
 }
 
 
+// Friend List
 export function fetchFriendList() {
     fetch('/accounts/api/friend/list/', {
         headers: {
@@ -281,6 +282,7 @@ export function createActionButton(text, action) {
 }
 
 
+// Sent/Received Friend Request List
 export function fetchFriendRequestList() {
     // フレンド申請リストの一覧
     fetch("/accounts/api/friend/requests/", {

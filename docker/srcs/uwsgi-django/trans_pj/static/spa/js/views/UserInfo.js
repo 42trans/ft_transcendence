@@ -22,33 +22,11 @@ export default class extends AbstractView {
     }
 
     async executeScript() {
-      console.log('executeScript: Loading scripts...');
-
       await loadAndExecuteScript("/static/accounts/js/block-user.js");
       await loadAndExecuteScript("/static/accounts/js/unblock-user.js");
       // loadAndExecuteScript("/static/chat/js/test-system-message.js");// await loadAndExecuteScript("/static/accounts/js/friend.js", true);
 
-      console.log('executeScript: Scripts loaded, setting up event listeners...');
-
-
-      // スクリプトのロード完了後にイベントリスナーを設定
-      console.log('executeScript: Event listeners setup complete.');
-
-      // イベントリスナーの設定　関数化すると動かない？
-      // await setupEventListeners(
-      //     "/static/accounts/js/friend.js",
-      //     "setupFriendEventListeners"
-      // );
-      // try {
-      //     await setupEventListeners("/static/accounts/js/friend.js", "setupFriendEventListeners");
-      // } catch (error) {
-      //     console.error('Error in setting up event listeners:', error);
-      // }
-
       const friendModule = await import("/static/accounts/js/friend.js");
       friendModule.setupFriendRequestListEventListeners();
-
-      console.log('executeScript: Event listeners setup complete.');
-
     }
 }

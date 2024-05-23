@@ -16,6 +16,7 @@ export default class extends AbstractView {
     return data;
   }
   async executeScript() {
-    //executeScriptTab("");
+    const onlineStatusModule = await import("/static/accounts/js/online-status.js");
+    onlineStatusModule.setOnlineStatus();
   }
 }

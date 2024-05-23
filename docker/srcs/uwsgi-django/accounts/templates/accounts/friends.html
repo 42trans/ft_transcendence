@@ -1,4 +1,4 @@
-<!-- user.html -->
+<!-- friends.html -->
 
 {% load static %}
 
@@ -7,6 +7,9 @@
 <div class="container" >
 
     <div class="friends-info-container">
+        <!-- UserFriendsViewで受け取ったuser_idをJSでuser-idとして使用できるようにする -->
+        <input type="hidden" id="user-id" value="{{ user_id }}">
+
         <ul id="friends-container">
             <!-- JavaScriptで動的に内容が生成される -->
         </ul>
@@ -14,6 +17,8 @@
         <ul id="requests-container">
             <!-- JavaScriptで動的に内容が生成される -->
         </ul>
+
+        <!-- online-status取得のためのwebsocketに接続 -->
     </div>
 
 </div>

@@ -221,8 +221,9 @@ class Verify2FaAPIView(APIView):
                 # login(request, user)  # JWT auth -> login() unused
                 del request.session['tmp_auth_user_id']
                 data = {
-                    'message': '2FA verification successful',
-                    'redirect': '/user-profile/'
+                    'message'   : '2FA verification successful',
+                    'redirect'  : '/user-profile/',
+                    'user_id'   : user.id,      # OnlineStatusWebSocketの接続に使用
                 }
                 return get_jwt_response(user, data)
 

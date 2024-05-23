@@ -1,6 +1,7 @@
 import logging
 from django.http import JsonResponse
 from accounts.models import CustomUser, Friend, UserStatus
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
@@ -21,17 +22,18 @@ logging.basicConfig(
 logger = logging.getLogger('accounts')
 
 
-class UserFriendsView(TemplateView):
+class UserFriendsView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/friends.html"
 
     def get(self, request, *args, **kwargs):
-        print(f'UserFriendsView 1')
         if not is_valid_jwt(request):
-            print(f'UserFriendsView 2')
             return redirect('accounts:login')
-
-        print(f'UserFriendsView 3')
         return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user_id'] = self.request.user.id
+        return context
 
 
 def _get_user_and_friend(request, friend_user_id):

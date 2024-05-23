@@ -35,12 +35,9 @@ class UserProfileView(TemplateView):
     template_name = "accounts/user.html"
 
     def get(self, request, *args, **kwargs):
-        print(f'UserProfileView 1')
         if not is_valid_jwt(request):
-            print(f'UserProfileView 2')
             return redirect('accounts:login')
 
-        print(f'UserProfileView 3')
         return super().get(request, *args, **kwargs)
 
 
@@ -48,10 +45,8 @@ class UserProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request) -> JsonResponse:
-        print(f'UserProfileAPIView 1')
-
         user = request.user
-        logger.debug(f'UserProfileAPIView: avatar_url: {user.avatar.url}')
+        # logger.debug(f'UserProfileAPIView: avatar_url: {user.avatar.url}')
 
         params = {
             'id'        : user.id,
