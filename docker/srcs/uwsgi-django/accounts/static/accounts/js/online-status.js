@@ -95,6 +95,7 @@ export function createFriendsList(friendsData) {
 
 
 // 変更があった部分のみを更新する
+// <link-to-user-info> <SP> <online-status> <SP> <Delete-button>
 function updateOrCreateFriendListItem(friend) {
     let listItem = document.getElementById('friend-item-' + friend.id);
     if (!listItem) {
@@ -104,6 +105,7 @@ function updateOrCreateFriendListItem(friend) {
         listItem.innerHTML = ''; // 既存の内容をクリア
     }
 
+    // <link-to-user-info>
     const link = document.createElement('a');
     link.href = `/user-info/${friend.nickname}/`;
     link.className = 'nav__link';
@@ -111,12 +113,20 @@ function updateOrCreateFriendListItem(friend) {
     link.textContent = friend.nickname;
     listItem.appendChild(link);
 
+    // <SP>
+    listItem.appendChild(document.createTextNode(' '));
+
+    // <online-status>
     const statusSpan = document.createElement('span');
     statusSpan.id = `friend-status-${friend.id}`;
     statusSpan.className = `status ${friend.status ? 'online' : 'offline'}`;
     statusSpan.textContent = friend.status ? 'Online' : 'Offline';
     listItem.appendChild(statusSpan);
 
+    // <SP>
+    listItem.appendChild(document.createTextNode(' '));
+
+    // <Delete-button>
     const deleteButton = createActionButton("Delete", () => deleteFriend(friend.id));
     listItem.appendChild(deleteButton);
 

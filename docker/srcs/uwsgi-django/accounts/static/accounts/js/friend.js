@@ -210,7 +210,7 @@ function createFriendRequestList(data) {
 
     // 送信したフレンドリクエスト
     const sentRequestsDiv = document.createElement('div');
-    sentRequestsDiv.innerHTML = "<h4>Sent Friend Requests</h4>";
+    sentRequestsDiv.innerHTML = "<h3>Sent Friend Requests</h3>";
 
     const sentRequestsUl = document.createElement('ul');
     data.sent_requests.forEach(req => {
@@ -222,9 +222,11 @@ function createFriendRequestList(data) {
     sentRequestsDiv.appendChild(sentRequestsUl);
     requestsContainer.appendChild(sentRequestsDiv);
 
+    requestsContainer.appendChild(document.createElement('hr'));
+
     // 受信したフレンドリクエスト
     const receivedRequestsDiv = document.createElement('div');
-    receivedRequestsDiv.innerHTML = "<h4>Received Friend Requests</h4>";
+    receivedRequestsDiv.innerHTML = "<h3>Received Friend Requests</h3>";
 
     const receivedRequestsUl = document.createElement('ul');
     data.received_requests.forEach(req => {
@@ -240,7 +242,9 @@ function createFriendRequestList(data) {
 
 function createRequestLink(nickname, friend_id, isSent) {
     const link = document.createElement('a');
-    link.href = `/accounts/info/${nickname}/`;
+    link.href = `/user-info/${nickname}/`;
+    link.className = 'nav__link';
+    link.setAttribute('data-link', '');
     link.textContent = nickname;
 
     const textNode = document.createTextNode(isSent ? 'Request sent to ' : 'Request from ');
