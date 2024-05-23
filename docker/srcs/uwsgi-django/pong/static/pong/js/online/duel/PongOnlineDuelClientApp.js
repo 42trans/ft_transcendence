@@ -1,6 +1,6 @@
-// docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineDuelClientApp.js
+// docker/srcs/uwsgi-django/pong/static/pong/js/online/duel/PongOnlineDuelClientApp.js
 import PongEngineKey from "../PongEngineKey.js";
-import PongOnlineSyncWS from "../PongOnlineSyncWS.js";
+import PongOnlineDuelSyncWS from "./PongOnlineDuelSyncWS.js";
 import PongOnlineGameStateManager from "../PongOnlineGameStateManager.js"
 
 /**
@@ -15,44 +15,21 @@ import PongOnlineGameStateManager from "../PongOnlineGameStateManager.js"
  */
 class PongOnlineDuelClientApp 
 {
-	constructor(duelTargetNickname) 
+	constructor(room_name) 
 	{
-		// console.log('PongOnlineDuelClientApp constructor begin');
-		this.initWebSocket(duelTargetNickname);
-		this.initStartButton();
-		
+		console.log('PongOnlineDuelClientApp constructor begin');
+		this.initWebSocket(room_name);
+		this.setupWebSocketConnection();
 	}
 	
-	initWebSocket(duelTargetNickname)
+	initWebSocket(room_name)
 	{
-		// room-nameに変更
-		// this.socketUrl = 'wss://' + window.location.host + '/ws/pong/online/duel/' + room-name + '/';
+		this.socketUrl = 'wss://' + window.location.host + '/ws/pong/online/duel/' + room_name + '/';
 		this.gameStateManager		= new PongOnlineGameStateManager();
-		this.syncWS					= new PongOnlineSyncWS(this, this.gameStateManager, this.socketUrl);
+		this.syncWS					= new PongOnlineDuelSyncWS(this, this.gameStateManager, this.socketUrl);
 		PongEngineKey.listenForEvents();
 	}
-	
-	// websocket接続開始のためのスタートボタン
-	// 接続して待機するボタンに変更
-	initStartButton() 
-	{
-		this.createButton('Start Game', 'hth-pong-online-start-game-btn', () => {
-			this.setupWebSocketConnection();
-			document.getElementById('hth-pong-online-start-game-btn').remove();
-		});
-	}
-		
-	createButton(text, id, onClickHandler) 
-	{
-		const button		= document.createElement('button');
-		button.textContent	= text;
-		button.id			= id;
-		button.classList.add('hth-btn');
-		document.getElementById('hth-main').appendChild(button);
-		button.addEventListener('click', onClickHandler);
-	}
 
-	/** Start buttonをクリックしてからWebsocket接続 */
 	setupWebSocketConnection()
 	{
 		this.socket				= new WebSocket(this.socketUrl);

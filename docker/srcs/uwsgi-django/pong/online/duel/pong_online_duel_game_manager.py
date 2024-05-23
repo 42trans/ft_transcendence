@@ -10,8 +10,9 @@ from ...utils.async_logger import async_log
 logger = logging.getLogger(__name__)
 
 class PongOnlineDuelGameManager:
-    def __init__(self, user_id):
-        self.user_id = user_id
+    def __init__(self):
+    # def __init__(self, user_id):
+        # self.user_id = user_id
         self.config = PongOnlineConfig()
         self.pong_engine_data: Dict[str, Any] = {
             "objects": {},

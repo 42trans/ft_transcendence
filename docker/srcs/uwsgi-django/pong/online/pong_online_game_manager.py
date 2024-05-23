@@ -67,7 +67,6 @@ class PongOnlineGameManager:
     async def update_game(self, json_data):
         """ 
         gameの状態を高速で更新する
-        json: key==objectsだけをやり取りする
         """
         await self.pong_engine_update.update_game(json_data)
         return self

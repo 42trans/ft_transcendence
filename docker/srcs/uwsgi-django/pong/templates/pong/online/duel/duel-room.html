@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" crossorigin href="{% static 'pong/css/hth-online.css' %}">
+{% endblock %}
+{% block title %}Duel Room - hth Pong{% endblock title %}
+{% block content %}
+{% csrf_token %}
+
+<canvas id="pong-online-duel-canvas-container"></canvas>
+
+{# room_name を非表示の div で渡す #}
+<div id="room-name" style="display: none;">{{ room_name }}</div>
+
+<script type="module" crossorigin src="{% static 'pong/js/online/duel/PongOnlineDuelIndex.js' %}"></script>
+
+{% endblock %}
+{% comment %} docker/srcs/uwsgi-django/pong/templates/pong/online/duel/duel-room.html {% endcomment %}

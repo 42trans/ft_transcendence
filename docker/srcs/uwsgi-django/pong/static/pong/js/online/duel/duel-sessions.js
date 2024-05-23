@@ -38,7 +38,7 @@ class DuelSeesionsManager
 				const data = await response.json();
 				console.log("Room created:", data);
 				// ルーム作成成功時の処理 (画面遷移など)
-                // window.location.href = `/pong/online/duel/duel-with/${duelTargetNickname}/`; // 例：対戦画面に遷移
+				window.location.href = `/pong/online/duel/room/${data.room_name}/`;
 			} else {
 				const errorData = await response.json();
 				// エラー処理 (errorData.errorなどを利用)
