@@ -1,28 +1,28 @@
 import Dashboard    from "../views/Dashboard.js";
 import Home        from "../views/Home.js";
-import Pong         from "../views/Pong.js";
+import Pong         from "../views/pong/Pong.js";
 
-import FreePlay     from "../views/Pong.js";
-import Tournament   from "../views/Tournament.js";
-import Game1vs1     from "../views/Game1vs1.js";
+import FreePlay     from "../views/pong/Pong.js";
+import Tournament   from "../views/pong/Tournament.js";
+import Game1vs1     from "../views/pong/Game1vs1.js";
 
-import GameHistory  from "../views/UserProfile.js";
+import GameHistory  from "../views/user/UserProfile.js";
 
-import UserProfile  from "../views/UserProfile.js";
-import UserInfo     from "../views/UserInfo.js";
-import Friends      from "../views/Friends.js";
-import DMSessions   from "../views/DMSessions.js";
-import DMwithUser   from "../views/DMwithUser.js";
+import UserProfile  from "../views/user/UserProfile.js";
+import UserInfo     from "../views/user/UserInfo.js";
+import Friends      from "../views/user/Friends.js";
+import DMSessions   from "../views/chat/DMSessions.js";
+import DMwithUser   from "../views/chat/DMwithUser.js";
 
-import EditProfile  from "../views/EditProfile.js";
-import ChangeAvatar from "../views/ChangeAvatar.js";
-import Enable2FA    from "../views/Enable2FA.js";
+import EditProfile  from "../views/user/EditProfile.js";
+import ChangeAvatar from "../views/user/ChangeAvatar.js";
+import Enable2FA    from "../views/auth/Enable2FA.js";
 import Disable2FA   from "../views/Disable2FA.js";
-import Verify2FA    from "../views/Verify2FA.js";
+import Verify2FA    from "../views/auth/Verify2FA.js";
 
-import Signup       from "../views/Signup.js";
-import Login        from "../views/Login.js";
-import Logout       from "../views/Logout.js";
+import Signup       from "../views/auth/Signup.js";
+import Login        from "../views/auth/Login.js";
+import Logout       from "../views/auth/Logout.js";
 
 // import Posts from "../views/Posts.js";
 // import PostView from "../views/PostView.js";

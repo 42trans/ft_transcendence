@@ -40,6 +40,7 @@ export async function loadAndExecuteScript(path, isModule = false) {
 }
 
 
+// todo: setupEventListeners 使えないかも
 /**
  * モジュールを非同期にインポートし、指定されたセットアップ関数を呼び出す
  *
