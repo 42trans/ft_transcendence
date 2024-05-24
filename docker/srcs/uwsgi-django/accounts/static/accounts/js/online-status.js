@@ -43,34 +43,37 @@ function handleMessage(event) {
 }
 
 
-function handleOpen(socket, userId) {
+async function handleOpen(socket, userId) {
     console.log('WebSocket connection established');
-    socket.userId = userId;  // ソケットにユーザーIDを保存
-    sendStatusUpdate(socket, true, userId);  // 接続時にオンラインステータスとユーザーIDを送信
+    socket.userId = userId;
+    await sendStatusUpdate(socket, true, userId);
 }
 
 
-function handleClose(socket, userId) {
-    console.log('Websocket closed');
+async function sendStatusUpdate(socket, status, userId) {
     if (socket.readyState === WebSocket.OPEN) {
-        sendStatusUpdate(socket, false, userId);  // 切断時にオフラインステータスとユーザーIDを送信
-        socket.close();
-        socket = null;
+        socket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
+    } else if (socket.readyState === WebSocket.CONNECTING) {
+        await waitForWebSocketOpen(socket);
+        socket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
+    } else {
+        console.error('WebSocket is not open. readyState: ' + socket.readyState);
     }
+}
+
+
+function waitForWebSocketOpen(socket) {
+    return new Promise((resolve) => {
+        socket.addEventListener('open', function onOpen() {
+            socket.removeEventListener('open', onOpen);
+            resolve();
+        });
+    });
 }
 
 
 function handleError(event) {
     console.error('WebSocket error observed:', event);
-}
-
-
-function sendStatusUpdate(socket, status, userId) {
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
-    } else {
-        console.error('WebSocket is not open. readyState: ' + socket.readyState);
-    }
 }
 
 
