@@ -88,6 +88,9 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             return
         
         await self.accept()
+        self.game_manager = PongOnlineDuelGameManager()
+        await self.game_manager.initialize_game()
+
         await async_log(f'DuelConsumer: ws接続されました{self.scope["user"]}')
 
         # 接続されているユーザー数を取得
@@ -104,11 +107,10 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         if client_count == 2: 
             try:
                 await async_log("2名がinしました")
-                self.game_manager = PongOnlineDuelGameManager()
-                await self.game_manager.initialize_game()
+                # self.game_manager = PongOnlineDuelGameManager()
+                # await self.game_manager.initialize_game()
                 # await async_log("game_managerが作成されました")
-                await self.channel_layer.group_send(
-                    self.room_group_name,
+                await self.channel_layer.group_send(self.room_group_name,
                     {
                         'type': 'duel.both_players_entered_room',
                         'room_group_name': self.room_group_name,
@@ -134,7 +136,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         """
         await self.send(text_data=json.dumps({
             "type": "duel.both_players_entered_room",
-            "room": event["room_group_name"],
+            "room_group_name": event["room_group_name"],
             "message": event["message"],
         }))
 
@@ -161,34 +163,32 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 
 
     async def receive(self, text_data=None):
-        """
-        """
         await async_log("receive(): 開始")
         await async_log("クライアントからのtext_data受信: " + text_data)
-        
         try:
-            # text_data（WebSocket から受け取った生の文字列データ）を jsonに変換
             json_data = json.loads(text_data)
         except json.JSONDecodeError:
             await self.close(code=1007)
             return
 
         try:
-            # 2名からのスタートボタンのシグナルをもらったら1秒後に開始するメッセージをUIに表示したい
-            if 'action' in json_data and json_data['action'] == 'initialize':
-                # 2つが揃ったら
-                await self.send(text_data=json.dumps({
-                'type': 'duel.ready-ok',
-            }))
-            # 英語を検討したい
-            if 'action' in json_data and json_data['action'] == 'ready-ok':
-                # json: key==actionのみ
-                await async_log("初回クライアントからの受信: " + json.dumps(json_data))
-                initial_state = self.game_manager.pong_engine_data
+            if 'action' in json_data and json_data['action'] == 'start':
+                await database_sync_to_async(self.redis_client.sadd)(f"start_signals_{self.room_group_name}", self.scope["user"].id)
 
-                # json: key==全て(game_settingsを含む)
-                await async_log("初回engine_data: " + json.dumps(initial_state))
-                await self.send(text_data=json.dumps(initial_state))
+                # スタートシグナルが2つ揃ったか確認
+                signal_count = await database_sync_to_async(self.redis_client.scard)(f"start_signals_{self.room_group_name}")
+                if signal_count == 2 and hasattr(self, 'game_manager'):
+                    # ゲーム開始処理
+                    await async_log("両方のプレイヤーが準備完了しました。ゲームを開始します。")
+                    initial_state = self.game_manager.pong_engine_data
+                    await self.channel_layer.group_send(self.room_group_name, {
+                        'type': 'send_data',
+                        'data': initial_state
+                    })
+                    # RedisのSetを削除
+                    await database_sync_to_async(self.redis_client.delete)(f"start_signals_{self.room_group_name}")
+                else:
+                    await self.send(text_data=json.dumps({"message": "Waiting for another player to start"})) # 必要に応じて待機メッセージを送信
 
             elif 'action' in json_data and json_data['action'] == 'reconnect':
                 # await async_log("再接続時の処理----")
@@ -209,13 +209,13 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             # elif 'objects' in json_data:
 
                 # json: key==全て(game_settingsを含む)
-                await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
+                # await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
 
                 await self.game_manager.update_game(json_data['objects'])
                 updated_state = self.game_manager.pong_engine_data
 
                 # json: key==全て(game_settingsを含む)
-                await async_log("更新時engine_data: " + json.dumps(updated_state))
+                # await async_log("更新時engine_data: " + json.dumps(updated_state))
 
                 await self.channel_layer.group_send(self.room_group_name, {
                     'type': 'send_data',

@@ -30,11 +30,12 @@ class PongOnlineDuelUtil
 	}
 
 	// ウインドウのサイズに合わせて動的に描画サイズを変更
-	static resizeForAllDevices(ctx, gameState) 
+	static resizeForAllDevices(ctx, gameState, canvas) 
 	{
 		this.ctx		= ctx;
-		this.field		= this.gameStateManager.getState().game_settings.field;
-		
+		this.field		= gameState.game_settings.field;
+		this.canvas		= canvas
+
 		// ブラウザウィンドウの寸法を使用
 		this.canvas.width		= window.innerWidth;
 		this.canvas.height		= window.innerHeight;
@@ -56,14 +57,13 @@ class PongOnlineDuelUtil
 		// 拡大縮小
 		this.ctx.scale(this.field.zoomLevel, this.field.zoomLevel);
 		// 終了時の描画状態（スコア表示）を維持する: 状態の更新を強制するために再描画をトリガーする
-		const state = this.gameStateManager.getState();
+		const state = gameState;
 		if (state && 
 			(state.state.score1 > 0 || state.state.score2 > 0) &&
-			!this.gameStateManager.getIsGameLoopStarted())
+			!gameState.getIsGameLoopStarted())
 		{
 			setTimeout(() => {
 				PongOnlineRenderer.render(this.ctx, this.field, gameState);
-				// PongOnlineRenderer.render(this.ctx, this.field, this.gameStateManager.getState());
 			}, 16);
 		}
 	}

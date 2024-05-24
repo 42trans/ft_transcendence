@@ -2,6 +2,7 @@
 import PongOnlinePaddleMover from "../PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "../PongOnlineRenderer.js";
 import PongOnlineDuelUtil from "./PongOnlineDuelUtil.js";
+import PongOnlineGameStateManager from "../PongOnlineGameStateManager.js"
 
 class PongOnlineDuelSyncWS 
 {
@@ -11,11 +12,13 @@ class PongOnlineDuelSyncWS
 		this.gameStateManager	= gameStateManager;
 		this.socketUrl			= socketUrl;
 		this.gameLoopStarted	= false;
+		
 		this.readyToSendNext	= true;
-		this.isReconnecting = false;
-		this.reconnectAttempts = 0;
-		this.maxReconnectAttempts = 5;
-		this.reconnectIntervalMilliSec = 3000;
+
+		this.isReconnecting				= false;
+		this.reconnectAttempts			= 0;
+		this.maxReconnectAttempts		= 5;
+		this.reconnectIntervalMilliSec	= 3000;
 						// TODO_fr: 本番時削除
 						PongOnlineDuelUtil.devTestCloseButton();
 	}
@@ -25,10 +28,10 @@ class PongOnlineDuelSyncWS
 	// サーバーからメッセージが届いた場合の処理
 	onSocketMessage(event) 
 	{
-		console.log("onSocketMessage()", event);
+		// console.log("onSocketMessage()", event);
 		const recvData = JSON.parse(event.data);
 		if (recvData.type === 'duel.waiting_opponent') {
-			console.log("waiting_opponent")
+			// console.log("waiting_opponent")
 			this.showWaitingMessage();
 		} else if (recvData.type === 'duel.both_players_entered_room') {
 			console.log("duel.both_players_entered_room")
@@ -50,7 +53,7 @@ class PongOnlineDuelSyncWS
 				// 初回の場合: ループ開始前　
 				if (!this.gameLoopStarted) 
 				{
-					console.log("initCanvas()");
+					// console.log("initCanvas()");
 
 					// gameStateに関するjsonを受信してから、loopを起動
 					// 受信データからフィールドのサイズを取得してCanvasを初期化
@@ -71,6 +74,9 @@ class PongOnlineDuelSyncWS
 	initStartButton() 
 	{
 		PongOnlineDuelUtil.createButton('Start Game', 'hth-pong-online-start-game-btn', () => {
+			const startMsg = JSON.stringify({ action: "start" });
+			// console.log("send: action: start: ", startMsg);
+			this.socket.send(startMsg);
 			document.getElementById('hth-pong-online-start-game-btn').remove();
 		});
 	}
@@ -85,7 +91,7 @@ class PongOnlineDuelSyncWS
 	
 	initCanvas()
 	{
-		this.canvasId	= "pong-online-canvas-container"
+		this.canvasId	= "pong-online-duel-canvas-container"
 		this.canvas 	= document.getElementById(this.canvasId);
 		if (!this.canvas.getContext) {
 			return;
@@ -94,48 +100,93 @@ class PongOnlineDuelSyncWS
 		// TODO_Ft: serverからfieldの値を取得したい
 		// this.field		= { width: 400, height: 300, zoomLevel: 1 };
 		this.field		= this.gameStateManager.getState().game_settings.field;
-		console.log('this.fie: ', this.field);
-		PongOnlineDuelUtil.resizeForAllDevices(ctx, this.gameStateManager.getState());
+		console.log('this.field: ', this.field);
+		PongOnlineDuelUtil.resizeForAllDevices(this.ctx, this.gameStateManager.getState(), this.canvas);
 	}
 
 
 	startGameLoop() 
 	{
-		this.gameLoopStarted = true;
-		this.gameLoop();
+		// this.gameLoopStarted = true;
+		this.gameLoop(30);
 	}
 	
-	// 30~60fpsで更新・描画する
-	gameLoop() 
-	{
-		// 参考:【clearInterval() - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/clearInterval>
-		const intervalId = setInterval(() => 
-		{
-			const gameState	= this.gameStateManager.getState();
+	// 30, 60, 120fpsで更新・描画する
+	gameLoop(fps = 30) {
+		this.gameLoopStarted = true;
 
-			if (gameState && gameState.is_running) 
-			{
-				// console.log(this.reconnectGameState);
+		const desiredFrameTimeMs = 1000 / fps; // 目標フレーム時間（ミリ秒）
+		let lastFrameTimeMs = 0; // 前回のフレーム時間
+
+		const loop = (timestamp) => {
+			const gameState = this.gameStateManager.getState();
+
+			if (gameState && gameState.is_running) {
+				const elapsedTimeMs = timestamp - lastFrameTimeMs;
+
+				// 目標フレーム時間よりも経過時間が短い場合は、次のフレームを待つ
+				if (elapsedTimeMs < desiredFrameTimeMs) {
+					requestAnimationFrame(loop);
+					return;
+				}
+
 				// パドル情報更新
 				PongOnlinePaddleMover.handlePaddleMovement(this.field, gameState);
 				// ゲーム状態送信
 				this.sendClientState(gameState);
 				// 2D描画
 				PongOnlineRenderer.render(this.ctx, this.field, gameState);
+
+				lastFrameTimeMs = timestamp;
 			}
 
 			// 終了時
-			if (!gameState.is_running) 
-			{
-				// 最終スコアの表示: 終了フラグ受信後に、最後に一度だけ描画する
+			if (!gameState.is_running) {
+				// 最終スコアの表示
 				PongOnlineRenderer.render(this.ctx, this.field, this.gameStateManager.getState());
 
-				 // ゲーム終了時に Back to Home ボタンリンクを表示する
+				// ゲーム終了時に Back to Home ボタンリンクを表示する
 				this.createEndGameButton();
-				clearInterval(intervalId);
+			} else {
+				// 次のフレームを要求
+				requestAnimationFrame(loop);
 			}
-		}, 1000 / 30);
+		};
+
+		// 最初のフレームを要求
+		requestAnimationFrame(loop);
 	}
+	// // 30~60fpsで更新・描画する
+	// gameLoop() 
+	// {
+	// 	// 参考:【clearInterval() - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/clearInterval>
+	// 	const intervalId = setInterval(() => 
+	// 	{
+	// 		const gameState	= this.gameStateManager.getState();
+
+	// 		if (gameState && gameState.is_running) 
+	// 		{
+	// 			// console.log(this.reconnectGameState);
+	// 			// パドル情報更新
+	// 			PongOnlinePaddleMover.handlePaddleMovement(this.field, gameState);
+	// 			// ゲーム状態送信
+	// 			this.sendClientState(gameState);
+	// 			// 2D描画
+	// 			PongOnlineRenderer.render(this.ctx, this.field, gameState);
+	// 		}
+
+	// 		// 終了時
+	// 		if (!gameState.is_running) 
+	// 		{
+	// 			// 最終スコアの表示: 終了フラグ受信後に、最後に一度だけ描画する
+	// 			PongOnlineRenderer.render(this.ctx, this.field, this.gameStateManager.getState());
+
+	// 			 // ゲーム終了時に Back to Home ボタンリンクを表示する
+	// 			this.createEndGameButton();
+	// 			clearInterval(intervalId);
+	// 		}
+	// 	}, 1000 / 120);
+	// }
 
 	// ゲーム終了時に Back to Home ボタンリンクを表示する
 	createEndGameButton() 
@@ -190,9 +241,7 @@ class PongOnlineDuelSyncWS
 		} else {
 			// 初回の接続時:
 			console.log("WebSocket connection established.");
-			// action: "initialize"のみ
 			// const initData = JSON.stringify({ action: "initialize" });
-			// console.log("initData: ", initData);
 			// this.socket.send(initData);
 		}
 	}
