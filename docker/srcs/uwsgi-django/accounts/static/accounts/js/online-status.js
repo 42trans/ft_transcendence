@@ -172,7 +172,7 @@ export function fetchUserId() {
             return data.id;
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.log('Error:', error);
             return null;
         });
 }
