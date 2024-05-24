@@ -2,50 +2,30 @@
 
 {% load static %}
 
-<!-- <div class="hth-container"> -->
-	<!-- <div class="hs-text"> -->
-		<div class="container" >
+<div class="container" >
+	<div class="user-info-container">
 
-			<div class="user-info-container">
+		<h2>Edit user profile</h2>
+		<p id="message-area"></p>
 
-				<h2>Edit user profile</h2>
-				<p id="message-area"></p>
+		<!-- ニックネーム更新用のフォーム -->
+		<form class="mb-5" id="nickname-form" onsubmit="updateNickname(event)">
+			<h3 class="mb-1">Nickname</h3>
+			<p><input type="text" id="nickname" placeholder="{{ current_nickname }}" required></p>
+			<button class="hth-btn" type="submit">Update nickname</button>
+		</form>
 
-				<!-- ニックネーム更新用のフォーム -->
-				<form class="mb-5" id="nickname-form" onsubmit="updateNickname(event)">
-					<h3 class="mb-1">Nickname</h3>
-					<p><input type="text" id="nickname" placeholder="{{ current_nickname }}" required></p>
-					<button class="hth-btn" type="submit">Update nickname</button>
-				</form>
+		<!-- 42authの場合はpassword変更非表示 -->
+		{% if not is_42auth_user %}
+		<form id="password-form" onsubmit="updatePassword(event)">
+			<h3 class="mb-1">password</h3>
+			<p>current password: <input type="password" id="current_password" placeholder="current-password" required></p>
+			<p>new password: <input type="password" id="new_password" placeholder="new-password"></p>
+			<button class="hth-btn" type="submit">update password</button>
+		</form>
+		{% endif %}
 
-				<!-- todo: 42authでpassword変更非表示 -->
-				<script>
-					document.addEventListener('DOMContentLoaded', function() {
-						const is42AuthUser = "{{ is_42auth_user|yesno:'true,false' }}";  // Djangoのyesnoフィルターを使用
-						console.log(is42AuthUser)
-						// TODO_ft: 文字列が返ってきてるので 文字列'true'を確認
-						if (is42AuthUser === 'true') {
-							document.getElementById('password-form').style.display = 'none';  // パスワードフォームを非表示にする
-						} else {
-							console.log("Displaying form because user is not 42Auth user.");
-						}
-					});
-				</script>
+	</div>
+</div>
 
-				<form id="password-form" onsubmit="updatePassword(event)">
-					<h3 class="mb-1">password</h3>
-					<p>current password: <input type="password" id="current_password" placeholder="current-password" required></p>
-					<p>new password: <input type="password" id="new_password" placeholder="new-password"></p>
-					<button class="hth-btn" type="submit">update password</button>
-				</form>
-
-
-			</div>
-
-
-
-		</div>
-	<!-- </div> -->
-<!-- </div> -->
-
-<script src="{% static 'accounts/js/edit_profile.js' %}"></script>
+<!--<script src="{% static 'accounts/js/edit_profile.js' %}"></script>-->
