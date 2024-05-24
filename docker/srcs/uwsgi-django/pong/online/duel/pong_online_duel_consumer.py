@@ -4,11 +4,10 @@ import asyncio
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework.permissions import IsAuthenticated
-from accounts.models import CustomUser
 from .pong_online_duel_game_manager import PongOnlineDuelGameManager
+from .pong_online_duel_receive_handler import PongOnlineDuelReceiveHandler
 from ...utils.async_logger import async_log
 from accounts.models import CustomUser
-from chat.models import DMSession, Message
 
 import os
 import redis
@@ -18,6 +17,7 @@ redis_port = os.getenv('REDIS_PORT', 6379)
 
 class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     '''
+    2名のUserによるOnline Pong(Remote Play) の WebSocket Consumer
     参考:【チャンネル レイヤー — Channels 4.0.0 ドキュメント】 <https://channels.readthedocs.io/en/stable/topics/channel_layers.html>
     redis: インメモリデータストアの一種
     - async_log: 出力先 docker/srcs/uwsgi-django/pong/utils/async_log.log
@@ -26,19 +26,17 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
+        """
+        WebSocket 接続時の処理
+        """
         await async_log("開始:connect() ")
         try: 
+            # ユーザー認証
             if not await self.authenticate_user():
                 return
-            # ルーム名を取得
-            self.room_name = self.scope['url_route']['kwargs']['room_name']
-            self.room_group_name = f'duel_room_{self.room_name}'
-            # Redis接続
-            await self.connect_to_redis(self.scope["user"].id)
-            # ルームに追加
-            await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-            await async_log(f"room_group_name: {self.room_group_name}")
-            # 接続受容 clientにonopen()送信
+            # Redisへの接続とルームの設定
+            await self.setup_room_and_redis()
+
             await self.accept()
             await async_log(f'ws接続 {self.scope["user"]}')
 
@@ -48,17 +46,11 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             # したがって、ゲーム状態（変数）を共有する場所が必要。
             # 解決策の方針：
             # Redisに毎回保存する
-            # Pong game engineをセット
             self.game_manager = PongOnlineDuelGameManager()
             await self.game_manager.initialize_game()
-            
-            
-            # 接続されているユーザー数を取得
-            self.client_count = await database_sync_to_async(self.redis_client.scard)(self.room_group_name)
-            await async_log(f"client_count: {self.client_count}")
-            # 2名インしたらメッセージを送信してconnect()処理終了
-            await self.check_opponent_and_send_message()
-            await async_log("正常終了: connect()")
+
+            # 接続ユーザー数の確認と対戦相手のチェック
+            await self.check_connected_users()
         except Exception as e:
             await async_log(f"Redis operation error: {str(e)}")
             # 1011: 予期しない状態または内部エラーが発生
@@ -83,10 +75,18 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             return False
         return True
     
+    async def setup_room_and_redis(self):
+        # ルーム名を取得
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = f'duel_room_{self.room_name}'
+        # Redis接続
+        await self.connect_to_redis(self.scope["user"].id)
+        # ルームに追加
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        await async_log(f"room_group_name: {self.room_group_name}")
+
     async def connect_to_redis(self, current_user_id):
-        """
-        最大range回リトライ 
-        """
+        """ 最大range回リトライ """
         # await async_log("開始:redis ")
         for _ in range(5): 
             try:
@@ -111,9 +111,17 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             return
         # await async_log("終了:redis ")
 
+    async def check_connected_users(self):
+        # 接続されているユーザー数を取得
+        self.connected_user_count = await database_sync_to_async(self.redis_client.scard)(self.room_group_name)
+        await async_log(f"connected_user_count: {self.connected_user_count}")
+        # 2名インしたらメッセージを送信してconnect()処理終了
+        await self.check_opponent_and_send_message()
+        await async_log("正常終了: connect()")
+
     async def check_opponent_and_send_message(self):
         """対戦相手の確認とメッセージ送信"""
-        if self.client_count == 2:
+        if self.connected_user_count == 2:
             await async_log("2名がinしました")
             await self.channel_layer.group_send(self.room_group_name, {
                 'type': 'duel.both_players_entered_room',
@@ -126,7 +134,6 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                 'type': 'duel.waiting_opponent',
                 'message': 'Incoming hotshot! Better get your game face on...'
             }))
-
 
     async def duel_both_players_entered_room(self, event):
         """
@@ -143,95 +150,6 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 
     async def waiting_opponent(self, event):
         await self.send(text_data=json.dumps(event))
-
-    @database_sync_to_async
-    def send_dm_to_user(self, sender, recipient, message_text):
-        session = DMSession.get_session(user_id=sender.id, other_user_id=recipient.id)
-        message = Message(
-            sender=sender,
-            receiver=recipient,
-            message=message_text
-        )
-        message.save()
-
-    @database_sync_to_async
-    def _get_user_by_nickname(self, nickname: str):
-        return CustomUser.objects.get(nickname=nickname)
-    
-
-
-
-    async def receive(self, text_data=None):
-        await async_log("receive(): 開始 クライアントからのtext_data受信: " + text_data)
-        try:
-            json_data = json.loads(text_data)
-            action = json_data.get('action')
-            if action == 'start':
-                await self.handle_start_action(json_data)
-            elif action == 'reconnect':
-                await self.handle_reconnect_action(json_data)
-            elif action == 'update':
-                await self.handle_update_action(json_data)
-            else:
-                await self.handle_invalid_action()
-        except json.JSONDecodeError:
-            await self.close(code=1007)
-        except Exception as e:
-            await self.handle_error(e)
-
-
-    async def handle_start_action(self, json_data):
-        await database_sync_to_async(self.redis_client.sadd)(
-                                        f"start_signals_{self.room_group_name}", 
-                                        self.scope["user"].id
-                                    )
-        # スタートシグナルが2つ揃ったか確認
-        signal_count = await database_sync_to_async(self.redis_client.scard)(f"start_signals_{self.room_group_name}")
-        if signal_count == 2 and hasattr(self, 'game_manager'):
-            await async_log("両方のプレイヤーが準備完了しました。ゲームを開始します。")
-            initial_state = self.game_manager.pong_engine_data
-            await self.send_game_state(initial_state)
-            # RedisのSetを削除
-            await database_sync_to_async(self.redis_client.delete)(f"start_signals_{self.room_group_name}")
-        else:
-            await self.send(text_data=json.dumps({"message": "Waiting for another player to start"})) 
-
-    async def handle_reconnect_action(self, json_data):
-        """
-        - 更新時データ構造: game_settingsを含む全てのデータを送信している
-        - 送信時データ構造: game_settingsを含む全てのデータを送信している
-        """
-        # await async_log("再接続時: クライアントからの受信: " + json.dumps(json_data))
-        await self.game_manager.restore_game_state(json_data)
-        restored_state = self.game_manager.pong_engine_data
-        # await async_log("再接続時: engine_data: " + json.dumps(restored_state))
-        await self.send_game_state(restored_state)
-    
-    async def handle_update_action(self, json_data):
-        """
-        ※ TOOD_ft:処理高速化のために必要な情報に絞りたい
-        - 計算時データ構造: objectsのみ
-        - 送信時データ構造: game_settingsを含む全てのデータを送信している
-        """
-        # await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
-        await self.game_manager.update_game(json_data['objects'])
-        updated_state = self.game_manager.pong_engine_data
-        # await async_log("更新時engine_data: " + json.dumps(updated_state))
-        await self.send_game_state(updated_state)
-    
-    async def handle_invalid_action(self, json_data):
-        """ 
-        期待されるキーが含まれていない場合
-         - code: RFC6455 WebSocket app 4000 + 400 Bad Request
-        """
-        await self.send(text_data=json.dumps({"error": "Invalid request format"}))
-        await self.close(code=4400)  
-        
-    async def handle_error(self, e):
-        """ code: RFC6455 WebSocket app 4000 + 500 Internal server error """
-        await self.send(text_data=json.dumps({"error": "Internal server error", "details": str(e)}))
-        await self.close(code=4500)
-
 
     async def send_game_state(self, game_state):
         await self.channel_layer.group_send(self.room_group_name, {
@@ -257,3 +175,29 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def _get_system_user(self):
         return CustomUser.objects.get(is_system=True)
+
+    @database_sync_to_async
+    def _get_user_by_nickname(self, nickname: str):
+        return CustomUser.objects.get(nickname=nickname)
+
+
+
+
+    async def receive(self, text_data=None):
+        """WebSocket からメッセージを受信した際の処理"""
+        handler = PongOnlineDuelReceiveHandler(self)
+        try:
+            data = json.loads(text_data)
+            action = data.get('action')
+            if action == 'start':
+                await handler.handle_start_action(data)
+            elif action == 'reconnect':
+                await handler.handle_reconnect_action(data)
+            elif action == 'update':
+                await handler.handle_update_action(data)
+            else:
+                await handler.handle_invalid_action(data)  # 無効なアクションの処理
+        except json.JSONDecodeError:
+            await self.close(code=1007)
+
+
