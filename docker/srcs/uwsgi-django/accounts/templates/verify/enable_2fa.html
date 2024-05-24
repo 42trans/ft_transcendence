@@ -2,26 +2,22 @@
 
 {% load static %}
 
-<!-- <div class="canvas-container"> -->
-	<!-- <div class="hs-text"> -->
-		<div class="container">
+<div class="container">
 
-			<div class="user-info-container">
-				<h2 class="pb-3">Enable Two-Factor Authentication (2FA)</h2>
-				<div id="qrCodeContainer" class="pb-3"></div>
-				<div id="error-message" style="color: red;"></div>
-				<form id="enableForm">
-					<div class="pb-3">
-						<label for="token">Verification Code:</label>
-						<input type="text" id="token" name="token" required>
-					</div>
-					<button class="hth-btn verifyTokenButton">Enable 2FA</button>
-<!--					<button class="hth-btn" type="button">Enable 2FA</button>-->
-				</form>
+	<div class="user-info-container">
+		<h2 class="pb-3">Enable Two-Factor Authentication (2FA)</h2>
+		<div id="qrCodeContainer" class="pb-3"></div>
+		<div id="error-message" style="color: red;"></div>
+		<form id="enableForm">
+			<div class="pb-3">
+				<label for="token">Verification Code:</label>
+				<input type="text" id="token" name="token" required>
 			</div>
+			<button class="hth-btn verifyTokenButton">Enable 2FA</button>
+<!--					<button class="hth-btn" type="button">Enable 2FA</button>-->
+		</form>
+	</div>
 
-		</div>
-	<!-- </div> -->
-<!-- </div> -->
+</div>
 
 <!--<script type="module" src="{% static 'accounts/js/enable_2fa.js' %}"></script>-->
