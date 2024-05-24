@@ -55,7 +55,7 @@ const getSelectedRoute = (currentPath, routes, isLogined) => {
 };
 
 
-function get_view(path) {
+function getView(path) {
   // 選択されたルートを取得
   const selectedRoute = getSelectedRoute(path, routeTable, isLogined());
   console.log("renderView: selectedRoute.path: " + selectedRoute.path)
@@ -69,11 +69,11 @@ function get_view(path) {
 
 export const renderView = async (path) => {
   console.log("    renderView 1: path: " + path)
-  const view = get_view(path)
+  const view = getView(path)
 
   // HTMLの描画 <div id="app">
-  const html_src = await view.getHtml();
-  document.querySelector("#spa").innerHTML = html_src;
+  const htmlSrc = await view.getHtml();
+  document.querySelector("#spa").innerHTML = htmlSrc;
   console.log("    renderView 2")
 
   // スクリプトの読み込みと実行
