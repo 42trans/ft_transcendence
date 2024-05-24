@@ -32,7 +32,7 @@ export function fetchEnable2FA() {
 }
 
 
-export function verifyToken() {
+function verifyToken() {
 	const token = document.getElementById('token').value;
 
 	fetch('/accounts/api/enable_2fa/', {
@@ -62,4 +62,13 @@ export function verifyToken() {
 }
 
 
-window.verifyToken = verifyToken;
+export function setupVerifyTokenEventListener() {
+	console.log("Setup logout event listeners");
+	const verifyTokenButton = document.querySelector('.hth-btn.verifyTokenButton');
+	if (verifyTokenButton) {
+		verifyTokenButton.addEventListener('click', (event) => {
+			event.preventDefault();
+			verifyToken();
+		});
+	}
+}

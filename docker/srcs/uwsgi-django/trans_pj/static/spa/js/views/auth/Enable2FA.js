@@ -21,12 +21,9 @@ export default class extends AbstractView {
   async executeScript() {
     loadAndExecuteScript("/static/accounts/js/enable_2fa.js", true);
 
-    import("/static/accounts/js/enable_2fa.js")
-        .then(module => {
-          module.fetchEnable2FA();
-          document.querySelector('button').addEventListener('click', module.verifyToken)
-        })
-        .catch(error => console.error("Failed to load user profile scripts:", error));
+    const enable2FaModule = await import("/static/accounts/js/enable_2fa.js");
+    enable2FaModule.fetchEnable2FA();
+    enable2FaModule.setupVerifyTokenEventListener();
   }
 
 }
