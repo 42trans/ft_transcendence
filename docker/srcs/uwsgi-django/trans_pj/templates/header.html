@@ -67,10 +67,10 @@
 									href="/home/" data-link>TransPJ-Index</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="/lang/" data-link>Lang</a></li>
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/script1/" data-link>Script1</a></li>
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/script2/" data-link>Script2</a></li>
+<!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
+<!--									href="/script1/" data-link>Script1</a></li>-->
+<!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
+<!--									href="/script2/" data-link>Script2</a></li>-->
 
 			<!-- pong -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
@@ -86,8 +86,8 @@
 			<!-- user -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="/game-history/" data-link>Game-History</a></li>
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/user-profile/" data-link>User-Profile</a></li>
+<!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
+<!--									href="/user-profile/" data-link>Profile</a></li>-->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="/user-friends/" data-link>Friend</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
@@ -98,6 +98,16 @@
 
 		<div class="ms-auto">
 			{% if user.is_authenticated %}
+				<button type="button"
+						class="
+								btn
+								btn-primary
+								transition-ease-color
+								me-2
+								nav__link"
+						data-link
+						onclick="location.href='/user-profile/'">Profile</button>
+
 				<button type="button"
 						class="
 							btn
@@ -116,6 +126,7 @@
 							nav__link"
 						data-link
 						onclick="location.href='/login/'">Log-in</button>
+
 				<button type="button"
 						class="
 							btn
