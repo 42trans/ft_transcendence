@@ -22,9 +22,11 @@ export default class extends AbstractView {
     }
 
     async executeScript() {
-      await loadAndExecuteScript("/static/accounts/js/block-user.js");
-      await loadAndExecuteScript("/static/accounts/js/unblock-user.js");
-      // loadAndExecuteScript("/static/chat/js/test-system-message.js");// await loadAndExecuteScript("/static/accounts/js/friend.js", true);
+      const blockUserModule = await import("/static/accounts/js/block-user.js");
+      blockUserModule.setupBlockUserEventListener();
+
+      const unblockUserModule = await import("/static/accounts/js/unblock-user.js");
+      unblockUserModule.setupUnBlockUserEventListener();
 
       const friendModule = await import("/static/accounts/js/friend.js");
       friendModule.setupFriendRequestListEventListeners();

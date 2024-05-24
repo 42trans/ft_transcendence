@@ -11,9 +11,9 @@
     <li><a href="/dm-with/{{ user_data.info_user_nickname }}">DM with {{ user_data.info_user_nickname }}</a></li>
     <br>
     {% if not user_data.isBlockingUser %}
-    <li><a href="#" onclick="blockUser('{{ user_data.info_user_nickname }}'); return false;">block</a></li>
+        <button class="hth-btn blockUserButton" data-nickname="{{ user_data.info_user_nickname }}">block</button>
     {% else %}
-    <li><a href="#" onclick="unblockUser('{{ user_data.info_user_nickname }}'); return false;">unblock</a></li>
+        <button class="hth-btn unBlockUserButton" data-nickname="{{ user_data.info_user_nickname }}">unblock</button>
     {% endif %}
 <!--    <li><a href="#" onclick="sendSystemMessage('{{ user_data.info_user_nickname }}');">[test] send system message to {{ user_data.info_user_nickname }}</a></li>-->
 <!--    <li><a href="#" onclick="sendSystemMessage('user1');">[test] send system message to user1</a></li>-->
@@ -35,7 +35,7 @@
     {% endif %}
 </ul>
 
-<script src="{% static 'accounts/js/block-user.js' %}"></script>
-<script src="{% static 'accounts/js/unblock-user.js' %}"></script>
-<script type="module" src="{% static 'accounts/js/friend.js' %}"></script>
-<script src="{% static 'chat/js/test-system-message.js' %}"></script>
+<!--<script src="{% static 'accounts/js/block-user.js' %}"></script>-->
+<!--<script src="{% static 'accounts/js/unblock-user.js' %}"></script>-->
+<!--<script type="module" src="{% static 'accounts/js/friend.js' %}"></script>-->
+<!--<script src="{% static 'chat/js/test-system-message.js' %}"></script>-->
