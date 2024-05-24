@@ -36,7 +36,7 @@ class PongOnlineDuelReceiveHandler:
         restored_state = self.consumer.game_manager.pong_engine_data
         # await async_log("再接続時: engine_data: " + json.dumps(restored_state))
         await self.consumer.send_game_state(restored_state)
-    
+
     async def handle_update_action(self, json_data):
         """
         ※ TOOD_ft:処理高速化のために必要な情報に絞りたい
@@ -46,6 +46,11 @@ class PongOnlineDuelReceiveHandler:
         # await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
         await self.consumer.game_manager.update_game(json_data['objects'])
         updated_state = self.consumer.game_manager.pong_engine_data
+        # 更新されたゲーム状態をRedisに保存
+        await database_sync_to_async(self.consumer.redis_client.set)(
+            f"game_state:{self.consumer.room_name}",
+            json.dumps(updated_state)
+        )
         # await async_log("更新時engine_data: " + json.dumps(updated_state))
         await self.consumer.send_game_state(updated_state)
     

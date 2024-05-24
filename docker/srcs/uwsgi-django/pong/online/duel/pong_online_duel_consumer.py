@@ -15,6 +15,8 @@ import redis
 redis_host = os.getenv('REDIS_HOST', 'redis')
 redis_port = os.getenv('REDIS_PORT', 6379)
 
+game_managers = {}
+
 class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     '''
     2名のUserによるOnline Pong(Remote Play) の WebSocket Consumer
@@ -29,6 +31,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         """
         WebSocket 接続時の処理
         """
+        self.redis_client = redis.Redis(host=redis_host, port=redis_port, db=0)
         await async_log("開始:connect() ")
         try: 
             # ユーザー認証
@@ -40,19 +43,10 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             await self.accept()
             await async_log(f'ws接続 {self.scope["user"]}')
 
-            # Bug: 
-            # AsyncWebsocketConsumer のインスタンスは接続ごとに生まれる。つまり二つ生まれる。
-            # 他のduel roomに影響するのでクラス変数もグローバル変数も使えない。
-            # したがって、ゲーム状態（変数）を共有する場所が必要。
-            # 解決策の方針：
-            # Redisに毎回保存する
-            self.game_manager = PongOnlineDuelGameManager()
-            await self.game_manager.initialize_game()
-
             # 接続ユーザー数の確認と対戦相手のチェック
             await self.check_connected_users()
         except Exception as e:
-            await async_log(f"Redis operation error: {str(e)}")
+            await async_log(f" error: {str(e)}")
             # 1011: 予期しない状態または内部エラーが発生
             await self.close(code=1011)
             return
@@ -78,12 +72,35 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     async def setup_room_and_redis(self):
         # ルーム名を取得
         self.room_name = self.scope['url_route']['kwargs']['room_name']
+        if self.room_name not in game_managers:
+            game_managers[self.room_name] = PongOnlineDuelGameManager()
+        self.game_manager = game_managers[self.room_name]
+
         self.room_group_name = f'duel_room_{self.room_name}'
         # Redis接続
         await self.connect_to_redis(self.scope["user"].id)
         # ルームに追加
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await async_log(f"room_group_name: {self.room_group_name}")
+        # ゲーム状態の初期化
+        await self.initialize_game_state()
+
+    async def initialize_game_state(self):
+        game_state = await database_sync_to_async(self.redis_client.get)(f"game_state:{self.room_name}")
+        if game_state is None:
+            # self.game_manager = PongOnlineDuelGameManager()
+            await self.game_manager.initialize_game()
+            game_state = self.game_manager.get_state()
+            await async_log(f"1 game_state: {game_state}")
+            await database_sync_to_async(self.redis_client.set)(f"game_state:{self.room_name}", json.dumps(game_state))
+        else:
+            game_state = json.loads(game_state)
+            await async_log(f"2 game_state: {game_state}")
+            if not hasattr(self, 'game_manager'):
+                # self.game_manager = PongOnlineDuelGameManager()
+                await self.game_manager.initialize_game()
+            await self.game_manager.restore_game_state(game_state)
+            
 
     async def connect_to_redis(self, current_user_id):
         """ 最大range回リトライ """
@@ -91,7 +108,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         for _ in range(5): 
             try:
                 await async_log(f"接続ユーザーID: {current_user_id}")
-                self.redis_client = redis.Redis(host=redis_host, port=redis_port)
+                # self.redis_client = redis.Redis(host=redis_host, port=redis_port)
                 added = await database_sync_to_async(self.redis_client.sadd)(self.room_group_name, current_user_id)
 
                 members = await database_sync_to_async(self.redis_client.smembers)(self.room_group_name)
@@ -187,17 +204,15 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         """WebSocket からメッセージを受信した際の処理"""
         handler = PongOnlineDuelReceiveHandler(self)
         try:
-            data = json.loads(text_data)
-            action = data.get('action')
+            json_data = json.loads(text_data)
+            action = json_data.get('action')
             if action == 'start':
-                await handler.handle_start_action(data)
+                await handler.handle_start_action(json_data)
             elif action == 'reconnect':
-                await handler.handle_reconnect_action(data)
+                await handler.handle_reconnect_action(json_data)
             elif action == 'update':
-                await handler.handle_update_action(data)
+                await handler.handle_update_action(json_data)
             else:
-                await handler.handle_invalid_action(data)  # 無効なアクションの処理
+                await handler.handle_invalid_action(json_data)
         except json.JSONDecodeError:
             await self.close(code=1007)
-
-

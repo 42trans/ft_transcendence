@@ -38,6 +38,8 @@ class PongOnlineDuelGameManager:
         # await async_log(self.pong_engine_data)
         return self
 
+    def get_state(self):
+        return self.pong_engine_data
 
     async def update_game(self, json_data):
         await self.pong_engine_update.update_game(json_data)
@@ -45,17 +47,19 @@ class PongOnlineDuelGameManager:
 
 
     async def restore_game_state(self, client_json_state):
-        if "game_settings" in client_json_state:
-            self.pong_engine_data["game_settings"].update(client_json_state["game_settings"])
-        if "objects" in client_json_state:
-            for key in ["ball", "paddle1", "paddle2"]:
-                if key in client_json_state["objects"]:
-                    self.pong_engine_data["objects"][key].update(client_json_state["objects"][key])
-        if "state" in client_json_state:
-            self.pong_engine_data["state"].update(client_json_state["state"])
-        if "is_running" in client_json_state:
-            self.pong_engine_data["is_running"] = client_json_state["is_running"]
-        # ログ出力
-        # await async_log("Game state restored from client.")
-        return self
+        try:
+            if "game_settings" in client_json_state:
+                self.pong_engine_data["game_settings"].update(client_json_state["game_settings"])
+            if "objects" in client_json_state:
+                for key in ["ball", "paddle1", "paddle2"]:
+                    if key in client_json_state["objects"]:
+                        self.pong_engine_data["objects"][key].update(client_json_state["objects"][key])
+            if "state" in client_json_state:
+                self.pong_engine_data["state"].update(client_json_state["state"])
+            if "is_running" in client_json_state:
+                self.pong_engine_data["is_running"] = client_json_state["is_running"]
+            await async_log(f"Restored game state successfully.")
+        except Exception as e:
+            await async_log(f"Failed to restore game state: {str(e)}")
+            raise e
 
