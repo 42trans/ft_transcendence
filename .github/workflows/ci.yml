@@ -61,7 +61,7 @@ jobs:
 
       - name: wait for start up django container
         run: |
-          timeout=300
+          timeout=600
           elapsed=0
           while [ "$(docker inspect --format='{{.State.Health.Status}}' uwsgi-django)" != "healthy" ]; do
             if [ $elapsed -ge $timeout ]; then
