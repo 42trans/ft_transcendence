@@ -39,6 +39,7 @@ const setupBodyClickListener = () => {
       const url = event.target.href;
       switchPage(url);
     }
+    // setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 
