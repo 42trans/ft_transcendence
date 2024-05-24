@@ -28,7 +28,7 @@ export function startDMwithUser() {
 
     // Enterキーで送信
     input.onkeyup = function(e) {
-        if (e.keyCode === 13) {  // enter, return
+        if (e.key === "Enter") {
             submitButton.click();
         }
     };

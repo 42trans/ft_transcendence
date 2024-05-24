@@ -1,10 +1,19 @@
 // chat/js/dm-with-user.js
 import { applyStylesToInitialLoadMessages } from './module/apply-message-style.js';
-import { setupWebSocket } from './module/setup-websocket.js';
+import { setupDmWebsocket } from './module/setup-dm-websocket.js';
 import { setupDOMEventListeners, scrollToBottom } from './module/ui-util.js';
 
 
+function isDMwithBlockingUser() {
+    const dmLog = document.getElementById('dm-log');
+    return dmLog
+}
+
 export function initDM() {
+    if (!isDMwithBlockingUser()) {
+        return
+    }
+
     const dmTargetNickname = JSON.parse(
         document.getElementById('target_nickname').textContent
     );
@@ -12,7 +21,7 @@ export function initDM() {
     applyStylesToInitialLoadMessages(dmTargetNickname);
     scrollToBottom();  // 受信時にスクロール位置を調整
 
-    setupWebSocket(dmTargetNickname);
+    setupDmWebsocket(dmTargetNickname);
     setupDOMEventListeners();
 }
 
