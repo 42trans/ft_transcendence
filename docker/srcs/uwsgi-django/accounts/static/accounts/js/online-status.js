@@ -161,18 +161,20 @@ export function fetchUserId() {
     return fetch("/accounts/api/user/profile/")
         .then(response => {
             if (!response.ok) {
-                throw new Error('Failed to fetch user profile');
+                console.log('GuestUser? UserID not found');
+                return null;
             }
             return response.json();
         })
         .then(data => {
             if (!data.id) {
-                throw new Error('GuestUser? UserID not found');
+                console.log('GuestUser? UserID not found');
+                return null;
             }
             return data.id;
         })
         .catch(error => {
-            console.log('Error:', error);
+            console.error('Error:', error);
             return null;
         });
 }
