@@ -30,9 +30,9 @@ class PongOnlineDuelSyncWS
 		if (recvData.type === 'duel.waiting_opponent') {
 			console.log("waiting_opponent")
 			this.showWaitingMessage();
-		} else if (recvData.type === 'duel.ready') {
-			console.log("duel.ready")
-			PongOnlineDuelUtil.hideWaitingMessage('waiting-message');
+		} else if (recvData.type === 'duel.both_players_entered_room') {
+			console.log("duel.both_players_entered_room")
+			PongOnlineDuelUtil.removeMessage();
 			this.initStartButton();
 		} else if (recvData && recvData.objects && recvData.state){
 			try {

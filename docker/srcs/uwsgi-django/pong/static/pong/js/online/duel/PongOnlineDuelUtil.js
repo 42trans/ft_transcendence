@@ -22,7 +22,7 @@ class PongOnlineDuelUtil
 		button.addEventListener('click', onClickHandler);
 	}
 
-	static removeMessage(elemId) {
+	static removeMessage(elemId = 'hth-pong-duel-waiting-message') {
 		const elem = document.getElementById(elemId);
 		if (elem) {
 			elem.remove();
@@ -30,7 +30,7 @@ class PongOnlineDuelUtil
 	}
 
 	// ウインドウのサイズに合わせて動的に描画サイズを変更
-	resizeForAllDevices(ctx, gameState) 
+	static resizeForAllDevices(ctx, gameState) 
 	{
 		this.ctx		= ctx;
 		this.field		= this.gameStateManager.getState().game_settings.field;
@@ -69,7 +69,7 @@ class PongOnlineDuelUtil
 	}
 
 	/** close時: 自動再接続 */
-	attemptReconnect() 
+	static attemptReconnect() 
 	{
 		// 再接続処理中を表すフラグを立てる
 		this.isReconnecting = true;

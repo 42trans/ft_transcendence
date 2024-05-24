@@ -23,6 +23,7 @@ redis_port = os.getenv('REDIS_PORT', 6379)
 class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     '''
     参考:【チャンネル レイヤー — Channels 4.0.0 ドキュメント】 <https://channels.readthedocs.io/en/stable/topics/channel_layers.html>
+    redis: インメモリデータストアの一種
     '''
     permission_classes = [IsAuthenticated]
 
@@ -61,18 +62,8 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                     self.redis_client = redis.Redis(host=redis_host, port=redis_port)
                     added = await database_sync_to_async(self.redis_client.sadd)(self.room_group_name, current_user_id)
 
-
-                    # exists = await database_sync_to_async(self.redis_client.sismember)(self.room_group_name, current_user_id)
-                    # if exists:
-                    #     await async_log(f"ユーザー {current_user_id} は既に存在します")
-                    # else:
-                    #     added = await database_sync_to_async(self.redis_client.sadd)(self.room_group_name, current_user_id)
-                    #     if not added:
-                    #         await async_log(f"ユーザー {current_user_id} を追加できませんでした")
-                    
                     members = await database_sync_to_async(self.redis_client.smembers)(self.room_group_name)
                     await async_log(f"セットのメンバー: {members}")
-
 
                     if not added:
                         await async_log(f"ユーザーは既にルームにいます: {current_user_id}")
@@ -101,7 +92,6 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 
         # 接続されているユーザー数を取得
         try:
-            # client_count = await self.redis_client.scard(self.room_group_name)
             client_count = await database_sync_to_async(self.redis_client.scard)(self.room_group_name)
             await async_log(f"開始: 人数を数える {client_count}")
         except Exception as e:
@@ -109,21 +99,20 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             await self.close(code=1011)
             return
 
-        # client_count = await self.redis_client.scard(self.room_group_name)
-            
         await async_log(f"開始: 人数を数える {client_count}")
         # 2人揃ったらゲーム開始の合図を送信
         if client_count == 2: 
             try:
                 await async_log("2名がinしました")
                 self.game_manager = PongOnlineDuelGameManager()
-                # self.game_manager = PongOnlineDuelGameManager(self.user_id)
                 await self.game_manager.initialize_game()
                 # await async_log("game_managerが作成されました")
                 await self.channel_layer.group_send(
                     self.room_group_name,
                     {
-                        'type': 'duel.ready',
+                        'type': 'duel.both_players_entered_room',
+                        'room_group_name': self.room_group_name,
+                        'message': 'Both players have entered the room. Get ready!'
                     }
                 )
             except Exception as e:
@@ -138,6 +127,16 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 
         await async_log("終了: connect()処理が正常終了")
 
+
+    async def duel_both_players_entered_room(self, event):
+        """
+        両方のプレイヤーがルームに入ったときに呼び出されるメソッド
+        """
+        await self.send(text_data=json.dumps({
+            "type": "duel.both_players_entered_room",
+            "room": event["room_group_name"],
+            "message": event["message"],
+        }))
 
     async def game_start(self, event):
         await self.send(text_data=json.dumps(event))
@@ -175,8 +174,14 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             return
 
         try:
-            # 2名からのスタートボタンのシグナルをもらったらボールサーブ
+            # 2名からのスタートボタンのシグナルをもらったら1秒後に開始するメッセージをUIに表示したい
             if 'action' in json_data and json_data['action'] == 'initialize':
+                # 2つが揃ったら
+                await self.send(text_data=json.dumps({
+                'type': 'duel.ready-ok',
+            }))
+            # 英語を検討したい
+            if 'action' in json_data and json_data['action'] == 'ready-ok':
                 # json: key==actionのみ
                 await async_log("初回クライアントからの受信: " + json.dumps(json_data))
                 initial_state = self.game_manager.pong_engine_data
