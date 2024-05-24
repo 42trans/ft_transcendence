@@ -1,3 +1,5 @@
+// user-page.js
+
 function fetchUserProfile() {
     fetch("/accounts/api/user/profile/")
         .then(response => response.json())

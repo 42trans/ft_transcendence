@@ -113,7 +113,6 @@ class LoginAPIView(APIView):
             data = {
                 'message'   : 'Basic authentication successful',
                 'redirect'  : '/game/',     # SPA /game/にリダイレクト
-                'user_id'   : user.id,      # OnlineStatusWebSocketの接続に使用
             }
             return get_jwt_response(user, data)
 

@@ -153,30 +153,48 @@ function updateOrCreateFriendListItem(friend) {
 }
 
 
+export function fetchUserId() {
+    return fetch("/accounts/api/user/profile/")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user profile');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.id) {
+                throw new Error('GuestUser? UserID not found');
+            }
+            return data.id;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            return null;
+        });
+}
+
+
 export function setOnlineStatus() {
     console.log('setOnlineStatus called');
 
-    const userIdElement = document.getElementById('user-id');
-    if (!userIdElement) {
-        console.log('User ID not found');
-        return;
-    }
+    fetchUserId().then(userId => {
+        if (!userId) {
+            console.log('GuestUser? UserID not found');
+            return;
+        }
 
-    const userId = userIdElement.value;
-
-    function onPageLoad() {
-        if (userId) {
+        function onPageLoad() {
             connectOnlineStatusWebSocket(userId);
         }
-    }
 
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        onPageLoad();
-    } else {
-        window.addEventListener('load', onPageLoad);
-    }
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            onPageLoad();
+        } else {
+            window.addEventListener('load', onPageLoad);
+        }
 
-    window.addEventListener('popstate', function(event) {
-        onPageLoad();
+        window.addEventListener('popstate', function(event) {
+            onPageLoad();
+        });
     });
 }

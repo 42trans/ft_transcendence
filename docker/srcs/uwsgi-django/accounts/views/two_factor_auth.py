@@ -223,7 +223,6 @@ class Verify2FaAPIView(APIView):
                 data = {
                     'message'   : '2FA verification successful',
                     'redirect'  : '/user-profile/',
-                    'user_id'   : user.id,      # OnlineStatusWebSocketの接続に使用
                 }
                 return get_jwt_response(user, data)
 
