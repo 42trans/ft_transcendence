@@ -1,6 +1,6 @@
 // verify_2fa.js
 
-export function verifyToken() {
+function verify2FA() {
 	const token = document.getElementById('token').value;
 	fetch('/accounts/api/verify_2fa/', {
 		method: 'POST',
@@ -36,4 +36,15 @@ export function clearForm() {
 
 
 // グローバルスコープに公開
-window.verifyToken = verifyToken;
+// window.verify2FA = verify2FA;
+
+export function setupVerify2FaEventListener() {
+	console.log("Setup logout event listeners");
+	const verify2FaButton = document.querySelector('.hth-btn.verify2FaButton');
+	if (verify2FaButton) {
+		verify2FaButton.addEventListener('click', (event) => {
+			event.preventDefault();
+			verify2FA();
+		});
+	}
+}

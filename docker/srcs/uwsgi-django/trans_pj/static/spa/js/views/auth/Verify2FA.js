@@ -21,5 +21,8 @@ export default class extends AbstractView {
   async executeScript() {
     loadAndExecuteScript("/static/accounts/js/verify_2fa.js", true);
 
+    const verify2FaModule = await import("/static/accounts/js/verify_2fa.js");
+    verify2FaModule.setupVerify2FaEventListener();
   }
+
 }
