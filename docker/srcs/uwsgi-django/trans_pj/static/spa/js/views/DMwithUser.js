@@ -18,6 +18,8 @@ export default class extends AbstractView {
     return data;
   }
   async executeScript() {
-    loadAndExecuteScript("/static/chat/js/dm-sessions.js", true);
+    // loadAndExecuteScript("/static/chat/js/dm-with-user.js", true);
+    const dmWithUserModule = await import("/static/chat/js/dm-with-user.js");
+    dmWithUserModule.initDM();
   }
 }

@@ -1,10 +1,6 @@
-<!-- chat/templates/chat/dm.html -->
+<!-- chat/templates/chat/dm_with.html -->
+
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>DM Room</title>
 
     <!-- メッセージのスタイル（仮仕様） -->
     <style>
@@ -103,8 +99,6 @@
 
     </style>
 
-</head>
-<body>
 
 {% if not isSystemUser %}
     <h2>DM with <a href="/user-info/{{ target_nickname }}/">{{ target_nickname }}</a></h2>
@@ -146,7 +140,4 @@
 
 {{ target_nickname|json_script:"target_nickname" }}
 
-<script type="module" src="{% static 'chat/js/dm.js' %}"></script>
-
-</body>
-</html>
+<!--<script type="module" src="{% static 'chat/js/dm-with-user.js' %}"></script>-->

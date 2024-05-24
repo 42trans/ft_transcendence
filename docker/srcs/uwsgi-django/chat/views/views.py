@@ -26,7 +26,7 @@ class DMView(LoginRequiredMixin, TemplateView):
     nicknameが存在しないuserなどの不正値出会った場合は、chat:dm_sessions へ遷移
     Login認証していなければ accounts:login へ遷移
     """
-    template_name = "chat/dm.html"
+    template_name = "chat/dm_with.html"
     error_occurred_redirect_to = "chat:dm_sessions"
 
     def get(self, request, target_nickname):

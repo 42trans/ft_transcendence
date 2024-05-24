@@ -18,12 +18,9 @@ export default class extends AbstractView {
   async executeScript() {
     // executeScriptTab("/static/chat/js/dm-sessions.js", true);
 
-    import("/static/chat/js/dm-sessions.js")
-        .then(module => {
-          module.fetchDMList();
-          module.startDMwithUser();
-        })
-        .catch(error => console.error("Failed to load user profile scripts:", error));
+    const dmSessionModule = await import("/static/chat/js/dm-sessions.js");
+    dmSessionModule.fetchDMList();
+    dmSessionModule.startDMwithUser();
 
   }
 }

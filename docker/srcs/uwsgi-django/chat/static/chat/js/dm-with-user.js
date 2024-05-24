@@ -1,10 +1,10 @@
-// chat/js/dm.js
+// chat/js/dm-with-user.js
 import { applyStylesToInitialLoadMessages } from './module/apply-message-style.js';
 import { setupWebSocket } from './module/setup-websocket.js';
 import { setupDOMEventListeners, scrollToBottom } from './module/ui-util.js';
 
 
-function initDM() {
+export function initDM() {
     const dmTargetNickname = JSON.parse(
         document.getElementById('target_nickname').textContent
     );
@@ -18,4 +18,4 @@ function initDM() {
 
 
 // ページが完全に読み込まれた後にDM画面を初期化し、初期スクロール位置を設定
-document.addEventListener('DOMContentLoaded', initDM);
+// document.addEventListener('DOMContentLoaded', initDM);
