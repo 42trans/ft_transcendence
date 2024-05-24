@@ -11,6 +11,7 @@ body {
   /*position: relative;*/
   /*z-index: 1021; !* ヘッダーよりも下に表示されるようにz-indexを設定 *!*/
   z-index: 1; /* ヘッダーよりも下に表示されるようにz-indexを設定 */
+  padding: 20px; /* 内側の余白を設定 */
 }
 
 #app {
