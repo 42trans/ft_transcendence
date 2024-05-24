@@ -6,7 +6,7 @@ import FreePlay     from "../views/pong/Pong.js";
 import Tournament   from "../views/pong/Tournament.js";
 import Game1vs1     from "../views/pong/Game1vs1.js";
 
-import GameHistory  from "../views/user/UserProfile.js";
+import GameHistory  from "../views/user/GameHistory.js";
 
 import UserProfile  from "../views/user/UserProfile.js";
 import UserInfo     from "../views/user/UserInfo.js";

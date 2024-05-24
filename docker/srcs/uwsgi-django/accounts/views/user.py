@@ -256,3 +256,19 @@ class UploadAvatarAPI(APIView):
         if ext not in valid_extensions:
             raise ValidationError(f'Unsupported file extension {ext}.'
                                   f' Allowed types are: jpg, jpeg, png, gif.')
+
+
+class GetUserProfileTemplateView(LoginRequiredMixin, TemplateView):
+    template_name = "accounts/game_history.html"
+
+    def get(self, request, *args, **kwargs):
+        if not is_valid_jwt(request):
+            return redirect('accounts:login')
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['nickname'] = user.nickname
+        return context
