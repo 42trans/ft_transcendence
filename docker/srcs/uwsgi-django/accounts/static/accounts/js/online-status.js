@@ -66,7 +66,11 @@ function handleError(event) {
 
 
 function sendStatusUpdate(socket, status, userId) {
-    socket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
+    } else {
+        console.error('WebSocket is not open. readyState: ' + socket.readyState);
+    }
 }
 
 
