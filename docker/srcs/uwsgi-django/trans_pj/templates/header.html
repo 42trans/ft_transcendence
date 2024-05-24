@@ -62,11 +62,15 @@
 <!--									href="/pong/game/">Free Play</a></li>-->
 <!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize"-->
 <!--									href="/pong/tournament">Tournament</a></li>-->
-			<!-- index -->
+			<!-- 開発用テストリンク -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="/home/" data-link>TransPJ-Index</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/game/" data-link>Pong-Index</a></li>
+									href="/lang/" data-link>Lang</a></li>
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="/script1/" data-link>Script1</a></li>
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="/script2/" data-link>Script2</a></li>
 
 			<!-- pong -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
@@ -88,69 +92,44 @@
 									href="/user-friends/" data-link>Friend</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="/dm/" data-link>DM</a></li>
-
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/logout/" data-link>Log-out</a></li>
-
-		{% else %}
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/login/" data-link>Log-in</a></li>
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/signup/" data-link>Sign-up</a></li>
 		{% endif %}
 
-			<!-- other -->
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/lang/" data-link>Lang</a></li>
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/script1/" data-link>Script1</a></li>
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/script2/" data-link>Script2</a></li>
 		</ul>
 
-		<!--  vvvvvvv SPAテストのため一時的に無効化、リンクは↑に集約 vvvvvvv ここから -->
-		<!-- log in -->
-<!--		<div class="-->
-<!--			col-md-4 -->
-<!--			text-end">-->
+		<div class="ms-auto">
+			{% if user.is_authenticated %}
+				<button type="button"
+						class="
+							btn
+							btn-outline-light
+							transition-ease-color
+							me-2
+							logoutButton">Log-out</button>
 
-<!--			{% if user.is_authenticated %}-->
-<!--				&lt;!&ndash; me-x: margin end" の略 &ndash;&gt;-->
-<!--			<button-->
-<!--					type="button"-->
-<!--					class="-->
-<!--						btn -->
-<!--						btn-outline-light -->
-<!--						transition-ease-color-->
-<!--						me-2-->
-<!--						nav__link"-->
-<!--					data-link-->
-<!--					onclick="location.href='/accounts/logout/'">Log out</button>-->
-<!--			{% else %}-->
-<!--			<button-->
-<!--					type="button"-->
-<!--					class="-->
-<!--						btn -->
-<!--						btn-primary-->
-<!--						transition-ease-color-->
-<!--						me-2-->
-<!--						nav__link"-->
-<!--					data-link-->
-<!--					onclick="location.href='/accounts/login/'">Log in</button>-->
-<!--			<button-->
-<!--					type="button"-->
-<!--					class="-->
-<!--						btn -->
-<!--						btn-primary-->
-<!--						transition-ease-color-->
-<!--						nav__link"-->
-<!--					data-link-->
-<!--					onclick="location.href='/accounts/signup/'">Sign up</button>-->
-<!--			{% endif %}-->
-<!--	-->
-<!--		</div>-->
-		<!--  ^^^^^^^　SPAテストのため一時的に無効化、リンクは↑に集約 ^^^^^^^ ここまで -->
+			{% else %}
+				<button type="button"
+						class="
+							btn
+							btn-primary
+							transition-ease-color
+							me-2
+							nav__link"
+						data-link
+						onclick="location.href='/login/'">Log-in</button>
+				<button type="button"
+						class="
+							btn
+							btn-primary
+							transition-ease-color
+							nav__link"
+						data-link
+						onclick="location.href='/signup/'">Sign-up</button>
+			{% endif %}
+		</div>
+
 
 	</div>
 </div>
 </nav>
+
+<script type="module" src="{% static 'accounts/js/logout.js' %}"></script>

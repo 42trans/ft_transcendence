@@ -36,13 +36,15 @@ function handleLogout() {
 
 export function setupLogoutEventListener() {
 	console.log("Setup logout event listeners");
-	const logoutButton = document.querySelector('.hth-btn.logoutButton');
+	const logoutButton = document.querySelector('.btn.logoutButton');
 	if (logoutButton) {
 		logoutButton.addEventListener('click', (event) => {
 			event.preventDefault();
 			handleLogout();
 		});
-	} else {
-		console.error('Logout button not found.');
 	}
 }
+
+
+// header
+document.addEventListener('DOMContentLoaded', setupLogoutEventListener);

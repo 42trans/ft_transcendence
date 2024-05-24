@@ -22,7 +22,7 @@ import Verify2FA    from "../views/auth/Verify2FA.js";
 
 import Signup       from "../views/auth/Signup.js";
 import Login        from "../views/auth/Login.js";
-import Logout       from "../views/auth/Logout.js";
+// import Logout       from "../views/auth/Logout.js";
 
 // import Posts from "../views/Posts.js";
 // import PostView from "../views/PostView.js";
@@ -59,7 +59,7 @@ export const routeTable = [
 
   { path: "/signup/",       view: Signup },
   { path: "/login/",        view: Login },
-  { path: "/logout/",       view: Logout },
+  // { path: "/logout/",       view: Logout },
 
   // { path: "/accounts", view: Accounts },
   // { path: "/admin", view: Admin },
