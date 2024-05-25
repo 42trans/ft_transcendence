@@ -22,6 +22,7 @@ from channels.security.websocket import AllowedHostsOriginValidator
 from accounts.middleware import CookieAuthMiddlewareStack
 import chat.routing
 import accounts.routing
+import pong.routing
 
 
 application = ProtocolTypeRouter({
@@ -30,6 +31,7 @@ application = ProtocolTypeRouter({
         URLRouter(
             chat.routing.websocket_urlpatterns          # chat/routing.py
             + accounts.routing.websocket_urlpatterns    # accounts/routing.py
+            + pong.routing.websocket_urlpatterns        # pong/routing.py
         )
     ),
 

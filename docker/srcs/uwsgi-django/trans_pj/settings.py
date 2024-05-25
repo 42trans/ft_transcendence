@@ -48,7 +48,7 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
-	# 'daphne',							# chat, listed before django.contrib.staticfiles
+	'daphne',							# chat, listed before django.contrib.staticfiles
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -217,7 +217,8 @@ LOGGING = {
 'version': 1,
 'handlers': {
 	'console': {
-		'level': 'ERROR',  # 基礎的な全般設定 ※WARNINGにするとテスト時の意図的な操作も拾ってしまう
+		'level': 'DEBUG',  # 基礎的な全般設定 ※WARNINGにするとテスト時の意図的な操作も拾ってしまう
+		# 'level': 'ERROR',  # 基礎的な全般設定 ※WARNINGにするとテスト時の意図的な操作も拾ってしまう
 		'class': 'logging.StreamHandler',
 	},
 	'console_debug': {
@@ -249,22 +250,24 @@ LOGGING = {
 		'propagate': True,
 	},
 	'django.request': {
-		'handlers': ['logstash'],
+		'handlers': ['console'],
+		# 'handlers': ['logstash'],
 		'level': 'DEBUG',
-		'propagate': True,
+		'propagate': False,
 	},
 	'django': { # Django's default logger
 			'handlers': ['console', 'file'],
+			# 'level': 'DEBUG',
 			'level': 'WARNING',
 			'propagate': True,
 	},
 	'pong': {  # 'pong' はアプリケーション固有のロガーの名前 filterとして特定の場所のdebugに使用する
-		'handlers': ['console'],
+		'handlers': ['console', 'file'],
 		'level': 'DEBUG',
 		'propagate': False,
 	},
 	'pong.views': {
-		'handlers': ['console_debug'],
+		'handlers': ['console_debug', 'file'],
 		'level': 'DEBUG',
 		'propagate': False,
 	},
@@ -275,6 +278,16 @@ LOGGING = {
 	},
 	'accounts': {
 		'handlers': ['console_debug', 'file'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'pong.online': { 
+		'handlers': ['console'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'PongOnlineConsumer': {
+		'handlers': ['console', 'file'],
 		'level': 'DEBUG',
 		'propagate': False,
 	},
@@ -314,6 +327,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # chat
+# TODO_ft: 本番時のredis
 CHANNEL_LAYERS = {
     # 'default': {
     # 	'BACKEND':'channels_redis.core.RedisChannelLayer',
