@@ -226,6 +226,12 @@ test_django_test_py:
 # pong/tournament 
 test_tournament_django_all:
 	docker exec -it uwsgi-django bash -c "python manage.py test pong.tournament.tests"
+# pong/online
+test_online_pong_django:
+	docker exec -it uwsgi-django bash -c "python manage.py test pong.online.tests"
+log_async_online:
+	tail -f docker/srcs/uwsgi-django/pong/utils/async_log.log
+
 
 .PHONY: test_main
 test_main:
