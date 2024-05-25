@@ -1,8 +1,8 @@
 import Dashboard    from "../views/Dashboard.js";
-import Home        from "../views/Home.js";
-import Pong         from "../views/pong/Pong.js";
+import Home         from "../views/Home.js";
+import PongTop      from "../views/pong/PongTop.js";
 
-import FreePlay     from "../views/pong/Pong.js";
+import FreePlay     from "../views/pong/FreePlay.js";
 import Tournament   from "../views/pong/Tournament.js";
 import Game1vs1     from "../views/pong/Game1vs1.js";
 
@@ -38,14 +38,16 @@ import Script2 from "../views/Script2.js";
 export const routeTable = [
   { path: "/",              view: Dashboard },
   { path: "/home/",         view: Home },
-  { path: "/game/",         view: Pong },
+  { path: "/game/",         view: PongTop },
 
-  { path: "/game/",         view: FreePlay },
+  // game
+  { path: "/free-play/",    view: FreePlay },
   { path: "/tournament/",   view: Tournament },
   { path: "/game-1vs1/",    view: Game1vs1 },
 
   { path: "/game-history/", view: GameHistory },
 
+  // user
   { path: "/user-profile/",         view: UserProfile },  // private profile
   { path: "/user-info/:nickname/",  view: UserInfo },     // public profile
   { path: "/user-friends/",         view: Friends },
@@ -53,20 +55,16 @@ export const routeTable = [
   { path: "/dm-with/:nickname/",    view: DMwithUser },
 
   { path: "/edit-profile/",         view: EditProfile },
-  { path: "/change-avatar/",        view: ChangeAvatar },  // todo: edit-profileに統合
+  { path: "/change-avatar/",        view: ChangeAvatar },
+
+  // auth
   { path: "/enable-2fa/",           view: Enable2FA },
   { path: "/verify-2fa/",           view: Verify2FA },
 
   { path: "/signup/",       view: Signup },
   { path: "/login/",        view: Login },
-  // { path: "/logout/",       view: Logout },
 
-  // { path: "/accounts", view: Accounts },
-  // { path: "/admin", view: Admin },
-  // { path: "/posts", view: Posts },
-  // { path: "/posts/:id", view: PostView },
-  // { path: "/settings", view: Settings },
-  // { path: "/ja/settings", view: Settings },
+  // 開発用テストリンク
   { path: "/lang/",         view: Lang },
   { path: "/script1/",      view: Script1 },  // SPA用 ≠ django urls
   { path: "/script2/",      view: Script2 },

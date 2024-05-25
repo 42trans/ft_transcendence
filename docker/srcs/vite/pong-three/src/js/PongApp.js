@@ -22,24 +22,40 @@ class PongApp
 	constructor(env) 
 	{
 		this.env = env;
-		
-		document.addEventListener('DOMContentLoaded', () => 
-		{
-			const matchDataElement = document.getElementById('match-data');
-			if (matchDataElement) {
-				this.matchData = JSON.parse(matchDataElement.textContent);
-				console.log('Match Data:', this.matchData);
-			}
-			this.init();
-			// 無限ループでアニメーションの更新を担当。シングルトン
-			this.renderLoop = LoopManager.getInstance(this);
-			this.renderLoop.start();
-						
-						//dev用　index.jsで`PongApp.main('dev');`で呼び出す
-						if (env === 'dev'){
-							this.setupDevEnv();
-						}
-		});
+
+		// document.addEventListener('DOMContentLoaded', () =>
+		// {
+		// 	const matchDataElement = document.getElementById('match-data');
+		// 	if (matchDataElement) {
+		// 		this.matchData = JSON.parse(matchDataElement.textContent);
+		// 		console.log('Match Data:', this.matchData);
+		// 	}
+		// 	this.init();
+		// 	// 無限ループでアニメーションの更新を担当。シングルトン
+		// 	this.renderLoop = LoopManager.getInstance(this);
+		// 	this.renderLoop.start();
+		//
+		// 				//dev用　index.jsで`PongApp.main('dev');`で呼び出す
+		// 				if (env === 'dev'){
+		// 					this.setupDevEnv();
+		// 				}
+		// });
+
+		const matchDataElement = document.getElementById('match-data');
+		if (matchDataElement) {
+			this.matchData = JSON.parse(matchDataElement.textContent);
+			console.log('Match Data:', this.matchData);
+		}
+		this.init();
+		// 無限ループでアニメーションの更新を担当。シングルトン
+		this.renderLoop = LoopManager.getInstance(this);
+		this.renderLoop.start();
+
+		//dev用　index.jsで`PongApp.main('dev');`で呼び出す
+		if (env === 'dev'){
+			this.setupDevEnv();
+		}
+
 	}
 
 	/**
@@ -62,17 +78,17 @@ class PongApp
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
 	}
 	
-	static main(env) 
+	static main(env)
 	{
 		new PongApp(env);
 	}
 				// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除
-				setupDevEnv() 
+				setupDevEnv()
 				{
 					this.gui = new lil.GUI();
 					const contorolsGUI = new ControlsGUI(
-						this.allScenesManager.effectsScene.scene, 
-						this.gui, 
+						this.allScenesManager.effectsScene.scene,
+						this.gui,
 						this.allScenesManager.effectsScene.camera
 					);
 					contorolsGUI.setupControlsGUI();
