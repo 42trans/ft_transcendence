@@ -9,8 +9,8 @@ from .pong_online_game_manager import PongOnlineGameManager
 from ..utils.async_logger import async_log
 
 class PongOnlineConsumer(AsyncWebsocketConsumer):
-    permission_classes = [AllowAny]
-    # permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     async def connect(self):
         """
@@ -55,6 +55,9 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             # text_data（WebSocket から受け取った生の文字列データ）を jsonに変換
             json_data = json.loads(text_data)
         except json.JSONDecodeError:
+            await self.close(code=1007)
+            return
+        except TypeError:  # json.loadsの例外（text_data=Noneなど）
             await self.close(code=1007)
             return
 

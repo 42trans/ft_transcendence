@@ -9,7 +9,7 @@ import PongOnlineGameStateManager from "./PongOnlineGameStateManager.js"
  * 
  * ## Websocket接続テスト:
  * - brew install websocat
- * - websocat ws://localhost/ws/pong/online/
+ * - websocat wss://localhost/ws/pong/online/
  * 
  * - 座標変換: 参考:【CanvasRenderingContext2D: setTransform() method - Web APIs | MDN】 <https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setTransform>
  */
