@@ -5,7 +5,7 @@ WebsocketでJSON形式で送受信を行います。
 
 ## WebSocketエンドポイント
 
-`ws://localhost/ws/pong/online/`
+`wss://localhost/ws/pong/online/`
 
 ## 認証
 
