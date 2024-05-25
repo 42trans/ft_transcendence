@@ -17,6 +17,7 @@ redis_port = os.getenv('REDIS_PORT', 6379)
 
 game_managers = {}
 
+
 class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     '''
     2名のUserによるOnline Pong(Remote Play) の WebSocket Consumer
@@ -73,7 +74,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         # ルーム名を取得
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         if self.room_name not in game_managers:
-            game_managers[self.room_name] = PongOnlineDuelGameManager()
+            game_managers[self.room_name] = PongOnlineDuelGameManager(self)
         self.game_manager = game_managers[self.room_name]
 
         self.room_group_name = f'duel_room_{self.room_name}'
@@ -100,7 +101,6 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                 # self.game_manager = PongOnlineDuelGameManager()
                 await self.game_manager.initialize_game()
             await self.game_manager.restore_game_state(game_state)
-            
 
     async def connect_to_redis(self, current_user_id):
         """ 最大range回リトライ """
@@ -166,6 +166,10 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event))
 
     async def waiting_opponent(self, event):
+        await self.send(text_data=json.dumps(event))
+
+
+    async def game_end(self, event):
         await self.send(text_data=json.dumps(event))
 
     async def send_game_state(self, game_state):
