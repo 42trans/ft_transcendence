@@ -43,7 +43,7 @@ function clearForm() {
 
 export function setupLoginEventListener() {
 	console.log("Setup login event listeners");
-	const form = document.querySelector('.sign-form');
+	const form = document.querySelector('.hth-sign-form');
 	if (form) {
 		form.addEventListener('submit', (event) => {
 			event.preventDefault();

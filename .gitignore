@@ -20,7 +20,13 @@ docker/srcs/uwsgi-django/sphinx/build
 docker/srcs/uwsgi-django/django_debug.log
 # 再度修正。entrypoint.shで最新ファイルの自動収集を設定したため。
 docker/srcs/uwsgi-django/static/
-docker/srcs/uwsgi-django/media/
+
+# media/ にはupload fileが保存されるため追跡対象外とする
+# ただし、default_avatarのみ追跡対象とする
+docker/srcs/uwsgi-django/media/*
+!docker/srcs/uwsgi-django/media/avatars/
+docker/srcs/uwsgi-django/media/avatars/*
+!docker/srcs/uwsgi-django/media/avatars/default_avatar.jpg
 
 docker/srcs/hardhat/hardhat_pj/artifacts
 docker/srcs/hardhat/hardhat_pj/cache

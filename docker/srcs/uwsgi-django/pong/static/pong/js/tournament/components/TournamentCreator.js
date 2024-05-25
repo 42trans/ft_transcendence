@@ -38,7 +38,7 @@ class TournamentCreator
 	{
 		return `
 		<main class="form-sign m-auto" id="signup-form">
-				<form class="sign-form" onsubmit="signupUser(event)">
+				<form class="hth-sign-form" onsubmit="signupUser(event)">
 					<h2 class="slideup-text mb-3">Create Tournament</h2>
 					
 					<input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
