@@ -21,8 +21,15 @@ game_managers = {}
 class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     '''
     2名のUserによるOnline Pong(Remote Play) の WebSocket Consumer
-    参考:【チャンネル レイヤー — Channels 4.0.0 ドキュメント】 <https://channels.readthedocs.io/en/stable/topics/channel_layers.html>
-    redis: インメモリデータストアの一種
+
+    # インスタンスの数について
+    - Consumerクラスのインスタンス = 2: ws接続ごとに生成、つまりUser数
+    - GameManagerのインスタンス   = 1: ルームに一つ生成
+    - redis cient               = 1: ルームに一つ生成
+
+    - 参考:【チャンネル レイヤー — Channels 4.0.0 ドキュメント】 <https://channels.readthedocs.io/en/stable/topics/channel_layers.html>
+    - redis: インメモリデータストアの一種
+    
     - async_log: 出力先 docker/srcs/uwsgi-django/pong/utils/async_log.log
     '''
     permission_classes = [IsAuthenticated]
@@ -43,6 +50,10 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 
             await self.accept()
             await async_log(f'ws接続 {self.scope["user"]}')
+
+            # Userとchannel_name（送信先）をマッピング
+            self.game_manager.register_user(self.scope["user"].id)
+            self.game_manager.register_channel(self.current_user_id, self.channel_name)
 
             # 接続ユーザー数の確認と対戦相手のチェック
             await self.check_connected_users()
@@ -140,13 +151,29 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         """対戦相手の確認とメッセージ送信"""
         if self.connected_user_count == 2:
             await async_log("2名がinしました")
-            await self.channel_layer.group_send(self.room_group_name, {
-                'type': 'duel.both_players_entered_room',
-                'room_group_name': self.room_group_name,
-                'message': 'Both players have entered the room. Get ready!'
+
+            # パドルの割り当て
+            # self.connected_users: 接続されているユーザーIDのリスト
+            for user_id in self.game_manager.get_user_ids():  
+                if user_id not in self.game_manager.user_paddle_map:
+                    self.game_manager.assign_paddle(user_id)
+                
+            # ルームにいる二人に向けて個別にパドル情報を送信
+            for user_id in self.game_manager.get_user_ids():
+                channel_name = self.game_manager.get_channel_name(user_id)
+                paddle_info = self.game_manager.get_paddle_for_user(user_id)
+                await async_log(f"send paddle_info {paddle_info}")
+
+                await self.channel_layer.send(channel_name, {
+                "type": "websocket.send",
+                "text": json.dumps({
+                    'type': 'duel.both_players_entered_room',
+                    'message': 'Both players have entered the room. Get ready!',
+                    'paddle': paddle_info
+                })
             })
         else:
-            # まだ1人目の場合
+            # まだ1人目の場合、このインスタンスに接続しているUserに向けてsend
             await self.send(text_data=json.dumps({
                 'type': 'duel.waiting_opponent',
                 'message': 'Incoming hotshot! Better get your game face on...'
@@ -156,11 +183,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         """
         両方のプレイヤーがルームに入ったときに呼び出されるメソッド
         """
-        await self.send(text_data=json.dumps({
-            "type": "duel.both_players_entered_room",
-            "room_group_name": event["room_group_name"],
-            "message": event["message"],
-        }))
+        await self.send(text_data=json.dumps(event))
 
     async def game_start(self, event):
         await self.send(text_data=json.dumps(event))
