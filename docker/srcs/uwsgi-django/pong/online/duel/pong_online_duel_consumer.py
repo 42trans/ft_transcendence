@@ -22,10 +22,16 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     '''
     2名のUserによるOnline Pong(Remote Play) の WebSocket Consumer
 
-    # インスタンスの数について
+    ## Redisの作成は一つ:
+    Redisクライアントは、game_managers にルーム名が登録されていない場合（つまり、ルームが初めて作成される場合）にのみ作成。
+    ##更新はlockしてから:
+    disconnect(): 複数のConsumerが同時に切断した場合に対応
+
+
+    ## インスタンスの数について
     - Consumerクラスのインスタンス = 2: ws接続ごとに生成、つまりUser数
-    - GameManagerのインスタンス   = 1: ルームに一つ生成
-    - redis cient               = 1: ルームに一つ生成
+    - GameManager のインスタンス  = 1: ルームに一つ生成
+    - redis cient               = 1: GameManager に一つ生成
 
     - 参考:【チャンネル レイヤー — Channels 4.0.0 ドキュメント】 <https://channels.readthedocs.io/en/stable/topics/channel_layers.html>
     - redis: インメモリデータストアの一種
@@ -39,7 +45,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         """
         WebSocket 接続時の処理
         """
-        self.redis_client = redis.Redis(host=redis_host, port=redis_port, db=0)
+        # self.redis_client = redis.Redis(host=redis_host, port=redis_port, db=0)
         await async_log("開始:connect() ")
         try: 
             # ユーザー認証
@@ -86,7 +92,10 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         if self.room_name not in game_managers:
             game_managers[self.room_name] = PongOnlineDuelGameManager(self)
+            game_managers[self.room_name].redis_client = redis.Redis(host=redis_host, port=redis_port, db=0)
+
         self.game_manager = game_managers[self.room_name]
+        self.redis_client = self.game_manager.redis_client
 
         self.room_group_name = f'duel_room_{self.room_name}'
         # Redis接続
@@ -98,18 +107,19 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         await self.initialize_game_state()
 
     async def initialize_game_state(self):
+        # Redis からゲーム状態の取得
         game_state = await database_sync_to_async(self.redis_client.get)(f"game_state:{self.room_name}")
         if game_state is None:
-            # self.game_manager = PongOnlineDuelGameManager()
+            # Redis にゲーム状態が保存されていない場合
             await self.game_manager.initialize_game()
             game_state = self.game_manager.get_state()
-            await async_log(f"1 game_state: {game_state}")
+            await async_log(f"None game_state: {game_state}")
             await database_sync_to_async(self.redis_client.set)(f"game_state:{self.room_name}", json.dumps(game_state))
         else:
+            # Redis にゲーム状態が保存されている場合
             game_state = json.loads(game_state)
-            await async_log(f"2 game_state: {game_state}")
+            await async_log(f"Exist game_state: {game_state}")
             if not hasattr(self, 'game_manager'):
-                # self.game_manager = PongOnlineDuelGameManager()
                 await self.game_manager.initialize_game()
             await self.game_manager.restore_game_state(game_state)
 
@@ -119,7 +129,6 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         for _ in range(5): 
             try:
                 await async_log(f"接続ユーザーID: {current_user_id}")
-                # self.redis_client = redis.Redis(host=redis_host, port=redis_port)
                 added = await database_sync_to_async(self.redis_client.sadd)(self.room_group_name, current_user_id)
 
                 members = await database_sync_to_async(self.redis_client.smembers)(self.room_group_name)
@@ -165,12 +174,20 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                 await async_log(f"send paddle_info {paddle_info}")
 
                 await self.channel_layer.send(channel_name, {
-                "type": "websocket.send",
-                "text": json.dumps({
-                    'type': 'duel.both_players_entered_room',
-                    'message': 'Both players have entered the room. Get ready!',
-                    'paddle': paddle_info
-                })
+                    # send_event_to_client に共通化
+                    "type": "send_event_to_client",
+                    # 実際にクライアントに送信する内容
+                    "event_type": "duel.both_players_entered_room", 
+                    "event_data": {
+                        'message': 'Both players have entered the room. Get ready!',
+                        'paddle': paddle_info
+                    # }
+                    # "type": "duel.both_players_entered_room",
+                    # "message": {
+                    #     'type': 'duel.both_players_entered_room',
+                    #     'message': 'Both players have entered the room. Get ready!',
+                    #     'paddle': paddle_info
+                }
             })
         else:
             # まだ1人目の場合、このインスタンスに接続しているUserに向けてsend
@@ -179,11 +196,28 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                 'message': 'Incoming hotshot! Better get your game face on...'
             }))
 
-    async def duel_both_players_entered_room(self, event):
-        """
-        両方のプレイヤーがルームに入ったときに呼び出されるメソッド
-        """
-        await self.send(text_data=json.dumps(event))
+
+    async def send_event (self, event_type, event_data):
+        """ グループ（ルーム）に送信"""
+        await self.channel_layer.group_send(self.room_group_name, {
+            # クライアントに送信するメソッドを type に指定して呼び出し
+            'type': 'send_event_to_client',
+            'event_type': event_type,
+            'event_data': event_data
+        })
+
+    async def send_event_to_client(self, event):
+        """ クライアントにイベントを送信 """
+        await self.send(text_data=json.dumps({
+            'type': event['event_type'],
+            'data': event['event_data']
+        }))
+
+    # async def duel_both_players_entered_room(self, event):
+    #     """
+    #     両方のプレイヤーがルームに入ったときに呼び出されるメソッド
+    #     """
+    #     await self.send(text_data=json.dumps(event['message']))
 
     async def game_start(self, event):
         await self.send(text_data=json.dumps(event))
@@ -204,17 +238,34 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     async def send_data(self, event):
         await self.send(text_data=json.dumps(event['data']))
 
+
+
+
     async def disconnect(self, close_code):
         async with asyncio.Lock():
+            try:
+                await self.clear_redis_room()
+            except Exception as e:
+                await async_log(f"Error: disconnect() failed: {e}")
+
+    async def clear_redis_room(self):
+        if hasattr(self, 'redis_client'):
+            # srem: 現在のユーザーをRedisのセットから削除
             await database_sync_to_async(self.redis_client.srem)(self.room_group_name, self.scope["user"].id)
+            # group_discard: Channel Layerのグループから削除
             await self.channel_layer.group_discard(
                 self.room_group_name,
                 self.channel_name
             )
-            await self.clear_redis_room()
+            # 最後のユーザーが切断した場合
+            # scard(key): セット（key）内の要素数を返す。ルームに接続中のユーザー数を取得
+            if await database_sync_to_async(self.redis_client.scard)(self.room_group_name) == 0:
+                # delete(key): 指定されたキー（key）をRedisから削除
+                await database_sync_to_async(self.redis_client.delete)(self.room_group_name)
+                #　Redisクライアントとの接続をを閉じる
+                self.game_manager.redis_client.close()
+                del game_managers[self.room_name] 
 
-    async def clear_redis_room(self):
-        await database_sync_to_async(self.redis_client.delete)(self.room_group_name)
 
     @database_sync_to_async
     def _get_system_user(self):

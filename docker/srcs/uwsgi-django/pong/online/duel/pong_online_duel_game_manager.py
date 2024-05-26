@@ -5,9 +5,11 @@ from ..pong_online_physics import PongOnlinePhysics
 from ..pong_online_match import PongOnlineMatch
 from .pong_online_duel_match import PongOnlineDuelMatch
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from ...utils.async_logger import async_log
 import asyncio
+from accounts.models import CustomUser
+import redis
 
 game_managers_lock = asyncio.Lock() 
 
@@ -27,10 +29,15 @@ class PongOnlineDuelGameManager:
         self.physics            = None
         self.pong_engine_update = None
         self.consumer           = consumer
-        self.user_paddle_map    = {}
-        self.connected_users    = []
+        # Userインスタンスとパドル名
+        self.user_paddle_map: Dict[CustomUser, str]    = {}
+        # Userインスタンス
+        self.connected_users: list[CustomUser]     = []
         # user_id を key とし、channel_name を value とする辞書
-        self.user_channels      = {}  
+        self.user_channels: Dict[int, str]      = {}
+        # Redisクライアント 
+        # Optional: 変数が None になる可能性がある
+        redis_client: Optional[redis.Redis] = None
         
     async def initialize_game(self):
         init                    = PongOnlineInit(self.config)
