@@ -34,17 +34,15 @@ function handleLogout() {
 }
 
 
-export function setupLogoutEventListener() {
-	console.log("Setup logout event listeners");
-	const logoutButton = document.querySelector('.btn.logoutButton');
-	if (logoutButton) {
-		logoutButton.addEventListener('click', (event) => {
-			event.preventDefault();
-			handleLogout();
+// header
+document.addEventListener('DOMContentLoaded', function() {
+	const header = document.querySelector('header');
+	if (header) {
+		header.addEventListener('click', function(event) {
+			if (event.target.classList.contains('logoutButton')) {
+				event.preventDefault();
+				handleLogout();
+			}
 		});
 	}
-}
-
-
-// header
-document.addEventListener('DOMContentLoaded', setupLogoutEventListener);
+});

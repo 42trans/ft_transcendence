@@ -2,12 +2,15 @@ body {
   font-family: "Quicksand", sans-serif;
   font-size: 18px;
   color: black;
+  margin: 0; /* デフォルトのマージンを削除 */
+  padding: 0; /* デフォルトのパディングを削除 */
 }
 
 .spa_area {
   /*border: solid black 1px;*/
   border: solid #00ff00 5px;
-  margin-top: calc(var(--header-height) + 40px);
+  /*margin-top: var(--header-height);*/
+  margin-top: 0;
   /*position: relative;*/
   /*z-index: 1021; !* ヘッダーよりも下に表示されるようにz-indexを設定 *!*/
   z-index: 1; /* ヘッダーよりも下に表示されるようにz-indexを設定 */

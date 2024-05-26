@@ -1,17 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'spa/css/spa.css' %}" />
+    <!-- SPA テスト用CSS -->
+    <link rel="stylesheet" href="{% static 'spa/css/spa.css' %}" />
 {% endblock %}
+
 
 {% block content %}
-{% include 'header.html' %}
-<div id="spa" class="spa_area">
-    <!-- SPA AREA 動的に生成される内容を表示 -->
-</div>
+    <header>{% include 'header.html' %}</header>
+
+        <div id="spa" class="spa_area">
+            <!-- SPA AREA 動的に生成される内容を表示 -->
+        </div>
+
+<!--    <footer>{% include 'footer.html' %}</footer>-->
 {% endblock %}
 
+
 {% block extra_js %}
-<script type="module" src="{% static 'spa/js/index.js' %}"></script>
+    <script type="module" src="{% static 'spa/js/index.js' %}"></script>
+    <script type="module" src="{% static 'accounts/js/logout.js' %}"></script>
+<!--    <script src="{% static 'pong/js/bootstrap/color-modes.js' %}"></script>-->
 {% endblock %}
