@@ -6,27 +6,36 @@ import asyncio
 
 class PongOnlineDuelReceiveHandler:
     ''' Consumerのサブクラス 受信時のアクションを処理するハンドラー'''
-    def __init__(self, consumer):
+    def __init__(self, consumer, game_manager):
         self.consumer = consumer
+        self.game_manager = game_manager
 
 
     async def handle_start_action(self, json_data):
         """ゲーム開始アクションの処理"""
         async with asyncio.Lock():
-            await database_sync_to_async(self.consumer.redis_client.sadd)(
-                                            f"start_signals_{self.consumer.room_group_name}", 
+            await async_log("START action")
+            await database_sync_to_async(self.game_manager.redis_client.sadd)(
+                                            f"start_signals_{self.game_manager.room_group_name}", 
                                             self.consumer.scope["user"].id
                                         )
+            await async_log(f"START action: start_signals_{self.game_manager.room_group_name}")
             # スタートシグナルが2つ揃ったか確認
-            signal_count = await database_sync_to_async(self.consumer.redis_client.scard)(f"start_signals_{self.consumer.room_group_name}")
+            signal_count = await database_sync_to_async(self.game_manager.redis_client.scard)(
+                f"start_signals_{self.game_manager.room_group_name}"
+            )
             if signal_count == 2 and hasattr(self.consumer, 'game_manager'):
                 await async_log("両方のプレイヤーが準備完了しました。ゲームを開始します。")
-                initial_state = self.consumer.game_manager.pong_engine_data
+                initial_state = self.game_manager.pong_engine_data
                 await self.consumer.send_game_state(initial_state)
                 # Redisに保存されているスタートシグナルの情報を削除
-                await database_sync_to_async(self.consumer.redis_client.delete)(f"start_signals_{self.consumer.room_group_name}")
+                await database_sync_to_async(self.game_manager.redis_client.delete)(
+                    f"start_signals_{self.game_manager.room_group_name}"
+                    )
             else:
-                await self.consumer.send(text_data=json.dumps({"message": "Waiting for another player to start"})) 
+                await self.consumer.send(text_data=json.dumps({
+                    "message": "Waiting for another player to start"
+                })) 
 
     async def handle_reconnect_action(self, json_data):
         """
@@ -34,8 +43,8 @@ class PongOnlineDuelReceiveHandler:
         - 送信時データ構造: game_settingsを含む全てのデータを送信している
         """
         # await async_log("再接続時: クライアントからの受信: " + json.dumps(json_data))
-        await self.consumer.game_manager.restore_game_state(json_data)
-        restored_state = self.consumer.game_manager.pong_engine_data
+        await self.game_manager.restore_game_state(json_data)
+        restored_state = self.game_manager.pong_engine_data
         # await async_log("再接続時: engine_data: " + json.dumps(restored_state))
         await self.consumer.send_game_state(restored_state)
 
@@ -47,10 +56,10 @@ class PongOnlineDuelReceiveHandler:
         """
         async with asyncio.Lock():
             # await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
-            await self.consumer.game_manager.update_game(json_data['objects'])
-            updated_state = self.consumer.game_manager.pong_engine_data
+            await self.game_manager.update_game(json_data['objects'])
+            updated_state = self.game_manager.pong_engine_data
             # 更新されたゲーム状態をRedisに保存
-            await database_sync_to_async(self.consumer.redis_client.set)(
+            await database_sync_to_async(self.game_manager.redis_client.set)(
                 f"game_state:{self.consumer.room_name}",
                 json.dumps(updated_state)
             )

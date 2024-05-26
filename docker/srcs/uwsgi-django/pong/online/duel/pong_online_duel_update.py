@@ -1,9 +1,9 @@
 # docker/srcs/uwsgi-django/pong/online/pong_online_update.py
-from ..utils.async_logger import async_log
+from ...utils.async_logger import async_log
 import asyncio
 import random
 
-class PongOnlineUpdate:
+class PongOnlineDuelUpdate:
     def __init__(self, pong_engine_data, physics, match):
         self.physics            = physics
         self.match              = match
