@@ -1,5 +1,6 @@
 # accounts/views/basic_auth.py
 
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse
@@ -19,7 +20,7 @@ from accounts.views.jwt import get_jwt_response
 
 class SignupTemplateView(View):
     template_name = "accounts/signup.html"
-    authenticated_redirect_to = "/pong/"  # djangoで/pong/にrender -> SPA /game/
+    authenticated_redirect_to = "/pong/"  # djangoで/pong/にrender -> SPA /app/
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -29,13 +30,16 @@ class SignupTemplateView(View):
 
 class SignupAPIView(APIView):
     permission_classes = [AllowAny]
-    authenticated_redirect_to = "/game/"  # SPA /game/にリダイレクト
+
+    url_config = settings.URL_CONFIG
+    # authenticated_redirect_to = url_config['kSpaPongTopUrl']  # SPA /app/にリダイレクト
 
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             data = {
                 'message': "Already logged in",
-                'redirect': self.authenticated_redirect_to
+                # 'redirect': self.authenticated_redirect_to
+                'redirect': self.url_config['kSpaPongTopUrl']
             }
             return JsonResponse(data, status=200)
 
@@ -60,7 +64,7 @@ class SignupAPIView(APIView):
             # login(request, user)  # JWT: unuse login()
             data = {
                 'message': "Signup successful",
-                'redirect': self.authenticated_redirect_to,
+                'redirect': self.url_config['kSpaPongTopUrl']
             }
             return get_jwt_response(user, data)
         except Exception as e:
@@ -72,9 +76,9 @@ class LoginTemplateView(TemplateView):
     template_name = "accounts/login.html"
 
     def dispatch(self, request, *args, **kwargs):
-        print('loginView 1')
+        # print('loginView 1')
         if request.user.is_authenticated:
-            return redirect('/pong/')  # djangoで/pong/にrender -> SPA /game/
+            return redirect('/pong/')  # djangoで/pong/にrender -> SPA /app/
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -83,13 +87,14 @@ class LoginAPIView(APIView):
     returns JsonResponse(redirect or error)
     """
     permission_classes = [AllowAny]
+    url_config = settings.URL_CONFIG
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
-        print('loginAPI 1')
+        # print('loginAPI 1')
         if request.user.is_authenticated:
             data = {
                 'message': 'already logged in',
-                'redirect': '/game/',  # SPA /game/にリダイレクト
+                'redirect': self.url_config['kSpaPongTopUrl'],  # SPA /app/にリダイレクト
             }
             return JsonResponse(data, status=200)
 
@@ -105,14 +110,14 @@ class LoginAPIView(APIView):
             request.session['tmp_auth_user_id'] = user.id
             data = {
                 'message': '2fa authentication needed',
-                'redirect': '/verify-2fa/'
+                'redirect': self.url_config['kSpaAuthVerify2FaUrl']
             }
             return JsonResponse(data, status=200)
         else:
             # login(request, user)
             data = {
                 'message'   : 'Basic authentication successful',
-                'redirect'  : '/game/',     # SPA /game/にリダイレクト
+                'redirect'  : self.url_config['kSpaPongTopUrl'],     # SPA /app/にリダイレクト
             }
             return get_jwt_response(user, data)
 
@@ -123,11 +128,12 @@ class LogoutTemplateView(LoginRequiredMixin, TemplateView):
 
 class LogoutAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    url_config = settings.URL_CONFIG
 
     def get(self, request, *args, **kwargs):
         data = {
             'message'   : 'You have been successfully logout',
-            'redirect'  : '/game/',         # SPA /game/にリダイレクト
+            'redirect'  : self.url_config['kSpaPongTopUrl'],         # SPA /app/にリダイレクト
             'user_id'   : request.user.id,  # OnlineStatusWebSocketの切断に使用
         }
         response = JsonResponse(data, status=200)

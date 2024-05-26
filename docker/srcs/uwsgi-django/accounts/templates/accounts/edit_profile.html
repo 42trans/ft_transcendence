@@ -19,14 +19,12 @@
         </form>
 
 		<!-- 42authの場合はpassword変更非表示 -->
-		{% if not is_42auth_user %}
-        <!-- ニックネーム更新用のフォーム -->
-        <form id="nickname-form" onsubmit="updateNickname(event)">
-            <h2>Nickname</h2>
-            <p>
-                <label for="nickname">Nickname:</label>
-                <input type="text" id="nickname" placeholder="{{ current_nickname }}" required></p>
-            <button class="hth-btn" type="submit">Update nickname</button>
+        {% if not is_42auth_user %}
+        <form id="password-form" onsubmit="updatePassword(event)">
+            <h3 class="mb-1">password</h3>
+            <p>current password: <input type="password" id="current_password" placeholder="current-password" required></p>
+            <p>new password: <input type="password" id="new_password" placeholder="new-password"></p>
+            <button class="hth-btn" type="submit">update password</button>
         </form>
 		{% endif %}
 

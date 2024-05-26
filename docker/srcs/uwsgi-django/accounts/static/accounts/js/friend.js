@@ -1,6 +1,7 @@
 // static/accounts/js/friend.js
 
 import { createFriendsList } from "./online-status.js";
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
 
 
 export function sendFriendRequest(userId) {
@@ -243,7 +244,7 @@ function createFriendRequestList(data) {
 
 function createRequestLink(nickname, friend_id, isSent) {
     const link = document.createElement('a');
-    link.href = `/user-info/${nickname}/`;
+    link.href = `${routeTable['userInfoBase'].path}${nickname}/`;
     link.className = 'nav__link';
     link.setAttribute('data-link', '');
     link.textContent = nickname;

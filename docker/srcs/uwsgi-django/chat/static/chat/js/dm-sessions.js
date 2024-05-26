@@ -1,5 +1,8 @@
 // dm_sessions.js
 
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+
+
 export function fetchDMList() {
     fetch('/chat/api/dm-sessions/', {
         method: 'GET',
@@ -36,7 +39,7 @@ export function startDMwithUser() {
     // ボタンクリックでDM画面へのリダイレクト
     submitButton.onclick = function() {
         const dmTargetNickname = input.value;
-        window.location.pathname = '/dm-with/' + dmTargetNickname + '/';
+        window.location.pathname = routeTable['dmWithUserBase'].path + dmTargetNickname + '/';
     };
 }
 
@@ -51,7 +54,7 @@ function createDMSessionLinks(data) {
         const link = document.createElement('a');
 
         // リンクの設定
-        link.href = `/dm-with/${dmSession.target_nickname}/`;
+        link.href = `${routeTable['dmSessions'].path}${dmSession.target_nickname}/`;
 
         // システムメッセージの場合は表示を変更
         if (dmSession.is_system_message) {

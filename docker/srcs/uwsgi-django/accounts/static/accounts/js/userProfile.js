@@ -2,6 +2,7 @@
 
 import { disable2FA } from "./disable_2fa.js"
 import { createActionButton } from "./friend.js"
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
 
 
 function drawUserProfile(data) {
@@ -24,7 +25,7 @@ function drawUserProfile(data) {
 
 	const editProfileItem = document.createElement('li');
 	const editProfileLink = document.createElement('a');
-	editProfileLink.href = '/edit-profile/';
+	editProfileLink.href = routeTable['editProfile'].path;
 	editProfileLink.textContent = 'Edit Profile';
 	editProfileItem.appendChild(editProfileLink);
 	userInfo.appendChild(editProfileItem);
@@ -34,7 +35,7 @@ function drawUserProfile(data) {
 	const avatarItem = document.createElement('li');
 	avatarItem.innerHTML = `Avatar: <img src="${data.avatar_url}" alt="User Avatar" class="avatar">`;
 	const changeAvatarLink = document.createElement('a');
-	changeAvatarLink.href = '/change-avatar/';
+	changeAvatarLink.href = routeTable['changeAvatar'].path;
 	changeAvatarLink.textContent = 'Edit Avatar';
 	avatarItem.appendChild(changeAvatarLink);
 	userInfo.appendChild(avatarItem);
@@ -52,7 +53,7 @@ function drawUserProfile(data) {
 		const twoFAItem = document.createElement('li');
 		twoFAItem.textContent = '2FA: Disabled ';
 		const enable2FALink = document.createElement('a');
-		enable2FALink.href = '/enable-2fa/';
+		enable2FALink.href = routeTable['enable2fa'].path;
 		enable2FALink.textContent = 'Enable2FA';
 		twoFAItem.appendChild(enable2FALink);
 		userInfo.appendChild(twoFAItem);

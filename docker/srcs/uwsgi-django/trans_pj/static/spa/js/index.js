@@ -36,9 +36,9 @@ const setupDOMContentLoadedListener = () => {
 // リンクのクリックイベントで発火
 const setupBodyClickListener = () => {
   document.body.addEventListener("click", (event) => {
-    console.log('clickEvent: path: ' + window.location.pathname);
 
     if (event.target.matches("[data-link]")) {
+      console.log('clickEvent: path: ' + window.location.pathname);
       event.preventDefault();
       const url = event.target.href;
       switchPage(url);

@@ -3,6 +3,7 @@
 import os
 import logging
 import requests
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -176,7 +177,11 @@ def get_user_info(request, nickname):
             'friend_request_sent_status'    : 'pending' if friend_request_sent else None,
             'friend_request_received_status': 'pending' if friend_request_received else None,
         }
-        return render(request, 'accounts/user_info.html', {'user_data': user_data})
+        context = {
+            'url_config': settings.URL_CONFIG,
+            'user_data' : user_data,
+        }
+        return render(request, 'accounts/user_info.html', context)
 
     except Exception as e:
         logging.error(f"API request failed: {e}")

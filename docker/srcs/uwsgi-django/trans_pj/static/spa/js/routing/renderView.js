@@ -2,9 +2,6 @@ import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
 import { isLogined } from "../utility/user.js";
 
-const ROOT_INDEX = 0;
-const LOGIN_PATH = '/login/';
-
 
 export const switchPage = (url) => {
   console.log("history pushState:" + url);
@@ -17,11 +14,11 @@ export const switchPage = (url) => {
 };
 
 
-const getSelectedRoute = (currentPath, routes, isLogined) => {
+const getSelectedRoute = (currentPath, routeTable, isLogined) => {
   let params = {};  // URLパラメータを格納するオブジェクト
 
   // パスパラメータを含む可能性があるルートを評価
-  const matchedRoute = routes.find(route => {
+  const matchedRoute = Object.values(routeTable).find(route => {
     const routeParts = route.path.split('/').filter(part => part);
     const currentPathParts = currentPath.split('/').filter(part => part);
 
@@ -42,15 +39,12 @@ const getSelectedRoute = (currentPath, routes, isLogined) => {
   });
 
   if (matchedRoute) {
-    // マッチするルートが見つかった場合は、そのルートを選択
     matchedRoute.params = params;
     return matchedRoute;
   } else if (isLogined) {
-    // マッチするルートが見つからず、ログインしている場合は、デフォルトのルートを選択
-    return routes[ROOT_INDEX];
+    return routeTable['home'];
   } else {
-    // マッチするルートが見つからず、ログインしていない場合は、ログインページのルートを選択
-    return routes.find(route => route.path === LOGIN_PATH);
+    return routeTable['login']
   }
 };
 
@@ -66,6 +60,7 @@ function getView(path) {
   const view = new selectedRoute.view(url_params);
   return view
 }
+
 
 export const renderView = async (path) => {
   console.log("    renderView 1: path: " + path)

@@ -1,62 +1,63 @@
 {% load static %}
-<!-- 
+
+<!--
 	navbar: Bootstrap defaultのクラス
 	参考:【ナビゲーションバー · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/components/navbar/#%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84>
 
 	navbar-expand-md: mdブレークポイントまでは折りたたみ
-	
-	fixed-top: 
+
+	fixed-top:
 	参考:【ポジション · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/helpers/position/#fixed-top>
  -->
-<nav 
+<nav
 	aria-label="Main navigation"
 	id="hth-header-navi"
 	class="
-		navbar 
-		navbar-expand-md 
+		navbar
+		navbar-expand-md
 		fixed-top">
 
-<!-- 
+<!--
 	container-fluid: bootstrap: 親要素の全幅をとるクラス
-	参考:【コンテナ · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/layout/containers/#%E4%BB%95%E7%B5%84%E3%81%BF> 
+	参考:【コンテナ · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/layout/containers/#%E4%BB%95%E7%B5%84%E3%81%BF>
 	- ブレークポイント毎に固定するなら.container
 		- .container	100%	540px	720px	960px	1140px	1320px
  -->
 <div class="container-fluid">
-	
+
 	<!-- site logo -->
-	<a id="hth-site-logo" href="/game/">
+	<a id="hth-site-logo" href="{{ url_config.kSpaPongTopUrl }}">
 		<img src="{% static 'pong/img/logo.png' %}" alt="">
 	</a>
 
 	<!-- toggle -->
-	<button 
-		class="navbar-toggler" 
-		type="button" 
-		data-bs-toggle="collapse" 
-		data-bs-target="#hth-toggle-menu" 
-		aria-controls="hth-toggle-menu" 
-		aria-expanded="false" 
+	<button
+		class="navbar-toggler"
+		type="button"
+		data-bs-toggle="collapse"
+		data-bs-target="#hth-toggle-menu"
+		aria-controls="hth-toggle-menu"
+		aria-expanded="false"
 		aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	</button>
 
 	<!-- TODO_ft: アクセシビリティ aria-current="page" -->
 	<!-- navi -->
-	<div 
+	<div
 		id="hth-toggle-menu"
 		class="
-			collapse 
+			collapse
 			navbar-collapse">
-		
+
 		<!--
-			mb-md-0: 
-			Medium ブレークポイント以上のデバイスにおいて下側のマージンをゼロ 
+			mb-md-0:
+			Medium ブレークポイント以上のデバイスにおいて下側のマージンをゼロ
 		-->
 		<ul class="
-			navbar-nav 
-			me-auto 
-			mb-2 
+			navbar-nav
+			me-auto
+			mb-2
 			mb-md-0">
 <!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize"-->
 <!--									href="/pong/game/">Free Play</a></li>-->
@@ -64,7 +65,7 @@
 <!--									href="/pong/tournament">Tournament</a></li>-->
 			<!-- 開発用テストリンク -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/home/" data-link>TransPJ-Index</a></li>
+									href="{{ url_config.kSpaPongTopUrl }}" data-link>TransPJ-Index</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="/lang/" data-link>Lang</a></li>
 <!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
@@ -74,24 +75,24 @@
 
 			<!-- pong -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/free-play/" data-link>Free-Play</a></li>
+									href="{{ url_config.kSpaFreeGame }}" data-link>Free-Play</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/game-1vs1/" data-link>1vs1</a></li>
+									href="{{ url_config.kSpaGame1vs1Url }}" data-link>1vs1</a></li>
 
 		{% if user.is_authenticated %}
 			<!-- pong -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/tournament/" data-link>Tournament</a></li>
+									href="{{ url_config.kSpaTournamentUrl }}" data-link>Tournament</a></li>
 
 			<!-- user -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/game-history/" data-link>Game-History</a></li>
+									href="{{ url_config.kSpaGameHistoryUrl }}" data-link>Game-History</a></li>
 <!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
-<!--									href="/user-profile/" data-link>Profile</a></li>-->
+<!--									href="{{ url_config. }/user-profile/" data-link>Profile</a></li>-->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/user-friends/" data-link>Friend</a></li>
+									href="{{ url_config.kSpaUserFriendUrl }}" data-link>Friend</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/dm/" data-link>DM</a></li>
+									href="{{ url_config.kSpaDmUrl }}" data-link>DM</a></li>
 		{% endif %}
 
 		</ul>
@@ -106,7 +107,7 @@
 								me-2
 								nav__link"
 						data-link
-						onclick="location.href='/user-profile/'">Profile</button>
+						onclick="location.href='{{ url_config.kSpaUserProfileUrl }}'">Profile</button>
 
 				<button type="button"
 						class="
@@ -125,7 +126,7 @@
 							me-2
 							nav__link"
 						data-link
-						onclick="location.href='/login/'">Log-in</button>
+						onclick="location.href='{{ url_config.kSpaAuthLoginUrl }}'">Log-in</button>
 
 				<button type="button"
 						class="
@@ -134,7 +135,7 @@
 							transition-ease-color
 							nav__link"
 						data-link
-						onclick="location.href='/signup/'">Sign-up</button>
+						onclick="location.href='{{ url_config.kSpaAuthSignupUrl }}'">Sign-up</button>
 			{% endif %}
 		</div>
 

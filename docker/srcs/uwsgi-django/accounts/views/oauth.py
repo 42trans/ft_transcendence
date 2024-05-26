@@ -7,6 +7,7 @@ from typing import Tuple, Optional
 import re
 import requests
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, get_user_model
 from django.conf import settings
@@ -25,7 +26,6 @@ logger = logging.getLogger(__name__)
 
 
 class OAuthWith42(View):
-    authenticated_redirect_to = "/game/"
     error_page_path = "pong/error.html"
     callback_name = "api_accounts:oauth_ft_callback"
     api_path = "https://api.intra.42.fr"
@@ -41,7 +41,7 @@ class OAuthWith42(View):
 
     def oauth_ft(self, request: HttpRequest, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(to=self.authenticated_redirect_to)
+            return redirect(to=settings.URL_CONFIG['kSpaPongTopUrl'])
 
         # CSRF対策のためのstateを生成
         state = secrets.token_urlsafe()
@@ -80,7 +80,7 @@ class OAuthWith42(View):
 
         if user.enable_2fa:
             request.session['tmp_auth_user_id'] = user.id
-            return redirect(to='/verify-2fa/')
+            return redirect(to=settings.URL_CONFIG['kSpaAuthVerify2FaUrl'])
             # return JsonResponse({'redirect': '/verify-2fa/'})
 
         # response_data = {
@@ -92,7 +92,7 @@ class OAuthWith42(View):
         # リダイレクトURLにクエリパラメータを追加
         # redirect_url = f"/user-profile/?message=OAuth%20successful&user_id={user.id}&redirect=/user-profile/"
         # response = redirect(to=redirect_url)
-        response = redirect(to=self.authenticated_redirect_to)
+        response = redirect(to=settings.URL_CONFIG['kSpaPongTopUrl'])
         # response = JsonResponse(response_data)
         set_jwt_to_cookie(user, response)
         return response

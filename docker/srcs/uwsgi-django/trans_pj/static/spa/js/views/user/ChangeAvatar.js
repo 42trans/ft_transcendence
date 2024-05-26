@@ -20,7 +20,9 @@ export default class extends AbstractView {
   }
 
   async executeScript() {
-    loadAndExecuteScript("/static/accounts/js/upload-avatar.js");
+    const uploadAvatarModule = await import("/static/accounts/js/upload-avatar.js");
+    uploadAvatarModule.setupUploadAvatarEventListener();
+
   }
 
 }

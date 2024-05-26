@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import json
 from datetime import timedelta
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
@@ -339,3 +340,16 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"  # インメモリを使う場合
     },
 }
+
+
+def _load_url_config():
+	try:
+		file_path = ('static/spa/json/urlConfig.json')
+		with open(file_path) as f:
+			url_config = json.load(f)
+			print(f'load_url_config: {url_config}')
+			return url_config
+	except Exception as e:
+		print(f'load_url_config: Error: could not load urlConfig: {str(e)}')
+
+URL_CONFIG = _load_url_config()

@@ -1,6 +1,7 @@
 # chat/views.py
 
 import logging
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
@@ -53,7 +54,8 @@ class DMView(LoginRequiredMixin, TemplateView):
             'isBlockingUser'    : is_blocking_user,
             'isSystemUser'      : other_user.is_system,
             'user_avatar_url'   : user.avatar.url,
-            'other_avatar_url'  : other_user.avatar.url
+            'other_avatar_url'  : other_user.avatar.url,
+            'url_config'        : settings.URL_CONFIG,
         }
         # logging.error(f'dm_room: user: {user.nickname}, dm_to: {nickname}, blocking: {is_blocking_user}')
         return render(request, self.template_name, data)

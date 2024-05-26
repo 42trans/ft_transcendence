@@ -9,7 +9,7 @@
 
 
 {% block content %}
-    <header>{% include 'header.html' %}</header>
+    <header>{% include 'header.html' with url_config=url_config %}</header>
 
         <div id="spa" class="spa_area">
             <!-- SPA AREA 動的に生成される内容を表示 -->

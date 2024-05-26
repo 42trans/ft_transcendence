@@ -1,3 +1,4 @@
+import os
 from base64 import b64encode, b32encode, b32decode, b64decode
 from binascii import hexlify, unhexlify
 from datetime import datetime, timedelta, timezone
@@ -7,6 +8,7 @@ import qrcode
 import time
 
 from django import forms
+from django.conf import settings
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -52,14 +54,12 @@ class Enable2FaAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     template_name = 'verify/enable_2fa.html'
-    enabled_redirect_to = '/user-profile/'
-    authenticated_redirect_to = "/game/"
 
     def get(self, request, *args, **kwargs):
         if request.user.enable_2fa:
             data = {
                 "message": "Already enabled 2FA",
-                "redirect": self.authenticated_redirect_to,
+                "redirect": settings.URL_CONFIG['kSpaPongTopUrl'],
             }
         else:
             secret_key, secret_key_base32 = self._get_secret_key(request)
@@ -75,7 +75,7 @@ class Enable2FaAPIView(APIView):
         if request.user.enable_2fa:
             data = {
                 "message": "Already enabled 2FA",
-                "redirect": self.authenticated_redirect_to,
+                "redirect": settings.URL_CONFIG['kSpaPongTopUrl'],
             }
             return JsonResponse(data, status=200)
 
@@ -89,7 +89,7 @@ class Enable2FaAPIView(APIView):
             del request.session['enable_2fa_temp_secret_info']
             data = {
                 "message": "2FA has been enabled successfully",
-                "redirect": self.enabled_redirect_to,
+                "redirect": settings.URL_CONFIG['kSpaUserProfileUrl'],
             }
             return JsonResponse(data, status=200)
         else:
@@ -170,7 +170,7 @@ class Disable2FaView(APIView):
         if not user.enable_2fa:
             data = {
                 'message': 'No valid 2FA session',
-                'redirect': '/user-profile/',
+                'redirect': settings.URL_CONFIG['kSpaUserProfileUrl'],
             }
             return Response(data, status=400)
 
@@ -178,7 +178,7 @@ class Disable2FaView(APIView):
         self._disable_user_2fa(user)
         data = {
             'message': '2FA disable successful',
-            'redirect': '/user-profile/',
+            'redirect': settings.URL_CONFIG['kSpaUserProfileUrl'],
         }
         return Response(data, status=200)
 
@@ -211,7 +211,7 @@ class Verify2FaAPIView(APIView):
         if user is None:
             data = {
                 'error': 'No valid session found',
-                'redirect': '/login/',
+                'redirect': settings.URL_CONFIG['kSpaAuthLoginUrl'],
             }
             return Response(data, status=401)
 
@@ -222,7 +222,7 @@ class Verify2FaAPIView(APIView):
                 del request.session['tmp_auth_user_id']
                 data = {
                     'message'   : '2FA verification successful',
-                    'redirect'  : '/user-profile/',
+                    'redirect'  : settings.URL_CONFIG['kSpaUserProfileUrl'],
                 }
                 return get_jwt_response(user, data)
 

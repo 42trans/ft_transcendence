@@ -20,7 +20,11 @@ export default class extends AbstractView {
   }
 
   async executeScript() {
-    loadAndExecuteScript("/static/accounts/js/edit_profile.js");
+    // loadAndExecuteScript("/static/accounts/js/edit_profile.js", true);
+
+    const loginModule = await import("/static/accounts/js/edit_profile.js");
+    loginModule.setupUpdateNicknameEventListener();
+    loginModule.setupUpdatePasswordEventListener();
   }
 
 }

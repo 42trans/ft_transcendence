@@ -1,4 +1,4 @@
-import Dashboard    from "../views/Dashboard.js";
+// import Dashboard    from "../views/Dashboard.js";
 import Home         from "../views/Home.js";
 import PongTop      from "../views/pong/PongTop.js";
 
@@ -35,37 +35,40 @@ import Script1 from "../views/Script1.js";
 import Script2 from "../views/Script2.js";
 
 
-export const routeTable = [
-  { path: "/",              view: Dashboard },
-  { path: "/home/",         view: Home },
-  { path: "/game/",         view: PongTop },
+export const routeTable = {
+  // { path: "/app/",      view: Dashboard },
+  home          : { path: "/app/home/", view: Home },
+  top           : { path: "/app/",      view: PongTop },
 
   // game
-  { path: "/free-play/",    view: FreePlay },
-  { path: "/tournament/",   view: Tournament },
-  { path: "/game-1vs1/",    view: Game1vs1 },
+  freePlay      : { path: "/app/game/free-play/",    view: FreePlay },
+  tournament    : { path: "/app/game/tournament/",   view: Tournament },
+  game1vs1      : { path: "/app/game/game-1vs1/",    view: Game1vs1 },
 
-  { path: "/game-history/", view: GameHistory },
+  gameHistory   : { path: "/app/user/game-history/", view: GameHistory },
 
   // user
-  { path: "/user-profile/",         view: UserProfile },  // private profile
-  { path: "/user-info/:nickname/",  view: UserInfo },     // public profile
-  { path: "/user-friends/",         view: Friends },
-  { path: "/dm/",                   view: DMSessions },
-  { path: "/dm-with/:nickname/",    view: DMwithUser },
+  userProfile   : { path: "/app/user/profile/",               view: UserProfile },  // private profile
+  userInfo      : { path: "/app/user/info/:nickname/",        view: UserInfo },     // public profile
+  userInfoBase  : { path: "/app/user/info/",                  view: UserInfo },
 
-  { path: "/edit-profile/",         view: EditProfile },
-  { path: "/change-avatar/",        view: ChangeAvatar },
+  friends       : { path: "/app/user/friends/",               view: Friends },
+  dmSessions    : { path: "/app/dm/",                         view: DMSessions },
+  dmWithUser    : { path: "/app/dm/:nickname/",               view: DMwithUser },
+  dmWithUserBase: { path: "/app/dm/",                         view: DMwithUser },
+
+  editProfile   : { path: "/app/user/profile/edit/",          view: EditProfile },
+  changeAvatar  : { path: "/app/user/profile/change-avatar/", view: ChangeAvatar },
 
   // auth
-  { path: "/enable-2fa/",           view: Enable2FA },
-  { path: "/verify-2fa/",           view: Verify2FA },
+  enable2fa     : { path: "/app/auth/enable-2fa/",   view: Enable2FA },
+  veryfy2fa     : { path: "/app/auth/verify-2fa/",   view: Verify2FA },
 
-  { path: "/signup/",       view: Signup },
-  { path: "/login/",        view: Login },
+  signup        : { path: "/app/auth/signup/",       view: Signup },
+  login         : { path: "/app/auth/login/",        view: Login },
 
   // 開発用テストリンク
-  { path: "/lang/",         view: Lang },
-  { path: "/script1/",      view: Script1 },  // SPA用 ≠ django urls
-  { path: "/script2/",      view: Script2 },
-];
+  lang    : { path: "/lang/",         view: Lang },
+  script1 : { path: "/script1/",      view: Script1 },  // SPA用 ≠ django urls
+  script2 : { path: "/script2/",      view: Script2 },
+};

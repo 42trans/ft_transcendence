@@ -1,6 +1,6 @@
 # docker/srcs/ft_django/ft_django_pj/views.py
 from django.shortcuts import render
-import os
+from django.conf import settings
 from django.http import HttpResponse
 from django.http import JsonResponse
 
@@ -40,7 +40,8 @@ def api_status(request):
 	return JsonResponse(data)
 
 def spa(request):
-	return render(request, 'spa.html')
+	url_config = settings.URL_CONFIG
+	return render(request, 'spa.html', {'url_config': url_config})
 
 # テスト用　後で消す
 def lang(request):
