@@ -1,8 +1,7 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/duel/PongOnlineDuelSyncWS.js
-import PongOnlinePaddleMover from "../PongOnlinePaddleMover.js";
+import PongOnlineDuelPaddleMover from "./PongOnlineDuelPaddleMover.js";
 import PongOnlineRenderer from "../PongOnlineRenderer.js";
 import PongOnlineDuelUtil from "./PongOnlineDuelUtil.js";
-import PongOnlineGameStateManager from "../PongOnlineGameStateManager.js"
 
 class PongOnlineDuelSyncWS 
 {
@@ -28,20 +27,21 @@ class PongOnlineDuelSyncWS
 	// サーバーからメッセージが届いた場合の処理
 	onSocketMessage(event) 
 	{
-		console.log("onSocketMessage()", event);
-		console.log("onSocketMessage()", event.data);
+		// console.log("onSocketMessage()", event);
 		const recvEvent = JSON.parse(event.data);
 		const recvData = recvEvent.data;
-		console.log("onSocketMessage()", recvEvent);
-		console.log("onSocketMessage()", recvData);
+		// console.log("onSocketMessage()", recvEvent);
+		// console.log("onSocketMessage()", recvData);
 		if (recvEvent.type === 'duel.waiting_opponent') {
-		// if (recvData.type === 'duel.waiting_opponent') {
 			// console.log("waiting_opponent")
 			this.showWaitingMessage();
 		} else if (recvEvent.type === 'duel.both_players_entered_room') {
-		// } else if (recvData.type === 'duel.both_players_entered_room') {
 			console.log("duel.both_players_entered_room")
 			PongOnlineDuelUtil.removeMessage();
+			console.log("recvData.paddle", recvData.paddle)
+			// console.log("recvData.user_id", recvData.user_id)
+			this.gameStateManager.setPaddleOwnership(recvData.paddle);
+			// this.gameStateManager.setUserId(recvData.user_id);
 			this.initStartButton();
 		} else if (recvEvent.type === 'game_state'){
 		// } else if (recvData && recvData.objects && recvData.state){
@@ -76,6 +76,7 @@ class PongOnlineDuelSyncWS
 		}
 		this.readyToSendNext = true;
 	}
+
 
 	// ゲーム開始OKを意味するスタートボタン
 	initStartButton() 
@@ -138,7 +139,7 @@ class PongOnlineDuelSyncWS
 				}
 
 				// パドル情報更新
-				PongOnlinePaddleMover.handlePaddleMovement(this.field, gameState);
+				PongOnlineDuelPaddleMover.handlePaddleMovement(this.field, gameState, this.gameStateManager);
 				// ゲーム状態送信
 				this.sendClientState(gameState);
 				// 2D描画
@@ -163,37 +164,6 @@ class PongOnlineDuelSyncWS
 		// 最初のフレームを要求
 		requestAnimationFrame(loop);
 	}
-	// // 30~60fpsで更新・描画する
-	// gameLoop() 
-	// {
-	// 	// 参考:【clearInterval() - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/clearInterval>
-	// 	const intervalId = setInterval(() => 
-	// 	{
-	// 		const gameState	= this.gameStateManager.getState();
-
-	// 		if (gameState && gameState.is_running) 
-	// 		{
-	// 			// console.log(this.reconnectGameState);
-	// 			// パドル情報更新
-	// 			PongOnlinePaddleMover.handlePaddleMovement(this.field, gameState);
-	// 			// ゲーム状態送信
-	// 			this.sendClientState(gameState);
-	// 			// 2D描画
-	// 			PongOnlineRenderer.render(this.ctx, this.field, gameState);
-	// 		}
-
-	// 		// 終了時
-	// 		if (!gameState.is_running) 
-	// 		{
-	// 			// 最終スコアの表示: 終了フラグ受信後に、最後に一度だけ描画する
-	// 			PongOnlineRenderer.render(this.ctx, this.field, this.gameStateManager.getState());
-
-	// 			 // ゲーム終了時に Back to Home ボタンリンクを表示する
-	// 			this.createEndGameButton();
-	// 			clearInterval(intervalId);
-	// 		}
-	// 	}, 1000 / 120);
-	// }
 
 	// ゲーム終了時に Back to Home ボタンリンクを表示する
 	createEndGameButton() 

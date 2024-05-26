@@ -1,7 +1,7 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/duel/PongOnlineDuelClientApp.js
 import PongEngineKey from "../PongEngineKey.js";
 import PongOnlineDuelSyncWS from "./PongOnlineDuelSyncWS.js";
-import PongOnlineGameStateManager from "../PongOnlineGameStateManager.js"
+import PongOnlineDuelGameStateManager from "./PongOnlineDuelGameStateManager.js"
 
 /**
  * 2D-Pong Onlineのメインクラス
@@ -25,7 +25,7 @@ class PongOnlineDuelClientApp
 	initWebSocket(room_name)
 	{
 		this.socketUrl = 'wss://' + window.location.host + '/ws/pong/online/duel/' + room_name + '/';
-		this.gameStateManager		= new PongOnlineGameStateManager();
+		this.gameStateManager		= new PongOnlineDuelGameStateManager();
 		this.syncWS					= new PongOnlineDuelSyncWS(this, this.gameStateManager, this.socketUrl);
 		PongEngineKey.listenForEvents();
 	}

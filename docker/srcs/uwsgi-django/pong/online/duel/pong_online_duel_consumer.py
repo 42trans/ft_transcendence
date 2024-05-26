@@ -172,13 +172,15 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             for user_id in self.game_manager.get_user_ids():
                 channel_name = self.game_manager.get_channel_name(user_id)
                 paddle_info = self.game_manager.get_paddle_for_user(user_id)
-                await async_log(f"send paddle_info {paddle_info}")
+                await async_log(f"send paddle_info {paddle_info}, user_id: {user_id}")
                 # それぞれに送りたいので channel_name(1名ずつ)　宛に送る
                 await self.channel_layer.send(channel_name, {
+                    # send_event_to_client()を呼び出す
                     "type": "send_event_to_client",
                     "event_type": "duel.both_players_entered_room",
                     "event_data": {
                         'message': 'Both players have entered the room. Get ready!',
+                        'user_id': user_id,
                         'paddle': paddle_info
                     }
                 })
@@ -204,8 +206,9 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 
     async def send_game_state(self, game_state):
         """ ゲーム状態を全参加者に送信 """
-        # グループ内の全てのクライアントにゲーム状態を送信する
+        # グループ(内の全てのクライアント)にゲーム状態を送信する
         await self.channel_layer.group_send(self.room_group_name, {
+            # send_event_to_client()を呼び出す
             'type': 'send_event_to_client',
             'event_type': 'game_state',
             'event_data': game_state
