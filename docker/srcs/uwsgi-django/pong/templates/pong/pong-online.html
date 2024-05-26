@@ -7,6 +7,5 @@
 {% block content %}
 	{% csrf_token %}
 	<canvas id="pong-online-canvas-container"></canvas>
-	<!-- <canvas id="pong-online-canvas-container" width="400" height="300"></canvas> -->
 <script type="module" crossorigin src="{% static 'pong/js/online/PongOnlineIndex.js' %}"></script>
 {% endblock %}
