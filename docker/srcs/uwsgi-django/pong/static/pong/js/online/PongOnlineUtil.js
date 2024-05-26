@@ -1,7 +1,7 @@
-// docker/srcs/uwsgi-django/pong/static/pong/js/online/duel/PongOnlineDuelUtil.js
-import PongOnlineRenderer from "../PongOnlineRenderer.js";
+// docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineUtil.js
+import PongOnlineRenderer from "./PongOnlineRenderer.js";
 
-class PongOnlineDuelUtil 
+class PongOnlineUtil 
 {
 	/** dev用 再接続チェック用 */
 	static devTestCloseButton()
@@ -29,7 +29,7 @@ class PongOnlineDuelUtil
 	}
 
 	// ウインドウのサイズに合わせて動的に描画サイズを変更
-	static resizeForAllDevices(ctx, gameState, canvas, gameStateManager) 
+	static resizeForAllDevices(ctx, gameState, canvas) 
 	{
 		this.ctx		= ctx;
 		this.field		= gameState.game_settings.field;
@@ -56,15 +56,13 @@ class PongOnlineDuelUtil
 		// 拡大縮小
 		this.ctx.scale(this.field.zoomLevel, this.field.zoomLevel);
 		// 終了時の描画状態（スコア表示）を維持する: 状態の更新を強制するために再描画をトリガーする
-		const state = gameStateManager.getFinalState();
-		// const state = gameState;
-
+		const state = gameState;
 		if (state && 
 			(state.state.score1 > 0 || state.state.score2 > 0) &&
-			!state.getIsGameLoopStarted())
+			!gameState.getIsGameLoopStarted())
 		{
 			setTimeout(() => {
-				PongOnlineRenderer.render(this.ctx, this.field, state);
+				PongOnlineRenderer.render(this.ctx, this.field, gameState);
 			}, 16);
 		}
 	}
@@ -72,6 +70,9 @@ class PongOnlineDuelUtil
 	/** close時: 自動再接続 */
 	static attemptReconnect() 
 	{
+		this.reconnectAttempts = 0;
+		this.maxReconnectAttempts = 5;
+
 		// 再接続処理中を表すフラグを立てる
 		this.isReconnecting = true;
 		// コンストラクタで指定した回数試みる
@@ -92,5 +93,5 @@ class PongOnlineDuelUtil
 
 }
 
-export default PongOnlineDuelUtil;
+export default PongOnlineUtil;
 

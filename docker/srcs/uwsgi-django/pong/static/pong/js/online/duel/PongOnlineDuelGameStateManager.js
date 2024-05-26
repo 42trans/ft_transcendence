@@ -6,16 +6,30 @@
 class PongOnlineDuelGameStateManager 
 {
 	constructor() {
-		this.isGameLoopStarted = false;
-		this.gameState = {
+		this.isGameLoopStarted	= false;
+		this.gameState	= {
 			game_settings: {},
 			objects: {},
 			state: {},
 			is_running: false
 		};
 		// this.user_Id = null;
-		this.paddleOwnership = null;
+		this.paddleOwnership	= null;
+		this.finalGameState		= null;
 	}
+
+	resetState() {
+		// constructorと同じ
+		this.isGameLoopStarted	= false;
+		this.gameState = {
+			game_settings: {},
+			objects: {},
+			state: {},
+			is_running: false
+		};
+		this.paddleOwnership	= null; 
+	}
+	
 
 	updateState(newGameState) {
 		this.gameState = { ...this.gameState, ...newGameState };
@@ -39,6 +53,10 @@ class PongOnlineDuelGameStateManager
 	
 	getState() {
 		return this.gameState;
+	}
+
+	getFinalState() {
+		return this.finalGameState;
 	}
 
 	getIsGameLoopStarted(){

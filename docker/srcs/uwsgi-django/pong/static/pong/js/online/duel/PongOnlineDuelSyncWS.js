@@ -1,6 +1,6 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/duel/PongOnlineDuelSyncWS.js
 import PongOnlineDuelPaddleMover from "./PongOnlineDuelPaddleMover.js";
-import PongOnlineRenderer from "../PongOnlineRenderer.js";
+import PongOnlineDuelRenderer from "./PongOnlineDuelRenderer.js";
 import PongOnlineDuelUtil from "./PongOnlineDuelUtil.js";
 
 class PongOnlineDuelSyncWS 
@@ -18,6 +18,7 @@ class PongOnlineDuelSyncWS
 		this.reconnectAttempts			= 0;
 		this.maxReconnectAttempts		= 5;
 		this.reconnectIntervalMilliSec	= 3000;
+		this.gameFPS					= 30;
 						// TODO_fr: 本番時削除
 						PongOnlineDuelUtil.devTestCloseButton();
 	}
@@ -42,6 +43,15 @@ class PongOnlineDuelSyncWS
 			console.log("recvData.paddle", recvData.paddle)
 			this.gameStateManager.setPaddleOwnership(recvData.paddle);
 			this.initStartButton();
+		} else if (recvEvent.type === 'game_end') {
+				console.log("game end 1");
+				// 終了時のデータを保存（最終描画用）
+				this.gameStateManager.finalGameState = { ...this.gameStateManager.getState() };
+				// ゲーム状態を初期化
+				this.gameStateManager.resetState();
+				this.clientApp.socket.close();
+				// PongOnlineDuelUtil.attemptReconnect();
+				console.log("game end 2");
 		} else if (recvEvent.type === 'game_state'){
 			try {
 				// 再接続の場合: 何もしない
@@ -58,13 +68,17 @@ class PongOnlineDuelSyncWS
 				// 初回の場合: ループ開始前　
 				if (!this.gameLoopStarted) 
 				{
-					
-
 					// gameStateに関するjsonを受信してから、loopを起動
 					// 受信データからフィールドのサイズを取得してCanvasを初期化
 					this.initCanvas(recvData.field);
-					window.addEventListener('resize', () => PongOnlineDuelUtil.resizeForAllDevices());
-					this.startGameLoop(30);
+					window.addEventListener('resize', () => 
+						PongOnlineDuelUtil.resizeForAllDevices(
+							this.ctx, 
+							this.gameStateManager.getState(), 
+							this.canvas,
+							this.gameStateManager
+						));
+					this.startGameLoop(this.gameFPS);
 				}
 			} catch (error) {
 				console.error("Error:", error);
@@ -104,11 +118,9 @@ class PongOnlineDuelSyncWS
 			return;
 		}
 		this.ctx		= this.canvas.getContext("2d");
-		// TODO_Ft: serverからfieldの値を取得したい
-		// this.field		= { width: 400, height: 300, zoomLevel: 1 };
 		this.field		= this.gameStateManager.getState().game_settings.field;
 		console.log('this.field: ', this.field);
-		PongOnlineDuelUtil.resizeForAllDevices(this.ctx, this.gameStateManager.getState(), this.canvas);
+		PongOnlineDuelUtil.resizeForAllDevices(this.ctx, this.gameStateManager.getState(), this.canvas, this.gameStateManager);
 	}
 	
 	// 更新: default 30 fps 
@@ -137,7 +149,7 @@ class PongOnlineDuelSyncWS
 				// ゲーム状態送信
 				this.sendClientState(gameState);
 				// 2D描画
-				PongOnlineRenderer.render(this.ctx, this.field, gameState);
+				PongOnlineDuelRenderer.render(this.ctx, this.field, gameState);
 
 				lastFrameTimeMs = timestamp;
 			}
@@ -145,8 +157,14 @@ class PongOnlineDuelSyncWS
 			// 終了時
 			if (!gameState.is_running) {
 				// 最終スコアの表示
-				PongOnlineRenderer.render(this.ctx, this.field, this.gameStateManager.getState());
-
+				PongOnlineDuelRenderer.render(this.ctx, this.field, this.gameStateManager.getFinalState());
+				window.addEventListener('resize', () => 
+					PongOnlineDuelUtil.resizeForAllDevices(
+						this.ctx, 
+						this.gameStateManager.getFinalState(), 
+						this.canvas,
+						this.gameStateManager
+					));
 				// ゲーム終了時に Back to Home ボタンリンクを表示する
 				this.createEndGameButton();
 			} else {
