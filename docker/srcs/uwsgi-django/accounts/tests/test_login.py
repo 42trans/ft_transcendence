@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import JsonResponse
@@ -19,7 +20,6 @@ class LoginAPIViewTestCase(TestCase):
     kUser2Password = 'pass012345'
 
     kLoginAPIName = "api_accounts:api_login"
-    kHomeURL = "/game/"
 
     def setUp(self):
         self.client = APIClient()
@@ -78,7 +78,7 @@ class LoginAPIViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Basic authentication successful', response_json['message'])
-        self.assertIn(self.kHomeURL, response_json['redirect'])
+        self.assertIn(settings.URL_CONFIG['kSpaPongTopUrl'], response_json['redirect'])
 
         self.assertIn('Access-Token', response.cookies)
         self.assertIn('Refresh-Token', response.cookies)
