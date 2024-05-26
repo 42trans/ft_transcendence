@@ -32,6 +32,7 @@ class PongOnlineDuelSyncWS
 		const recvData = recvEvent.data;
 		// console.log("onSocketMessage()", recvEvent);
 		// console.log("onSocketMessage()", recvData);
+
 		if (recvEvent.type === 'duel.waiting_opponent') {
 			// console.log("waiting_opponent")
 			this.showWaitingMessage();
@@ -39,12 +40,9 @@ class PongOnlineDuelSyncWS
 			console.log("duel.both_players_entered_room")
 			PongOnlineDuelUtil.removeMessage();
 			console.log("recvData.paddle", recvData.paddle)
-			// console.log("recvData.user_id", recvData.user_id)
 			this.gameStateManager.setPaddleOwnership(recvData.paddle);
-			// this.gameStateManager.setUserId(recvData.user_id);
 			this.initStartButton();
 		} else if (recvEvent.type === 'game_state'){
-		// } else if (recvData && recvData.objects && recvData.state){
 			try {
 				// 再接続の場合: 何もしない
 				if (this.isReconnecting) 
@@ -60,13 +58,13 @@ class PongOnlineDuelSyncWS
 				// 初回の場合: ループ開始前　
 				if (!this.gameLoopStarted) 
 				{
-					// console.log("initCanvas()");
+					
 
 					// gameStateに関するjsonを受信してから、loopを起動
 					// 受信データからフィールドのサイズを取得してCanvasを初期化
 					this.initCanvas(recvData.field);
 					window.addEventListener('resize', () => PongOnlineDuelUtil.resizeForAllDevices());
-					this.startGameLoop();
+					this.startGameLoop(30);
 				}
 			} catch (error) {
 				console.error("Error:", error);
@@ -99,6 +97,7 @@ class PongOnlineDuelSyncWS
 	
 	initCanvas()
 	{
+		// console.log("initCanvas()");
 		this.canvasId	= "pong-online-duel-canvas-container"
 		this.canvas 	= document.getElementById(this.canvasId);
 		if (!this.canvas.getContext) {
@@ -111,20 +110,15 @@ class PongOnlineDuelSyncWS
 		console.log('this.field: ', this.field);
 		PongOnlineDuelUtil.resizeForAllDevices(this.ctx, this.gameStateManager.getState(), this.canvas);
 	}
-
-
-	startGameLoop() 
-	{
-		// this.gameLoopStarted = true;
-		this.gameLoop(30);
-	}
 	
-	// 30, 60, 120fpsで更新・描画する
-	gameLoop(fps = 30) {
+	// 更新: default 30 fps 
+	startGameLoop(fps = 30) {
 		this.gameLoopStarted = true;
 
-		const desiredFrameTimeMs = 1000 / fps; // 目標フレーム時間（ミリ秒）
-		let lastFrameTimeMs = 0; // 前回のフレーム時間
+		// 目標フレーム時間（ミリ秒）
+		const desiredFrameTimeMs = 1000 / fps;
+		// 前回のフレーム時間
+		let lastFrameTimeMs = 0; 
 
 		const loop = (timestamp) => {
 			const gameState = this.gameStateManager.getState();

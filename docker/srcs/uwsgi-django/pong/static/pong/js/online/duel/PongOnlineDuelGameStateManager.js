@@ -1,5 +1,4 @@
-// docker/srcs/uwsgi-django/pong/static/pong/js/online/Duel/PongOnlineDuelGameStateManager.js
-
+// docker/srcs/uwsgi-django/pong/static/pong/js/online/duel/PongOnlineDuelGameStateManager.js
 /**
  * Gameに必要なデータ(paddle,ballなどのオブジェクト、試合のスコアや状態など)を格納
  * - gameStae: serverと同じデータ構造

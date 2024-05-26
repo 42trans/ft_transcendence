@@ -45,7 +45,6 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         """
         WebSocket 接続時の処理
         """
-        # self.redis_client = redis.Redis(host=redis_host, port=redis_port, db=0)
         await async_log("開始:connect() ")
         try: 
             # ユーザー認証
@@ -53,14 +52,12 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                 return
             # Redisへの接続とルームの設定
             await self.setup_room_and_redis()
-
+            # ws接続完了
             await self.accept()
             await async_log(f'ws接続 {self.scope["user"]}')
-
-            # Userとchannel_name（送信先）をマッピング
+            # Userとchannel_name（送信先）をマッピング。個別に送信用
             self.game_manager.register_user(self.scope["user"].id)
             self.game_manager.register_channel(self.current_user_id, self.channel_name)
-
             # 接続ユーザー数の確認と対戦相手のチェック
             await self.check_connected_users()
         except Exception as e:
