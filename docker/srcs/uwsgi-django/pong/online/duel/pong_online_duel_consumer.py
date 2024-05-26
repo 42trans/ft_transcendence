@@ -119,6 +119,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             # Redis にゲーム状態が保存されている場合
             game_state = json.loads(game_state)
             await async_log(f"Exist game_state: {game_state}")
+            # Consumer インスタンス (self) が game_manager 属性を持っているかどうか
             if not hasattr(self, 'game_manager'):
                 await self.game_manager.initialize_game()
             await self.game_manager.restore_game_state(game_state)
@@ -172,71 +173,43 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                 channel_name = self.game_manager.get_channel_name(user_id)
                 paddle_info = self.game_manager.get_paddle_for_user(user_id)
                 await async_log(f"send paddle_info {paddle_info}")
-
+                # それぞれに送りたいので channel_name(1名ずつ)　宛に送る
                 await self.channel_layer.send(channel_name, {
-                    # send_event_to_client に共通化
                     "type": "send_event_to_client",
-                    # 実際にクライアントに送信する内容
-                    "event_type": "duel.both_players_entered_room", 
+                    "event_type": "duel.both_players_entered_room",
                     "event_data": {
                         'message': 'Both players have entered the room. Get ready!',
                         'paddle': paddle_info
-                    # }
-                    # "type": "duel.both_players_entered_room",
-                    # "message": {
-                    #     'type': 'duel.both_players_entered_room',
-                    #     'message': 'Both players have entered the room. Get ready!',
-                    #     'paddle': paddle_info
-                }
-            })
+                    }
+                })
+                
         else:
             # まだ1人目の場合、このインスタンスに接続しているUserに向けてsend
-            await self.send(text_data=json.dumps({
-                'type': 'duel.waiting_opponent',
-                'message': 'Incoming hotshot! Better get your game face on...'
-            }))
+            await self.send_event_to_client({
+                "event_type": "duel.waiting_opponent", 
+                "event_data": {
+                        'message': 'Incoming hotshot! Better get your game face on...'
+                }
+            })
 
 
-    async def send_event (self, event_type, event_data):
-        """ グループ（ルーム）に送信"""
-        await self.channel_layer.group_send(self.room_group_name, {
-            # クライアントに送信するメソッドを type に指定して呼び出し
-            'type': 'send_event_to_client',
-            'event_type': event_type,
-            'event_data': event_data
-        })
+
 
     async def send_event_to_client(self, event):
-        """ クライアントにイベントを送信 """
+        # """ クライアントにイベントを送信 """
         await self.send(text_data=json.dumps({
             'type': event['event_type'],
             'data': event['event_data']
         }))
 
-    # async def duel_both_players_entered_room(self, event):
-    #     """
-    #     両方のプレイヤーがルームに入ったときに呼び出されるメソッド
-    #     """
-    #     await self.send(text_data=json.dumps(event['message']))
-
-    async def game_start(self, event):
-        await self.send(text_data=json.dumps(event))
-
-    async def waiting_opponent(self, event):
-        await self.send(text_data=json.dumps(event))
-
-
-    async def game_end(self, event):
-        await self.send(text_data=json.dumps(event))
-
     async def send_game_state(self, game_state):
+        """ ゲーム状態を全参加者に送信 """
+        # グループ内の全てのクライアントにゲーム状態を送信する
         await self.channel_layer.group_send(self.room_group_name, {
-            'type': 'send_data',
-            'data': game_state
+            'type': 'send_event_to_client',
+            'event_type': 'game_state',
+            'event_data': game_state
         })
-
-    async def send_data(self, event):
-        await self.send(text_data=json.dumps(event['data']))
 
 
 
@@ -265,6 +238,8 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
                 #　Redisクライアントとの接続をを閉じる
                 self.game_manager.redis_client.close()
                 del game_managers[self.room_name] 
+
+
 
 
     @database_sync_to_async

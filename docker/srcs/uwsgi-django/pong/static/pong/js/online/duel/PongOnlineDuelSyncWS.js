@@ -28,16 +28,23 @@ class PongOnlineDuelSyncWS
 	// サーバーからメッセージが届いた場合の処理
 	onSocketMessage(event) 
 	{
-		// console.log("onSocketMessage()", event);
-		const recvData = JSON.parse(event.data);
-		if (recvData.type === 'duel.waiting_opponent') {
+		console.log("onSocketMessage()", event);
+		console.log("onSocketMessage()", event.data);
+		const recvEvent = JSON.parse(event.data);
+		const recvData = recvEvent.data;
+		console.log("onSocketMessage()", recvEvent);
+		console.log("onSocketMessage()", recvData);
+		if (recvEvent.type === 'duel.waiting_opponent') {
+		// if (recvData.type === 'duel.waiting_opponent') {
 			// console.log("waiting_opponent")
 			this.showWaitingMessage();
-		} else if (recvData.type === 'duel.both_players_entered_room') {
+		} else if (recvEvent.type === 'duel.both_players_entered_room') {
+		// } else if (recvData.type === 'duel.both_players_entered_room') {
 			console.log("duel.both_players_entered_room")
 			PongOnlineDuelUtil.removeMessage();
 			this.initStartButton();
-		} else if (recvData && recvData.objects && recvData.state){
+		} else if (recvEvent.type === 'game_state'){
+		// } else if (recvData && recvData.objects && recvData.state){
 			try {
 				// 再接続の場合: 何もしない
 				if (this.isReconnecting) 
@@ -58,7 +65,7 @@ class PongOnlineDuelSyncWS
 					// gameStateに関するjsonを受信してから、loopを起動
 					// 受信データからフィールドのサイズを取得してCanvasを初期化
 					this.initCanvas(recvData.field);
-					window.addEventListener('resize', () => this.resizeForAllDevices());
+					window.addEventListener('resize', () => PongOnlineDuelUtil.resizeForAllDevices());
 					this.startGameLoop();
 				}
 			} catch (error) {
