@@ -10,19 +10,23 @@ from typing import Dict, Any, Optional
 from ...utils.async_logger import async_log
 import asyncio
 from accounts.models import CustomUser
-import redis
 from .pong_online_duel_config import g_GAME_MANAGERS_LOCK
+from .pong_online_duel_config import g_redis_client
 
-import json
 from channels.db import database_sync_to_async
+import json
 
-import os
-# Redis クライアントの初期化
-redis_host = os.getenv('REDIS_HOST', 'redis')
-redis_port = os.getenv('REDIS_PORT', 6379)
+import redis
+# import os
+# # Redis クライアントの初期化
+# redis_host = os.getenv('REDIS_HOST', 'redis')
+# redis_port = os.getenv('REDIS_PORT', 6379)
+# # グローバル
+# g_redis_client = redis.Redis(host=redis_host, port=redis_port, db=0)
 
 
 logger = logging.getLogger(__name__)
+
 
 class PongOnlineDuelGameManager:
     """ room に対しインスタンスを一つだけ生成"""
@@ -45,8 +49,10 @@ class PongOnlineDuelGameManager:
         # user_id を key とし、channel_name を value とする辞書
         self.user_channels: Dict[int, str]              = {}
         # Redisインスタンス
-        # Optional: 変数が None になる可能性がある
-        self.redis_client: Optional[redis.Redis]        = None
+        # Redis clientは一つだけ。configに置いた変数（グローバル変数的な用途）。他のクラスからはGameManagerを介して参照するために自身の属性として持っておく
+        self.redis_client          = g_redis_client
+        self.room_group_name = f'duel_{self.consumer.room_name}'
+
 
     async def initialize_game(self):
         init                    = PongOnlineInit(self.config)
@@ -58,16 +64,30 @@ class PongOnlineDuelGameManager:
             self.physics,
             self.match
         )
-        # await async_log("initialize_game().pong_engine_data: ")
-        # await async_log(self.pong_engine_data)
+        await async_log(f"initialize_game().pong_engine_data: {self.pong_engine_data}")
         return self
 
 
-
-    async def is_both_players_connected(self):
+    async def is_user_connected_to_room(self, user_id):
+        """ユーザーがルームにWebSocket接続しているかどうかを判定する"""
+        async with g_GAME_MANAGERS_LOCK:
+            is_member = await database_sync_to_async(g_redis_client.sismember)(
+                self.room_group_name, user_id
+            )
+            return bool(is_member)
+    
+    async def is_both_players_connected(self, user1, user2):
         """2人のプレイヤーが接続されているかどうかを判定する"""
-        await async_log(f"connected_user_count: {len(self.connected_users)}")  # Redisではなく、connected_usersの要素数をチェック
-        return len(self.connected_users) == 2
+        await async_log(f"開始: is_both_players_connected()")
+        await async_log(f"scope = self.consumer.scope: scope = self.consumer.scope")
+        await async_log(f"self.consumer.user_id: {self.consumer.user_id}")
+        await async_log(f"self.consumer.other_user_id: {self.consumer.other_user_id}")
+
+        is_user1_connected = await self.is_user_connected_to_room(user1)
+        is_user2_connected = await self.is_user_connected_to_room(user2)
+        await async_log(f"is_user1_connected: {is_user1_connected}")
+        await async_log(f"is_user2_connected: {is_user2_connected}")
+        return is_user1_connected and is_user2_connected
 
     async def handle_both_players_connected(self):
         """2人のプレイヤーが接続された場合の処理"""
@@ -98,8 +118,7 @@ class PongOnlineDuelGameManager:
 
     def assign_paddle(self, user_id):
         """ユーザーにパドルを割り当てる。
-        Args:
-            user_id (int): パドルを割り当てるユーザーのID。
+        - user_id (int): パドルを割り当てるユーザーのID。
         """
         if 'paddle1' not in self.user_paddle_map.values():
             self.user_paddle_map[user_id] = 'paddle1'
@@ -118,12 +137,23 @@ class PongOnlineDuelGameManager:
 
 
     async def setup_room_and_redis(self):
-        self.redis_client = redis.Redis(host=redis_host, port=redis_port, db=0)
-        self.room_group_name = f'duel_{self.consumer.room_name}'
-        # Redis接続
+        """ 
+        Redisのセットを作成: Redisのセットはルーム単位で作成
+        参考:【チャンネル レイヤー — Channels 4.0.0 ドキュメント】 <https://channels.readthedocs.io/en/stable/topics/channel_layers.html>
+        """
+        # 前回のルーム情報を削除して初期化する。
+        await database_sync_to_async(g_redis_client.delete)(
+            self.room_group_name
+        )
         await self.connect_to_redis(self.consumer.scope["user"].id)
-        # ルームに追加
-        await self.consumer.channel_layer.group_add(self.room_group_name, self.consumer.channel_name)
+        # Consumerのグループ（Duelルームにブロードキャストするグループ）に追加
+        # group_add: グループが存在しない場合は新たに作成し、存在する場合は既存のグループにconsumerを追加
+        # room_group_name: 任意の名前、※コンストラクタで指定　ex. f'duel_{self.consumer.room_name}'
+        # channel_name: 接続(user)毎に一つ割り当て　
+        await self.consumer.channel_layer.group_add(
+            self.room_group_name, 
+            self.consumer.channel_name
+        )
         await async_log(f"room_group_name: {self.room_group_name}")
         # ゲーム状態の初期化
         await self.initialize_game_state()
@@ -133,19 +163,24 @@ class PongOnlineDuelGameManager:
         for _ in range(5):
             try:
                 await async_log(f"接続ユーザーID: {current_user_id}")
-                await database_sync_to_async(self.redis_client.sadd)(
+                # Redisのセット self.room_group_name: 特定のルームまたはグループに参加しているユーザーを追跡するために使用
+                # sadd: 要素を追加。Redis はセットが存在しない場合に自動的にセットを作成
+                await database_sync_to_async(g_redis_client.sadd)(
+                    # self.room_group_name という名前のRedisのセットに current_user_id を追加
                     self.room_group_name, 
                     current_user_id
                 )
-                await asyncio.sleep(0.1)  # Redisへのデータ保存が完了するのを待つ
+                # Redisへのデータ保存が完了するのを待つ
+                await asyncio.sleep(0.1)  
 
-                members = await database_sync_to_async(self.redis_client.smembers)(
-                    self.room_group_name
-                )
-                await async_log(f"セットのメンバー: {members}")
+                # DEBUG: 現在接続しているユーザー (members) を取得
+                # members = await database_sync_to_async(g_redis_client.smembers)(
+                #     self.room_group_name
+                # )
+                # await async_log(f"セットのメンバー: {members}")
 
                 # 接続成功
-                break  # <- このbreak文を追加
+                break  
             except redis.exceptions.ConnectionError:
                 await async_log("Redis への接続に失敗しました。リトライします...")
                 await asyncio.sleep(1)
@@ -156,9 +191,12 @@ class PongOnlineDuelGameManager:
         
 
     async def initialize_game_state(self):
-        """ゲーム状態を初期化する"""
-        # Redis からゲーム状態の取得
-        game_state = await database_sync_to_async(self.redis_client.get)(
+        """
+        ゲーム状態を初期化する
+        まず、Redis からゲーム状態を取得して、それによって分岐する
+        - Redisのセット: f"game_state:{self.consumer.room_name}": ゲームの状態に使用
+        """
+        game_state = await database_sync_to_async(g_redis_client.get)(
             f"game_state:{self.consumer.room_name}"
         )
         if game_state is None:
@@ -166,7 +204,7 @@ class PongOnlineDuelGameManager:
             await self.initialize_game()
             game_state = self.get_state()
             await async_log(f"None game_state: {game_state}")
-            await database_sync_to_async(self.redis_client.set)(
+            await database_sync_to_async(g_redis_client.set)(
                 f"game_state:{self.consumer.room_name}", json.dumps(game_state)
             )
         else:

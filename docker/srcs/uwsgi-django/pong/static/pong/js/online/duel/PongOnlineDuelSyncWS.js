@@ -39,20 +39,21 @@ class PongOnlineDuelSyncWS
 			this.showWaitingMessage();
 		} else if (recvEvent.type === 'duel.both_players_entered_room') {
 			console.log("duel.both_players_entered_room")
-			PongOnlineDuelUtil.removeMessage();
 			console.log("recvData.paddle", recvData.paddle)
+			PongOnlineDuelUtil.removeMessage();
 			this.gameStateManager.setPaddleOwnership(recvData.paddle);
 			this.initStartButton();
 		} else if (recvEvent.type === 'game_end') {
-				console.log("game end 1");
-				// 終了時のデータを保存（最終描画用）
-				this.gameStateManager.finalGameState = { ...this.gameStateManager.getState() };
-				// ゲーム状態を初期化
-				this.gameStateManager.resetState();
-				this.clientApp.socket.close();
-				// PongOnlineDuelUtil.attemptReconnect();
-				console.log("game end 2");
+			console.log("game end 1");
+			// 終了時のデータを保存（最終描画用）
+			this.gameStateManager.finalGameState = { ...this.gameStateManager.getState() };
+			// ゲーム状態を初期化
+			this.gameStateManager.resetState();
+			this.clientApp.socket.close();
+			// PongOnlineDuelUtil.attemptReconnect();
+			console.log("game end 2");
 		} else if (recvEvent.type === 'game_state'){
+			console.log("recvData", recvData)
 			try {
 				// 再接続の場合: 何もしない
 				if (this.isReconnecting) 
