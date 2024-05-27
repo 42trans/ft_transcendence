@@ -4,7 +4,9 @@ import asyncio
 import random
 
 class PongOnlineDuelUpdate:
-    def __init__(self, pong_engine_data, physics, match):
+    def __init__(self, consumer, game_manager, pong_engine_data, physics, match):
+        self.consumer           = consumer
+        self.game_manager       = game_manager
         self.physics            = physics
         self.match              = match
         self.pong_engine_data   = pong_engine_data
@@ -22,6 +24,8 @@ class PongOnlineDuelUpdate:
         self.init_ball_speed    = pong_engine_data["game_settings"]["init_ball_speed"]
 
     async def update_game(self, input_data):
+        # await async_log(f"開始:update_game()  {input_data}")
+
         await self.handle_input(input_data)
         await self.handle_collisions()
         await self.update_ball_position()
@@ -37,6 +41,7 @@ class PongOnlineDuelUpdate:
         self.paddle2["position"]["y"] = input_data.get("paddle2", {}).get("position", {}).get("y")
 
     async def handle_collisions(self):
+        # await async_log("開始:handle_collisions()")
         r       = self.ball["radius"]
         ball_x  = self.ball["position"]["x"]
         ball_y  = self.ball["position"]["y"]
@@ -44,17 +49,17 @@ class PongOnlineDuelUpdate:
         if self.physics.is_colliding_with_side_walls(ball_x, r, self.field):
             scorer = 2 if ball_x < 0 else 1
             await self.reset_ball(scorer)
-            # await async_log(f"a scorer:  {scorer}")
+            # await async_log(f"scorer:  {scorer}")
             await self.match.update_score(scorer)
 
         if self.physics.is_colliding_with_ceiling_or_floor(ball_y, r, self.field):
             self.ball["direction"]["y"] = -self.ball["direction"]["y"]
 
         # paddle操作: 操作権限を持つユーザーのみ
-        if self.match.game_manager.user_paddle_map.get(self.match.game_manager.current_user_id) == 'paddle1':
+        if self.game_manager.user_paddle_map.get(self.consumer.user_id) == 'paddle1':
             if self.physics.is_ball_colliding_with_paddle(self.ball, self.paddle1):
                 self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle1)
-        if self.match.game_manager.user_paddle_map.get(self.match.game_manager.current_user_id) == 'paddle2':
+        if self.game_manager.user_paddle_map.get(self.consumer.user_id) == 'paddle2':
             if self.physics.is_ball_colliding_with_paddle(self.ball, self.paddle2):
                 self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle2)
 

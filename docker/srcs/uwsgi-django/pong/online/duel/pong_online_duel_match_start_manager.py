@@ -1,22 +1,5 @@
 # docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_game_manager.py
-# from ..pong_online_config import PongOnlineConfig
-# from ..pong_online_init import PongOnlineInit
-# from ..pong_online_update import PongOnlineUpdate
-# from ..pong_online_physics import PongOnlinePhysics
-
-# from .pong_online_duel_match import PongOnlineDuelMatch
-# from .pong_online_duel_room_manager import PongOnlineDuelRoomeManager
-
-# import logging
-# from typing import Dict, Any
 from ...utils.async_logger import async_log
-# import asyncio
-# from accounts.models import CustomUser
-from .pong_online_duel_config import g_GAME_MANAGERS_LOCK
-from .pong_online_duel_config import g_redis_client
-from channels.db import database_sync_to_async
-import json
-import redis
 
 class PongOnlineDuelMatchStartManager:
     def __init__(self, consumer, game_manager):

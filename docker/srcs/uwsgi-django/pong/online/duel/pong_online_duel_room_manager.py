@@ -1,18 +1,9 @@
 # docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_game_manager.py
-# from ..pong_online_config import PongOnlineConfig
-# from ..pong_online_init import PongOnlineInit
-# from ..pong_online_update import PongOnlineUpdate
-# from ..pong_online_physics import PongOnlinePhysics
-# from .pong_online_duel_match import PongOnlineDuelMatch
-# import logging
-# from typing import Dict, Any
 from ...utils.async_logger import async_log
 import asyncio
-# from accounts.models import CustomUser
 from .pong_online_duel_config import g_GAME_MANAGERS_LOCK
 from .pong_online_duel_config import g_redis_client
 from channels.db import database_sync_to_async
-import json
 import redis
 
 class PongOnlineDuelRoomeManager:
@@ -20,7 +11,7 @@ class PongOnlineDuelRoomeManager:
         self.consumer           = consumer
         self.room_group_name    = f'duel_{self.consumer.room_name}'
 
-    async def setup_room_and_redis(self, current_user_id):
+    async def setup_duel_room_redis_store(self, current_user_id):
         """ 
         Redisのセットを作成: Redisのセットはルーム単位で作成
         参考:【チャンネル レイヤー — Channels 4.0.0 ドキュメント】 <https://channels.readthedocs.io/en/stable/topics/channel_layers.html>
@@ -31,25 +22,29 @@ class PongOnlineDuelRoomeManager:
         #         )
         # if key_exists:
         #     await async_log(f"data for room '''{self.room_group_name}''' exists")
-        # await async_log(f"connect_to_redis:current_user_id:  {current_user_id}")
-        await async_log(f"開始: GameManager.setup_room_and_redis()")
+        # await async_log(f"connect_to_redis_room:current_user_id:  {current_user_id}")
+        # await async_log(f"開始: RoomManager.setup_duel_room_redis_store()")
+        
+        await self.connect_to_redis_room(current_user_id)
 
-        await self.connect_to_redis(current_user_id)
+        # # Consumerのグループ（Duelルームにブロードキャストするグループ）に追加
+        # # group_add: グループが存在しない場合は新たに作成し、存在する場合は既存のグループにconsumerを追加
+        # # room_group_name: 任意の名前、※コンストラクタで指定　ex. f'duel_{self.consumer.room_name}'
+        # # channel_name: 接続(user)毎に一つ割り当て　
+        # await self.consumer.channel_layer.group_add(
+        #     self.room_group_name, 
+        #     self.consumer.channel_name
+        # )
+        # self.consumer.room_group_name    = f'duel_{self.room_name}'
+        # await async_log(f"room_group_name: {self.room_group_name}")
 
-        # Consumerのグループ（Duelルームにブロードキャストするグループ）に追加
-        # group_add: グループが存在しない場合は新たに作成し、存在する場合は既存のグループにconsumerを追加
-        # room_group_name: 任意の名前、※コンストラクタで指定　ex. f'duel_{self.consumer.room_name}'
-        # channel_name: 接続(user)毎に一つ割り当て　
-        await self.consumer.channel_layer.group_add(
-            self.room_group_name, 
-            self.consumer.channel_name
-        )
+        # await async_log(f"終了: RoomManager.setup_duel_room_redis_store()")
 
-    async def connect_to_redis(self, current_user_id):
+    async def connect_to_redis_room(self, current_user_id):
         """最大5回リトライしてRedisに接続する"""
         for _ in range(5):
             try:
-                await async_log(f"接続ユーザーID: {current_user_id}")
+                # await async_log(f"接続ユーザーID: {current_user_id}")
                 # Redisのセット self.room_group_name: 特定のルームまたはグループに参加しているユーザーを追跡するために使用
                 # sadd: 要素を追加。Redis はセットが存在しない場合に自動的にセットを作成
                 await database_sync_to_async(g_redis_client.sadd)(
@@ -57,6 +52,7 @@ class PongOnlineDuelRoomeManager:
                     self.room_group_name, 
                     current_user_id
                 )
+
                 # Redisへのデータ保存が完了するのを待つ
                 await asyncio.sleep(0.1)  
 

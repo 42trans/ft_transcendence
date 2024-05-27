@@ -1,7 +1,6 @@
 # docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_game_manager.py
 from ..pong_online_config import PongOnlineConfig
 from ..pong_online_init import PongOnlineInit
-from ..pong_online_update import PongOnlineUpdate
 from ..pong_online_physics import PongOnlinePhysics
 
 from .pong_online_duel_match import PongOnlineDuelMatch
@@ -12,7 +11,6 @@ from .pong_online_duel_update import PongOnlineDuelUpdate
 from typing import Dict, Any
 from ...utils.async_logger import async_log
 from accounts.models import CustomUser
-from .pong_online_duel_config import g_GAME_MANAGERS_LOCK
 from .pong_online_duel_config import g_redis_client
 from channels.db import database_sync_to_async
 import json
@@ -41,17 +39,18 @@ class PongOnlineDuelGameManager:
         self.user_channels: Dict[int, str]              = {}
         # Redis client(値を入れるためのsetとは別。setに接続するためのアカウントのようなもの)はモジュールで一つだけ。configに置いた変数（グローバル変数的な用途）。他のクラスからはGameManagerを介して参照するために自身の属性として持っておく
         # Redis set: ex.key = f"game_state:{self.consumer.room_name}" 
-        self.redis_client          = g_redis_client
-        self.room_group_name = f'duel_{self.consumer.room_name}'
+        self.redis_client       = g_redis_client
+        self.room_group_name    = f'duel_{self.consumer.room_name}'
+        self.current_user_id    = None
 # ---------------------------------------------------------------
 # room_manager
 # ---------------------------------------------------------------
-    async def setup_room_and_redis(self, current_user_id):
+    async def setup_duel_room(self, current_user_id):
         """ 
         Redisのセットを作成: Redisのセットはルーム単位で作成
         参考:【チャンネル レイヤー — Channels 4.0.0 ドキュメント】 <https://channels.readthedocs.io/en/stable/topics/channel_layers.html>
         """
-        await self.room_manager.setup_room_and_redis(current_user_id)
+        await self.room_manager.setup_duel_room_redis_store(current_user_id)
         # ゲーム状態の初期化
         await self.initialize_game_state()
 
@@ -67,7 +66,7 @@ class PongOnlineDuelGameManager:
         game_state = self.pong_engine_data
         # await async_log(f"None game_state: {game_state}")
         await database_sync_to_async(g_redis_client.set)(
-            f"game_state:{self.consumer.room_name}", json.dumps(game_state)
+            f"game_state:{self.consumer.room_group_name}", json.dumps(game_state)
         )
 
         # if game_state is None:
@@ -90,6 +89,8 @@ class PongOnlineDuelGameManager:
         self.match              = PongOnlineDuelMatch(self.pong_engine_data, self.consumer)
         self.physics            = PongOnlinePhysics(self.pong_engine_data)
         self.pong_engine_update = PongOnlineDuelUpdate(
+            self.consumer,
+            self,
             self.pong_engine_data,
             self.physics,
             self.match
@@ -101,7 +102,7 @@ class PongOnlineDuelGameManager:
 # ---------------------------------------------------------------
     async def is_both_players_connected(self):
         """2人のプレイヤーが接続されているかどうかを判定する"""
-        await async_log(f"開始: 2人のプレイヤーが接続されているかどうかを判定する is_both_players_connected()")
+        # await async_log(f"開始: 2人のプレイヤーが接続されているかどうかを判定する is_both_players_connected()")
         path_segments = self.consumer.scope['url_route']['kwargs']['room_name'].split('_')
         user1, user2 = int(path_segments[1]), int(path_segments[2])
 
@@ -114,7 +115,7 @@ class PongOnlineDuelGameManager:
 
     async def handle_both_players_connected(self):
         """2人のプレイヤーが接続された場合の処理"""
-        await async_log(f"開始: handle_both_players_connected()")
+        # await async_log(f"開始: handle_both_players_connected()")
         await self.match_start_manager.handle_both_players_connected()
 # ---------------------------------------------------------------
 # 
@@ -136,9 +137,9 @@ class PongOnlineDuelGameManager:
         return self.pong_engine_data
 
     async def update_game(self, json_data):
-        async with g_GAME_MANAGERS_LOCK:
-            await self.pong_engine_update.update_game(json_data)
-            return self
+        # await async_log("pong_engine_update.update_game")
+        await self.pong_engine_update.update_game(json_data)
+        return self
 
 
     async def restore_game_state(self, client_json_state):

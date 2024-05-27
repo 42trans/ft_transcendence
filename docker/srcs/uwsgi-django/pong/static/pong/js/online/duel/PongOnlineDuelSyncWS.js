@@ -28,18 +28,18 @@ class PongOnlineDuelSyncWS
 	// サーバーからメッセージが届いた場合の処理
 	onSocketMessage(event) 
 	{
-		// console.log("onSocketMessage()", event);
+		console.log("onSocketMessage()", event);
 		const recvEvent = JSON.parse(event.data);
 		const recvData = recvEvent.data;
-		// console.log("onSocketMessage()", recvEvent);
-		// console.log("onSocketMessage()", recvData);
+		console.log("onSocketMessage()", recvEvent);
+		console.log("onSocketMessage()", recvData);
 
 		if (recvEvent.type === 'duel.waiting_opponent') {
 			// console.log("waiting_opponent")
 			this.showWaitingMessage();
 		} else if (recvEvent.type === 'duel.both_players_entered_room') {
 			console.log("duel.both_players_entered_room")
-			console.log("recvData.paddle", recvData.paddle)
+			console.log("recvData.paddle:", recvData.paddle)
 			PongOnlineDuelUtil.removeMessage();
 			this.gameStateManager.setPaddleOwnership(recvData.paddle);
 			this.initStartButton();
@@ -85,7 +85,7 @@ class PongOnlineDuelSyncWS
 				console.error("Error:", error);
 			}
 		} else {
-			console.error("Invalid data:", recvData);
+			// console.error("Invalid data:", recvData);
 		}
 		this.readyToSendNext = true;
 	}
@@ -125,11 +125,11 @@ class PongOnlineDuelSyncWS
 	}
 	
 	// 更新: default 30 fps 
-	startGameLoop(fps = 30) {
+	startGameLoop(gameFPS = 30) {
 		this.gameLoopStarted = true;
 
 		// 目標フレーム時間（ミリ秒）
-		const desiredFrameTimeMs = 1000 / fps;
+		const desiredFrameTimeMs = 1000 / gameFPS;
 		// 前回のフレーム時間
 		let lastFrameTimeMs = 0; 
 

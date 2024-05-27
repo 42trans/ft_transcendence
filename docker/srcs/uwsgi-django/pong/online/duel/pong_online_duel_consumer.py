@@ -1,16 +1,13 @@
 # docker/srcs/uwsgi-django/pong/online/pong_online_consumers.py
 import json
-from channels.db import database_sync_to_async
+# from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework.permissions import IsAuthenticated
-# from .pong_online_duel_game_manager import PongOnlineDuelGameManager
 from .pong_online_duel_consumer_receive_handler import PongOnlineDuelReceiveHandler
 from .pong_online_duel_consumer_connect_handler import PongOnlineDuelConnectHandler
 from .pong_online_duel_consumer_disconnect_handler import PongOnlineDuelDisconnectHandler
 from .pong_online_duel_consumer_util import PongOnlineDuelConsumerUtil
-from .pong_online_duel_config import g_GAME_MANAGERS_LOCK, game_managers
 from ...utils.async_logger import async_log
-# from accounts.models import CustomUser
 import gc
 
 class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
@@ -37,9 +34,10 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.room_name = None
-        self.game_manager = None 
-        # self.user_id = None 
+        self.room_name          = None
+        self.game_manager       = None 
+        self.room_group_name    = None
+        self.user_id            = None 
 # ---------------------------------------------------------------
 # connect
 # ---------------------------------------------------------------
@@ -48,25 +46,23 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         WebSocket接続の一番最初の処理
         Gameもここから呼び出される
         """
-        await async_log("開始:connect() ")
+        # await async_log("開始:connect() ")
         try: 
             await PongOnlineDuelConnectHandler(self).handle()
         except Exception as e:
             await async_log(f" error: {str(e)}")
             await self.close(code=1011) #予期しない状態または内部エラー
             return
-        await async_log("終了:connect() ")
+        # await async_log("終了:connect() ")
 # ---------------------------------------------------------------
 # receive
 # ---------------------------------------------------------------
     async def receive(self, text_data=None):
         """ WebSocket からメッセージを受信した際の処理 """
-        await async_log("開始:recieve(): クライアントから受信")
+        # await async_log("開始:recieve(): クライアントから受信")
         try:
             handler = PongOnlineDuelReceiveHandler(self, self.game_manager)
-            # await async_log(f"text_data: {text_data}")
             json_data   = json.loads(text_data)
-            # await async_log(f"json_data: {json_data}")
             action      = json_data.get('action')
 
             if   action == 'start':
@@ -81,12 +77,12 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             await async_log(f" error: {str(e)}")
             await self.close(code=1011) #予期しない状態または内部エラー
             return
-        await async_log(f"終了: recieve(): action: {action}")
+        # await async_log(f"終了: recieve(): action: {action}")
 # ---------------------------------------------------------------
 # disconnect
 # ---------------------------------------------------------------
     async def disconnect(self, close_code):
-        await PongOnlineDuelDisconnectHandler(self).handle()
+        await PongOnlineDuelDisconnectHandler(self, self.game_manager).handle(close_code)
 # ---------------------------------------------------------------
 # util
 # ---------------------------------------------------------------
