@@ -17,7 +17,6 @@ import DMwithUser   from "../views/chat/DMwithUser.js";
 import EditProfile  from "../views/user/EditProfile.js";
 import ChangeAvatar from "../views/user/ChangeAvatar.js";
 import Enable2FA    from "../views/auth/Enable2FA.js";
-import Disable2FA   from "../views/Disable2FA.js";
 import Verify2FA    from "../views/auth/Verify2FA.js";
 
 import Signup       from "../views/auth/Signup.js";
