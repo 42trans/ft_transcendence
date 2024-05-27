@@ -1,5 +1,4 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/duel/PongOnlineDuelUtil.js
-import PongOnlinePaddleMover from "../PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "../PongOnlineRenderer.js";
 
 class PongOnlineDuelUtil 
