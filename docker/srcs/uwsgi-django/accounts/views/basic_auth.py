@@ -81,6 +81,11 @@ class LoginTemplateView(TemplateView):
             return redirect('/pong/')  # djangoで/pong/にrender -> SPA /app/
         return super().dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['signup_url'] = settings.URL_CONFIG['kSpaAuthSignupUrl']
+        return context
+
 
 class LoginAPIView(APIView):
     """
