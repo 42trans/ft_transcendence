@@ -45,3 +45,5 @@ pillow==10.3.0
 # SS-Pong
 # pip install aiofiles
 aiofiles==23.2.0
+redis
+channels_redis==4.2.0

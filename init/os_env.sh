@@ -47,7 +47,8 @@ SERVER_NAME=${SERVER_NAME}
     KIBANA_PORT \
     LOGSTASH_PORT \
     PROMETHEUS_PORT \
-    GRAFANA_PORT
+    GRAFANA_PORT \
+    REDIS_PORT
   )
 
   echo "export env for '$OS_PREFIX OS'"

@@ -38,7 +38,9 @@ services:
     env_file:
       - .env
       # - ./uwsgi-django/.env
-    # environment:
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     #   - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:?}
     #   - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:?}
     #   - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:?}
@@ -56,6 +58,8 @@ services:
       postgres:
         condition: service_healthy
     #      - postgres
+      redis:
+        condition: service_started
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl --silent --fail http://localhost:8001 || exit 1"]
@@ -74,6 +78,8 @@ services:
       # - ${VOLUME_PATH:?}/django/code:/code
   #     - ${VOLUME_PATH:?}/ft_django/uwsgi:/etc/uwsgi
   #     - ${VOLUME_PATH:?}:/container_output
+
+
 
   postgres:
     container_name: postgres
@@ -122,6 +128,13 @@ services:
     profiles:
       - three
 
+  redis:
+    container_name: redis
+    image: "redis:latest"
+    ports:
+      - "${REDIS_PORT:?}:6379"
+    networks:
+      - web_transcendence
   
   # frontend:
   #   container_name: frontend

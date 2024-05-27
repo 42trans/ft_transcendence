@@ -44,6 +44,7 @@ docker/srcs/vite/pong-three/public
 docker/srcs/uwsgi-django/pong/utils
 # Pong online用
 js-tests
+env/
 
 #### init/ #####
 

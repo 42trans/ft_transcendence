@@ -317,13 +317,13 @@ LANGUAGES = [
 # chat
 # TODO_ft: 本番時のredis
 CHANNEL_LAYERS = {
-    # 'default': {
-    # 	'BACKEND':'channels_redis.core.RedisChannelLayer',
-    # 	'CONFIG': {
-    # 		"hosts": [('127.0.0.1', 6379)],
-    # 	},
-    # },
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"  # インメモリを使う場合
+    'default': {
+    	'BACKEND':'channels_redis.core.RedisChannelLayer',
+    	'CONFIG': {
+    		"hosts": [('redis', 6379)],
+    	},
     },
+    # "default": {
+    #     "BACKEND": "channels.layers.InMemoryChannelLayer"  # インメモリを使う場合
+    # },
 }

@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-22.04
     environment:
       name: CREDENTIALS
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -61,14 +61,14 @@ jobs:
 
       - name: wait for start up django container
         run: |
-          timeout=300
+          timeout=600
           elapsed=0
           while [ "$(docker inspect --format='{{.State.Health.Status}}' uwsgi-django)" != "healthy" ]; do
             if [ $elapsed -ge $timeout ]; then
               echo -e "\e[31m[NG] Timeout waiting for uwsgi-django to finish starting up\e[0m"
               exit 1
             fi
-              echo -e "\e[q33mWaiting for uwsgi-django to finish starting up... remain:${$(( $timeout - $elapsed ))}sec\e[0m"
+              echo -e "\e[33mWaiting for uwsgi-django to finish starting up... remain:$(( $timeout - $elapsed ))sec\e[0m"
             sleep 10
             elapsed=$(($elapsed + 10))
           done
