@@ -1,8 +1,7 @@
 # docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_game_manager.py
 from ...utils.async_logger import async_log
 import asyncio
-from .pong_online_duel_config import g_GAME_MANAGERS_LOCK
-from .pong_online_duel_config import g_redis_client
+from .pong_online_duel_resources import PongOnlineDuelResources
 from channels.db import database_sync_to_async
 import redis
 
@@ -11,6 +10,7 @@ class PongOnlineDuelRoomeManager:
         self.consumer           = consumer
         # self.room_group_name    = f'duel_{self.consumer.room_name}'
         self.room_group_name    = consumer.room_group_name
+        self.resources           = PongOnlineDuelResources()
         
 
     async def setup_duel_room_redis_store(self, current_user_id):
@@ -49,7 +49,8 @@ class PongOnlineDuelRoomeManager:
                 # await async_log(f"接続ユーザーID: {current_user_id}")
                 # Redisのセット self.room_group_name: 特定のルームまたはグループに参加しているユーザーを追跡するために使用
                 # sadd: 要素を追加。Redis はセットが存在しない場合に自動的にセットを作成
-                await database_sync_to_async(g_redis_client.sadd)(
+                redis_client = self.resources.get_redis_client()
+                await database_sync_to_async(redis_client.sadd)(
                     # self.room_group_name という名前のRedisのセット名(key)に current_user_id を追加
                     self.room_group_name, 
                     current_user_id
@@ -80,10 +81,13 @@ class PongOnlineDuelRoomeManager:
         ユーザーがルームにWebSocket接続しているかどうかを判定する
         参考:【SISMEMBER | Docs】 <https://redis.io/docs/latest/commands/sismember/>
         """
-        async with g_GAME_MANAGERS_LOCK:
+        # await async_log("開始: is_user_connected_to_room()")
+        async with self.resources.get_game_managers_lock():
+        # async with g_GAME_MANAGERS_LOCK:
             # await async_log(f"self.room_group_name: {self.room_group_name}")
             # await async_log(f"user_id: {user_id}")
-            is_member = await database_sync_to_async(g_redis_client.sismember)(
+            redis_client = self.resources.get_redis_client()
+            is_member = await database_sync_to_async(redis_client.sismember)(
                 self.room_group_name, 
                 user_id
             )

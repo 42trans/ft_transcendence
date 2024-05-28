@@ -1,6 +1,6 @@
 # docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_consumer_disconnect_handler.py
 from channels.db import database_sync_to_async
-from .pong_online_duel_config import g_GAME_MANAGERS_LOCK, game_managers, g_REDIS_LOCK
+from .pong_online_duel_resources import PongOnlineDuelResources
 from ...utils.async_logger import async_log
 import gc
 import json
@@ -13,10 +13,12 @@ class PongOnlineDuelDisconnectHandler:
     def __init__(self, consumer, game_manager):
         self.consumer = consumer
         self.game_manager = game_manager
+        self.resources =  PongOnlineDuelResources.get_instance()
 
     async def handle(self, close_code):
         # await async_log("開始: DisconnectHandler()↓")
-        async with g_REDIS_LOCK: 
+        async with self.resources.get_game_redis_room_lock(): 
+        # async with g_REDIS_LOCK: 
             if not await self.is_user_connected():
                 await async_log("このユーザーの切断処理は既に完了しています。")
                 return
@@ -67,7 +69,8 @@ class PongOnlineDuelDisconnectHandler:
         try:
             # Redisからユーザーとルーム情報を削除
             # User数=0の確認が重複しないようにlock
-            async with g_REDIS_LOCK: 
+            async with self.resources.get_game_redis_room_lock(): 
+            # async with g_REDIS_LOCK: 
                 # srem: 指定されたセット(key)から、指定されたメンバー(member)を削除
                 await database_sync_to_async(redis_client.srem)(
                     room_group_name, 
@@ -85,7 +88,8 @@ class PongOnlineDuelDisconnectHandler:
                 # ルームが空になったらgame_managerとRedisのルーム情報を削除し、それからRedisクライアントを閉じる
                 await async_log("開始: 0名の場合の処理↓")
                 # Lock不要だが念の為。読みやすいし。
-                async with g_REDIS_LOCK: 
+                async with self.resources.get_game_redis_room_lock(): 
+                # async with g_REDIS_LOCK: 
                     # Redisのルーム情報を削除
                     await database_sync_to_async(redis_client.delete)(
                         room_group_name
@@ -94,7 +98,9 @@ class PongOnlineDuelDisconnectHandler:
                     await database_sync_to_async(self.game_manager.redis_client.delete)(
                         f"game_state:{self.consumer.room_group_name}"
                     )
-                async with g_GAME_MANAGERS_LOCK:
+                async with self.resources.get_game_managers_lock():
+                    game_managers = self.resources.get_game_managers() 
+                # async with g_GAME_MANAGERS_LOCK:
                     del game_managers[self.consumer.room_name]  
                     await async_log("終了: Lockして room delete↑")
                     # game_managerへの参照を解除 (連戦時にGameManagerがリセットされないバグ対策に試行。メモリリーク対策でもある)

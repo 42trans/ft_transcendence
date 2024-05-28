@@ -2,7 +2,7 @@
 import json
 from channels.db import database_sync_to_async
 from ...utils.async_logger import async_log
-from .pong_online_duel_config import g_REDIS_START_SIGNAL_LOCK, g_GAME_MANAGERS_LOCK, g_REDIS_STATE_LOCK
+from .pong_online_duel_resources import PongOnlineDuelResources
 
 
 class PongOnlineDuelReceiveHandler:
@@ -10,6 +10,7 @@ class PongOnlineDuelReceiveHandler:
     def __init__(self, consumer, game_manager):
         self.consumer = consumer
         self.game_manager = game_manager
+        self.resources           = PongOnlineDuelResources()
 
 
     async def handle_start_action(self, json_data):
@@ -31,17 +32,21 @@ class PongOnlineDuelReceiveHandler:
         """
         # await async_log("START action")
         try:
-            async with g_REDIS_START_SIGNAL_LOCK:
+            async with self.resources.get_game_redis_start_signal_lock():
+            # async with g_REDIS_START_SIGNAL_LOCK:
                 # redis key: start_signals_*: スタートシグナルが2つ揃ったか確認用。 このメソッド内だけで使用
                 # Redisの.saddと.setは、キーが存在しなければ暗黙的に作成する（Redis の内部的な処理）
                 # saddでcreate, init的なことも行なってしまう。
                 # Redisの設計思想: キーの存在確認を省略することで、コードを簡潔に保ち、処理のオーバーヘッドを削減
-                await database_sync_to_async(self.game_manager.redis_client.sadd)(
+                redis_client = self.resources.get_redis_client()
+                await database_sync_to_async(redis_client.sadd)(
+                # await database_sync_to_async(self.game_manager.redis_client.sadd)(
                                                 f"start_signals_{self.game_manager.room_group_name}", 
                                                 self.consumer.scope["user"].id
                                             )
                 # await async_log(f"START action: start_signals_{self.game_manager.room_group_name}")
-                signal_count = await database_sync_to_async(self.game_manager.redis_client.scard)(
+                signal_count = await database_sync_to_async(redis_client.scard)(
+                # signal_count = await database_sync_to_async(self.game_manager.redis_client.scard)(
                     f"start_signals_{self.game_manager.room_group_name}"
                 )
                 # await async_log(f"signal_count: {signal_count}")
@@ -52,7 +57,8 @@ class PongOnlineDuelReceiveHandler:
                 await self.consumer.send_game_state(initial_state)
                 # await async_log(f"initial_state: {initial_state}")
                 # Redisスタートシグナルに関するkey自体を削除。全部削除
-                await database_sync_to_async(self.game_manager.redis_client.delete)(
+                await database_sync_to_async(redis_client.delete)(
+                # await database_sync_to_async(self.game_manager.redis_client.delete)(
                     f"start_signals_{self.game_manager.room_group_name}"
                     )
             else:
@@ -81,16 +87,20 @@ class PongOnlineDuelReceiveHandler:
         - 送信時データ構造: game_settingsを含む全てのデータを送信している
         
         """
-        async with g_GAME_MANAGERS_LOCK:
+        async with self.resources.get_game_managers_lock():
+        # async with g_GAME_MANAGERS_LOCK:
             # await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
             await self.game_manager.update_game(json_data['objects'], self.consumer.user_id)
             # await async_log(f"更新時: game_manager.update_game: {self.consumer.user_id}")
         updated_state = self.game_manager.pong_engine_data
 
         # バックアップ的な用途
-        async with g_REDIS_STATE_LOCK:
+        async with self.resources.get_game_redis_state_lock():
+        # async with g_REDIS_STATE_LOCK:
             # 更新されたゲーム状態をRedis f"game_state: に保存
-            await database_sync_to_async(self.game_manager.redis_client.set)(
+            redis_client = self.resources.get_redis_client()
+            await database_sync_to_async(redis_client.set)(
+            # await database_sync_to_async(self.game_manager.redis_client.set)(
                 f"game_state:{self.consumer.room_group_name}",
                 json.dumps(updated_state)
             )

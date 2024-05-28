@@ -1,7 +1,7 @@
 # docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_consumer_connect_handler.py
 from channels.db import database_sync_to_async
 from .pong_online_duel_game_manager import PongOnlineDuelGameManager
-from .pong_online_duel_config import g_GAME_MANAGERS_LOCK, game_managers
+from .pong_online_duel_resources import PongOnlineDuelResources
 from ...utils.async_logger import async_log
 
 class PongOnlineDuelConnectHandler:
@@ -11,10 +11,11 @@ class PongOnlineDuelConnectHandler:
 # ---------------------------------------------------------------
     def __init__(self, consumer):
         self.consumer   = consumer
+        self.resources =  PongOnlineDuelResources()
 
     async def handle(self):
         """ 接続処理 """
-        # await async_log("開始: ConnectHandler()")
+        await async_log("開始: ConnectHandler()")
         await self._init_consumer()
         await self._init_game_manager()
         await self._accept_user()
@@ -22,6 +23,8 @@ class PongOnlineDuelConnectHandler:
         # await async_log("終了: ConnectHandler()")
 
     async def _init_consumer(self):
+        await async_log("開始: _init_consumer()")
+        # self.resources.init()
         self.consumer.room_name         = self.consumer.scope['url_route']['kwargs']['room_name']
         self.consumer.room_group_name   = f'duel_{self.consumer.room_name}'
         self.consumer.user_id           = self.consumer.scope["user"].id
@@ -31,21 +34,15 @@ class PongOnlineDuelConnectHandler:
 
     async def _init_game_manager(self):
         """ GameManager(+ Redis) インスタンス作成 """
+        await async_log("開始: _init_game_manager()")
         # 一つだけルーム名でGameManagerインスタンスを作り、グローバル辞書に登録
+        game_managers = self.resources.get_game_managers()
+        # game_managers = PongOnlineDuelResources.get_game_managers()
         if self.consumer.room_name not in game_managers:
-            async with g_GAME_MANAGERS_LOCK:
+            # async with g_GAME_MANAGERS_LOCK:
+            async with self.resources.get_game_managers_lock():
+            # async with PongOnlineDuelResources.get_game_managers_lock():
                 game_managers[self.consumer.room_name] = PongOnlineDuelGameManager(self.consumer)
-
-                # TODO_ft: 2回行われるので冗長。他の初期化方法を検討する
-                key_exists = await database_sync_to_async(game_managers[self.consumer.room_name].redis_client.exists)(
-                    game_managers[self.consumer.room_name].room_group_name
-                )
-                if key_exists:
-                    await async_log(f"Previous Redis data for room '''{game_managers[self.consumer.room_name].room_group_name}''' exists and will be deleted.")
-                    # 前回のルーム情報を削除して初期化する。
-                    await database_sync_to_async(game_managers[self.consumer.room_name].redis_client.delete)(
-                        game_managers[self.consumer.room_name].room_group_name
-                    )
 
         # 登録されているインスタンスを取得
         self.consumer.game_manager = game_managers[self.consumer.room_name]
@@ -55,6 +52,7 @@ class PongOnlineDuelConnectHandler:
 
     async def _accept_user(self):
         """ ユーザー関連 """
+        await async_log("開始: _accept_user()")
         # 認証
         if not await self._authenticate_user():
             return
@@ -76,6 +74,7 @@ class PongOnlineDuelConnectHandler:
 
     async def _authenticate_user(self):
         """ユーザー認証"""
+        await async_log("開始: _authenticate_user()")
         if not self.consumer.scope["user"].is_authenticated:
             await self.consumer.close(code=1008)
             return False
@@ -91,8 +90,8 @@ class PongOnlineDuelConnectHandler:
 
     async def _handle_room_entry(self):
         """ ルームへの参加状況に応じた処理 """
-        # await async_log("開始: _handle_room_entry()")
-        # await async_log(f'ws接続 {self.consumer.scope["user"]}, {self.consumer.scope["user"].id}')
+        await async_log("開始: _handle_room_entry()")
+        await async_log(f'ws接続 {self.consumer.scope["user"]}, {self.consumer.scope["user"].id}')
         # await async_log(f'self.user_id, {self.user_id}')
         if await self.consumer.game_manager.is_both_players_connected():
             await self.consumer.game_manager.handle_both_players_connected()

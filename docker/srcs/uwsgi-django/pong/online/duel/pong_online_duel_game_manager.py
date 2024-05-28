@@ -12,7 +12,9 @@ from .pong_online_duel_physics import PongOnlineDuelPhysics
 from typing import Dict, Any
 from ...utils.async_logger import async_log
 from accounts.models import CustomUser
-from .pong_online_duel_config import g_redis_client, g_REDIS_STATE_LOCK
+from .pong_online_duel_resources import PongOnlineDuelResources
+
+# from .pong_online_duel_resources import g_redis_client, g_REDIS_STATE_LOCK
 from channels.db import database_sync_to_async
 import json
 
@@ -40,7 +42,9 @@ class PongOnlineDuelGameManager:
         self.user_channels: Dict[int, str]              = {}
         # Redis client(値を入れるためのsetとは別。setに接続するためのアカウントのようなもの)はモジュールで一つだけ。configに置いた変数（グローバル変数的な用途）。他のクラスからはGameManagerを介して参照するために自身の属性として持っておく
         # Redis set: ex.key = f"game_state:{self.consumer.room_name}" 
-        self.redis_client       = g_redis_client
+        # self.redis_client       = g_redis_client
+        self.resources           = PongOnlineDuelResources()
+        self.redis_client       = self.resources.get_redis_client()
         self.room_group_name    = f'duel_{self.consumer.room_name}'
         self.current_user_id    = None
 # ---------------------------------------------------------------
@@ -65,13 +69,14 @@ class PongOnlineDuelGameManager:
         # await async_log(f"None game_state: {game_state}")
         
         # 新規ゲーム状態をRedis f"game_state: に保存
-        async with g_REDIS_STATE_LOCK:
-            await database_sync_to_async(g_redis_client.set)(
+        async with self.resources.get_game_redis_state_lock():
+        # async with g_REDIS_STATE_LOCK:
+            await database_sync_to_async(self.redis_client.set)(
                 f"game_state:{self.consumer.room_group_name}", json.dumps(game_state)
             )
 
         # 予期せぬ切断に備えて再接続時の処理の下書き ※現在作成中
-        # game_state = await database_sync_to_async(g_redis_client.get)(
+        # game_state = await database_sync_to_async(self.redis_client.get)(
         #     f"game_state:{self.consumer.room_name}"
         # )
         # if game_state is None:
@@ -79,7 +84,7 @@ class PongOnlineDuelGameManager:
         #     await self.initialize_game()
         #     game_state = self.get_state()
         #     # await async_log(f"None game_state: {game_state}")
-        #     await database_sync_to_async(g_redis_client.set)(
+        #     await database_sync_to_async(self.redis_client.set)(
         #         f"game_state:{self.consumer.room_name}", json.dumps(game_state)
         #     )
         # else:
@@ -107,13 +112,14 @@ class PongOnlineDuelGameManager:
 # ---------------------------------------------------------------
     async def is_both_players_connected(self):
         """2人のプレイヤーが接続されているかどうかを判定する"""
+        # await async_log("開始: is_both_players_connected()")
         # await async_log(f"開始: 2人のプレイヤーが接続されているかどうかを判定する is_both_players_connected()")
         path_segments = self.consumer.scope['url_route']['kwargs']['room_name'].split('_')
         user1, user2 = int(path_segments[1]), int(path_segments[2])
 
         is_user1_connected = await self.room_manager.is_user_connected_to_room(user1)
         is_user2_connected = await self.room_manager.is_user_connected_to_room(user2)
-        # await async_log(f"is_user1_connected 3: {is_user2_connected}")
+        # await async_log(f"is_user1_connected 3: {is_user1_connected}")
         # await async_log(f"is_user2_connected 6: {is_user2_connected}")
         return is_user1_connected and is_user2_connected
 
