@@ -55,19 +55,27 @@ class PongOnlineDuelUpdate:
         if self.physics.is_colliding_with_ceiling_or_floor(ball_y, r, self.field):
             self.ball["direction"]["y"] = -self.ball["direction"]["y"]
 
-        # paddle操作: 操作権限を持つユーザーのみ
+        # # paddle操作: 操作権限を持つユーザーのみ
         if self.game_manager.user_paddle_map.get(user_id) == 'paddle1':
-            if self.physics.is_ball_colliding_with_paddle(self.ball, self.paddle1):
-                await self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle1)
             # await async_log(f"self.ball: {self.ball}")
             # await async_log(f"self.paddle1: {self.paddle1}")
-        # await async_log(f"self.game_manager.user_paddle_map.get(self.consumer.user_id): {self.game_manager.user_paddle_map.get(self.consumer.user_id)}")
+            if self.physics.is_ball_colliding_with_paddle(self.ball, self.paddle1):
+                self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle1)
+                # await async_log(f"True: paddle1")
+                # await async_log(f"self.ball: {self.ball}")
+            # else:
+            #     await async_log(f"False: paddle1")
         if self.game_manager.user_paddle_map.get(user_id) == 'paddle2':
-            if self.physics.is_ball_colliding_with_paddle(self.ball, self.paddle2):
-                await self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle2)
             # await async_log(f"self.ball: {self.ball}")
             # await async_log(f"self.paddle2: {self.paddle2}")
+            if self.physics.is_ball_colliding_with_paddle(self.ball, self.paddle2):
+                self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle2)
+            #     await async_log(f"True: paddle2")
+            #     await async_log(f"self.ball: {self.ball}")
+            # else:
+            #     await async_log(f"False: paddle2")
 
+    
     async def update_ball_position(self):
         self.ball["position"]["x"] += self.ball["direction"]["x"] * self.ball["speed"]
         self.ball["position"]["y"] += self.ball["direction"]["y"] * self.ball["speed"]

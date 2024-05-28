@@ -13,9 +13,9 @@ class PongOnlineConfig:
         }
 
         self.paddle1 = {
-            "width": 10,
+            "width": 30,
             # コーナーケーステスト時
-            "height": 290,
+            "height": 300,
             # 正規
             # "height": 30,
             "speed": 10,
@@ -23,9 +23,9 @@ class PongOnlineConfig:
         }
         
         self.paddle2 = {
-            "width": 10,
+            "width": 30,
             # コーナーケーステスト時
-            "height": 290,
+            "height": 300,
             # 正規
             # "height": 30,
             "speed": 10,
