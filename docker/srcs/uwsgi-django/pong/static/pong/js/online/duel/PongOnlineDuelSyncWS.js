@@ -45,7 +45,9 @@ class PongOnlineDuelSyncWS
 			this.initStartButton();
 		} else if (recvEvent.type === 'game_end') {
 			console.log("game end 1");
+			console.log("end_game_state:", recvData.end_game_state)
 			// 終了時のデータを保存（最終描画用）
+			this.gameStateManager.updateState(recvData.end_game_state);
 			this.gameStateManager.finalGameState = { ...this.gameStateManager.getState() };
 			// ゲーム状態を初期化
 			this.gameStateManager.resetState();
@@ -157,6 +159,7 @@ class PongOnlineDuelSyncWS
 
 			// 終了時
 			if (!gameState.is_running) {
+				console.log("initCanvas()", this.gameStateManager.getFinalState());
 				// 最終スコアの表示
 				PongOnlineDuelRenderer.render(this.ctx, this.field, this.gameStateManager.getFinalState());
 				window.addEventListener('resize', () => 

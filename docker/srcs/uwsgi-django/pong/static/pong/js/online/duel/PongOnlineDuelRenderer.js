@@ -13,13 +13,6 @@ class PongOnlineDuelRenderer
 		PongOnlineDuelRenderer.drawPaddle(ctx, gameState.objects.paddle2);
 		PongOnlineDuelRenderer.drawBall(ctx, gameState.objects.ball);
 		PongOnlineDuelRenderer.drawScore(ctx, field, gameState.state);
-		// console.log("--------------")
-		// console.log("field: ",field)
-		// console.log("p1 x: ",gameState.objects.paddle1.position.x)
-		// console.log("p2 x: ",gameState.objects.paddle2.position.x)
-		// console.log("ball x: ",gameState.objects.ball.position.x)
-		// console.log("ball y: ",gameState.objects.ball.position.y)
-		// console.log("--------------")
 	}
 
 	static drawScore(ctx, field, state)

@@ -55,13 +55,12 @@ class PongOnlineDuelUtil
 		this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
 		// 拡大縮小
 		this.ctx.scale(this.field.zoomLevel, this.field.zoomLevel);
+
 		// 終了時の描画状態（スコア表示）を維持する: 状態の更新を強制するために再描画をトリガーする
 		const state = gameStateManager.getFinalState();
-		// const state = gameState;
-
 		if (state && 
-			(state.state.score1 > 0 || state.state.score2 > 0) &&
-			!state.getIsGameLoopStarted())
+			(state.state.score1 > 0 || state.state.score2 > 0) 
+		)
 		{
 			setTimeout(() => {
 				PongOnlineRenderer.render(this.ctx, this.field, state);
@@ -88,8 +87,6 @@ class PongOnlineDuelUtil
 			this.isReconnecting = false;
 		}
 	}
-
-
 }
 
 export default PongOnlineDuelUtil;

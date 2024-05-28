@@ -29,14 +29,15 @@ class PongOnlineDuelMatch:
 
         self.pong_engine_data["is_running"] = False
         winner = 1 if self.pong_engine_data["state"]["score1"] > self.pong_engine_data["state"]["score2"] else 2
+        
         await self.consumer.channel_layer.group_send(self.consumer.room_group_name, {
             # send_event_to_client を指定
             "type": "send_event_to_client",  
             "event_type": "game_end",
             "event_data": {
-                "winner": winner
+                "winner": winner,
+                'end_game_state': self.pong_engine_data
             }
         })
         await self.consumer.disconnect(None)
-        # await database_sync_to_async(self.consumer.redis_client.delete)(f"game_state:{self.consumer.room_name}")
         await async_log(f"Game ended.Winner: Player {winner}")

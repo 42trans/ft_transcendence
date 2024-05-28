@@ -13,7 +13,6 @@ class PongOnlineDuelGameStateManager
 			state: {},
 			is_running: false
 		};
-		// this.user_Id = null;
 		this.paddleOwnership	= null;
 		this.finalGameState		= null;
 	}
@@ -42,14 +41,6 @@ class PongOnlineDuelGameStateManager
 	getPaddleOwnership() {
 		return this.paddleOwnership;
 	}
-	
-	// setUserId(userId) {
-	// 	this.userId = userId;
-	// }
-
-	// getUserId() {
-	// 	return this.userId;
-	// }
 	
 	getState() {
 		return this.gameState;
