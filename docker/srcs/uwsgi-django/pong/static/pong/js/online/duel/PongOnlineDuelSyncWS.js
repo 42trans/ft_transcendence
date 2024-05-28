@@ -28,11 +28,11 @@ class PongOnlineDuelSyncWS
 	// サーバーからメッセージが届いた場合の処理
 	onSocketMessage(event) 
 	{
-		console.log("onSocketMessage()", event);
+		// console.log("onSocketMessage()", event);
 		const recvEvent = JSON.parse(event.data);
 		const recvData = recvEvent.data;
-		console.log("onSocketMessage()", recvEvent);
-		console.log("onSocketMessage()", recvData);
+		// console.log("onSocketMessage()", recvEvent);
+		// console.log("onSocketMessage()", recvData);
 
 		if (recvEvent.type === 'duel.waiting_opponent') {
 			// console.log("waiting_opponent")

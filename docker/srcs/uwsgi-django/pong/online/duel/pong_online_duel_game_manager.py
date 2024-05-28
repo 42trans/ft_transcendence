@@ -59,9 +59,6 @@ class PongOnlineDuelGameManager:
         ゲーム状態を初期化する
         - Redisのセット: f"game_state:{self.consumer.room_name}": ゲームの状態に使用
         """
-        # game_state = await database_sync_to_async(g_redis_client.get)(
-        #     f"game_state:{self.consumer.room_name}"
-        # )
         await self.initialize_game()
         game_state = self.pong_engine_data
         # await async_log(f"None game_state: {game_state}")
@@ -72,6 +69,10 @@ class PongOnlineDuelGameManager:
                 f"game_state:{self.consumer.room_group_name}", json.dumps(game_state)
             )
 
+        # 予期せぬ切断に備えて再接続時の処理の下書き ※現在作成中
+        # game_state = await database_sync_to_async(g_redis_client.get)(
+        #     f"game_state:{self.consumer.room_name}"
+        # )
         # if game_state is None:
         #     # Redis にゲーム状態が保存されていない場合
         #     await self.initialize_game()

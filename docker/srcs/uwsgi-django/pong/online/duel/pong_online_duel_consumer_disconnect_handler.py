@@ -78,36 +78,35 @@ class PongOnlineDuelDisconnectHandler:
                 )
 
             await async_log(f"remaining_users: {remaining_users}, consumer.user_id:{self.consumer.user_id}")
-            # ルームが空になったらgame_managerとRedisのルーム情報を削除し、それからRedisクライアントを閉じる
-            if remaining_users == 0:
+            if remaining_users != 0:
+                # ルームが空でなければ早期リターン
+                return
+            else:
+                # ルームが空になったらgame_managerとRedisのルーム情報を削除し、それからRedisクライアントを閉じる
                 await async_log("開始: 0名の場合の処理↓")
-
-                # Redisのルーム情報を削除
-                await database_sync_to_async(redis_client.delete)(
-                    room_group_name
-                )
-                # Redisのgame_state情報を削除
-                await database_sync_to_async(self.game_manager.redis_client.delete)(
-                    f"game_state:{self.consumer.room_group_name}"
-                )
-
+                # Lock不要だが念の為。読みやすいし。
+                async with g_REDIS_LOCK: 
+                    # Redisのルーム情報を削除
+                    await database_sync_to_async(redis_client.delete)(
+                        room_group_name
+                    )
+                    # Redisのgame_state情報を削除
+                    await database_sync_to_async(self.game_manager.redis_client.delete)(
+                        f"game_state:{self.consumer.room_group_name}"
+                    )
                 async with g_GAME_MANAGERS_LOCK:
                     del game_managers[self.consumer.room_name]  
-
-                await async_log("終了: Lockして room delete↑")
-
-
-                # game_managerへの参照を解除 (連戦時にGameManagerがリセットされないバグ対策に試行。メモリリーク対策でもある)
-                self.game_manager = None  
-                # DEBUG: game_managers の状態を出力
-                await async_log(f"game_managers: {game_managers}")
-
-                # ----------------------------------------------
-                # DEBUG: ガベージコレクション前後のメモリ使用量を出力
-                # ----------------------------------------------
-                # await async_log(f"Before gc.collect(): {gc.get_count()}")
-                # # ガベージコレクション（プログラムが使用しなくなったメモリ領域を自動的に解放する仕組み） を手動で実行して可視化
-                # gc.collect()
-                # await async_log(f"After gc.collect(): {gc.get_count()}")
+                    await async_log("終了: Lockして room delete↑")
+                    # game_managerへの参照を解除 (連戦時にGameManagerがリセットされないバグ対策に試行。メモリリーク対策でもある)
+                    self.game_manager = None  
+                    # DEBUG: game_managers の状態を出力
+                    await async_log(f"game_managers: {game_managers}")
+            # ----------------------------------------------
+            # DEBUG: ガベージコレクション前後のメモリ使用量を出力
+            # ----------------------------------------------
+            # await async_log(f"Before gc.collect(): {gc.get_count()}")
+            # # ガベージコレクション（プログラムが使用しなくなったメモリ領域を自動的に解放する仕組み） を手動で実行して可視化
+            # gc.collect()
+            # await async_log(f"After gc.collect(): {gc.get_count()}")
         except Exception as e: 
             await async_log(f"Error clearing Redis room: {e}")

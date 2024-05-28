@@ -79,12 +79,15 @@ class PongOnlineDuelReceiveHandler:
         ※ TOOD_ft:処理高速化のために必要な情報に絞りたい
         - 計算時データ構造: objectsのみ
         - 送信時データ構造: game_settingsを含む全てのデータを送信している
+        
         """
         async with g_GAME_MANAGERS_LOCK:
             # await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
             await self.game_manager.update_game(json_data['objects'])
-        # await async_log("更新時: game_manager.update_game")
+            # await async_log(f"更新時: game_manager.update_game: {self.consumer.user_id}")
         updated_state = self.game_manager.pong_engine_data
+
+        # バックアップ的な用途
         async with g_REDIS_STATE_LOCK:
             # 更新されたゲーム状態をRedis f"game_state: に保存
             await database_sync_to_async(self.game_manager.redis_client.set)(
@@ -92,6 +95,18 @@ class PongOnlineDuelReceiveHandler:
                 json.dumps(updated_state)
             )
             # await async_log("更新時engine_data: " + json.dumps(updated_state))
+
+        # # Resisから取り出す場合
+        # async with g_REDIS_STATE_LOCK:
+        #     game_state_json = await database_sync_to_async(self.game_manager.redis_client.get)(
+        #         f"game_state:{self.consumer.room_group_name}"
+        #     )
+        #     if game_state_json:
+        #         # ゲーム状態が存在する場合、JSONをデコードしてクライアントに送信
+        #         game_state = json.loads(game_state_json)
+        #         await self.consumer.send_game_state(game_state)
+
+        # redisデータを使用せずに高速処理を行う
         await self.consumer.send_game_state(updated_state)
     
     async def handle_invalid_action(self, json_data):
