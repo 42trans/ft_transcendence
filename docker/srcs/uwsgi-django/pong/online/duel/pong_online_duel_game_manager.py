@@ -11,7 +11,7 @@ from .pong_online_duel_update import PongOnlineDuelUpdate
 from typing import Dict, Any
 from ...utils.async_logger import async_log
 from accounts.models import CustomUser
-from .pong_online_duel_config import g_redis_client
+from .pong_online_duel_config import g_redis_client, g_REDIS_STATE_LOCK
 from channels.db import database_sync_to_async
 import json
 
@@ -59,15 +59,18 @@ class PongOnlineDuelGameManager:
         ゲーム状態を初期化する
         - Redisのセット: f"game_state:{self.consumer.room_name}": ゲームの状態に使用
         """
-        game_state = await database_sync_to_async(g_redis_client.get)(
-            f"game_state:{self.consumer.room_name}"
-        )
+        # game_state = await database_sync_to_async(g_redis_client.get)(
+        #     f"game_state:{self.consumer.room_name}"
+        # )
         await self.initialize_game()
         game_state = self.pong_engine_data
         # await async_log(f"None game_state: {game_state}")
-        await database_sync_to_async(g_redis_client.set)(
-            f"game_state:{self.consumer.room_group_name}", json.dumps(game_state)
-        )
+        
+        # 新規ゲーム状態をRedis f"game_state: に保存
+        async with g_REDIS_STATE_LOCK:
+            await database_sync_to_async(g_redis_client.set)(
+                f"game_state:{self.consumer.room_group_name}", json.dumps(game_state)
+            )
 
         # if game_state is None:
         #     # Redis にゲーム状態が保存されていない場合

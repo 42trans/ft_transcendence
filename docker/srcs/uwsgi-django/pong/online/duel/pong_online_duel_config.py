@@ -9,6 +9,8 @@ game_managers = {}
 g_GAME_MANAGERS_LOCK = asyncio.Lock() 
 # Redis操作用のロック
 g_REDIS_LOCK = asyncio.Lock()
+g_REDIS_START_SIGNAL_LOCK = asyncio.Lock()
+g_REDIS_STATE_LOCK = asyncio.Lock()
 
 # Redisクライアント
 # 参考:【Python guide | Docs】 <https://redis.io/docs/latest/develop/connect/clients/python/>
