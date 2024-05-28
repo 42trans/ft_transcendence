@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.action_chains import ActionChains
 
 from django.conf import settings
 from django.test import LiveServerTestCase
@@ -178,20 +179,15 @@ class TestConfig(LiveServerTestCase):
                 continue
             print(json.dumps(entry, indent=2))
 
-    def _is_alert_present(self):
-        """
-        ページにアラートが存在するかどうかを確認するヘルパーメソッド
-        """
-        try:
-            self.driver.switch_to.alert
-            return True
-        except NoAlertPresentException:
-            return False
-
-    def _close_alert(self):
-        if self._is_alert_present():
-            alert = self.driver.switch_to.alert
-            alert.accept()
+    def _close_alert(self, expected_message):
+        WebDriverWait(driver=self.driver, timeout=10).until(
+            EC.alert_is_present(),
+            message="Waiting for alert to appear"
+        )
+        alert = self.driver.switch_to.alert
+        self.assertEqual(alert.text, expected_message)
+        alert.accept()
+        print("Alert closed")
 
     ############################################################################
     # ページ遷移、操作 まとめ
@@ -223,16 +219,8 @@ class TestConfig(LiveServerTestCase):
         self._login(user1_email, user1_password)
 
     def _logout(self):
-        logout_page_button = self._button(By.CSS_SELECTOR, ".logoutButton")
-        self._screenshot("logout 1")
+        logout_page_button = self._button(By.CSS_SELECTOR, "header .logoutButton")
         self.driver.execute_script("arguments[0].click();", logout_page_button)
-        self._screenshot("logout 2")
-        self.assertTrue(self._is_alert_present())
-
-        # self._print_console_log()
-
-        self._screenshot("logout 3")
-        self._close_alert()
-        self._screenshot("logout 4")
+        self._close_alert(expected_message="You have been successfully logout")
         self._wait_invisible(logout_page_button)
-        self._screenshot("logout 5")
+        # self._screenshot("logout 2")

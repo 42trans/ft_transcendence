@@ -50,7 +50,8 @@ class BasicAuthTest(TestConfig):
         self._assert_message("Invalid credentials")
         # self._screenshot("login failure")
 
-    # def test_logout(self):
-    #     self.test_login_success()
-    #     self._logout()
-    #     self._assert_current_url(self.top_url)
+    def test_logout(self):
+        self._login_user1_from_top_page()
+
+        self._logout()
+        self._assert_current_url(self.top_url)

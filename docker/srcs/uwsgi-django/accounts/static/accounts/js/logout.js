@@ -36,9 +36,9 @@ function handleLogout() {
 
 // header
 document.addEventListener('DOMContentLoaded', function() {
-	const header = document.querySelector('header');
-	if (header) {
-		header.addEventListener('click', function(event) {
+	const button = document.querySelector('header .logoutButton');
+	if (button) {
+		button.addEventListener('click', function(event) {
 			if (event.target.classList.contains('logoutButton')) {
 				event.preventDefault();
 				handleLogout();
