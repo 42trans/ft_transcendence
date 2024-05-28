@@ -1,5 +1,7 @@
 import json
 import datetime
+import random
+import string
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoAlertPresentException
@@ -187,7 +189,12 @@ class TestConfig(LiveServerTestCase):
         alert = self.driver.switch_to.alert
         self.assertEqual(alert.text, expected_message)
         alert.accept()
-        print("Alert closed")
+        # print("Alert closed")
+
+    def _generate_random_string(self, length=10):
+        characters = string.ascii_letters + string.digits
+        random_string = ''.join(random.choice(characters) for _ in range(length))
+        return random_string
 
     ############################################################################
     # ページ遷移、操作 まとめ
@@ -197,6 +204,12 @@ class TestConfig(LiveServerTestCase):
         self._click_button(login_page_button, wait_for_button_invisible=True)
         self._assert_page_url_and_title(expecter_url=self.login_url,
                                         expected_title='Login')
+
+    def _move_top_to_signup(self):
+        signup_page_button = self._button(By.CSS_SELECTOR, ".signupButton")
+        self._click_button(signup_page_button, wait_for_button_invisible=True)
+        self._assert_page_url_and_title(expecter_url=self.signup_url,
+                                        expected_title='Signup')
 
     def _move_top_to_profile(self):
         profile_page_button = self._button(By.CSS_SELECTOR, ".profileButton")

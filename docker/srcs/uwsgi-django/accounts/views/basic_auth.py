@@ -25,7 +25,11 @@ class SignupTemplateView(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(to=self.authenticated_redirect_to)
-        return render(request, self.template_name)
+
+        context = {
+            'login_url': settings.URL_CONFIG['kSpaAuthLoginUrl']
+        }
+        return render(request, self.template_name, context)
 
 
 class SignupAPIView(APIView):
