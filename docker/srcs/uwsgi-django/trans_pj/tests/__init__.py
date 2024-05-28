@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.service import Service
 
 from django.conf import settings
 from django.test import LiveServerTestCase
+from accounts.models import CustomUser
 
 
 __all__ = [
@@ -32,6 +33,7 @@ kURL_PREFIX = "https://nginx"
 
 class TestConfig(LiveServerTestCase):
     def setUp(self):
+        # Webdriver ############################################################
         options = Options()
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
@@ -43,6 +45,8 @@ class TestConfig(LiveServerTestCase):
         service = Service('/usr/bin/chromedriver')
         self.driver = webdriver.Chrome(service=service, options=options)
 
+        # const ################################################################
+        # url
         self.url_config = settings.URL_CONFIG
 
         self.top_url            = f"{kURL_PREFIX}{self.url_config['kSpaPongTopUrl']}"
@@ -70,6 +74,10 @@ class TestConfig(LiveServerTestCase):
         self.signup_url         = f"{kURL_PREFIX}{self.url_config['kSpaAuthSignupUrl']}"
         self.oauth_url          = f"{kURL_PREFIX}/accounts/oauth-ft/"
 
+        # nickname
+        self.nickname_max_len = CustomUser.kNICKNAME_MAX_LENGTH
+
+        # set up operation #####################################################
         self._access_to(self.top_url)
 
     def tearDown(self):
@@ -134,9 +142,16 @@ class TestConfig(LiveServerTestCase):
             EC.visibility_of_element_located(target)
         )
 
+    def _wait_send_keys(self, by, elem_value, send_value):
+        WebDriverWait(self.driver, 10).until(
+            EC.text_to_be_present_in_element_value((by, elem_value), send_value)
+        )
+
     def _send_to_elem(self, by, elem_value, send_value):
         elem = self._element(by, elem_value)
+        elem.clear()  # 入力済みのテキストをクリア
         elem.send_keys(send_value)
+        self._wait_send_keys(by, elem_value, send_value)
 
     def _access_to(self, url):
         self.driver.get(url)
