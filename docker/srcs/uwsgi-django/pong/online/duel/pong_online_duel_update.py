@@ -4,6 +4,7 @@ import asyncio
 import random
 
 class PongOnlineDuelUpdate:
+    """ async化 """
     def __init__(self, consumer, game_manager, pong_engine_data, physics, match):
         self.consumer           = consumer
         self.game_manager       = game_manager
@@ -23,11 +24,10 @@ class PongOnlineDuelUpdate:
         self.max_ball_speed     = pong_engine_data["game_settings"]["max_ball_speed"]
         self.init_ball_speed    = pong_engine_data["game_settings"]["init_ball_speed"]
 
-    async def update_game(self, input_data):
-        # await async_log(f"開始:update_game()  {input_data}")
-
+    async def update_game(self, input_data, user_id):
+        # await async_log(f"開始:update_game()  {input_data}, user_id: {user_id}")
         await self.handle_input(input_data)
-        await self.handle_collisions()
+        await self.handle_collisions(user_id)
         await self.update_ball_position()
 
     async def handle_input(self, input_data):
@@ -40,7 +40,7 @@ class PongOnlineDuelUpdate:
         self.paddle1["position"]["y"] = input_data.get("paddle1", {}).get("position", {}).get("y")
         self.paddle2["position"]["y"] = input_data.get("paddle2", {}).get("position", {}).get("y")
 
-    async def handle_collisions(self):
+    async def handle_collisions(self, user_id):
         # await async_log("開始:handle_collisions()")
         r       = self.ball["radius"]
         ball_x  = self.ball["position"]["x"]
@@ -56,12 +56,17 @@ class PongOnlineDuelUpdate:
             self.ball["direction"]["y"] = -self.ball["direction"]["y"]
 
         # paddle操作: 操作権限を持つユーザーのみ
-        if self.game_manager.user_paddle_map.get(self.consumer.user_id) == 'paddle1':
+        if self.game_manager.user_paddle_map.get(user_id) == 'paddle1':
             if self.physics.is_ball_colliding_with_paddle(self.ball, self.paddle1):
-                self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle1)
-        if self.game_manager.user_paddle_map.get(self.consumer.user_id) == 'paddle2':
+                await self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle1)
+            # await async_log(f"self.ball: {self.ball}")
+            # await async_log(f"self.paddle1: {self.paddle1}")
+        # await async_log(f"self.game_manager.user_paddle_map.get(self.consumer.user_id): {self.game_manager.user_paddle_map.get(self.consumer.user_id)}")
+        if self.game_manager.user_paddle_map.get(user_id) == 'paddle2':
             if self.physics.is_ball_colliding_with_paddle(self.ball, self.paddle2):
-                self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle2)
+                await self.physics.adjust_ball_direction_and_speed(self.ball, self.paddle2)
+            # await async_log(f"self.ball: {self.ball}")
+            # await async_log(f"self.paddle2: {self.paddle2}")
 
     async def update_ball_position(self):
         self.ball["position"]["x"] += self.ball["direction"]["x"] * self.ball["speed"]

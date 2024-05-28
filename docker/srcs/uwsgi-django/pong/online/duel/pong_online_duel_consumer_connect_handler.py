@@ -59,12 +59,13 @@ class PongOnlineDuelConnectHandler:
         if not await self._authenticate_user():
             return
         await self.consumer.accept()
-        # ユーザーを登録
+        
+        # GameManagerクラスに登録
         self.consumer.game_manager.register_user(self.user_id)
         # 特定ユーザーにsendするためにuser.idとchannel_nameを紐付け
         self.consumer.game_manager.register_channel(self.user_id, self.consumer.channel_name)
 
-        # Consumerのグループ（Duelルームにブロードキャストするグループ）に追加
+        # Channels Consumerのグループに追加（Duelルームにブロードキャストするグループ））
         # group_add: グループが存在しない場合は新たに作成し、存在する場合は既存のグループにconsumerを追加
         # room_group_name: 任意の名前、※コンストラクタで指定　ex. f'duel_{self.consumer.room_name}'
         # channel_name: 接続(user)毎に一つ割り当て　

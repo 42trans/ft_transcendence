@@ -1,12 +1,13 @@
 # docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_game_manager.py
 from ..pong_online_config import PongOnlineConfig
 from ..pong_online_init import PongOnlineInit
-from ..pong_online_physics import PongOnlinePhysics
+# from ..pong_online_physics import PongOnlinePhysics
 
 from .pong_online_duel_match import PongOnlineDuelMatch
 from .pong_online_duel_room_manager import PongOnlineDuelRoomeManager
 from .pong_online_duel_match_start_manager import PongOnlineDuelMatchStartManager
 from .pong_online_duel_update import PongOnlineDuelUpdate
+from .pong_online_duel_physics import PongOnlineDuelPhysics
 
 from typing import Dict, Any
 from ...utils.async_logger import async_log
@@ -91,7 +92,7 @@ class PongOnlineDuelGameManager:
         init                    = PongOnlineInit(self.config)
         self.pong_engine_data   = init.init_pong_engine()
         self.match              = PongOnlineDuelMatch(self.pong_engine_data, self.consumer)
-        self.physics            = PongOnlinePhysics(self.pong_engine_data)
+        self.physics            = PongOnlineDuelPhysics(self.pong_engine_data)
         self.pong_engine_update = PongOnlineDuelUpdate(
             self.consumer,
             self,
@@ -140,9 +141,9 @@ class PongOnlineDuelGameManager:
     def get_state(self):
         return self.pong_engine_data
 
-    async def update_game(self, json_data):
-        # await async_log("pong_engine_update.update_game")
-        await self.pong_engine_update.update_game(json_data)
+    async def update_game(self, json_data, user_id):
+        # await async_log(f"pong_engine_update.update_game: {json_data}, user_id:{user_id}")
+        await self.pong_engine_update.update_game(json_data, user_id)
         return self
 
 

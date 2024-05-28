@@ -83,7 +83,7 @@ class PongOnlineDuelReceiveHandler:
         """
         async with g_GAME_MANAGERS_LOCK:
             # await async_log("更新時クライアントからの受信: " + json.dumps(json_data))
-            await self.game_manager.update_game(json_data['objects'])
+            await self.game_manager.update_game(json_data['objects'], self.consumer.user_id)
             # await async_log(f"更新時: game_manager.update_game: {self.consumer.user_id}")
         updated_state = self.game_manager.pong_engine_data
 

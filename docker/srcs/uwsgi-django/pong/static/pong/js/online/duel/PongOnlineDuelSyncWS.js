@@ -53,7 +53,7 @@ class PongOnlineDuelSyncWS
 			// PongOnlineDuelUtil.attemptReconnect();
 			console.log("game end 2");
 		} else if (recvEvent.type === 'game_state'){
-			console.log("recvData", recvData)
+			// console.log("recvData", recvData)
 			try {
 				// 再接続の場合: 何もしない
 				if (this.isReconnecting) 

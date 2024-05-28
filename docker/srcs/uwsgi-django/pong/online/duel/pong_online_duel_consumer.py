@@ -61,7 +61,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         """ WebSocket からメッセージを受信した際の処理 """
         # await async_log("開始:recieve(): クライアントから受信")
         try:
-            handler = PongOnlineDuelReceiveHandler(self, self.game_manager)
+            handler     = PongOnlineDuelReceiveHandler(self, self.game_manager)
             json_data   = json.loads(text_data)
             action      = json_data.get('action')
 
