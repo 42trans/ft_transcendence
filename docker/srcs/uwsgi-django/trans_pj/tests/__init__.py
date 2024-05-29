@@ -95,6 +95,8 @@ class TestConfig(LiveServerTestCase):
         element = wait.until(
             EC.visibility_of_element_located((by, value))
         )
+        self.assertTrue(element.is_displayed(),
+                        msg=f"Element `{value}` is not displayed")
         return element
 
     def _text_link_url(self, text):
@@ -102,7 +104,10 @@ class TestConfig(LiveServerTestCase):
         return link.get_attribute('href')
 
     def _text_link(self, text):
-        link = self._element(By.LINK_TEXT, text)
+        # link = self._element(By.LINK_TEXT, text)
+        link = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.LINK_TEXT, text))
+        )
         return link
 
     def _button(self, by, value):
@@ -111,6 +116,17 @@ class TestConfig(LiveServerTestCase):
         )
         # button = self._element(by, value)
         return button
+
+    def _alert(self, expected_message):
+        WebDriverWait(driver=self.driver, timeout=10).until(
+            EC.alert_is_present(),
+            message="Waiting for alert to appear"
+        )
+        alert = self.driver.switch_to.alert
+        self.assertEqual(alert.text,
+                         expected_message,
+                         msg=f"alert message should be `{expected_message}`")
+        return alert
 
     ############################################################################
     # assert wrapper
@@ -127,6 +143,10 @@ class TestConfig(LiveServerTestCase):
         self._assert_current_url(expecter_url)
         # ページのタイトルを検証
         self.assertEqual(self.driver.title, expected_title)
+
+    def _assert_element_exists(self, by, value):
+        elem = self._element(by, value)
+        self.assertTrue(elem.is_displayed())
 
     def _assert_message(self, expected_message):
         message_area = self._element(By.ID, "message-area")
@@ -169,6 +189,7 @@ class TestConfig(LiveServerTestCase):
         self.driver.get(url)
 
     def _click_link(self, target, wait_for_link_invisible=True):
+        # target.click()
         self.driver.execute_script("arguments[0].click();", target)
         if wait_for_link_invisible:
             self._wait_invisible(target)
@@ -191,14 +212,15 @@ class TestConfig(LiveServerTestCase):
             print(json.dumps(entry, indent=2))
 
     def _close_alert(self, expected_message):
-        WebDriverWait(driver=self.driver, timeout=10).until(
-            EC.alert_is_present(),
-            message="Waiting for alert to appear"
-        )
-        alert = self.driver.switch_to.alert
-        self.assertEqual(alert.text, expected_message)
+        alert = self._alert(expected_message)
         alert.accept()
-        # print("Alert closed")
+
+    def _dismiss_alert(self, expected_message):
+        """
+        confirm アラートダイアログの"Cancel"
+        """
+        alert = self._alert(expected_message)
+        alert.dismiss()
 
     def _generate_random_string(self, length=10):
         characters = string.ascii_letters + string.digits
@@ -226,7 +248,15 @@ class TestConfig(LiveServerTestCase):
         self._assert_page_url_and_title(expecter_url=self.profile_url,
                                         expected_title='UserProfile')
 
+    def _move_top_to_friend(self):
+        friend_page_link = self._text_link("Friend")
+        self._click_link(friend_page_link, wait_for_link_invisible=False)
+        self._assert_page_url_and_title(expecter_url=self.friend_url,
+                                        expected_title='Friend')
+
     def _login(self, email, password, wait_for_button_invisible=True):
+        self._move_top_to_login()
+
         self._send_to_elem(By.ID, "email", email)
         self._send_to_elem(By.ID, "password", password)
 
@@ -246,3 +276,15 @@ class TestConfig(LiveServerTestCase):
         self._close_alert(expected_message="You have been successfully logout")
         self._wait_invisible(logout_page_button)
         # self._screenshot("logout 2")
+
+    def _create_new_user(self, email, nickname, password):
+        self._move_top_to_signup()
+
+        self._send_to_elem(By.ID, "email", email)
+        self._send_to_elem(By.ID, "nickname", nickname)
+        self._send_to_elem(By.ID, "password1", password)
+        self._send_to_elem(By.ID, "password2", password)
+
+        signup_button = self._element(By.ID, "sign-submit")
+        self._click_button(signup_button, wait_for_button_invisible=True)
+        self._logout()
