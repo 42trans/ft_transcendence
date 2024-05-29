@@ -6,6 +6,9 @@ import gc
 import json
 import redis
 
+# Dev時DEBUG用ログ出力を切り替え
+ASYNC_LOG_FOR_DEV = 1
+
 # ---------------------------------------------------------------
 # disconnect
 # ---------------------------------------------------------------
@@ -60,52 +63,48 @@ class PongOnlineDuelDisconnectHandler:
         }
         """
         await async_log("開始: clear_game_manager_and_redis_room()↓")
-        if not self.game_manager.redis_client:
-            return
-
-        redis_client = self.game_manager.redis_client
-        room_group_name = self.consumer.room_group_name
-
         try:
-            # Redisからユーザーとルーム情報を削除
+            redis_client    = self.resources.get_redis_client()
             # User数=0の確認が重複しないようにlock
             async with self.resources.get_game_redis_room_lock(): 
-            # async with g_REDIS_LOCK: 
                 # srem: 指定されたセット(key)から、指定されたメンバー(member)を削除
                 await database_sync_to_async(redis_client.srem)(
-                    room_group_name, 
+                    self.consumer.room_group_name, 
                     self.consumer.user_id
                 )
                 remaining_users = await database_sync_to_async(redis_client.scard)(
-                    room_group_name
+                    self.consumer.room_group_name
                 )
+            if ASYNC_LOG_FOR_DEV:
+                await async_log(f"remaining_users: {remaining_users}, consumer.user_id:{self.consumer.user_id}")
 
-            await async_log(f"remaining_users: {remaining_users}, consumer.user_id:{self.consumer.user_id}")
+            # ルームが空でなければ早期リターン
             if remaining_users != 0:
-                # ルームが空でなければ早期リターン
                 return
             else:
-                # ルームが空になったらgame_managerとRedisのルーム情報を削除し、それからRedisクライアントを閉じる
+                # --------------------------------------
+                # ルームが空になったら
+                # game_managerインスタンスとRedisのルームを削除
+                # --------------------------------------
                 await async_log("開始: 0名の場合の処理↓")
-                # Lock不要だが念の為。読みやすいし。
+                # Lock不要だが念の為
                 async with self.resources.get_game_redis_room_lock(): 
-                # async with g_REDIS_LOCK: 
                     # Redisのルーム情報を削除
                     await database_sync_to_async(redis_client.delete)(
-                        room_group_name
+                        self.consumer.room_group_name
                     )
-                    # Redisのgame_state情報を削除
-                    await database_sync_to_async(self.game_manager.redis_client.delete)(
-                        f"game_state:{self.consumer.room_group_name}"
-                    )
+                # Redisのgame_state情報を削除
+                # async with self.resources.get_game_redis_state_lock(): 
+                #     await database_sync_to_async(self.game_manager.redis_client.delete)(
+                #         f"game_state:{self.consumer.room_group_name}"
+                #     )
                 async with self.resources.get_game_managers_lock():
                     game_managers = self.resources.get_game_managers() 
-                # async with g_GAME_MANAGERS_LOCK:
                     del game_managers[self.consumer.room_name]  
-                    await async_log("終了: Lockして room delete↑")
                     # game_managerへの参照を解除 (連戦時にGameManagerがリセットされないバグ対策に試行。メモリリーク対策でもある)
                     self.game_manager = None  
-                    # DEBUG: game_managers の状態を出力
+                if ASYNC_LOG_FOR_DEV:
+                    # DEBUG: game_managers の状態を出力　expected = {}
                     await async_log(f"game_managers: {game_managers}")
             # ----------------------------------------------
             # DEBUG: ガベージコレクション前後のメモリ使用量を出力

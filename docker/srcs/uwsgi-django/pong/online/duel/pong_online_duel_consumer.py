@@ -9,6 +9,9 @@ from .pong_online_duel_consumer_disconnect_handler import PongOnlineDuelDisconne
 from .pong_online_duel_consumer_util import PongOnlineDuelConsumerUtil
 from ...utils.async_logger import async_log
 
+# Dev時DEBUG用ログ出力を切り替え
+ASYNC_LOG_FOR_DEV = 0
+
 class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
     '''
     2名のUserによるOnline Pong(Remote Play, Duel) の WebSocket Consumer
@@ -26,7 +29,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
       - 参考:【チャンネル レイヤー — Channels 4.0.0 ドキュメント】 <https://channels.readthedocs.io/en/stable/topics/channel_layers.html>
 
     ## DEBUG:
-    - 以前のredisの情報をクリア
+    - 以前のredisの情報をクリアする方法
       - docker exec redis redis-cli flushall
     '''
     # 注意：ここだけでは認証チェックとして不足
@@ -38,6 +41,8 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
         self.game_manager       = None 
         self.room_group_name    = None
         self.user_id            = None 
+        self.user1              = None
+        self.user2              = None
 # ---------------------------------------------------------------
 # connect
 # ---------------------------------------------------------------
@@ -58,7 +63,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
 # receive
 # ---------------------------------------------------------------
     async def receive(self, text_data=None):
-        """ WebSocket からメッセージを受信した際の処理 """
+        """ client(WebSocket接続)からメッセージを受信した際の処理 """
         # await async_log("開始:recieve(): クライアントから受信")
         try:
             handler     = PongOnlineDuelReceiveHandler(self, self.game_manager)
@@ -72,7 +77,7 @@ class PongOnlineDuelConsumer(AsyncWebsocketConsumer):
             elif action == 'update':
                 await handler.handle_update_action(json_data)
             else:
-                await handler.handle_invalid_action(json_data)
+                await handler.handle_invalid_action()
         except Exception as e:
             await async_log(f" error: {str(e)}")
             await self.close(code=1011) #予期しない状態または内部エラー

@@ -3,6 +3,9 @@ from ...utils.async_logger import async_log
 import asyncio
 import random
 
+# Dev時DEBUG用ログ出力を切り替え
+ASYNC_LOG_FOR_DEV = 0
+
 class PongOnlineDuelUpdate:
     """ async化 """
     def __init__(self, consumer, game_manager, pong_engine_data, physics, match):
@@ -24,13 +27,17 @@ class PongOnlineDuelUpdate:
         self.max_ball_speed     = pong_engine_data["game_settings"]["max_ball_speed"]
         self.init_ball_speed    = pong_engine_data["game_settings"]["init_ball_speed"]
 
-    async def update_game(self, input_data, user_id):
-        # await async_log(f"開始:update_game()  {input_data}, user_id: {user_id}")
-        await self.handle_input(input_data)
-        await self.handle_collisions(user_id)
-        await self.update_ball_position()
 
-    async def handle_input(self, input_data):
+    async def update_game(self, input_data, user_id):
+        if ASYNC_LOG_FOR_DEV:
+            # await async_log(f"input_data {input_data}, user_id: {user_id}")
+            await async_log(f"開始:PongOnlineDuelUpdate.update_game() ")
+        await self._handle_input(input_data)
+        await self._handle_collisions(user_id)
+        await self._update_ball_position()
+
+# -------------------------------------------------------
+    async def _handle_input(self, input_data):
         """
         clienから受信したパドル情報を代入
         TODO_ft: クライアントとの通信がまだの間、開発用に一旦、Noneの回避目的でデフォルト0を入れている。値がない場合に0*speedで位置変更0な処理で良いか判断が必要。
@@ -40,16 +47,16 @@ class PongOnlineDuelUpdate:
         self.paddle1["position"]["y"] = input_data.get("paddle1", {}).get("position", {}).get("y")
         self.paddle2["position"]["y"] = input_data.get("paddle2", {}).get("position", {}).get("y")
 
-    async def handle_collisions(self, user_id):
-        # await async_log("開始:handle_collisions()")
+    async def _handle_collisions(self, user_id):
+        if ASYNC_LOG_FOR_DEV:
+            await async_log("開始:_handle_collisions()")
         r       = self.ball["radius"]
         ball_x  = self.ball["position"]["x"]
         ball_y  = self.ball["position"]["y"]
 
         if self.physics.is_colliding_with_side_walls(ball_x, r, self.field):
             scorer = 2 if ball_x < 0 else 1
-            await self.reset_ball(scorer)
-            # await async_log(f"scorer:  {scorer}")
+            await self._reset_ball(scorer)
             await self.match.update_score(scorer)
 
         if self.physics.is_colliding_with_ceiling_or_floor(ball_y, r, self.field):
@@ -74,13 +81,13 @@ class PongOnlineDuelUpdate:
             #     await async_log(f"self.ball: {self.ball}")
             # else:
             #     await async_log(f"False: paddle2")
+        if ASYNC_LOG_FOR_DEV:
+            await async_log(f"ball speed {self.ball["speed"]}")
+            await async_log("終了:_handle_collisions()")
 
-    
-    async def update_ball_position(self):
-        self.ball["position"]["x"] += self.ball["direction"]["x"] * self.ball["speed"]
-        self.ball["position"]["y"] += self.ball["direction"]["y"] * self.ball["speed"]
 
-    async def reset_ball(self, loser):
+
+    async def _reset_ball(self, loser):
         # 1秒間の遅延を挿入
         await asyncio.sleep(self.reset_interval)
         self.ball["position"] = {"x": 0, "y": 0}
@@ -88,3 +95,7 @@ class PongOnlineDuelUpdate:
         # TODO_ft:ランダムにサーブ 3Dも実装する
         self.ball["direction"]["y"] = random.uniform(-0.5, 0.5)
         self.ball["speed"] = self.init_ball_speed
+
+    async def _update_ball_position(self):
+        self.ball["position"]["x"] += self.ball["direction"]["x"] * self.ball["speed"]
+        self.ball["position"]["y"] += self.ball["direction"]["y"] * self.ball["speed"]

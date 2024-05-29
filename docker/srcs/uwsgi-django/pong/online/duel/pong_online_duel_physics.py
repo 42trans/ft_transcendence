@@ -1,6 +1,6 @@
 # docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_physics.py
+
 class PongOnlineDuelPhysics:
-    """ async化 """
     def __init__(self, pong_engine_data):
         self.max_ball_speed = pong_engine_data["game_settings"]["max_ball_speed"]
         self.ball_speed     = pong_engine_data["game_settings"]["init_ball_speed"]
@@ -47,7 +47,6 @@ class PongOnlineDuelPhysics:
             ball["direction"]["y"] += paddle["dir_y"] * 0.05
             # 速度を10%増加させる。最大速度を超えないように制限
             ball["speed"] = min(ball["speed"] * 1.1, self.max_ball_speed)
-
 
     def is_ball_colliding_with_paddle_current(self, ball, paddle):
         """衝突判定: ボールの現在位置に基づいてパドルとの衝突を判定する"""

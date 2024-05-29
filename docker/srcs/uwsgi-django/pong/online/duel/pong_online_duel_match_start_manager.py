@@ -1,6 +1,9 @@
 # docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_game_manager.py
 from ...utils.async_logger import async_log
 
+# Dev時DEBUG用ログ出力を切り替え
+ASYNC_LOG_FOR_DEV = True
+
 class PongOnlineDuelMatchStartManager:
     def __init__(self, consumer, game_manager):
         self.game_manager   = game_manager
@@ -8,11 +11,13 @@ class PongOnlineDuelMatchStartManager:
 
     async def handle_both_players_connected(self):
         """2人のプレイヤーが接続された場合の処理"""
-        await async_log("2名がinしました")
+        await async_log("2名がDuel roomにinしました")
 
         # パドルの割り当て
+        await async_log(f"開始: assign_paddle() u_ids:{self.game_manager.get_user_ids()}")
         for user_id in self.game_manager.get_user_ids():
             if user_id not in self.game_manager.user_paddle_map:
+                await async_log("開始: assign_paddle()")
                 self.assign_paddle(user_id)
 
         # ルームにいる二人に向けて個別にパドル情報を送信
