@@ -130,6 +130,7 @@ class TestConfig(LiveServerTestCase):
 
     def _assert_message(self, expected_message):
         message_area = self._element(By.ID, "message-area")
+        self._wait_display_message(expected_message)
         self.assertEqual(message_area.text, expected_message)
 
     ############################################################################
@@ -148,6 +149,14 @@ class TestConfig(LiveServerTestCase):
     def _wait_send_keys(self, by, elem_value, send_value):
         WebDriverWait(self.driver, 10).until(
             EC.text_to_be_present_in_element_value((by, elem_value), send_value)
+        )
+
+    def _wait_display_message(self, expected_message):
+        WebDriverWait(driver=self.driver, timeout=10).until(
+            EC.text_to_be_present_in_element(
+                locator=(By.ID, "message-area"),
+                text_=expected_message
+            )
         )
 
     def _send_to_elem(self, by, elem_value, send_value):
