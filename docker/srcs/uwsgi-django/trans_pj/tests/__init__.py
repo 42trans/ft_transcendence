@@ -4,7 +4,7 @@ import random
 import string
 
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException, NoAlertPresentException
+from selenium.common.exceptions import TimeoutException, NoAlertPresentException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,12 +17,14 @@ from django.conf import settings
 from django.test import LiveServerTestCase
 from accounts.models import CustomUser
 
-
+# test_*.pyで使用するために__all__にも定義
 __all__ = [
-    'json', 'datetime',
-    'webdriver', 'TimeoutException', 'NoAlertPresentException',
-    'By', 'EC', 'WebDriverWait', 'DesiredCapabilities', 'Options', 'Service',
-    'settings', 'LiveServerTestCase',
+    'json', 'datetime', 'random', 'string',
+    'webdriver',
+    'TimeoutException', 'NoAlertPresentException', 'NoSuchElementException',
+    'By', 'EC', 'WebDriverWait', 'DesiredCapabilities',
+    'Options', 'Service', 'ActionChains',
+    'settings', 'LiveServerTestCase', 'CustomUser',
     'TestConfig',
 ]
 
@@ -253,6 +255,12 @@ class TestConfig(LiveServerTestCase):
         self._click_link(friend_page_link, wait_for_link_invisible=False)
         self._assert_page_url_and_title(expecter_url=self.friend_url,
                                         expected_title='Friend')
+
+    def _move_top_to_dm(self):
+        friend_page_link = self._text_link("DM")
+        self._click_link(friend_page_link, wait_for_link_invisible=False)
+        self._assert_page_url_and_title(expecter_url=self.dm_url,
+                                        expected_title='DMSessions')
 
     def _login(self, email, password, wait_for_button_invisible=True):
         self._move_top_to_login()
