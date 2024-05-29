@@ -20,6 +20,10 @@ class TopPageTest(TestConfig):
         expected_free_play_url = self.free_game_url
         self.assertEqual(actual_free_play_url, expected_free_play_url)
 
+        actual_tournament_url = self._text_link_url("Tournament")
+        expected_tournament_url = self.tournament_url
+        self.assertEqual(actual_tournament_url, expected_tournament_url)
+
         actual_history_url = self._text_link_url("Game-History")
         expected_history_url = self.game_history_url
         self.assertEqual(actual_history_url, expected_history_url)
