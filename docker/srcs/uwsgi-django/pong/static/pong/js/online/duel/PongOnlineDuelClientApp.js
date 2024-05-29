@@ -27,7 +27,7 @@ class PongOnlineDuelClientApp
 	{
 		this.socketUrl = 'wss://' + window.location.host + '/ws/pong/online/duel/' + room_name + '/';
 		this.socket				= new WebSocket(this.socketUrl);
-		this.gameStateManager	= new PongOnlineDuelGameStateManager();
+		this.gameStateManager	= new PongOnlineDuelGameStateManager(this);
 		this.syncWS				= new PongOnlineDuelSyncWS(this, this.gameStateManager, this.socketUrl);
 		this.gameLoop 			= new PongOnlineDuelGameLoopHandler(this, this.gameStateManager, this.syncWS)
 		PongEngineKey.listenForEvents();

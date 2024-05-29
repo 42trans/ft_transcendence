@@ -34,7 +34,10 @@ class PongOnlineDuelUtil
 		this.ctx		= ctx;
 		this.field		= gameState.game_settings.field;
 		this.canvas		= canvas
-
+		
+		console.log("gameState", gameState);
+		console.log("canvas", this.canvas.width);
+		console.log("field", this.field.width);
 		// ブラウザウィンドウの寸法を使用
 		this.canvas.width		= window.innerWidth;
 		this.canvas.height		= window.innerHeight;
@@ -69,22 +72,28 @@ class PongOnlineDuelUtil
 	}
 
 	/** close時: 自動再接続 */
-	static attemptReconnect() 
+	static attemptReconnect(
+		clientApp, 
+		isReconnecting, 
+		reconnectIntervalMilliSec,
+		reconnectAttempts,
+		maxReconnectAttempts
+	) 
 	{
 		// 再接続処理中を表すフラグを立てる
-		this.isReconnecting = true;
+		isReconnecting = true;
 		// コンストラクタで指定した回数試みる
-		if (this.reconnectAttempts < this.maxReconnectAttempts) 
+		if (reconnectAttempts < maxReconnectAttempts) 
 		{
 			setTimeout(() => 
 			{
-				this.clientApp.setupWebSocketConnection();
-			}, this.reconnectIntervalMilliSec);
+				clientApp.setupWebSocketConnection();
+			}, reconnectIntervalMilliSec);
 		} else {
 			console.error("Reconnect failed.");
 			// 最大試行回数に達したらリセット
-			this.reconnectAttempts = 0;
-			this.isReconnecting = false;
+			reconnectAttempts = 0;
+			isReconnecting = false;
 		}
 	}
 }

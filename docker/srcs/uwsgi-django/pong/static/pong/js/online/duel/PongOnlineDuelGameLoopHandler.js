@@ -45,8 +45,8 @@ class PongOnlineDuelGameLoopHandler
 				// ループを終了
 				return;
 			}
-			const gameState = this.gameStateManager.getState();
 
+			const gameState = this.gameStateManager.getState();
 			if (gameState && gameState.is_running) {
 				// 目標フレーム時間よりも経過時間が短い場合は、次のフレームを待つ
 				const elapsedTimeMs = timestamp - lastFrameTimeMs;
@@ -60,20 +60,20 @@ class PongOnlineDuelGameLoopHandler
 				// ゲーム状態送信
 				this.sendClientState(gameState);
 				// 2D描画
-				PongOnlineDuelRenderer.render(this.syncWS.ctx, this.field, gameState);
-
+				PongOnlineDuelRenderer.render(this.gameStateManager.ctx, this.field, gameState);
+				// 描画した時点の時刻を登録
 				lastFrameTimeMs = timestamp;
 			}else if (!gameState.is_running) {
 				// 終了時
 				console.log("!gameState.is_running()", this.gameStateManager.getFinalState());
 				// this.clientApp.socket.close();
 				// 最終スコアの表示
-				PongOnlineDuelRenderer.render(this.syncWS.ctx, this.field, this.gameStateManager.getFinalState());
+				// PongOnlineDuelRenderer.render(this.syncWS.ctx, this.field, this.gameStateManager.getFinalState());
 				window.addEventListener('resize', () => 
 					PongOnlineDuelUtil.resizeForAllDevices(
 						this.syncWS.ctx, 
 						this.gameStateManager.getFinalState(), 
-						this.syncWS.canvas,
+						this.gameStateManager.canvas,
 						this.gameStateManager
 					));
 				// ゲーム終了時に Back to Home ボタンリンクを表示する
@@ -96,7 +96,6 @@ class PongOnlineDuelGameLoopHandler
 			window.location.href = '/pong/';
 		});
 	}
-
 	// ------------------------------
 	// ルーチン:送信　※gameLoop() から呼ばれる
 	// ------------------------------
