@@ -296,3 +296,9 @@ class TestConfig(LiveServerTestCase):
         signup_button = self._element(By.ID, "sign-submit")
         self._click_button(signup_button, wait_for_button_invisible=True)
         self._logout()
+
+    def _send_dm_with_form(self, target_nickname):
+        self._send_to_elem(By.ID, "nickname-input", target_nickname)
+        signup_button = self._element(By.ID, "nickname-submit")
+        self._click_button(signup_button, wait_for_button_invisible=True)
+        self._assert_current_url(f"{self.dm_with_base_url}{target_nickname}/")
