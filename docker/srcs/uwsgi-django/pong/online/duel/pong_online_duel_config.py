@@ -1,5 +1,6 @@
-# docker/srcs/uwsgi-django/pong/online/pong_online_config.py
-class PongOnlineConfig:
+# docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_config.py
+
+class PongOnlineDuelConfig:
     def __init__(self):
         self.fields = {
             "width": 400,
@@ -13,7 +14,7 @@ class PongOnlineConfig:
         }
 
         self.paddle1 = {
-            "width": 10,
+            "width": 30,
             # コーナーケーステスト時
             # "height": 300,
             # 正規
@@ -23,7 +24,7 @@ class PongOnlineConfig:
         }
         
         self.paddle2 = {
-            "width": 10,
+            "width": 30,
             # コーナーケーステスト時
             # "height": 300,
             # 正規
@@ -34,9 +35,9 @@ class PongOnlineConfig:
 
         self.game_settings = {
             # テスト時
-            # "max_score": 2,
+            "max_score": 2,
             # 正規
-            "max_score": 15,
+            # "max_score": 15,
             "init_ball_speed": 2,
             "max_ball_speed": 10,
             "absolute_max_speed": 9.9,

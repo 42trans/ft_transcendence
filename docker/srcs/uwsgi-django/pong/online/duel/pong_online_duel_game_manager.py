@@ -1,7 +1,7 @@
 # docker/srcs/uwsgi-django/pong/online/duel/pong_online_duel_game_manager.py
-from ..pong_online_config import PongOnlineConfig
 from ..pong_online_init import PongOnlineInit
 
+from .pong_online_duel_config import PongOnlineDuelConfig
 from .pong_online_duel_match import PongOnlineDuelMatch
 from .pong_online_duel_room_manager import PongOnlineDuelRoomeManager
 from .pong_online_duel_match_start_manager import PongOnlineDuelMatchStartManager
@@ -21,7 +21,7 @@ ASYNC_LOG_FOR_DEV = 0
 class PongOnlineDuelGameManager:
     """ room に対しインスタンスを一つだけ生成"""
     def __init__(self, consumer):
-        self.config                 = PongOnlineConfig()
+        self.config                 = PongOnlineDuelConfig()
         self.room_manager           = PongOnlineDuelRoomeManager(consumer)
         self.match_start_manager    = PongOnlineDuelMatchStartManager(consumer, self)
         self.resources              = PongOnlineDuelResources()
