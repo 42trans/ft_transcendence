@@ -191,6 +191,9 @@ class TestConfig(LiveServerTestCase):
         self.driver.get(url)
 
     def _click_link(self, target, wait_for_link_invisible=True):
+        """
+        linkはwait_for_link_invisible=Trueでtimeoutになる？？
+        """
         # target.click()
         self.driver.execute_script("arguments[0].click();", target)
         if wait_for_link_invisible:
@@ -233,20 +236,20 @@ class TestConfig(LiveServerTestCase):
     # ページ遷移、操作 まとめ
 
     def _move_top_to_login(self):
-        login_page_button = self._button(By.CSS_SELECTOR, ".loginButton")
-        self._click_button(login_page_button, wait_for_button_invisible=True)
+        login_page_link = self._text_link("Log-in")
+        self._click_link(login_page_link, wait_for_link_invisible=False)
         self._assert_page_url_and_title(expecter_url=self.login_url,
                                         expected_title='Login')
 
     def _move_top_to_signup(self):
-        signup_page_button = self._button(By.CSS_SELECTOR, ".signupButton")
-        self._click_button(signup_page_button, wait_for_button_invisible=True)
+        signup_page_link = self._text_link("Sign-up")
+        self._click_link(signup_page_link, wait_for_link_invisible=False)
         self._assert_page_url_and_title(expecter_url=self.signup_url,
                                         expected_title='Signup')
 
     def _move_top_to_profile(self):
-        profile_page_button = self._button(By.CSS_SELECTOR, ".profileButton")
-        self._click_button(profile_page_button, wait_for_button_invisible=True)
+        profile_page_button = self._text_link("Profile")
+        self._click_link(profile_page_button, wait_for_link_invisible=False)
         self._assert_page_url_and_title(expecter_url=self.profile_url,
                                         expected_title='UserProfile')
 
