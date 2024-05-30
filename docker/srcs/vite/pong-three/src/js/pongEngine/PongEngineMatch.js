@@ -144,8 +144,9 @@ class PongEngineMatch
 		const button = document.createElement('button');
 		button.textContent = 'End Game';
 		button.className = 'game-button';
+		button.setAttribute('data-link', '');
 		button.onclick = function() {
-			window.location.href = '/game/';
+			window.location.href = '/app/';
 		};
 		// ボタンをページに追加
 		document.body.appendChild(button);
