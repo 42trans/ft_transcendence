@@ -23,39 +23,25 @@ class PongApp
 	{
 		this.env = env;
 
+		// SPA対応
 		// document.addEventListener('DOMContentLoaded', () =>
 		// {
-		// 	const matchDataElement = document.getElementById('match-data');
-		// 	if (matchDataElement) {
-		// 		this.matchData = JSON.parse(matchDataElement.textContent);
-		// 		console.log('Match Data:', this.matchData);
-		// 	}
-		// 	this.init();
-		// 	// 無限ループでアニメーションの更新を担当。シングルトン
-		// 	this.renderLoop = LoopManager.getInstance(this);
-		// 	this.renderLoop.start();
-		//
-		// 				//dev用　index.jsで`PongApp.main('dev');`で呼び出す
-		// 				if (env === 'dev'){
-		// 					this.setupDevEnv();
-		// 				}
+			const matchDataElement = document.getElementById('match-data');
+			if (matchDataElement) {
+				this.matchData = JSON.parse(matchDataElement.textContent);
+				console.log('Match Data:', this.matchData);
+			}
+			this.init();
+			// 無限ループでアニメーションの更新を担当。シングルトン
+			this.renderLoop = LoopManager.getInstance(this);
+			this.renderLoop.start();
+
+						//dev用　index.jsで`PongApp.main('dev');`で呼び出す
+						if (env === 'dev'){
+							this.setupDevEnv();
+						}
+
 		// });
-
-		const matchDataElement = document.getElementById('match-data');
-		if (matchDataElement) {
-			this.matchData = JSON.parse(matchDataElement.textContent);
-			console.log('Match Data:', this.matchData);
-		}
-		this.init();
-		// 無限ループでアニメーションの更新を担当。シングルトン
-		this.renderLoop = LoopManager.getInstance(this);
-		this.renderLoop.start();
-
-		//dev用　index.jsで`PongApp.main('dev');`で呼び出す
-		if (env === 'dev'){
-			this.setupDevEnv();
-		}
-
 	}
 
 	/**
@@ -77,7 +63,14 @@ class PongApp
 		// ゲームの状態（待機、Play、終了）を担当。シングルトン
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
 	}
-	
+
+	stopRenderLoop() {
+		if (this.renderLoop) {
+			this.renderLoop.stop();
+			this.renderLoop = null;
+		}
+	}
+
 	static main(env)
 	{
 		new PongApp(env);
@@ -94,5 +87,14 @@ class PongApp
 					contorolsGUI.setupControlsGUI();
 				}
 }
+
+
+// Three.jsのアニメーションループを制御するためのグローバルな関数を定義
+window.controlThreeAnimation = {
+	stopAnimation: function() {
+		PongApp.getInstance().stopRenderLoop();
+	},
+};
+
 
 export default PongApp;
