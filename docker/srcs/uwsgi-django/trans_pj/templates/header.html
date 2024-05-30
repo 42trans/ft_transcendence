@@ -26,7 +26,9 @@
 <div class="container-fluid">
 
 	<!-- site logo -->
-	<a id="hth-site-logo" href="{{ url_config.kSpaPongTopUrl }}">
+	<a id="hth-site-logo"
+	   href="{{ url_config.kSpaPongTopUrl }}"
+	   data-link>
 		<img src="{% static 'pong/img/logo.png' %}" alt="">
 	</a>
 
@@ -59,83 +61,80 @@
 			me-auto
 			mb-2
 			mb-md-0">
-<!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize"-->
-<!--									href="/pong/game/">Free Play</a></li>-->
-<!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize"-->
-<!--									href="/pong/tournament">Tournament</a></li>-->
+
 			<!-- 開発用テストリンク -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="{{ url_config.kSpaPongTopUrl }}" data-link>TransPJ-Index</a></li>
+									href="{{ url_config.kSpaHomeUrl }}"
+									data-link>TransPJ-Index</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="/lang/" data-link>Lang</a></li>
+									href="/lang/"
+									data-link>Lang</a></li>
 <!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
-<!--									href="/script1/" data-link>Script1</a></li>-->
+<!--									href="/script1/"
+										data-link>Script1</a></li>-->
 <!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
-<!--									href="/script2/" data-link>Script2</a></li>-->
+<!--									href="/script2/"
+										data-link>Script2</a></li>-->
 
 			<!-- pong -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="{{ url_config.kSpaFreeGame }}" data-link>Free-Play</a></li>
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="{{ url_config.kSpaGame1vs1Url }}" data-link>1vs1</a></li>
+									href="{{ url_config.kSpaFreeGame }}"
+									data-link>Free-Play</a></li>
 
 		{% if user.is_authenticated %}
 			<!-- pong -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="{{ url_config.kSpaTournamentUrl }}" data-link>Tournament</a></li>
+									href="{{ url_config.kSpaGame1vs1Url }}"
+									data-link>1vs1</a></li>
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="{{ url_config.kSpaTournamentUrl }}"
+									data-link>Tournament</a></li>
 
 			<!-- user -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="{{ url_config.kSpaGameHistoryUrl }}" data-link>Game-History</a></li>
-<!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
-<!--									href="{{ url_config. }/user-profile/" data-link>Profile</a></li>-->
+									href="{{ url_config.kSpaGameHistoryUrl }}"
+									data-link>Game-History</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="{{ url_config.kSpaUserFriendUrl }}" data-link>Friend</a></li>
+									href="{{ url_config.kSpaUserFriendUrl }}"
+									data-link>Friend</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
-									href="{{ url_config.kSpaDmUrl }}" data-link>DM</a></li>
+									href="{{ url_config.kSpaDmUrl }}"
+									data-link>DM</a></li>
 		{% endif %}
 
 		</ul>
 
 		<div class="ms-auto">
 			{% if user.is_authenticated %}
-				<button type="button"
-						class="
-								btn
-								btn-primary
-								transition-ease-color
-								me-2
-								nav__link"
-						data-link
-						onclick="location.href='{{ url_config.kSpaUserProfileUrl }}'">Profile</button>
+				<a class="btn
+						  btn-primary
+						  transition-ease-color
+						  me-2
+						  nav__link"
+				   data-link
+				   href='{{ url_config.kSpaUserProfileUrl }}'>Profile</a>
 
-				<button type="button"
-						class="
-							btn
-							btn-outline-light
-							transition-ease-color
-							me-2
-							logoutButton">Log-out</button>
+				<a class="btn
+						  btn-outline-light
+						  transition-ease-color
+						  me-2
+						  logoutButton">Log-out</a>
 
 			{% else %}
-				<button type="button"
-						class="
-							btn
-							btn-primary
-							transition-ease-color
-							me-2
-							nav__link"
-						data-link
-						onclick="location.href='{{ url_config.kSpaAuthLoginUrl }}'">Log-in</button>
+				<a class="btn
+						  btn-primary
+						  transition-ease-color
+						  me-2
+						  nav__link"
+				   data-link
+				   href='{{ url_config.kSpaAuthLoginUrl }}'>Log-in</a>
 
-				<button type="button"
-						class="
-							btn
-							btn-primary
-							transition-ease-color
-							nav__link"
-						data-link
-						onclick="location.href='{{ url_config.kSpaAuthSignupUrl }}'">Sign-up</button>
+				<a class="btn
+						  btn-primary
+						  transition-ease-color
+						  nav__link"
+				   data-link
+				   href='{{ url_config.kSpaAuthSignupUrl }}'>Sign-up</a>
 			{% endif %}
 		</div>
 

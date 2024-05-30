@@ -53,14 +53,24 @@ const setupDOMContentLoadedListener = () => {
 // リンクのクリックイベントで発火
 const setupBodyClickListener = () => {
   document.body.addEventListener("click", (event) => {
+  console.log('clickEvent: path: ' + window.location.pathname);
+  stopGamePageAnimation()
 
-    if (event.target.matches("[data-link]")) {
-      stopGamePageAnimation()
-      console.log('clickEvent: path: ' + window.location.pathname);
+    const linkElement = event.target.closest("[data-link]");
+    if (linkElement) {
+      console.log('clickEvent: taga-link');
       event.preventDefault();
-      const url = event.target.href;
+      const url = linkElement.href;
       switchPage(url);
     }
+
+    // if (event.target.matches("[data-link]")) {
+    //   console.log('clickEvent: taga-link');
+    //   stopGamePageAnimation()
+    //   event.preventDefault();
+    //   const url = event.target.href;
+    //   switchPage(url);
+    // }
     // setOnlineStatus();  // WebSocket接続を再確立
   });
 };
