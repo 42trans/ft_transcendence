@@ -3,8 +3,6 @@ import PongOnlineDuelPaddleMover from "./PongOnlineDuelPaddleMover.js";
 import PongOnlineDuelRenderer from "./PongOnlineDuelRenderer.js";
 import PongOnlineDuelUtil from "./PongOnlineDuelUtil.js";
 
-/**
- */
 class PongOnlineDuelGameLoopHandler 
 {
 	constructor(clientApp, gameStateManager, syncWS) 
@@ -12,84 +10,100 @@ class PongOnlineDuelGameLoopHandler
 		this.clientApp			= clientApp;
 		this.gameStateManager	= gameStateManager;
 		this.syncWS				= syncWS;
-		this.gameLoopStarted	= gameStateManager.gameLoopStarted;
 		this.socket				= clientApp.socket
-		// フレームIDを保存するためのプロパティ
 		this.animationFrameId 	= null; 
 	}
 
-	stopGameLoop() {
+	stopGameLoop() 
+	{
 		if (this.animationFrameId) {
 			cancelAnimationFrame(this.animationFrameId);
 		}
-		this.gameLoopStarted = false;
+		this.gameStateManager.gameLoopStarted = false;
 	}
 	
 	// 更新: default 30 fps 
-	startGameLoop(gameFPS = 30) {
-		if (this.gameLoopStarted) {
-			// すでにゲームループが起動していれば、先に停止
+	startGameLoop(gameFPS = 30) 
+	{
+		// すでにゲームループが起動していれば、先に停止
+		if (this.gameStateManager.gameLoopStarted) {
 			this.stopGameLoop();
 		}
-		this.gameLoopStarted = true;
+
+		// 変数宣言
+		this.gameStateManager.gameLoopStarted = true;
 		// 目標フレーム時間（ミリ秒）
 		const desiredFrameTimeMs = 1000 / gameFPS;
-		// 前回のフレーム時間
 		let lastFrameTimeMs = 0; 
 
-		const loop = (timestamp) => {
+		// ------------------------------------------------
+		// ここから繰り返し処理
+		// ------------------------------------------------
+		const gameLoop = (timestamp) => 
+		{
 			// ループ終了条件
-			if (!this.gameLoopStarted) 
+			if (!this.gameStateManager.gameLoopStarted) 
 			{ 
 				cancelAnimationFrame(this.animationFrameId); 
-				// ループを終了
 				return;
 			}
-
+			
+			// ルーチン：更新
 			const gameState = this.gameStateManager.getState();
-			if (gameState && gameState.is_running) {
-				// 目標フレーム時間よりも経過時間が短い場合は、次のフレームを待つ
-				const elapsedTimeMs = timestamp - lastFrameTimeMs;
-				if (elapsedTimeMs < desiredFrameTimeMs) {
-					this.animationFrameId = requestAnimationFrame(loop);
-					return;
-				}
-				this.field	= this.gameStateManager.getState().game_settings.field;
-				// パドル情報更新
-				PongOnlineDuelPaddleMover.handlePaddleMovement(this.field, gameState, this.gameStateManager);
-				// ゲーム状態送信
-				this.sendClientState(gameState);
-				// 2D描画
-				PongOnlineDuelRenderer.render(this.gameStateManager.ctx, this.field, gameState);
-				// 描画した時点の時刻を登録
-				lastFrameTimeMs = timestamp;
-			}else if (!gameState.is_running) {
+			if (gameState && gameState.is_running) 
+			{
+				this.updateRunningGame(timestamp, gameState, desiredFrameTimeMs, lastFrameTimeMs);
+			}else if (gameState && !gameState.is_running) {
 				// 終了時
 				console.log("!gameState.is_running()", this.gameStateManager.getFinalState());
-				// this.clientApp.socket.close();
-				// 最終スコアの表示
-				// PongOnlineDuelRenderer.render(this.syncWS.ctx, this.field, this.gameStateManager.getFinalState());
-				window.addEventListener('resize', () => 
-					PongOnlineDuelUtil.resizeForAllDevices(
-						this.syncWS.ctx, 
-						this.gameStateManager.getFinalState(), 
-						this.gameStateManager.canvas,
-						this.gameStateManager
-					));
-				// ゲーム終了時に Back to Home ボタンリンクを表示する
-				this.createEndGameButton();
+				this.handleLoopGameEnd(gameState);
 			} else {
-				// 次のフレームを要求
-				this.animationFrameId = requestAnimationFrame(loop);
+				// gameStateがnullの場合のエラー処理
+				console.error("gameState is null. Unexpected error.");
 			}
+
+			// 次のフレームを要求
+			this.animationFrameId = requestAnimationFrame(gameLoop);	
 		};
+		// ------------------------------------------------
+		// ここまで処理して、最初に戻る
+		// ------------------------------------------------
 
 		// 最初のフレームを要求
-		this.animationFrameId = requestAnimationFrame(loop);
+		this.animationFrameId = requestAnimationFrame(gameLoop);
 	}
 
+	updateRunningGame(timestamp, gameState, desiredFrameTimeMs, lastFrameTimeMs) 
+	{
+		// 目標フレーム時間よりも経過時間が短い場合は、次のフレームを待つ
+		const timeSinceLastFrameMs = timestamp - lastFrameTimeMs;
+		if (timeSinceLastFrameMs < desiredFrameTimeMs) {
+			// 次のフレームを待つ
+			return;
+		}
 
-	// ゲーム終了時に Back to Home ボタンリンクを表示する
+		this.field	= gameState.game_settings.field;
+		// パドル操作
+		PongOnlineDuelPaddleMover.handlePaddleMovement(this.field, gameState, this.gameStateManager);
+		// サーバーに送信
+		this.sendClientState(gameState);
+		// ブラウザに描画
+		PongOnlineDuelRenderer.render(this.gameStateManager.ctx, this.field, gameState);
+		// 描画した時点の時刻を登録
+		lastFrameTimeMs = timestamp;
+	}
+
+	handleLoopGameEnd(gameState)
+	{
+		// 最終スコアの描画
+		PongOnlineDuelRenderer.render(this.gameStateManager.ctx, this.field, gameState);
+		// ゲーム終了時に Back to Home ボタンリンクを表示する
+		this.createEndGameButton();
+		this.stopGameLoop();
+		this.clientApp.socket.close();
+	}
+
+	/**  ゲーム終了時に Back to Home ボタンリンクを表示する */
 	createEndGameButton() 
 	{
 		PongOnlineDuelUtil.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {

@@ -100,8 +100,8 @@ class PongOnlineDuelSyncWS
 	onSocketClose(event) 
 	{
 		console.log("WebSocket connection closed:", event.reason, "Code:", event.code);
+		// TODO_ft:自動再接続未実装
 		// PongOnlineDuelUtil.attemptReconnect(this.isReconnecting);
-		this.gameStateManager.resetState();
 	}
 	
 	onSocketError(event) {

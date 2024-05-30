@@ -1,10 +1,10 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/duel/PongOnlineDuelGameStateManager.js
 import PongOnlineDuelUtil from "./PongOnlineDuelUtil.js";
 
-
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 let DEBUG_FLOW = 1;
 let DEBUG_DETAIL = 0;
+
 /**
  * Gameに必要なデータ(paddle,ballなどのオブジェクト、試合のスコアや状態など)を格納
  * - gameStae: serverと同じデータ構造
@@ -21,23 +21,13 @@ class PongOnlineDuelGameStateManager
 			is_running: false
 		};
 		this.paddleOwnership	= null;
-		this.finalGameState		= null;
 		this.gameLoopStarted	= null;
-		
+		this.ctx				= null; 
+		this.canvas				= null;
+
+		this.finalGameState		= null;
 	}
 
-	resetState() {
-		// constructorと同じ
-		this.isGameLoopStarted	= false;
-		this.gameState = {
-			game_settings: {},
-			objects: {},
-			state: {},
-			is_running: false
-		};
-		this.paddleOwnership	= null; 
-		this.gameLoopStarted	= null;	
-	}
 	// ------------------------------
 	// WaitingOpponent
 	// ------------------------------
@@ -53,6 +43,7 @@ class PongOnlineDuelGameStateManager
 		waitingMessage.textContent = 'Incoming hotshot! Better get your game face on...';
 		document.getElementById('hth-main').appendChild(waitingMessage);
 	}
+
 	// ------------------------------
 	// both_players_entered_room
 	// ------------------------------
@@ -76,6 +67,7 @@ class PongOnlineDuelGameStateManager
 			document.getElementById('hth-pong-online-start-game-btn').remove();
 		});
 	}
+
 	// ------------------------------
 	// game_state
 	// ------------------------------
@@ -84,11 +76,11 @@ class PongOnlineDuelGameStateManager
 			// 再接続の場合:
 			if (isReconnecting) 
 			{
-				if (DEBUG_FLOW){ console.log("再接続: onSocketMessage()"); }
+				if (DEBUG_FLOW){ console.log("再接続: handleGameState()"); }
 				// クライアント（.js, ブラウザ）のデータで上書きするのでここでは更新しない
 				isReconnecting = false;
 			} else {
-				// ルーチン: 受信データで更新
+				// ルーチン: 受信データで常に更新。初回の場合も。
 				this.updateState(recvData);
 			}
 			// --------------------------------------
@@ -96,22 +88,24 @@ class PongOnlineDuelGameStateManager
 			// --------------------------------------
 			if (!this.gameLoopStarted) 
 			{
+				// TODO_ft:else ifにする
+				this.updateState(recvData);
 				// 受信データからフィールドのサイズを取得してCanvasを初期化
-				this.initCanvas(recvData.field);
+				this.field = recvData.field
+				this.initCanvas(recvData);
 				// gameStateに関するjsonを受信してから、loopを起動
 				this.clientApp.gameLoop.startGameLoop(this.gameFPS);
 			}
 			// --------------------------------------
 		} catch (error) {
-			console.error("onSocketMessage() failed", error);
+			console.error("handleGameState() failed", error);
 		}
 	}
-
 
 	/**
 	 *  ゲームの描画領域（キャンバス）を初期化、サイズ調整、変更時処理登録 
 	 * */
-	initCanvas()
+	initCanvas(gameState)
 	{
 		// ---------------------------------------------
 		// ゲームの描画領域（キャンバス）を初期化
@@ -124,33 +118,48 @@ class PongOnlineDuelGameStateManager
 			return;
 		}
 		this.ctx		= this.canvas.getContext("2d");
-		this.field		= this.gameState.game_settings.field;
+		if (!this.ctx) {
+			console.error("Failed to get 2D context.");
+			return;
+		}
 		// ---------------------------------------------
 		// ウィンドウサイズにあわせた描画サイズを決定
 		// ---------------------------------------------
-		// canvas決定直後に初回の描画
-		PongOnlineDuelUtil.resizeForAllDevices(
+		// canvas決定直後に初回の描画用に一度設定する
+		PongOnlineDuelUtil.resizeForAllDevices
+		(
 			this.ctx, 
-			this.gameState, 
 			this.canvas, 
+			gameState, 
 			this
 		);
 		// ---------------------------------------------
-		// ウィンドウサイズ変更のたびに呼び出す処理の登録
+		// 以降のウィンドウサイズ変更のたびに呼び出す処理の登録
 		// ---------------------------------------------
+		// resize イベントリスナーは一度だけ登録
 		this.lastInnerWidth = window.innerWidth;
-		window.addEventListener('resize', () => {
-			// 実際にサイズが変更されていたら。アスペクト比一定なので片方だけ変更を見る
-			if (window.innerWidth !== this.lastInnerWidth) {
-				PongOnlineDuelUtil.resizeForAllDevices(
+		this.lastInnerHeight = window.innerHeight;
+		this.resizeListener = () => 
+		{
+			// 幅と高さの実際の数値でも変更をチェック（スクロールバーの表示による変更に対応するため）
+			if (
+				window.innerWidth !== this.lastInnerWidth || 
+				window.innerHeight !== this.lastInnerHeight 
+			) {
+				PongOnlineDuelUtil.resizeForAllDevices
+				(
 					this.ctx, 
-					this.this.gameState, 
-					this.canvas,
+					this.canvas, 
+					gameState, 
 					this
-			)}
+				);
+			}
 			this.lastInnerWidth = window.innerWidth;
-		});
+			this.lastInnerHeight = window.innerHeight;
+		};
+		window.addEventListener('resize', this.resizeListener);
 	}
+
 	// ------------------------------
 	// game_end
 	// ------------------------------
@@ -160,15 +169,15 @@ class PongOnlineDuelGameStateManager
 		this.finalGameState = { ...this.gameState };
 		if (DEBUG_DETAIL)
 			console.log("onSocketMessage: finalGameState:", this.finalGameState)
-		// ゲーム状態を初期化
-		// this.resetState();
-		socket.close();
 		if (DEBUG_FLOW){
 			console.log("socket.close done", socket.close)
 		}
 	}
-	// ------------------------------
 	
+	// ------------------------------
+	// getter , setter
+	// ------------------------------
+
 	updateState(newGameState) {
 		this.gameState = { ...this.gameState, ...newGameState };
 	}
