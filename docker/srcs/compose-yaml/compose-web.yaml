@@ -133,11 +133,6 @@ services:
     image: "redis:latest"
     ports:
       - "${REDIS_PORT:?}:6379"
-    # RDB永続化 無効の確認方法: redis-cli config get save
-    # docker exec redis redis-cli config get save
-    command: redis-server --save ""  
-    environment:
-      - REDIS_DISABLE_AOF=yes  # AOF永続化を無効にする
     networks:
       - web_transcendence
   
