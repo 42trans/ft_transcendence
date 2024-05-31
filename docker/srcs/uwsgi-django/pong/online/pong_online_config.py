@@ -15,7 +15,7 @@ class PongOnlineConfig:
         self.paddle1 = {
             "width": 10,
             # コーナーケーステスト時
-            # "height": 300,
+            # "height": 290,
             # 正規
             "height": 30,
             "speed": 10,
@@ -25,7 +25,7 @@ class PongOnlineConfig:
         self.paddle2 = {
             "width": 10,
             # コーナーケーステスト時
-            # "height": 300,
+            # "height": 290,
             # 正規
             "height": 30,
             "speed": 10,
@@ -34,9 +34,9 @@ class PongOnlineConfig:
 
         self.game_settings = {
             # テスト時
-            # "max_score": 2,
+            "max_score": 3,
             # 正規
-            "max_score": 15,
+            # "max_score": 15,
             "init_ball_speed": 2,
             "max_ball_speed": 10,
             "absolute_max_speed": 9.9,
