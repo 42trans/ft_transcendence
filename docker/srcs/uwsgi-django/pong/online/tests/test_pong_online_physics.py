@@ -56,7 +56,7 @@ class TestPongOnlinePhysics(TestCase):
         initial_speed = ball["speed"]
 
         # 衝突処理を実行
-        physics = self.game_manager.pong_engine_update.physics
+        physics = self.game_manager.updater.physics
         physics.adjust_ball_direction_and_speed(ball, paddle)
 
         # 速度と方向の確認

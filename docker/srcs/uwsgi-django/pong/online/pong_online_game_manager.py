@@ -1,13 +1,14 @@
 from .pong_online_config import PongOnlineConfig
 from .pong_online_init import PongOnlineInit
-from .pong_online_update import PongOnlineUpdate
+from .pong_online_updater import PongOnlineUpdater
 from .pong_online_physics import PongOnlinePhysics
 from .pong_online_match import PongOnlineMatch
-import logging
 from typing import Dict, Any
 from ..utils.async_logger import async_log
 
-logger = logging.getLogger(__name__)
+# asyn_log: docker/srcs/uwsgi-django/pong/utils/async_log.log
+DEBUG_FLOW = 1
+DEBUG_DETAIL = 0
 
 class PongOnlineGameManager:
     """
@@ -39,7 +40,7 @@ class PongOnlineGameManager:
         }
         self.match = None
         self.physics = None
-        self.pong_engine_update = None
+        self.updater = None
 
     async def initialize_game(self):
         """ 
@@ -53,41 +54,42 @@ class PongOnlineGameManager:
         self.match              = PongOnlineMatch(self.pong_engine_data)
         self.physics            = PongOnlinePhysics(self.pong_engine_data)
         #  ゲームの更新メカニズムのセットアップ・依存性注入
-        self.pong_engine_update = PongOnlineUpdate(
+        self.updater = PongOnlineUpdater(
             self.pong_engine_data,
             self.physics,
             self.match
         )
-        # logger.debug("initialize_game() end")
-        # await async_log("initialize_game().pong_engine_data: ")
-        # await async_log(self.pong_engine_data)
+        if DEBUG_DETAIL:
+            await async_log("initialize_game().pong_engine_data: ")
+            await async_log(self.pong_engine_data)
         return self
 
 
-    async def update_game(self, json_data):
+    async def update_game(self, json_game_state_objects):
         """ 
         gameの状態を高速で更新する
-        json: key==objectsだけをやり取りする
+        データはkey==objectsだけをやり取りする
         """
-        await self.pong_engine_update.update_game(json_data)
+        await self.updater.update_game(json_game_state_objects)
         return self
 
 
-    async def restore_game_state(self, client_json_state):
+    async def restore_game_state(self, client_json_game_state):
         """
         クライアントから送信されたゲーム状態でサーバーの状態を更新する。
         """
-        if "game_settings" in client_json_state:
-            self.pong_engine_data["game_settings"].update(client_json_state["game_settings"])
-        if "objects" in client_json_state:
+        if "game_settings" in client_json_game_state:
+            self.pong_engine_data["game_settings"].update(client_json_game_state["game_settings"])
+        if "objects" in client_json_game_state:
             for key in ["ball", "paddle1", "paddle2"]:
-                if key in client_json_state["objects"]:
-                    self.pong_engine_data["objects"][key].update(client_json_state["objects"][key])
-        if "state" in client_json_state:
-            self.pong_engine_data["state"].update(client_json_state["state"])
-        if "is_running" in client_json_state:
-            self.pong_engine_data["is_running"] = client_json_state["is_running"]
+                if key in client_json_game_state["objects"]:
+                    self.pong_engine_data["objects"][key].update(client_json_game_state["objects"][key])
+        if "state" in client_json_game_state:
+            self.pong_engine_data["state"].update(client_json_game_state["state"])
+        if "is_running" in client_json_game_state:
+            self.pong_engine_data["is_running"] = client_json_game_state["is_running"]
         # ログ出力
-        # await async_log("Game state restored from client.")
+        if DEBUG_FLOW:
+            await async_log("Game state restored from client.")
         return self
 

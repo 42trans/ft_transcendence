@@ -1,9 +1,13 @@
-# docker/srcs/uwsgi-django/pong/online/pong_online_update.py
+# docker/srcs/uwsgi-django/pong/online/pong_online_updater.py
 from ..utils.async_logger import async_log
 import asyncio
 import random
 
-class PongOnlineUpdate:
+# asyn_log: docker/srcs/uwsgi-django/pong/utils/async_log.log
+DEBUG_FLOW = 1
+DEBUG_DETAIL = 1
+
+class PongOnlineUpdater:
     def __init__(self, pong_engine_data, physics, match):
         self.physics            = physics
         self.match              = match
@@ -21,20 +25,22 @@ class PongOnlineUpdate:
         self.max_ball_speed     = pong_engine_data["game_settings"]["max_ball_speed"]
         self.init_ball_speed    = pong_engine_data["game_settings"]["init_ball_speed"]
 
-    async def update_game(self, input_data):
-        await self.handle_input(input_data)
+    async def update_game(self, json_game_state_objects):
+        if DEBUG_DETAIL:
+            await async_log(f"開始: update_game: {json_game_state_objects}")
+        await self.handle_input(json_game_state_objects)
         await self.handle_collisions()
         await self.update_ball_position()
 
-    async def handle_input(self, input_data):
+    async def handle_input(self, json_game_state_objects):
         """
         clienから受信したパドル情報を代入
         TODO_ft: クライアントとの通信がまだの間、開発用に一旦、Noneの回避目的でデフォルト0を入れている。値がない場合に0*speedで位置変更0な処理で良いか判断が必要。
         """
-        self.paddle1["dir_y"] = input_data.get("paddle1", {}).get("dir_y", 0)
-        self.paddle2["dir_y"] = input_data.get("paddle2", {}).get("dir_y", 0)
-        self.paddle1["position"]["y"] = input_data.get("paddle1", {}).get("position", {}).get("y")
-        self.paddle2["position"]["y"] = input_data.get("paddle2", {}).get("position", {}).get("y")
+        self.paddle1["dir_y"] = json_game_state_objects.get("paddle1", {}).get("dir_y", 0)
+        self.paddle2["dir_y"] = json_game_state_objects.get("paddle2", {}).get("dir_y", 0)
+        self.paddle1["position"]["y"] = json_game_state_objects.get("paddle1", {}).get("position", {}).get("y")
+        self.paddle2["position"]["y"] = json_game_state_objects.get("paddle2", {}).get("position", {}).get("y")
 
     async def handle_collisions(self):
         r       = self.ball["radius"]
@@ -64,6 +70,6 @@ class PongOnlineUpdate:
         await asyncio.sleep(self.reset_interval)
         self.ball["position"] = {"x": 0, "y": 0}
         self.ball["direction"]["x"] = -1 if loser == 1 else 1
+        # random方向にボールサーブ
         self.ball["direction"]["y"] = random.uniform(-0.5, 0.5)
-        # self.ball["direction"]["y"] = 0.1
         self.ball["speed"] = self.init_ball_speed
