@@ -1,7 +1,7 @@
-// docker/srcs/uwsgi-django/pong/static/pong/js/online/duel/PongOnlineDuelUtil.js
-import PongOnlineDuelRenderer from "./PongOnlineDuelRenderer.js";
+// docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineUtil.js
+import PongOnlineRenderer from "./PongOnlineRenderer.js";
 
-class PongOnlineDuelUtil 
+class PongOnlineUtil 
 {
 	/** dev用 再接続チェック用 */
 	static devTestCloseButton()
@@ -29,12 +29,12 @@ class PongOnlineDuelUtil
 	}
 
 	// ウインドウのサイズに合わせて動的に描画サイズを変更
-	static resizeForAllDevices(ctx, canvas, gameState, gameStateManager) 
+	static resizeForAllDevices(ctx, gameState, canvas) 
 	{
 		this.ctx		= ctx;
 		this.field		= gameState.game_settings.field;
 		this.canvas		= canvas
-		
+
 		// ブラウザウィンドウの寸法を使用
 		this.canvas.width		= window.innerWidth;
 		this.canvas.height		= window.innerHeight;
@@ -55,54 +55,43 @@ class PongOnlineDuelUtil
 		this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
 		// 拡大縮小
 		this.ctx.scale(this.field.zoomLevel, this.field.zoomLevel);
-
-		PongOnlineDuelRenderer.render(this.ctx, this.field, gameState);
-	
-		// debug----
-		// if (this.canvas)
-		// 	console.log(this.canvas);
-		// else
-		// 	console.error("error canvas null");
-
 		// 終了時の描画状態（スコア表示）を維持する: 状態の更新を強制するために再描画をトリガーする
-		const state = gameStateManager.getFinalState();
+		const state = gameState;
 		if (state && 
-			(state.state.score1 > 0 || state.state.score2 > 0) 
-		)
+			(state.state.score1 > 0 || state.state.score2 > 0) &&
+			!gameState.getIsGameLoopStarted())
 		{
 			setTimeout(() => {
-				PongOnlineDuelRenderer.render(this.ctx, this.field, state);
+				PongOnlineRenderer.render(this.ctx, this.field, gameState);
 			}, 16);
 		}
 	}
 
-	// 未実装
 	/** close時: 自動再接続 */
-	// static attemptReconnect(
-	// 	clientApp, 
-	// 	isReconnecting, 
-	// 	reconnectIntervalMilliSec,
-	// 	reconnectAttempts,
-	// 	maxReconnectAttempts
-	// ) 
-	// {
-	// 	// 再接続処理中を表すフラグを立てる
-	// 	isReconnecting = true;
-	// 	// コンストラクタで指定した回数試みる
-	// 	if (reconnectAttempts < maxReconnectAttempts) 
-	// 	{
-	// 		setTimeout(() => 
-	// 		{
-	// 			clientApp.setupWebSocketConnection();
-	// 		}, reconnectIntervalMilliSec);
-	// 	} else {
-	// 		console.error("Reconnect failed.");
-	// 		// 最大試行回数に達したらリセット
-	// 		reconnectAttempts = 0;
-	// 		isReconnecting = false;
-	// 	}
-	// }
+	static attemptReconnect() 
+	{
+		this.reconnectAttempts = 0;
+		this.maxReconnectAttempts = 5;
+
+		// 再接続処理中を表すフラグを立てる
+		this.isReconnecting = true;
+		// コンストラクタで指定した回数試みる
+		if (this.reconnectAttempts < this.maxReconnectAttempts) 
+		{
+			setTimeout(() => 
+			{
+				this.clientApp.setupWebSocketConnection();
+			}, this.reconnectIntervalMilliSec);
+		} else {
+			console.error("Reconnect failed.");
+			// 最大試行回数に達したらリセット
+			this.reconnectAttempts = 0;
+			this.isReconnecting = false;
+		}
+	}
+
+
 }
 
-export default PongOnlineDuelUtil;
+export default PongOnlineUtil;
 

@@ -21,7 +21,7 @@ class TestPongOnlineInit(TestCase):
         initial_state	= self.game_manager.pong_engine_data
         expected_state = {
             "game_settings": {
-                "max_score": 3,
+                "max_score": 15,
                 "init_ball_speed": 2,
                 "max_ball_speed": 9.9,
                 "difficulty": 0.5,

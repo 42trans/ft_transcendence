@@ -9,22 +9,17 @@ class PongOnlineDuelPaddleMover
 			console.error('Invalid gameState:', this.gameState);
 			return;
 		}
-
 		this.gameStateManager = gameStateManager;
-
 		const paddleOwnership = this.gameStateManager.getPaddleOwnership();
-		// const userId = this.gameStateManager.getUserId();
 
 		// パドル1の操作
 		if (paddleOwnership == 'paddle1') {
 			PongOnlineDuelPaddleMover._updatePaddlePosition(field, gameState.objects.paddle1, 'E', 'F');
 		}
-
 		// パドル2の操作
 		if (paddleOwnership === 'paddle2') {
 			PongOnlineDuelPaddleMover._updatePaddlePosition(field, gameState.objects.paddle2, 'I', 'J');
 		}
-		
 	}
 	
 	static _updatePaddlePosition(field, paddle, keyUp, keyDown) 

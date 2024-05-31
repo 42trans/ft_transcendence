@@ -2,6 +2,7 @@
 import PongEngineKey from "../PongEngineKey.js";
 import PongOnlineDuelSyncWS from "./PongOnlineDuelSyncWS.js";
 import PongOnlineDuelGameStateManager from "./PongOnlineDuelGameStateManager.js"
+import PongOnlineDuelGameLoopHandler from "./PongOnlineDuelGameLoopHandler.js";
 
 /**
  * 2D-Pong Onlineのメインクラス
@@ -25,18 +26,18 @@ class PongOnlineDuelClientApp
 	initWebSocket(room_name)
 	{
 		this.socketUrl = 'wss://' + window.location.host + '/ws/pong/online/duel/' + room_name + '/';
-		this.gameStateManager		= new PongOnlineDuelGameStateManager();
-		this.syncWS					= new PongOnlineDuelSyncWS(this, this.gameStateManager, this.socketUrl);
+		this.socket				= new WebSocket(this.socketUrl);
+		this.gameStateManager	= new PongOnlineDuelGameStateManager(this);
+		this.syncWS				= new PongOnlineDuelSyncWS(this, this.gameStateManager, this.socketUrl);
+		this.gameLoop 			= new PongOnlineDuelGameLoopHandler(this, this.gameStateManager, this.syncWS)
 		PongEngineKey.listenForEvents();
 	}
-
+	
 	setupWebSocketConnection()
 	{
-		this.socket				= new WebSocket(this.socketUrl);
-		this.syncWS.socket		= this.socket;
-		// ルーチン　2名が揃った合図をもらってスタートボタンを表示する
+		// ルーチン　サーバーから受信したら走るメソッド
 		this.socket.onmessage	= (event) => this.syncWS.onSocketMessage(event);
-		// 初回のみ
+		// 初回の接続時のみ
 		this.socket.onopen		= () => this.syncWS.onSocketOpen();
 		// エラー時
 		this.socket.onclose		= (event) => this.syncWS.onSocketClose(event);
