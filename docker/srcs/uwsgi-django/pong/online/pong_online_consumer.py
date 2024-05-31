@@ -92,9 +92,8 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         - 4500: RFC6455 WebSocket app 4000 + 500 Internal server error
         -  参考:【RFC 6455 - The WebSocket Protocol】 <https://datatracker.ietf.org/doc/html/rfc6455#section-7.4.2>
         """
-        if DEBUG_FLOW:
-            await async_log("開始: receive()")
         if DEBUG_DETAIL:
+            await async_log("開始: receive()")
             await async_log("クライアントからのtext_data受信: " + text_data)
         try:
             json_data = json.loads(text_data)
