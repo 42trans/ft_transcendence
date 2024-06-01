@@ -29,18 +29,19 @@ class PongOnlineGameManager:
         - 保存場所: docker/srcs/uwsgi-django/pong/util/
         - 出力ファイル: 同じディレクトリの async_log.log
     """
-    def __init__(self, user_id):
-        self.user_id = user_id
-        self.config = PongOnlineConfig()
+    def __init__(self, consumer, user_id):
+        self.consumer   = consumer
+        self.user_id    = user_id
+        self.config     = PongOnlineConfig()
+        self.match      = None
+        self.physics    = None
+        self.updater    = None
         self.pong_engine_data: Dict[str, Any] = {
             "objects": {},
             "game_settings": {},
             "state": {},
             "is_running": None
         }
-        self.match = None
-        self.physics = None
-        self.updater = None
 
     async def initialize_game(self):
         """ 
@@ -51,7 +52,7 @@ class PongOnlineGameManager:
         """
         init                    = PongOnlineInit(self.config)
         self.pong_engine_data   = init.init_pong_engine()
-        self.match              = PongOnlineMatch(self.pong_engine_data)
+        self.match              = PongOnlineMatch(self.consumer, self.pong_engine_data)
         self.physics            = PongOnlinePhysics(self.pong_engine_data)
         #  ゲームの更新メカニズムのセットアップ・依存性注入
         self.updater = PongOnlineUpdater(

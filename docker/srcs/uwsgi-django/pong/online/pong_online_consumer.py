@@ -45,7 +45,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             # グループに接続userを追加
             await self._join_room_group()
             # インスタンス作成
-            self.game_manager = PongOnlineGameManager(self.user_id)
+            self.game_manager = PongOnlineGameManager(self, self.user_id)
             await self.game_manager.initialize_game()
             self.action_handler = PongOnlineConsumerActionHandler(self, self.game_manager)
             # ws接続の開始
