@@ -222,7 +222,7 @@ class Verify2FaAPIView(APIView):
                 del request.session['tmp_auth_user_id']
                 data = {
                     'message'   : '2FA verification successful',
-                    'redirect'  : settings.URL_CONFIG['kSpaUserProfileUrl'],
+                    'redirect'  : settings.URL_CONFIG['kSpaPongTopUrl'],
                 }
                 return get_jwt_response(user, data)
 
