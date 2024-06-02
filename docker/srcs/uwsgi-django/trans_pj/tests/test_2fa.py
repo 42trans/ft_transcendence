@@ -1,23 +1,21 @@
 from . import *
-import time
-from pyotp import TOTP
 
 
 class TwoFactorAuthTest(TestConfig):
     def setUp(self):
         super().setUp()
 
-        self.test_user_nickname = self._generate_random_string(20)
-        print(f'test_user_nickname: {self.test_user_nickname}')
-        self.test_user_email = f"{self.test_user_nickname}@example.com"
-        self.test_user_password = "pass0123"
+        self.nickname = self._generate_random_string(20)
+        self.email = f"{self.nickname}@example.com"
+        self.password = "pass0123"
 
-        self._create_new_user(email=self.test_user_email,
-                              nickname=self.test_user_nickname,
-                              password=self.test_user_password)
+        # friend request用のtest_user1, test_user2を作成
+        self._create_new_user(email=self.email,
+                              nickname=self.nickname,
+                              password=self.password)
 
     def test_enable2fa(self):
-        self._login(self.test_user_email, self.test_user_password)
+        self._login(self.email, self.password)
         self._move_top_to_profile()
 
         # 2FA有効化
@@ -31,7 +29,7 @@ class TwoFactorAuthTest(TestConfig):
         self._logout()
 
         # login with 2FA
-        self._login(self.test_user_email, self.test_user_password)
+        self._login(self.email, self.password)
         # verify2faに遷移
         self._assert_current_url(self.verify_2fa_url)
 
@@ -55,7 +53,7 @@ class TwoFactorAuthTest(TestConfig):
         self._logout()
 
         # login w/o 2FA
-        self._login(self.test_user_email, self.test_user_password)
+        self._login(self.email, self.password)
         # verify2faではなくtopに遷移
         self._assert_current_url(self.top_url)
 

@@ -2,9 +2,10 @@ import json
 import datetime
 import random
 import string
+import time
 
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException, NoAlertPresentException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException, NoAlertPresentException, NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -12,6 +13,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.action_chains import ActionChains
+from pyotp import TOTP
 
 from django.conf import settings
 from django.test import LiveServerTestCase
@@ -19,11 +21,12 @@ from accounts.models import CustomUser
 
 # test_*.pyで使用するために__all__にも定義
 __all__ = [
-    'json', 'datetime', 'random', 'string',
+    'json', 'datetime', 'random', 'string', 'time',
     'webdriver',
-    'TimeoutException', 'NoAlertPresentException', 'NoSuchElementException',
+    'TimeoutException', 'NoAlertPresentException', 'NoSuchElementException', 'StaleElementReferenceException',
     'By', 'EC', 'WebDriverWait', 'DesiredCapabilities',
     'Options', 'Service', 'ActionChains',
+    'TOTP',
     'settings', 'LiveServerTestCase', 'CustomUser',
     'TestConfig',
 ]
@@ -181,11 +184,18 @@ class TestConfig(LiveServerTestCase):
             )
         )
 
-    def _send_to_elem(self, by, elem_value, send_value):
-        elem = self._element(by, elem_value)
-        elem.clear()  # 入力済みのテキストをクリア
-        elem.send_keys(send_value)
-        self._wait_send_keys(by, elem_value, send_value)
+    def _send_to_elem(self, by, elem_value, send_value, retries=3):
+        for attempt in range(retries):
+            try:
+                elem = self._element(by, elem_value)
+                elem.clear()  # 入力済みのテキストをクリア
+                elem.send_keys(send_value)
+                return
+            except StaleElementReferenceException:
+                if attempt < retries - 1:
+                    time.sleep(1)  # 少し待ってから再試行
+                else:
+                    raise
 
     def _access_to(self, url):
         self.driver.get(url)
