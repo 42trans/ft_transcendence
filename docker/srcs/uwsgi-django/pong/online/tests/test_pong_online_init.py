@@ -2,14 +2,21 @@ from django.test import TestCase, SimpleTestCase
 from asgiref.sync import async_to_sync
 from pong.online.pong_online_config import PongOnlineConfig
 from pong.online.pong_online_game_manager import PongOnlineGameManager
+from channels.testing import WebsocketCommunicator
+from pong.online.pong_online_consumer import PongOnlineConsumer
+import asyncio
+
 
 class TestPongOnlineInit(TestCase):
     def setUp(self):
-        self.config         = PongOnlineConfig()
-        self.game_manager   = PongOnlineGameManager(user_id=1)
-        # await self.game_manager.initialize_game()
-        # 非同期関数を同期的に動かす
-        async_to_sync(self.game_manager.initialize_game)()
+        # asyncSetUp を同期的に呼び出す
+        asyncio.run(self.asyncSetUp())
+
+    async def asyncSetUp(self):  
+        self.config = PongOnlineConfig()
+        self.game_manager = PongOnlineGameManager(user_id=1, consumer=None)
+        await self.game_manager.initialize_game() 
+
 
     def test_initial_state(self):
         """ 
@@ -21,8 +28,8 @@ class TestPongOnlineInit(TestCase):
         initial_state	= self.game_manager.pong_engine_data
         expected_state = {
             "game_settings": {
-                "max_score": 3,
-                "init_ball_speed": 2,
+                "max_score": self.config.game_settings["max_score"],
+                "init_ball_speed": self.config.game_settings["init_ball_speed"],
                 "max_ball_speed": 9.9,
                 "difficulty": 0.5,
                 "field": {
@@ -33,7 +40,7 @@ class TestPongOnlineInit(TestCase):
             "objects": {
                 "ball": {
                     "radius": 5,
-                    "speed": 2,
+                    "speed": self.config.ball["speed"],
                     "position": {"x": 0, "y": 0},
                     "direction": {"x": 1, "y": 0.1},
                 },
@@ -41,19 +48,18 @@ class TestPongOnlineInit(TestCase):
                     "speed": 10,
                     "dir_y": 0,
                     "width": 10,
-                    "height": 30,
+                    "height": self.config.paddle1["height"],
                     "position": {"x": -140.0, "y": 0}
                 },
                 "paddle2": {
                     "speed": 10,
                     "dir_y": 0,
                     "width": 10,
-                    "height": 30,
+                    "height": self.config.paddle2["height"],
                     "position": {"x": 140.0, "y": 0}
                 }
             },
             "state": {"score1": 0, "score2": 0},
             "is_running": True
         }
-        # print("initial_state:", initial_state)
         self.assertEqual(initial_state, expected_state)

@@ -122,7 +122,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
     # ---------------------------------------------------
     # disconnect
     # ---------------------------------------------------
-    async def disconnect(self):
+    async def disconnect(self, code):
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name

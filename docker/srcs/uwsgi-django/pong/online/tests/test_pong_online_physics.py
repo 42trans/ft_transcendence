@@ -4,7 +4,7 @@ from asgiref.sync import async_to_sync
 
 class TestPongOnlinePhysics(TestCase):
     def setUp(self):
-        self.game_manager = PongOnlineGameManager(user_id=1)
+        self.game_manager = PongOnlineGameManager(consumer=None, user_id=1)
         # await self.game_manager.initialize_game()
         async_to_sync(self.game_manager.initialize_game)()
 
@@ -19,7 +19,11 @@ class TestPongOnlinePhysics(TestCase):
         initial_score2 = self.game_manager.pong_engine_data["state"]["score2"]
 
         # ゲーム状態を更新
-        await self.game_manager.update_game({"paddle1": {"dir_y": 0}, "paddle2": {"dir_y": 0}})
+        # await self.game_manager.update_game({"paddle1": {"dir_y": 0}, "paddle2": {"dir_y": 0}})
+        await self.game_manager.update_game({
+            "paddle1": {"dir_y": 0, "position": {"x": -140.0, "y": 0}},  # position を追加
+            "paddle2": {"dir_y": 0, "position": {"x": 140.0, "y": 0}}   # position を追加
+        })
 
         # スコアが正しくプレイヤー1に対してインクリメントされているか確認
         self.assertEqual(self.game_manager.pong_engine_data["state"]["score1"], initial_score1 + 1, "Player 1's score should be incremented")
@@ -32,8 +36,11 @@ class TestPongOnlinePhysics(TestCase):
     async def test_ball_collision_with_ceiling_or_floor(self):
         # 天井にボールを移動させて衝突をシミュレート
         self.game_manager.pong_engine_data["objects"]["ball"]["position"]["y"] = self.game_manager.pong_engine_data["game_settings"]["field"]["height"] / 2
-        await self.game_manager.update_game({"paddle1": {"dir_y": 0}, "paddle2": {"dir_y": 0}})
-        
+        # await self.game_manager.update_game({"paddle1": {"dir_y": 0}, "paddle2": {"dir_y": 0}})
+        await self.game_manager.update_game({
+            "paddle1": {"dir_y": 0, "position": {"x": -140.0, "y": 0}},  # position を追加
+            "paddle2": {"dir_y": 0, "position": {"x": 140.0, "y": 0}}   # position を追加
+        })
         # ボールの反射を確認
         self.assertNotEqual(
             self.game_manager.pong_engine_data["objects"]["ball"]["direction"]["y"],
