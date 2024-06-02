@@ -31,24 +31,24 @@ class DMTest(TestConfig):
         # test_user1でlogin
         self._login(email=self.test_user1_email, password=self.password)
 
-        self._screenshot("block 1")
+        # self._screenshot("block 1")
 
         # DMへ遷移し、dm-log要素が存在することを確認
         self._move_top_to_dm()
         self._send_dm_with_form(self.test_user2_nickname)
         self.assertTrue(self._is_unblocking_dm())
 
-        self._screenshot("block 2")
+        # self._screenshot("block 2")
 
         # test_user2のinfo pageへアクセスし、block
         self._block_user(self.test_user2_nickname)
-        self._screenshot("block 3")
+        # self._screenshot("block 3")
 
         # DMへ遷移し、dm-log要素が非表示であることを確認
         self._access_to(f"{self.dm_with_base_url}{self.test_user2_nickname}/")
         self.assertFalse(self._is_unblocking_dm())
 
-        self._screenshot("block 4")
+        # self._screenshot("block 4")
 
         # test_user2のinfo pageへアクセスし、unblock
         self._unblock_user(self.test_user2_nickname)
@@ -57,7 +57,7 @@ class DMTest(TestConfig):
         self._access_to(f"{self.dm_with_base_url}{self.test_user2_nickname}/")
         self.assertTrue(self._is_unblocking_dm())
 
-        self._screenshot("block 5")
+        # self._screenshot("block 5")
 
     def _is_unblocking_dm(self):
         """"

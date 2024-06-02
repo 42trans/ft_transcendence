@@ -153,7 +153,7 @@ class ProfileTest(TestConfig):
         self._edit_password(current_pass, new_pass, wait_for_button_invisible=False)
         self._assert_message("このパスワードは短すぎます。最低 8 文字以上必要です。")
         self._assert_current_url(self.edit_profile_url)
-        self._screenshot("edit_pass_3")
+        # self._screenshot("edit_pass_3")
 
     ############################################################################
 

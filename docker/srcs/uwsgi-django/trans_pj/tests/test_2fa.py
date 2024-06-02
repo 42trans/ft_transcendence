@@ -59,7 +59,6 @@ class TwoFactorAuthTest(TestConfig):
         # verify2faではなくtopに遷移
         self._assert_current_url(self.top_url)
 
-
     def _assert_is_2fa_enabled(self, expected_2fa_enabled: bool):
         twofa_status_element = self._element(By.ID, "2fa-status")
         actual_status_text = twofa_status_element.text
@@ -121,7 +120,7 @@ class TwoFactorAuthTest(TestConfig):
 
         totp = TOTP(set_up_key)
         otp_token = totp.now()
-        print(f"otp_token: {otp_token}")
+        # print(f"otp_token: {otp_token}")
         return otp_token
 
     def _verify_login_2fa(self, set_up_key: str):
