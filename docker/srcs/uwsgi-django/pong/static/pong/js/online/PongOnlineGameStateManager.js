@@ -30,7 +30,7 @@ class PongOnlineGameStateManager
 		this.finalGameState		= null
 
 		this.animationFrameId	= null; 
-		this.gameFPS			= 20
+		this.gameFPS			= 60
 
 		this.gameState 			= {
 			game_settings: {},

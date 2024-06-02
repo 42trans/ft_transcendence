@@ -3,6 +3,7 @@
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 let DEBUG_FLOW = 1;
 let DEBUG_DETAIL = 0;
+let DEBUG_DETAIL2 = 1;
 
 /**
  * <canvas>への描画（ピクセルに色を出力）を担当する
@@ -46,7 +47,7 @@ class PongOnlineRenderer
 
 
 	// ウインドウのサイズに合わせて動的に描画サイズを変更
-	resizeForAllDevices(gameStateManager) 
+	resizeForAllDevices() 
 	{
 		// ブラウザウィンドウの寸法を使用
 		this.canvas.width		= window.innerWidth;
@@ -72,13 +73,16 @@ class PongOnlineRenderer
 		// 拡大縮小
 		this.ctx.scale(this.field.zoomLevel, this.field.zoomLevel);
 		// 終了時の描画状態（スコア表示）を維持する: 状態の更新を強制するために再描画をトリガーする
-		const state = this.gameState;
-		if (state && 
-			(state.state.score1 > 0 || state.state.score2 > 0) &&
-			!this.gameState)
+		const gameState = this.gameStateManager.gameState;
+		if (DEBUG_DETAIL2){	console.log("agter loop: render: gameState.is_running", gameState.is_running)	}
+		if (gameState && 
+			!gameState.is_running && 
+			// !this.gameStateManager.isGameLoopStarted &&
+			(gameState.state.score1 > 0 || gameState.state.score2 > 0) )
 		{
+			if (DEBUG_DETAIL2){	console.log("agter loop: render ")	}
 			setTimeout(() => {
-				this.render(this.ctx, this.field, this.gameState);
+				this.render(this.ctx, this.field, gameState);
 			}, 16);
 		}
 	}

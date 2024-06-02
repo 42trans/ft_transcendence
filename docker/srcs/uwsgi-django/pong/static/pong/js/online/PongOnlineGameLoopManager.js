@@ -20,7 +20,7 @@ class PongOnlineGameLoopManager
 	}
 
 	
-	startGameLoop(gameFPS = 30) 
+	startGameLoop(gameFPS) 
 	{
 				if (DEBUG_FLOW){	console.log("startGameLoop(): begin")	}
 		

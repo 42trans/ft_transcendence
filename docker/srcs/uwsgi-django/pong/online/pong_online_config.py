@@ -8,9 +8,9 @@ class PongOnlineConfig:
 
         self.ball = {
             "radius": 5,
-            "speed": 2,
+            # "speed": 3,
             # テスト時
-            # "speed": 9,
+            "speed": 9,
             "direction": {"x": 1, "y": 0.1},
         }
 
@@ -36,10 +36,10 @@ class PongOnlineConfig:
 
         self.game_settings = {
             # テスト時
-            # "max_score": 1,
+            "max_score": 2,
             # 正規
-            "max_score": 15,
-            "init_ball_speed": 2,
+            # "max_score": 15,
+            "init_ball_speed": 3,
             "max_ball_speed": 10,
             "absolute_max_speed": 9.9,
             "difficulty": 0.5,
