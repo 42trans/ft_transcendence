@@ -3,6 +3,10 @@ import PongEngineKey from "./PongEngineKey.js";
 import PongOnlineSyncWS from "./PongOnlineSyncWS.js";
 import PongOnlineGameStateManager from "./PongOnlineGameStateManager.js"
 
+// console.log: 出力=true、本番時はfalseに設定。0,1でも動く
+let DEBUG_FLOW = 1;
+let DEBUG_DETAIL = 0;
+
 /**
  * 2D-Pong Onlineのメインクラス
  * - 描画対象、通信対象の設定、描画サイズ(ズーム)を担当 
@@ -17,17 +21,16 @@ class PongOnlineClientApp
 {
 	constructor() 
 	{
-		// console.log('PongOnlineClientApp constructor begin');
+		if (DEBUG_FLOW){	console.log('PongOnlineClientApp constructor begin');	}
 		this.initWebSocket();
 		this.initStartButton();
-		
 	}
 	
 	initWebSocket()
 	{
-		this.socketUrl				= 'wss://localhost/ws/pong/online/';
-		this.gameStateManager		= new PongOnlineGameStateManager();
-		this.syncWS					= new PongOnlineSyncWS(this, this.gameStateManager, this.socketUrl);
+		this.socketUrl			= 'wss://localhost/ws/pong/online/';
+		this.gameStateManager	= new PongOnlineGameStateManager(this);
+		this.syncWS				= new PongOnlineSyncWS(this, this.gameStateManager, this.socketUrl);
 		PongEngineKey.listenForEvents();
 	}
 	
@@ -53,13 +56,12 @@ class PongOnlineClientApp
 	/** Start buttonをクリックしてからWebsocket接続 */
 	setupWebSocketConnection()
 	{
-		this.socket				= new WebSocket(this.socketUrl);
-		this.syncWS.socket		= this.socket;
-		// ルーチン
+		this.socket							= new WebSocket(this.socketUrl);
+		this.syncWS.socket					= this.socket;
+		this.gameStateManager.socket		= this.socket;
+
 		this.socket.onmessage	= (event) => this.syncWS.onSocketMessage(event);
-		// 初回のみ
 		this.socket.onopen		= () => this.syncWS.onSocketOpen();
-		// エラー時
 		this.socket.onclose		= (event) => this.syncWS.onSocketClose(event);
 		this.socket.onerror		= (event) => this.syncWS.onSocketError(event);
 	}

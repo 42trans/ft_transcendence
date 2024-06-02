@@ -5,7 +5,7 @@ class PongOnlinePaddleMover
 {
 	static 	handlePaddleMovement(field, gameState) 
 	{
-		if (!gameState || !gameState.objects || !gameState.objects.paddle1) {
+		if (!gameState || !gameState.objects || !gameState.objects.paddle1 || !gameState.objects.paddle2) {
 			console.error('Invalid gameState:', this.gameState);
 			return;
 		}
