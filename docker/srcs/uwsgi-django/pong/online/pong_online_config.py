@@ -36,7 +36,7 @@ class PongOnlineConfig:
 
         self.game_settings = {
             # テスト時
-            "max_score": 2,
+            "max_score": 1,
             # 正規
             # "max_score": 15,
             "init_ball_speed": 3,
