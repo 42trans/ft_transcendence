@@ -1,7 +1,6 @@
-{% extends 'base.html' %}
+<!-- pong/index.html -->
+
 {% load static %}
-{% block title %}Home - hth Pong{% endblock title %}
-{% block content %}
 
 <!-- TODO_ft: bugfooter hover color がbg同じ -->
 
@@ -13,17 +12,17 @@
 		">Unrivaled <span>hth Pong</span> Experience</h2>
 
 	{% if nickname %}
-		<h3 class="
+	<h3 class="
 			slideup-text
 			text-shadow-primary
 			">Welcome, [{{ nickname }}]</h3>
-		<!-- <p class="slideup-text"><a href="{% url 'accounts:user' %}">User profile</a></p> -->
+	<!-- <p class="slideup-text"><a href="{% url 'accounts:user' %}">User profile</a></p> -->
 	{% else %}
-		<h3 class="
+	<h3 class="
 			slideup-text
 			text-shadow-primary
 			">Welcome, Guest</h3>
-		<p class="
+	<p class="
 			slideup-text
 			text-shadow-secondary
 			">For a happier life, let's play the pong game!</p>
@@ -31,7 +30,11 @@
 
 	{% include 'pong/dev-link.html' %}
 
+
+	{% if user_id %}
+	<input type="hidden" id="user-id" value="{{ user_id }}">
+	{% endif %}
 </div>
 
-<script src="{% static 'accounts/js/logout.js' %}"></script>
-{% endblock %}
+
+<!--<script src="{% static 'accounts/js/logout.js' %}"></script>-->

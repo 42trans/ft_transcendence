@@ -1,23 +1,6 @@
 <!-- user_info.html -->
 
 {% load static %}
-<!doctype html>
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <title>User Info</title>
-
-    <style>
-        .avatar {
-            width: 50px;    /* 幅を30pxに設定 */
-            height: 50px;   /* 高さを30pxに設定 */
-            border-radius: 50%;  /* 角を円形にする */
-            object-fit: cover;   /* 画像のアスペクト比を維持しながら、設定された領域に収まるようにする */
-            margin-right: 10px;  /* 画像とテキストの間の余白 */
-        }
-    </style>
-</head>
-<body>
 
 <h1><img src="{{ user_data.avatar_url }}" alt="User Avatar" class="avatar"> User Info (public)</h1>
 <ul>
@@ -25,41 +8,34 @@
     <li>History: history here</li>
     <li>xxx: xxx</li>
     <li>xxx: xxx</li>
-    <li><a href="{% url 'chat:dm' user_data.info_user_nickname%}">DM with {{ user_data.info_user_nickname }}</a></li>
+    <li><a href="{{ url_config.kSpaDmWithUrlBase }}{{ user_data.info_user_nickname }}">DM with {{ user_data.info_user_nickname }}</a></li>
     <br>
     {% if not user_data.isBlockingUser %}
-    <li><a href="#" onclick="blockUser('{{ user_data.info_user_nickname }}'); return false;">block</a></li>
+        <button class="hth-btn blockUserButton" data-nickname="{{ user_data.info_user_nickname }}">block</button>
     {% else %}
-    <li><a href="#" onclick="unblockUser('{{ user_data.info_user_nickname }}'); return false;">unblock</a></li>
+        <button class="hth-btn unBlockUserButton" data-nickname="{{ user_data.info_user_nickname }}">unblock</button>
     {% endif %}
 <!--    <li><a href="#" onclick="sendSystemMessage('{{ user_data.info_user_nickname }}');">[test] send system message to {{ user_data.info_user_nickname }}</a></li>-->
-    <li><a href="#" onclick="sendSystemMessage('user1');">[test] send system message to user1</a></li>
+<!--    <li><a href="#" onclick="sendSystemMessage('user1');">[test] send system message to user1</a></li>-->
 </ul>
+
+<hr>
 
 <!-- フレンド関係の表示 -->
 <ul>
-    <h3>friend</h3>
+    <h4>friendship</h4>
     {% if user_data.is_friend %}
-        <li>Friend -> <a href="#" onclick="deleteFriend('{{ user_data.info_user_id }}'); return false;">Delete</a></li>
+        <li>Friend -> <a href="#" class="deleteFriendButton" data-userid="{{ user_data.info_user_id }}">Delete</a></li>
     {% elif user_data.friend_request_sent_status == "pending" %}
-        <li>Request sent (pending) -> <a href="#" onclick="cancelFriendRequest('{{ user_data.info_user_id }}'); return false;">Cancel</a></li>
+        <li>Request sent (pending) -> <a href="#" class="cancelFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Cancel</a></li>
     {% elif user_data.friend_request_received_status == "pending" %}
         <li>Request received (pending)</li>
     {% else %}
-        <li><a href="#" onclick="sendFriendRequest('{{ user_data.info_user_id }}'); return false;">Send Friend Request</a></li>
+        <li><a href="#" class="sendFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Send Friend Reques</a></li>
     {% endif %}
 </ul>
 
-
-<hr>
-<br>
-<p><a href="{% url 'accounts:user' %}">user page</a></p>
-<p><a href="/pong/">🏓 Pong Index Page</a></p>
-
-<script src="{% static 'accounts/js/block-user.js' %}"></script>
-<script src="{% static 'accounts/js/unblock-user.js' %}"></script>
-<script src="{% static 'accounts/js/friend.js' %}"></script>
-<script src="{% static 'chat/js/test-system-message.js' %}"></script>
-
-</body>
-</html>
+<!--<script src="{% static 'accounts/js/block-user.js' %}"></script>-->
+<!--<script src="{% static 'accounts/js/unblock-user.js' %}"></script>-->
+<!--<script type="module" src="{% static 'accounts/js/friend.js' %}"></script>-->
+<!--<script src="{% static 'chat/js/test-system-message.js' %}"></script>-->

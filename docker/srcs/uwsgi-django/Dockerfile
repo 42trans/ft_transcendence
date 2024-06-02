@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     python3-dev \
     libpcre3-dev \
+    gettext \
 	&& rm -rf /var/lib/apt/lists/*
 
 # 環境変数を設定
@@ -27,6 +28,7 @@ WORKDIR /code
 COPY requirements.txt .
 
 RUN pip install --upgrade pip && pip install --no-cache-dir -r /code/requirements.txt
+RUN pip install django-cors-headers
 # RUN pip install --no-cache-dir -r requirements.txt
 
 # 不要なパッケージを削除

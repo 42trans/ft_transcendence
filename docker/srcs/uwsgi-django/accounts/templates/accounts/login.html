@@ -1,18 +1,15 @@
-{% extends 'base.html' %}
 {% load static %}
-{% block title %}Log in - hth Pong{% endblock title %}
-{% block content %}
 
 <div class="container">
-	
+
 	<div class="
 		hth-accounts-container
 		m-auto
-		" 
+		"
 		id="login-form-container">
 
 		<h1 class="
-			slideup-text 
+			slideup-text
 			">Please log in</h1>
 
 		<!-- TODO_ft:あらかじめスペースを用意しているのでPOPUPに切り替えたい -->
@@ -21,29 +18,29 @@
 		<!-- auth form -->
 		<form class="hth-sign-form" onsubmit="loginUser(event)">
 			<div class="
-				slideup-text 
+				slideup-text
 				form-floating">
 				<input class="form-control"
-				id="email" 
+				id="email"
 				type="text" placeholder="name@example.com" required>
 				<label for="floatingInput">Email address</label>
 			</div>
 			<div class="
-				slideup-text 
+				slideup-text
 				form-floating">
-				<input class="form-control" 
-				id="password" 
+				<input class="form-control"
+				id="password"
 				type="password" placeholder="password" required>
 				<label for="floatingPassword">Password</label>
 			</div>
 			<input type="hidden" id="next" value="/accounts/user/">
 			<button class="
-				slideup-text 
-				sign_btn 
-				sign_btn-primary 
-				mb-1 
-				w-100 
-				py-2 
+				slideup-text
+				sign_btn
+				sign_btn-primary
+				mb-1
+				w-100
+				py-2
 				my-2
 				"
 				id="login-btn"
@@ -51,17 +48,17 @@
 		</form>
 
 		<hr>
-		
+
 		<!-- button 42 auth -->
 		<a class="
-			slideup-text 
-			sign_btn 
-			sign_btn-primary 
-			w-100 
+			slideup-text
+			sign_btn
+			sign_btn-primary
+			w-100
 			py-2
-			" 
+			"
 			id="auth42-a-btn"
-			role="button" 
+			role="button"
 			href="{% url 'accounts:oauth_ft' %}"
 			>Log in to your 42 account</a>
 
@@ -71,10 +68,7 @@
 			<!-- <a href="{% url 'accounts:signup'%}">新規アカウントの作成</a> -->
 		</div>
 
-	</div>
+    </div>
 </div>
 
-
-<script src="{% static 'accounts/js/login.js' %}"></script>
-
-{% endblock %}
+<!--<script src="{% static 'accounts/js/login.js' %}"></script>-->

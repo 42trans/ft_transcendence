@@ -1,0 +1,26 @@
+{
+  "kSpaPongTopUrl"      : "/app/",
+  "kSpaHomeUrl"         : "/app/home/",
+
+  "kSpaFreeGame"        : "/app/game/free-play/",
+  "kSpaTournamentUrl"   : "/app/game/tournament/",
+  "kSpaGame1vs1Url"     : "/app/game/game-1vs1/",
+  "kSpaOnlinePong"      : "/app/game/online/",
+
+  "kSpaGameHistoryUrl"  : "/app/user/game-history/",
+  "kSpaUserProfileUrl"  : "/app/user/profile/",
+  "kSpaUserInfoUrl"     : "/app/user/info/:nickname/",
+  "kSpaUserInfoUrlBase" : "/app/user/info/",
+  "kSpaUserFriendUrl"   : "/app/user/friends/",
+  "kSpaEditProfileUrl"  : "/app/user/profile/edit/",
+  "kSpaChangeAvatarUrl" : "/app/user/profile/change-avatar/",
+
+  "kSpaDmUrl"           : "/app/dm/",
+  "kSpaDmWithUrl"       : "/app/dm/:nickname",
+  "kSpaDmWithUrlBase"   : "/app/dm/",
+
+  "kSpaAuthEnable2FaUrl": "/app/auth/enable-2fa/",
+  "kSpaAuthVerify2FaUrl": "/app/auth/verify-2fa/",
+  "kSpaAuthSignupUrl"   : "/app/auth/signup/",
+  "kSpaAuthLoginUrl"    : "/app/auth/login/"
+}

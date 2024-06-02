@@ -1,21 +1,40 @@
 // online-status.js
 
-function setUpOnlineStatusWebSocket(userId) {
+import { deleteFriend, createActionButton } from "./friend.js"
+
+
+let socket = null;
+
+
+export function connectOnlineStatusWebSocket(userId) {
+    console.log('Connecting WebSocket: userId: ' + userId);
+
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        console.log('WebSocket already connected');
+        return;
+    }
+
     const websocketUrl = 'wss://' + window.location.host + '/ws/online/';
+    console.log(`connectOnlineStatusWebSocket websocketUrl:${websocketUrl}`);
 
-    console.log(`setUpOnlineStatusWebSocket websocketUrl:${websocketUrl}`);
-
-    const socket = new WebSocket(websocketUrl);
-
+    socket = new WebSocket(websocketUrl);
     socket.onmessage = handleMessage;
     socket.onopen = () => handleOpen(socket, userId);
     socket.onclose = () => handleClose(socket, userId);
     socket.onerror = handleError;
 
-    // ページ離脱時にオフラインステータスを送信
-    window.addEventListener('beforeunload', function() {
+    // alert('connectOnlineStatusWebSocket completed')
+}
+
+
+export function disconnectOnlineStatusWebSocket(userId) {
+    console.log('Disconnecting WebSocket: userId: ' + userId);
+    if (socket) {
+        console.log(' socket exist -> disconnect');
         sendStatusUpdate(socket, false, userId);
-    });
+        socket.close();
+        socket = null;
+    }
 }
 
 
@@ -24,28 +43,37 @@ function handleMessage(event) {
 }
 
 
-function handleOpen(socket, userId) {
+async function handleOpen(socket, userId) {
     console.log('WebSocket connection established');
-    socket.userId = userId;  // ソケットにユーザーIDを保存
-    sendStatusUpdate(socket, true, userId);  // 接続時にオンラインステータスとユーザーIDを送信
+    socket.userId = userId;
+    await sendStatusUpdate(socket, true, userId);
 }
 
 
-function handleClose(socket, userId) {
-    console.log('Websocket closed');
+async function sendStatusUpdate(socket, status, userId) {
     if (socket.readyState === WebSocket.OPEN) {
-        sendStatusUpdate(socket, false, userId);  // 切断時にオフラインステータスとユーザーIDを送信
+        socket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
+    } else if (socket.readyState === WebSocket.CONNECTING) {
+        await waitForWebSocketOpen(socket);
+        socket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
+    } else {
+        console.error('WebSocket is not open. readyState: ' + socket.readyState);
     }
+}
+
+
+function waitForWebSocketOpen(socket) {
+    return new Promise((resolve) => {
+        socket.addEventListener('open', function onOpen() {
+            socket.removeEventListener('open', onOpen);
+            resolve();
+        });
+    });
 }
 
 
 function handleError(event) {
     console.error('WebSocket error observed:', event);
-}
-
-
-function sendStatusUpdate(socket, status, userId) {
-    socket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
 }
 
 
@@ -65,7 +93,7 @@ function updateFriendStatus(event) {
 }
 
 
-function createFriendsList(friendsData) {
+export function createFriendsList(friendsData) {
     const friendsContainer = document.getElementById("friends-container");
     let friendsList = document.getElementById("friends-list");
 
@@ -91,20 +119,91 @@ function createFriendsList(friendsData) {
     });
 }
 
+
 // 変更があった部分のみを更新する
+// <link-to-user-info> <SP> <online-status> <SP> <Delete-button>
 function updateOrCreateFriendListItem(friend) {
     let listItem = document.getElementById('friend-item-' + friend.id);
     if (!listItem) {
         listItem = document.createElement('li');
         listItem.id = 'friend-item-' + friend.id;
+    } else {
+        listItem.innerHTML = ''; // 既存の内容をクリア
     }
 
-    listItem.innerHTML = `
-        <a href="/accounts/info/${friend.nickname}/">${friend.nickname}</a>
-        <span id="friend-status-${friend.id}" class="status ${friend.status ? 'online' : 'offline'}">
-            ${friend.status ? 'Online' : 'Offline'}
-        </span>
-        <a href="#" onclick="deleteFriend(${friend.id}); return false;">Delete</a>
-    `;
+    // <link-to-user-info>
+    const link = document.createElement('a');
+    link.href = `/user-info/${friend.nickname}/`;
+    link.className = 'nav__link';
+    link.setAttribute('data-link', '');
+    link.textContent = friend.nickname;
+    listItem.appendChild(link);
+
+    // <SP>
+    listItem.appendChild(document.createTextNode(' '));
+
+    // <online-status>
+    const statusSpan = document.createElement('span');
+    statusSpan.id = `friend-status-${friend.id}`;
+    statusSpan.className = `status ${friend.status ? 'online' : 'offline'}`;
+    statusSpan.textContent = friend.status ? 'Online' : 'Offline';
+    listItem.appendChild(statusSpan);
+
+    // <SP>
+    listItem.appendChild(document.createTextNode(' '));
+
+    // <Delete-button>
+    const deleteButton = createActionButton("Delete", () => deleteFriend(friend.id));
+    listItem.appendChild(deleteButton);
+
     return listItem;
+}
+
+
+export function fetchUserId() {
+    return fetch("/accounts/api/user/profile/")
+        .then(response => {
+            if (!response.ok) {
+                console.log('GuestUser? UserID not found');
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.id) {
+                console.log('GuestUser? UserID not found');
+                return null;
+            }
+            return data.id;
+        })
+        .catch(error => {
+            console.log('Error:', error);
+            return null;
+        });
+}
+
+
+export function setOnlineStatus() {
+    console.log('setOnlineStatus called');
+
+    fetchUserId().then(userId => {
+        if (!userId) {
+            console.log('GuestUser? UserID not found');
+            return;
+        }
+
+        function onPageLoad() {
+            connectOnlineStatusWebSocket(userId);
+        }
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            onPageLoad();
+        } else {
+            window.addEventListener('load', onPageLoad);
+        }
+
+        window.addEventListener('popstate', function(event) {
+            onPageLoad();
+        });
+    });
 }

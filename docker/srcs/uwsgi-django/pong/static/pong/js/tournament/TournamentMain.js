@@ -19,19 +19,16 @@ import TournamentCreator	from './components/TournamentCreator.js';
  * - entryの役割
  * - ドキュメントの完全な読み込みと解析が完了した後に実行する
  */
-document.addEventListener('DOMContentLoaded', () => 
-{
-	// インスタンスは一つだけ
-	const userManagement 	= new UserManager();
-	const roundManager		= new RoundManager();
-	const creator 			= new TournamentCreator();
-	// 依存性注入
-	const tournamentManager = new TournamentManager
-	(
-		userManagement, 
-		roundManager, 
-		creator
-	);
 
+export function setupTournament() {
+	// インスタンスは一つだけ
+	const userManagement = new UserManager();
+	const roundManager = new RoundManager();
+	const creator = new TournamentCreator();
+
+	// 依存性注入
+	const tournamentManager = new TournamentManager(userManagement, roundManager, creator);
+
+	// main関数を呼び出す
 	tournamentManager.main();
-});
+}

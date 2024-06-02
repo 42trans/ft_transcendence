@@ -71,7 +71,7 @@ class TournamentManager
 		}
 		try {
 			const response = await fetch(this.API_URLS.ongoingLatestTour, {
-				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
+				headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
 			});
 
 			// ongoingが見つからない場合は204が返ってくるので、ここではそれ以外のエラーを処理する。
@@ -104,10 +104,11 @@ class TournamentManager
 
 	/** ゲストユーザーへ表示する内容 */
 	_handleGuestUser() {
-		document.getElementById('tournament-container').innerHTML = `
-			<p>Please log in to manage or create tournaments.</p>
-			<p><a href="/accounts/login">Log in</a> or <a href="/accounts/signup">Sign up</a></p>
-		`;
+		window.location.href = "/login/"  // loginへ移動
+		// document.getElementById('tournament-container').innerHTML = `
+		// 	<p>Please log in to manage or create tournaments.</p>
+		// 	<p><a href="/accounts/login">Log in</a> or <a href="/accounts/signup">Sign up</a></p>
+		// `;
 	}
 }
 

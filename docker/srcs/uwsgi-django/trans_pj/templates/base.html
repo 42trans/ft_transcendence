@@ -1,50 +1,55 @@
 {% load static %}
 <!doctype html>
 <html lang="en" class="h-100" data-bs-theme="auto">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="3D-Pong">
-	<!-- Stylesheets -->
-	<link rel="stylesheet" href="{% static 'pong/css/bootstrap/bootstrap.min.css' %}"/>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-default.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-theme-mode.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-breakpoint.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-fontsize.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-animation.css' %}" >
-	<link rel="stylesheet" href="{% static 'pong/css/bootstrap/sticky-footer-navbar.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-header.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-main.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-footer.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-accounts.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-accounts-form.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-accounts-edit.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-match-history.css' %}">
-	<link rel="stylesheet" href="{% static 'pong/css/hth-btn.css' %}">
-	<!-- 追加css: Game用 -->
-	{% block extra_css %}{% endblock %}
-	<!-- title -->
-	<title>{% block title %}{% endblock %}</title>
-</head>
 
-<body class="d-flex flex-column h-100">
-	<!-- color mode -->
-	{% include 'icons.html' %}
-	{% include 'theme-toggle.html' %}
-	<header>{% include 'header.html' %}</header>
-	<main id="hth-main" class="flex-shrink-0">
-		<div class="hth-container">
-			<!-- <div class="container-fluid px-0"> -->
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="3D-Pong">
+		<!-- Stylesheets -->
+		<link rel="stylesheet" href="{% static 'pong/css/bootstrap/bootstrap.min.css' %}"/>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-default.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-theme-mode.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-breakpoint.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-fontsize.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-animation.css' %}" >
+		<link rel="stylesheet" href="{% static 'pong/css/bootstrap/sticky-footer-navbar.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-header.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-main.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-footer.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-accounts.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-accounts-form.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-accounts-edit.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-match-history.css' %}">
+		<link rel="stylesheet" href="{% static 'pong/css/hth-btn.css' %}">
+		<!-- 追加css: Game用 -->
+		{% block extra_css %}{% endblock %}
+
+		<!-- title -->
+		<title>{% block title %}{% endblock %}</title>
+	</head>
+
+	<body class="d-flex flex-column h-100">
+		<!-- color mode -->
+		{% include 'icons.html' %}
+		{% include 'theme-toggle.html' %}
+		<!--<header>{% include 'header.html' %}</header>-->
+
+		<main id="hth-main" class="flex-shrink-0">
+			<div class="hth-container">
+				 <div class="container-fluid px-0">
 				{% block content %}{% endblock %}
-			<!-- </div> -->
-		</div>
-	</main>
-	<footer>{% include 'footer.html' %}</footer>
+				 </div>
+			</div>
+		</main>
 
-<script src="{% static 'pong/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'pong/js/bootstrap/color-modes.js' %}"></script>
-<script src="{% static 'accounts/js/logout.js' %}"></script>
-</body>
+		<footer>{% include 'footer.html' %}</footer>
+
+		{% block extra_js %}{% endblock %}
+
+		<script src="{% static 'pong/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+		<script src="{% static 'pong/js/bootstrap/color-modes.js' %}"></script>
+	</body>
 
 </html>

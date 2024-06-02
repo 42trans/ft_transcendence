@@ -1,14 +1,14 @@
-// chat/js/setup-websocket.js
+// chat/js/setup-dm-websocket.js
 
 import { classifyMessageSender } from './apply-message-style.js';
 import { handleReceiveMessage } from './handle-receive-message.js';
 import { scrollToBottom } from './ui-util.js';
 
-export { setupWebSocket };
+export { setupDmWebsocket };
 
 
 // WebSocketの接続確立とメッセージの送受信ロジック
-function setupWebSocket(dmTargetNickname) {
+function setupDmWebsocket(dmTargetNickname) {
     const websocketUrl = 'wss://' + window.location.host + '/ws/dm-with/' + dmTargetNickname + '/';
     const dmSocket = new WebSocket(websocketUrl);
 
@@ -19,6 +19,7 @@ function setupWebSocket(dmTargetNickname) {
 
     document.querySelector('#message-submit').onclick = () => handleSendMessage(dmSocket);
 }
+
 
 function handleOpen(dmTargetNickname) {
     console.log('WebSocket connection established with', dmTargetNickname);
