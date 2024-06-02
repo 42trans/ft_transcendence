@@ -32,11 +32,12 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
         if DEBUG_FLOW:
             await async_log("開始: connect()")
         try:
-            # TODO_ft:Userのみに限定するならばチェクが必要。その際はメッセージを送り、クライアント側でログインページへ誘導する処理を実装しなければならない
             # ユーザー認証の確認: permission_classes = [IsAuthenticated]では不足のため
             # if not self.scope["user"].is_authenticated:
+            #     """Userのみに限定するならばチェクが必要。その際はメッセージを送り、クライアント側でログインページへ誘導する処理を実装しなけれ ばならない"""
             #     await self.close(code=1008)
             #     return False
+            
             self.user_id = self.scope['user'].id
             # ブロードキャストするルームの識別子の作成
             self.room_group_name, err = await self._build_room_group_name(self.user_id)
@@ -117,6 +118,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
 
     async def send_data(self, event):
         await self.send(text_data=json.dumps(event['data']))
+
     # ---------------------------------------------------
     # disconnect
     # ---------------------------------------------------

@@ -29,7 +29,7 @@ class PongOnlineSyncWS
 		this.socket				= null;
 
 		// 再接続用のフラグ・変数
-		this.isReconnecting			= false;
+		// this.isReconnecting			= false;
 		this.reconnectAttempts		= 0;
 		this.maxReconnectAttempts	= 5;
 		// 単位: ミリ秒
@@ -37,7 +37,7 @@ class PongOnlineSyncWS
 
 						// TODO_fr: 本番時削除
 						// dev用 websocket接続を閉じるためのボタン
-						this.devTestCloseButton();
+						// this.devTestCloseButton();
 	}
 
 
@@ -68,6 +68,8 @@ class PongOnlineSyncWS
 			} else if (recvEventData.event_type === 'game_end') {
 
 						if (DEBUG_FLOW) {
+							console.log("onSocketMessage: game_end") }
+						if (DEBUG_FLOW) {
 							console.log("onSocketMessage: recvEventData:", recvEventData) }
 
 				this.gameStateManager.handleGameEnd(this.clientApp.socket, recvEventData.end_game_state,)
@@ -75,21 +77,18 @@ class PongOnlineSyncWS
 				// ---------------------------------
 				// 再接続かどうか
 				// ---------------------------------
-				if (this.isReconnecting) 
-				{
-							if (DEBUG_FLOW){	
-								console.log("onSocketMessage(): reconnect")	}
-
-					// 再接続の場合: 何もしない
-					// クライアント（.js, ブラウザ）のデータで上書きするのでここでは更新しない
-					this.isReconnecting = false;
-				} else {
+				// if (!this.isReconnecting) {
 							if (TEST_ERROR_CASE2){
 								recvEventData = {}	}
-
 					// ルーチン: 受信データで更新
 					this.gameStateManager.updateState(recvEventData);
-				}
+				// } else {
+				// 	// 再接続の場合の処理
+				// 			if (DEBUG_FLOW){	
+				// 				console.log("onSocketMessage(): reconnect")	}
+				// 	// クライアント（.js, ブラウザ）のデータで上書きするのでここでは更新しない
+				// 	this.isReconnecting = false;
+				// }
 				// ---------------------------------
 				// ループが開始していない場合　
 				// ---------------------------------
@@ -117,28 +116,27 @@ class PongOnlineSyncWS
 		if (DEBUG_FLOW){	
 			console.log("WebSocket connection established.");	}
 		
-		// 初回 or 再接続時(wsがサーバーによって予期せずcloseされた後) の判定
-		if (this.isReconnecting)
-		{
-			// 再接続時の処理
-					if (DEBUG_FLOW){	
-						console.log("WebSocket connection re-established.");	}
-			const initData = JSON.stringify
-			({
-				action: "reconnect",
-				...this.gameStateManager.getState() 
-			});
-					if (DEBUG_DETAIL){	
-						console.log("Sending data to server:", JSON.stringify(dataToSend, null, 2)); }
-
-			this.socket.send(initData);
-			// 接続成功時に再接続試行回数をリセット
-			this.reconnectAttempts = 0;
-		} else {
+		// if (!this.isReconnecting)
+		// {
 			// 初回接続時の処理　{ action: "initialize" }を送信
 			const initData = JSON.stringify({ action: "initialize" });
 			this.socket.send(initData);
-		}
+		// } else {
+		// 	// 再接続時の処理
+		// 			if (DEBUG_FLOW){	
+		// 				console.log("WebSocket connection re-established.");	}
+		// 	const initData = JSON.stringify
+		// 	({
+		// 		action: "reconnect",
+		// 		...this.gameStateManager.getState() 
+		// 	});
+		// 			if (DEBUG_DETAIL){	
+		// 				console.log("Sending data to server:", JSON.stringify(dataToSend, null, 2)); }
+
+		// 	this.socket.send(initData);
+		// 	// 接続成功時に再接続試行回数をリセット
+		// 	this.reconnectAttempts = 0;
+		// }
 	}
 
 	// ------------------------------

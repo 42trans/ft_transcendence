@@ -1,6 +1,6 @@
 # docker/srcs/uwsgi-django/pong/online/pong_online_match.py
 from ..utils.async_logger import async_log
-# from pong_online_consumer_util import PongOnlineConsumerUtil
+from .pong_online_consumer_util import PongOnlineConsumerUtil
 
 # asyn_log: docker/srcs/uwsgi-django/pong/utils/async_log.log
 DEBUG_FLOW = 1
@@ -41,18 +41,8 @@ class PongOnlineMatch:
             await async_log(f"Game ended.Winner: Player {winner}")
             await async_log(f"is_running: {self.game_state["is_running"]}")
         
-        # await PongOnlineConsumerUtil.broadcast_game_end(self.consumer, winner, self.game_state)
-        # if DEBUG_DETAIL:
-        #     await async_log(f"broadcast_game_end(): done")
+        await PongOnlineConsumerUtil.broadcast_game_end(self.consumer, winner, self.game_state)
 
-        await self.consumer.channel_layer.group_send(self.consumer.room_group_name, {
-            "type": "send_data",  
-            "data": {
-                "event_type": "game_end",
-                "winner": winner,
-                'end_game_state': self.game_state
-            }
-        })
         await self.consumer.disconnect()
         if DEBUG_FLOW:
             await async_log(f"consumer.disconnect()")

@@ -106,8 +106,6 @@ class PongOnlineGameStateManager
 	handleGameEnd(socket, endGameState)
 	{
 		this.updateState(endGameState);
-		this.finalGameState = { ...this.gameState };
-		this.gameState = { ...this.gameState };
 		
 				if (DEBUG_DETAIL){
 					console.log("onSocketMessage: finalGameState:", this.finalGameState)
