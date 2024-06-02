@@ -125,3 +125,5 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
+        if DEBUG_FLOW:
+            await async_log("終了: disconnect()")
