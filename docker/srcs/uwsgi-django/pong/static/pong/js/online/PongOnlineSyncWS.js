@@ -3,7 +3,7 @@ import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "./PongOnlineRenderer.js";
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-let DEBUG_FLOW = 1;
+let DEBUG_FLOW = 0;
 let DEBUG_DETAIL = 0;
 let TEST_ERROR_CASE1 = 0;
 let TEST_ERROR_CASE2 = 0;
@@ -21,11 +21,10 @@ let TEST_ERROR_CASE2 = 0;
  */
 class PongOnlineSyncWS 
 {
-	constructor(clientApp, gameStateManager, socketUrl) 
+	constructor(clientApp, gameStateManager) 
 	{
 		this.clientApp			= clientApp;
 		this.gameStateManager	= gameStateManager;
-		this.socketUrl			= socketUrl;
 		this.socket				= null;
 
 		// 再接続用のフラグ・変数
@@ -41,28 +40,22 @@ class PongOnlineSyncWS
 	}
 
 
-	/** dev用 再接続チェック用 */
-	devTestCloseButton()
-	{
-		this.clientApp.createButton('Test Close WebSocket', 'hth-pong-online-close-ws-btn', () => {
-			this.socket.close();
-		});
-	}
-
 	// ------------------------------
 	// ルーチン:受信
 	// サーバーからメッセージが届いた場合の処理
-	// ------------------------------
+	// ------------------------------	
 	onSocketMessage(event) 
 	{
-		let recvEventData = JSON.parse(event.data);
-		if (DEBUG_DETAIL){	
-			console.log("onSocketMessage()", event);	}
-		if (TEST_ERROR_CASE1){
-			recvEventData = {}	}
-		
 		try 
 		{
+			let recvEventData = JSON.parse(event.data);
+					
+					if (DEBUG_DETAIL){	
+						console.log("onSocketMessage()", event);	}
+					if (TEST_ERROR_CASE1){
+						recvEventData = {}	}
+		
+		
 			if (!recvEventData){
 				return
 			} else if (recvEventData.event_type === 'game_end') {
@@ -173,9 +166,18 @@ class PongOnlineSyncWS
 	// onError
 	// ------------------------------
 	onSocketError(event) {
-		console.error("WebSocket error:", event);
+		console.error("hth: WebSocket error:", event);
+		alert('WebSocketの接続でエラーが起きました');
 	}
 
+
+	/** dev用 再接続チェック用 */
+	devTestCloseButton()
+	{
+		this.clientApp.createButton('Test Close WebSocket', 'hth-pong-online-close-ws-btn', () => {
+			this.socket.close();
+		});
+	}
 }
 
 export default PongOnlineSyncWS;

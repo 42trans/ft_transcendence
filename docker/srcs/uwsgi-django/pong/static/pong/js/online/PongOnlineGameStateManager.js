@@ -4,9 +4,13 @@ import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "./PongOnlineRenderer.js";
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-let DEBUG_FLOW = 1;
-let DEBUG_DETAIL = 0;
-let DEBUG_DETAIL2 = 0;
+let DEBUG_FLOW 		= 0;
+let DEBUG_DETAIL 	= 0;
+let DEBUG_DETAIL2 	= 0;
+let TEST_TRY1 = 0;
+let TEST_TRY2 = 0;
+let TEST_TRY3 = 0;
+let TEST_TRY4 = 0;
 
 /**
  * Gameに必要なデータ(paddle,ballなどのオブジェクト、試合のスコアや状態など)を格納
@@ -16,9 +20,15 @@ class PongOnlineGameStateManager
 {
 	constructor(clientApp) 
 	{	
-		this.renderer			= new PongOnlineRenderer(this)
-		this.loopManager		= new PongOnlineGameLoopManager(clientApp, this)
-		this.clientApp 			= clientApp
+		try {
+			this.renderer			= new PongOnlineRenderer(this)
+			this.loopManager		= new PongOnlineGameLoopManager(clientApp, this)
+			this.clientApp 			= clientApp
+
+				if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+		} catch (error) {
+			console.error("PongOnlineGameStateManager.constructor() failed:", error);
+		}
 
 		this.ctx				= null
 		this.canvas				= null
@@ -45,9 +55,26 @@ class PongOnlineGameStateManager
 	// ------------------------------
 	handleGameStart()
 	{
-		this.initCanvas();
-		window.addEventListener('resize', () => this.renderer.resizeForAllDevices());
-		this.loopManager.startGameLoop(this.gameFPS);
+		try {
+					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
+
+			this.initCanvas();
+			
+			window.addEventListener('resize', () => 
+			{
+				try {
+							if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
+					
+					this.renderer.resizeForAllDevices();
+				} catch(resizeError) {
+					console.error("Error during resize:", resizeError);
+				}
+			});
+
+			this.loopManager.startGameLoop(this.gameFPS);
+		} catch(error) {
+			console.error("hth: handleGameStart() failed: ", error);
+		}
 	}
 
 
@@ -81,17 +108,24 @@ class PongOnlineGameStateManager
 		if (this.socket.readyState === WebSocket.OPEN &&
 			this.readyToSendNext === true) 
 		{
-			// 更新時:
-			const dataToSend = JSON.stringify
-			({
-				action: "update", 
-				...gameState
-			});
-				this.socket.send(dataToSend);
-			this.readyToSendNext = false;
+			try {
+				// 更新時:
+				const dataToSend = JSON.stringify
+				({
+					action: "update", 
+					...gameState
+				});
+					this.socket.send(dataToSend);
+				this.readyToSendNext = false;
+
+						if (TEST_TRY4){	throw new Error('TEST_TRY4');	}
+
+			} catch(error) {
+				console.error("hth: sendClientState() failed: ", error);
+			}
 		} else {
-			// 遅延もあるのでエラー出力ではない
-			console.log("sendClientState() failed:");
+			// 通信の遅延もあるのでエラー出力ではない。負荷が高いのでコメントアウト
+			// console.log("sendClientState() failed: WebSocket not ready or previous message pending.");
 
 					if (DEBUG_DETAIL2)
 					{
