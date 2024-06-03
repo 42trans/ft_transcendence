@@ -43,6 +43,6 @@ class PongOnlineMatch:
         
         await PongOnlineConsumerUtil.broadcast_game_end(self.consumer, winner, self.game_state)
 
-        await self.consumer.disconnect()
+        await self.consumer.disconnect(None)
         if DEBUG_FLOW:
             await async_log(f"consumer.disconnect()")
