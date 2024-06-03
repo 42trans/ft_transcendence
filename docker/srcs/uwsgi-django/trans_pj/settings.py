@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import json
 from datetime import timedelta
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
@@ -63,6 +64,8 @@ INSTALLED_APPS = [
 	'django_otp.plugins.otp_static',  	# 2fa
 	'channels',							# chat
 	'chat',								# chat
+  'trans_pj',
+  'corsheaders', #CORS用
 ]
 
 
@@ -71,6 +74,8 @@ FT_SECRET = get_env_variable('FT_SECRET')
 
 
 MIDDLEWARE = [
+    # CORS用 ------------
+	"corsheaders.middleware.CorsMiddleware",
 	# Prometheus----------
 	'django_prometheus.middleware.PrometheusBeforeMiddleware',
 	# --------------------
@@ -87,6 +92,7 @@ MIDDLEWARE = [
 	# --------------------
 	'django_otp.middleware.OTPMiddleware',  # 2fa
 	'accounts.middleware.JWTAuthenticationMiddleware',	# jwt
+	'accounts.middleware.DisableCSRFForJWT'
 ]
 
 
@@ -97,7 +103,7 @@ AUTHENTICATION_BACKENDS = [
 
 
 SIMPLE_JWT = {
-	'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),  # アクセストークンの有効期間
+	'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),  # アクセストークンの有効期間
 	'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # リフレッシュトークンの有効期間
 	'ROTATE_REFRESH_TOKENS': True,
 	'BLACKLIST_AFTER_ROTATION': True,
@@ -314,6 +320,13 @@ LANGUAGES = [
     ('fr', _('French')),
 ]
 
+
+# CORS設定
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost",
+    "http://localhost:8002",
+]
+
 # chat
 # TODO_ft: 本番時のredis
 CHANNEL_LAYERS = {
@@ -327,3 +340,16 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"  # インメモリを使う場合
     },
 }
+
+
+def _load_url_config():
+	try:
+		file_path = ('static/spa/json/urlConfig.json')
+		with open(file_path) as f:
+			url_config = json.load(f)
+			# print(f'load_url_config: {url_config}')
+			return url_config
+	except Exception as e:
+		print(f'load_url_config: Error: could not load urlConfig: {str(e)}')
+
+URL_CONFIG = _load_url_config()

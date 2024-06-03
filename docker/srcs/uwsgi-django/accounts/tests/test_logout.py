@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.urls import reverse
@@ -12,7 +13,6 @@ class LogoutAPITests(TestCase):
     kLogoutAPIName = "api_accounts:api_logout"
     kLoginURL = "accounts/login.html"
     kLogoutURL = "accounts/logout.html"
-    kHomeURL = "/pong/"
 
     kUserEmail = "test@example.com"
     kUserNickname = "test"
@@ -43,7 +43,7 @@ class LogoutAPITests(TestCase):
 
         response_json = response.json()
         self.assertIn('You have been successfully logout', response_json['message'])
-        self.assertIn('/pong/', response_json['redirect'])
+        self.assertIn(settings.URL_CONFIG['kSpaPongTopUrl'], response_json['redirect'])
 
         self.assertTrue(response.cookies.get('Access-Token', '').value == '')
         self.assertTrue(response.cookies.get('Refresh-Token', '').value == '')

@@ -34,7 +34,7 @@ class StateBaseRound
 	async loadAndDisplayMatches(roundNumber) 
 	{
 		try {
-			const response = await fetch(`${this.API_URLS.ongoingMatchesByRound}${roundNumber}`);
+			const response = await fetch(`${this.API_URLS.ongoingMatchesByRound}${roundNumber}/`);
 			if (!response.ok) {
 				throw new Error('Server responded with an error: ' + response.status);
 			}

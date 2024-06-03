@@ -34,17 +34,29 @@ class TournamentOverview
 	async fetchTournamentDetails(tournamentId) 
 	{
 		try {
-			const response = await fetch(`${config.API_URLS.tournamentData}${tournamentId}`, 
+			const url = `${config.API_URLS.tournamentData}${tournamentId}/`;
+			console.log(`fetchTournamentDetails fetch: ${url}`);
+
+			const response = await fetch(url,
 			{
-				headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+				}
 			});
 
-			if (!response.ok) 
+			console.log(`Response status: ${response.status}`);
+			console.log(`Response status text: ${response.statusText}`);
+
+			if (!response.ok)
 			{
 				throw new Error('Failed to fetch tournament details');
 			}
 
-			return await response.json();
+			const jsonData = await response.json();
+			console.log(`jsonData: ${JSON.stringify(jsonData)}`);
+
+			return jsonData
 		} catch (error) {
 			console.error('Failed to load tournament details:', error);
 			return null;
@@ -82,4 +94,3 @@ class TournamentOverview
 }
 
 export default TournamentOverview;
-

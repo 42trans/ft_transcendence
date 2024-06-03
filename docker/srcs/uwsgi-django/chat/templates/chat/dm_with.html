@@ -1,10 +1,6 @@
-<!-- chat/templates/chat/dm.html -->
+<!-- chat/templates/chat/dm_with.html -->
+
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>DM Room</title>
 
     <!-- メッセージのスタイル（仮仕様） -->
     <style>
@@ -103,13 +99,11 @@
 
     </style>
 
-</head>
-<body>
 
 {% if not isSystemUser %}
-    <h1>DM with <a href="{% url 'accounts:info' target_nickname %}">{{ target_nickname }}</a></h1>
+    <h2>DM with <a href="{{ url_config.kSpaUserInfoUrlBase }}{{ target_nickname }}/">{{ target_nickname }}</a></h2>
 {% else %}
-    <h1>System Message</h1>
+    <h2>System Message</h2>
 {% endif %}
 
 
@@ -143,13 +137,7 @@
     <p>[blocking user]</p>
 {% endif %}
 
-<hr>
-
-<p><a href="{% url 'chat:dm_sessions' %}">dm_sessions</a></p>
 
 {{ target_nickname|json_script:"target_nickname" }}
 
-<script type="module" src="{% static 'chat/js/dm.js' %}"></script>
-
-</body>
-</html>
+<!--<script type="module" src="{% static 'chat/js/dm-with-user.js' %}"></script>-->

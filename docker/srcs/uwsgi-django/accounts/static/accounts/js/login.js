@@ -1,15 +1,7 @@
 // docker/srcs/uwsgi-django/accounts/static/accounts/js/login.js
-// -----
-// 追加:DOMが完全にロードされた後に実行
-document.addEventListener('DOMContentLoaded', function() {
-	const form = document.getElementById('login-form');
-	if (form) {
-		form.addEventListener('submit', loginUser);
-	}
-});
-// -----
-function loginUser(event) {
-	event.preventDefault();
+
+
+export function loginUser(event) {
 	const email = document.getElementById('email').value;
 	const password = document.getElementById('password').value;
 	const nextUrl = document.getElementById('next').value;
@@ -27,6 +19,7 @@ function loginUser(event) {
 				// Error
 				document.getElementById('message-area').textContent = data.error;
 				if (data.redirect) {
+					alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
 					window.location.href = data.redirect;
 				} else {
 					console.error('Error:', data.error);
@@ -41,7 +34,21 @@ function loginUser(event) {
 	clearForm()
 }
 
+
 function clearForm() {
 	document.getElementById('email').value = '';
 	document.getElementById('password').value = '';
+}
+
+
+export function setupLoginEventListener() {
+	console.log("Setup login event listeners");
+	const form = document.querySelector('.hth-sign-form');
+	if (form) {
+		form.addEventListener('submit', (event) => {
+			event.preventDefault();
+			loginUser(event);
+		});
+		console.log('Form event listener added');
+	}
 }
