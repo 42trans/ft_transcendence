@@ -1,6 +1,7 @@
 // online-status.js
 
 import { deleteFriend, createActionButton } from "./friend.js"
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
 
 
 let socket = null;
@@ -133,7 +134,7 @@ function updateOrCreateFriendListItem(friend) {
 
     // <link-to-user-info>
     const link = document.createElement('a');
-    link.href = `/user-info/${friend.nickname}/`;
+    link.href = `${routeTable['userInfoBase'].path}${friend.nickname}/`;
     link.className = 'nav__link';
     link.setAttribute('data-link', '');
     link.textContent = friend.nickname;
