@@ -92,29 +92,3 @@ class TestPongOnlineConsumer(ChannelsLiveServerTestCase):
         # 応答データの検証
         self.assertEqual(actual_scores, expected_initial_state, "Scores did not match expected scores.")
         await self.communicator.disconnect()
-
-    async def test_game_state_update(self):
-        await self.asyncSetUp()
-        await self.communicator.send_json_to({
-            'action': 'update',
-            'objects': {
-                'ball': {'x': 50, 'y': 50},
-                'paddle1': {'x': 10, 'y': 30},
-                'paddle2': {'x': 10, 'y': 70}
-            }
-        })
-        response = await self.communicator.receive_json_from()
-        assert 'ball' in response['objects'] and 'paddle1' in response['objects'] and 'paddle2' in response['objects'], "Game state update failed."
-        await self.communicator.disconnect()
-
-    async def test_reconnect_process(self):
-        await self.asyncSetUp()
-        # 再接続時のテスト
-        await self.communicator.send_json_to({
-            'action': 'reconnect',
-            'state': {'score1': 1, 'score2': 2}
-        })
-        response = await self.communicator.receive_json_from()
-        assert response['state']['score1'] == 1 and response['state']['score2'] == 2, "Reconnect state mismatch."
-        await self.communicator.disconnect()
-

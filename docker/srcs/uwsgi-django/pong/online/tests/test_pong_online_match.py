@@ -1,10 +1,16 @@
 from django.test import TestCase
 from pong.online.pong_online_game_manager import PongOnlineGameManager
 from asgiref.sync import async_to_sync
+from unittest.mock import MagicMock, AsyncMock
 
 class TestPongOnlineMatch(TestCase):
     def setUp(self):
-        self.game_manager = PongOnlineGameManager(user_id=1)
+        mock_consumer = MagicMock()  
+        mock_consumer.channel_layer = MagicMock()
+        mock_consumer.channel_layer.group_send = AsyncMock() 
+        mock_consumer.room_group_name = "test_group"  # ダミーのグループ名を設定
+        mock_consumer.disconnect = AsyncMock()  
+        self.game_manager = PongOnlineGameManager(consumer=mock_consumer, user_id=1)
         async_to_sync(self.game_manager.initialize_game)()
 
     async def test_update_score(self):
