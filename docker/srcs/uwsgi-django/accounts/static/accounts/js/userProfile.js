@@ -42,22 +42,20 @@ function drawUserProfile(data) {
 
 	userInfo.appendChild(document.createElement('hr'));
 
+	const twoFAItem = document.createElement('li');
+	twoFAItem.id = '2fa-status';
 	if (data.enable_2fa) {
-		const twoFAItem = document.createElement('li');
-		twoFAItem.id = '2fa-status';
 		twoFAItem.textContent = '2FA: ✅Enabled ';
 		const disable2FAButton = createActionButton('Disable2FA', disable2FA);
 		twoFAItem.appendChild(disable2FAButton);
-		userInfo.appendChild(twoFAItem);
 	} else {
-		const twoFAItem = document.createElement('li');
 		twoFAItem.textContent = '2FA: Disabled ';
 		const enable2FALink = document.createElement('a');
 		enable2FALink.href = routeTable['enable2fa'].path;
 		enable2FALink.textContent = 'Enable2FA';
 		twoFAItem.appendChild(enable2FALink);
-		userInfo.appendChild(twoFAItem);
 	}
+	userInfo.appendChild(twoFAItem);
 }
 
 

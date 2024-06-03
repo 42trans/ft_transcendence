@@ -25,7 +25,11 @@ class SignupTemplateView(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(to=self.authenticated_redirect_to)
-        return render(request, self.template_name)
+
+        context = {
+            'login_url': settings.URL_CONFIG['kSpaAuthLoginUrl']
+        }
+        return render(request, self.template_name, context)
 
 
 class SignupAPIView(APIView):
@@ -80,6 +84,11 @@ class LoginTemplateView(TemplateView):
         if request.user.is_authenticated:
             return redirect('/pong/')  # djangoで/pong/にrender -> SPA /app/
         return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['signup_url'] = settings.URL_CONFIG['kSpaAuthSignupUrl']
+        return context
 
 
 class LoginAPIView(APIView):

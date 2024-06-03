@@ -84,7 +84,7 @@ class Enable2FaAPITests(TestCase):
         response = self.client.post(self.enable_2fa_api_url, {'token': otp_token})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("2FA has been enabled successfully", response.json()['message'])
-        self.assertIn(settings.URL_CONFIG['kSpaUserProfileUrl'], response.json()['redirect'])
+        self.assertIn(settings.URL_CONFIG['kSpaPongTopUrl'], response.json()['redirect'])
 
         self.user.refresh_from_db()
         self.assertTrue(self.user.enable_2fa)  # enable
@@ -206,7 +206,7 @@ class Verify2FaAPITests(TestCase):
         response = self.client.post(self.verify_2fa_api_url, {'token': self.otp_token})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("2FA verification successful", response.json()['message'])
-        self.assertIn(settings.URL_CONFIG['kSpaUserProfileUrl'], response.json()['redirect'])
+        self.assertIn(settings.URL_CONFIG['kSpaPongTopUrl'], response.json()['redirect'])
 
         self.assertIn('Access-Token', response.cookies)
         self.assertIn('Refresh-Token', response.cookies)
