@@ -9,7 +9,7 @@ import { loadAndExecuteScript } from "../../utility/script.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Game1vs1");
+    this.setTitle("Game3D");
   }
 
   async getHtml() {

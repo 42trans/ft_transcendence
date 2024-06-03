@@ -6,8 +6,7 @@ import { setOnlineStatus } from "/static/accounts/js/online-status.js";
 
 
 function isRenderByThreeJsPage(path) {
-  return (window.location.pathname === routeTable['freePlay'].path
-      || window.location.pathname === routeTable['game1vs1'].path)
+  return (window.location.pathname === routeTable['game3d'].path)
 }
 
 // three-jsのレンダリングを停止

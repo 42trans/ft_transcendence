@@ -4,7 +4,8 @@ import PongTop      from "../views/pong/PongTop.js";
 
 import FreePlay     from "../views/pong/FreePlay.js";
 import Tournament   from "../views/pong/Tournament.js";
-import Game1vs1     from "../views/pong/Game1vs1.js";
+import Game2D       from "../views/pong/Game2D.js";
+import Game3D       from "../views/pong/Game3D.js";
 
 import GameHistory  from "../views/user/GameHistory.js";
 
@@ -40,9 +41,9 @@ export const routeTable = {
   top           : { path: "/app/",      view: PongTop },
 
   // game
-  freePlay      : { path: "/app/game/free-play/",    view: FreePlay },
   tournament    : { path: "/app/game/tournament/",   view: Tournament },
-  game1vs1      : { path: "/app/game/game-1vs1/",    view: Game1vs1 },
+  game2d        : { path: "/app/game/game-2d/",      view: Game2D },
+  game3d        : { path: "/app/game/game-3d/",      view: Game3D },
 
   gameHistory   : { path: "/app/user/game-history/", view: GameHistory },
 

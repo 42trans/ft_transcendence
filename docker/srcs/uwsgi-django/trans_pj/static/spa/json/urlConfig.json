@@ -2,9 +2,9 @@
   "kSpaPongTopUrl"      : "/app/",
   "kSpaHomeUrl"         : "/app/home/",
 
-  "kSpaFreeGame"        : "/app/game/free-play/",
   "kSpaTournamentUrl"   : "/app/game/tournament/",
-  "kSpaGame1vs1Url"     : "/app/game/game-1vs1/",
+  "kSpaGame2D"          : "/app/game/game-2d/",
+  "kSpaGame3D"          : "/app/game/game-3d/",
   "kSpaOnlinePong"      : "/app/game/online/",
 
   "kSpaGameHistoryUrl"  : "/app/user/game-history/",
