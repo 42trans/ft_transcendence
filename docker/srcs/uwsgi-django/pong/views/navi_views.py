@@ -18,7 +18,8 @@ def tournament(request):
 def pong_view(request):
 	if request.user.is_authenticated:
 		param = {
-			'nickname': request.user.nickname
+			'nickname'	: request.user.nickname,
+			'user_id'	: request.user.id
 		}
 		return render(request, 'pong/index.html', param)
 	return render(request, 'pong/index.html')

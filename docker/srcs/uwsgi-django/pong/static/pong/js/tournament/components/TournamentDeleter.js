@@ -20,7 +20,7 @@ class TournamentDeleter
 			{
 				method: 'POST',
 				headers: {
-					'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+					'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
 					'X-CSRFToken': UIHelper.getCSRFToken(),
 					'Content-Type': 'application/json'
 				},

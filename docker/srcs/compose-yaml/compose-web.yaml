@@ -116,7 +116,7 @@ services:
       - ./vite/pong-three:/app
       - /app/node_modules
     ports:
-      - "5184:5173"
+      - "${VITE_PORT:?}:5173"
     environment:
       - NODE_ENV=development
     profiles:

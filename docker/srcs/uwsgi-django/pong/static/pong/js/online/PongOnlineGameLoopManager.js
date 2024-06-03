@@ -1,5 +1,6 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineGameLoopManager.js
 import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 let DEBUG_FLOW = 1;
@@ -105,7 +106,7 @@ class PongOnlineGameLoopManager
 	{
 		this.clientApp.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {
 			// TODO_ft:SPA
-			window.location.href = '/pong/';
+			window.location.href = routeTable['top'].path;
 		});
 	}
 

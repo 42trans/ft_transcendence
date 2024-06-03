@@ -78,8 +78,8 @@ class PongEngineUpdate
 	// パドルのプレイヤー操作を処理する
 	handlePaddleMovement() 
 	{
-		this.updatePaddlePosition(this.paddle1, 'J', 'L');
-		this.updatePaddlePosition(this.paddle2, 'F', 'S');
+		this.updatePaddlePosition(this.paddle1, 'I', 'J');
+		this.updatePaddlePosition(this.paddle2, 'E', 'F');
 	}
 
 	// 特定のキー入力に基づいてパドルを動かす
