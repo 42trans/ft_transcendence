@@ -1,5 +1,12 @@
 # docker/srcs/uwsgi-django/pong/online/pong_online_physics.py
 class PongOnlinePhysics:
+    """
+    # 例外処理: 呼び出し元の PongOnlineUpdater > PongOnlineGameManager でキャッチする
+    - 単純な計算処理が中心であり、外部リソースへのアクセスやユーザー入力への依存がないため
+    - ゼロ除算はない ( /2 の処理のみ) 
+    - オーバーフローはない: 座標や速度の範囲が制限されている
+    """
+
     def __init__(self, pong_engine_data):
         self.max_ball_speed = pong_engine_data["game_settings"]["max_ball_speed"]
         self.ball_speed     = pong_engine_data["game_settings"]["init_ball_speed"]

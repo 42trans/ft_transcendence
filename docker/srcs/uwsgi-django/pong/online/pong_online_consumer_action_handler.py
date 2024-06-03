@@ -20,15 +20,15 @@ class PongOnlineConsumerActionHandler:
         if DEBUG_DETAIL:
             await async_log(f"init_handler: {initial_state}")
 
-    async def reconnect_handler(self, json_data):
-        if DEBUG_FLOW:
-            await async_log("再接続時: クライアントからの受信: " + json.dumps(json_data))
-        await self.game_manager.restore_game_state(json_data)
-        restored_state = self.game_manager.pong_engine_data
-        await self.consumer.channel_layer.group_send(self.room_group_name, {
-            'type': 'send_data',
-            'data': restored_state
-        })
+    # async def reconnect_handler(self, json_data):
+    #     if DEBUG_FLOW:
+    #         await async_log("再接続時: クライアントからの受信: " + json.dumps(json_data))
+    #     await self.game_manager.restore_game_state(json_data)
+    #     restored_state = self.game_manager.pong_engine_data
+    #     await self.consumer.channel_layer.group_send(self.room_group_name, {
+    #         'type': 'send_data',
+    #         'data': restored_state
+    #     })
 
     async def update_handler(self, json_data):
         if DEBUG_DETAIL:

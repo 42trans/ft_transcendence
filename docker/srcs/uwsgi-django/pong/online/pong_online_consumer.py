@@ -40,9 +40,7 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             
             self.user_id = self.scope['user'].id
             # ブロードキャストするルームの識別子の作成
-            self.room_group_name, err = await self._build_room_group_name(self.user_id)
-            if err:
-                raise Exception(err)
+            self.room_group_name, _ = await self._build_room_group_name(self.user_id)
             # グループに接続userを追加
             await self._join_room_group()
             # インスタンス作成
@@ -62,11 +60,8 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
     async def _build_room_group_name(self, user_id):
         if DEBUG_FLOW:
             await async_log(f"_build_room_group_name(): user_id: {user_id}")
-        try:
-            room_group_name = f"room_{user_id}"
-            return room_group_name, None
-        except Exception as e:
-            return None, str(e)
+        room_group_name = f"room_{user_id}"
+        return room_group_name, None
 
 
     async def _join_room_group(self):
@@ -102,8 +97,8 @@ class PongOnlineConsumer(AsyncWebsocketConsumer):
             # クライアントから受信したメッセージの種類で処理を分岐
             if action == 'initialize':
                 await self.action_handler.init_handler()
-            elif action == 'reconnect':
-                await self.action_handler.reconnect_handler(json_data)
+            # elif action == 'reconnect':
+            #     await self.action_handler.reconnect_handler(json_data)
             elif action == 'update':
                 await self.action_handler.update_handler(json_data)
             else:
