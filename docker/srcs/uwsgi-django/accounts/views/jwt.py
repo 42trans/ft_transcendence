@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+from django.conf import settings
 from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse
 from rest_framework.exceptions import AuthenticationFailed
@@ -10,6 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.views import APIView
 
+
 def get_jwt_for_user(user):
     refresh = RefreshToken.for_user(user)
     data = {
@@ -21,27 +24,31 @@ def get_jwt_for_user(user):
 
 def set_to_cookie(jwt,
                   response,
-                  max_age_sec: int = 3600,
                   http_only: bool = True,
                   secure: bool = True,
                   samesite: str = "Strict"):
+
+    default_token_lifetime = timedelta(hours=1)
+    access_token_lifetime = settings.SIMPLE_JWT.get('ACCESS_TOKEN_LIFETIME', default_token_lifetime)
+    refresh_token_lifetime = settings.SIMPLE_JWT.get('REFRESH_TOKEN_LIFETIME', default_token_lifetime)
+
     response.set_cookie(
         'Access-Token',
         jwt['access'],
-        max_age=max_age_sec,# トークンの有効期限（秒）
-        httponly=http_only, # JavaScriptからのアクセスを防ぐ -> XSS対策
-        secure=secure,      # HTTPSを通じてのみCookieを送信
-        samesite=samesite,  # Cookieは現在のウェブサイトからのリクエストでのみ送信
+        max_age=int(access_token_lifetime.total_seconds()),  # トークンの有効期限（秒）
+        httponly=http_only,  # JavaScriptからのアクセスを防ぐ -> XSS対策
+        secure=secure,       # HTTPSを通じてのみCookieを送信
+        samesite=samesite,   # Cookieは現在のウェブサイトからのリクエストでのみ送信
     )
 
     if jwt.get('refresh'):
         response.set_cookie(
             'Refresh-Token',
             jwt['refresh'],
-            max_age=max_age_sec,# トークンの有効期限（秒）
-            httponly=http_only, # JavaScriptからのアクセスを防ぐ -> XSS対策
-            secure=secure,      # HTTPSを通じてのみCookieを送信
-            samesite=samesite,  # Cookieは現在のウェブサイトからのリクエストでのみ送信
+            max_age=int(refresh_token_lifetime.total_seconds()),  # トークンの有効期限（秒）
+            httponly=http_only,  # JavaScriptからのアクセスを防ぐ -> XSS対策
+            secure=secure,       # HTTPSを通じてのみCookieを送信
+            samesite=samesite,   # Cookieは現在のウェブサイトからのリクエストでのみ送信
         )
 
 

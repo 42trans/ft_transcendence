@@ -1,6 +1,9 @@
 // dm_sessions.js
 
-function fetchDMList() {
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+
+
+export function fetchDMList() {
     fetch('/chat/api/dm-sessions/', {
         method: 'GET',
         headers: {
@@ -19,7 +22,7 @@ function fetchDMList() {
 }
 
 
-function startDMwithUser() {
+export function startDMwithUser() {
     const input = document.querySelector('#nickname-input');
     const submitButton = document.querySelector('#nickname-submit');
 
@@ -28,7 +31,7 @@ function startDMwithUser() {
 
     // Enterキーで送信
     input.onkeyup = function(e) {
-        if (e.keyCode === 13) {  // enter, return
+        if (e.key === "Enter") {
             submitButton.click();
         }
     };
@@ -36,7 +39,7 @@ function startDMwithUser() {
     // ボタンクリックでDM画面へのリダイレクト
     submitButton.onclick = function() {
         const dmTargetNickname = input.value;
-        window.location.pathname = '/chat/dm-with/' + dmTargetNickname + '/';
+        window.location.pathname = routeTable['dmWithUserBase'].path + dmTargetNickname + '/';
     };
 }
 
@@ -51,7 +54,7 @@ function createDMSessionLinks(data) {
         const link = document.createElement('a');
 
         // リンクの設定
-        link.href = `/chat/dm-with/${dmSession.target_nickname}/`;
+        link.href = `${routeTable['dmSessions'].path}${dmSession.target_nickname}/`;
 
         // システムメッセージの場合は表示を変更
         if (dmSession.is_system_message) {
@@ -65,12 +68,3 @@ function createDMSessionLinks(data) {
         list.appendChild(item);
     });
 }
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    // DM Listの取得
-    fetchDMList();
-
-    // 入力したuserとのDMを開始
-    startDMwithUser();
-});

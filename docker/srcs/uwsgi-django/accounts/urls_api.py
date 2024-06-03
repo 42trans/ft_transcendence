@@ -11,6 +11,7 @@ from accounts.views.user import UploadAvatarAPI
 from accounts.views.oauth import OAuthWith42
 from accounts.views.two_factor_auth import Enable2FaAPIView
 from accounts.views.two_factor_auth import Verify2FaAPIView
+from accounts.views.two_factor_auth import Disable2FaView
 from accounts.views.jwt import JWTRefreshView
 from accounts.views.block import BlockUserAPI, UnblockUserAPI
 from accounts.views.friend import SendFriendRequestAPI
@@ -31,6 +32,7 @@ urlpatterns = [
     path('api/change-avatar/'       , UploadAvatarAPI.as_view()         , name='change_avatar'),
     path('api/enable_2fa/'          , Enable2FaAPIView.as_view()        , name='api_enable_2fa'),
     path('api/verify_2fa/'          , Verify2FaAPIView.as_view()        , name='api_verify_2fa'),
+    path('api/disable_2fa/'         , Disable2FaView.as_view()          , name='disable_2fa'),
 
     path('api/token/refresh/'       , JWTRefreshView.as_view()          , name='api_token_refresh'),
     path('oauth-ft/callback/'       , OAuthWith42.as_view()             , name='oauth_ft_callback'),

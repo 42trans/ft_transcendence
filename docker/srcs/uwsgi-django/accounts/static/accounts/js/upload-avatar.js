@@ -1,5 +1,8 @@
 // upload-avatar.js
 
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+
+
 function uploadAvatar() {
     const input = document.getElementById('avatar');
     const file = input.files[0];
@@ -25,6 +28,7 @@ function uploadAvatar() {
         .catch(handleError);
 }
 
+
 function handleResponse(response) {
     if (response.ok) {
         return response.json();
@@ -38,13 +42,26 @@ function handleResponse(response) {
     }
 }
 
+
 function showSuccess(data) {
     console.log('Success:', data);
     alert('Avatar updated successfully');
-    window.location.href = '/accounts/user/';
+    window.location.href = routeTable['userProfile'].path;
 }
+
 
 function handleError(error) {
     console.error('Error:', error);
     alert(error.message);
+}
+
+
+export function setupUploadAvatarEventListener() {
+    const uploadButton = document.getElementById('uploadAvatarButton');
+    if (uploadButton) {
+        uploadButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            uploadAvatar();
+        });
+    }
 }

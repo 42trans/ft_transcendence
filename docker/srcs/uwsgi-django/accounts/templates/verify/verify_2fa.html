@@ -1,10 +1,5 @@
-<!doctype html>
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <title>2FA Verification</title>
-</head>
-<body>
+{% load static %}
+
 <h2>Verify Two-Factor Authentication (2FA)</h2>
 <p>Enter the verification code from your authentication app:</p>
 
@@ -12,47 +7,6 @@
 
 <label for="token">Verification Code:</label>
 <input type="text" id="token" required>
-<button onclick="verifyToken()">Verify</button>
+<button class="hth-btn verify2FaButton">Verify</button>
 
-<script>
-    function verifyToken() {
-        const token = document.getElementById('token').value;
-        fetch('/accounts/api/verify_2fa/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ token: token })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    // Error
-                    document.getElementById('error-message').textContent = data.error;
-                    if (data.redirect) {
-                        window.location.href = data.redirect;
-                    } else {
-                        console.error('Error:', data.error);
-                    }
-                } else if (data.message) {
-                    // Verified
-                    console.log(data.message);
-                    window.location.href = data.redirect;  // Redirect on successful verification
-                }
-            })
-            .catch(error => console.error("Error:", error));
-
-        clearForm()
-    }
-
-    function clearForm() {
-        document.getElementById('token').value = '';
-    }
-</script>
-
-<hr>
-<a href="/accounts/user/">Return to user page</a>
-<br>
-<a href="/pong/">🏓 Return to pong</a>
-</body>
-</html>
+<!--<script type="module" src="{% static 'accounts/js/verify.js' %}"></script>-->

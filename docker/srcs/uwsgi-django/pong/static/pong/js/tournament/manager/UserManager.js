@@ -13,7 +13,7 @@ class UserManager
 		{
 			try {
 				const response = await fetch(config.API_URLS.userProfile, {
-					headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
+					headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
 				});
 				if (response.ok) 
 				{
