@@ -3,6 +3,7 @@
 import os
 import logging
 import requests
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -46,7 +47,7 @@ class UserProfileAPIView(APIView):
 
     def get(self, request) -> JsonResponse:
         user = request.user
-        logger.debug(f'UserProfileAPIView: avatar_url: {user.avatar.url}')
+        # logger.debug(f'UserProfileAPIView: avatar_url: {user.avatar.url}')
 
         params = {
             'id'        : user.id,
@@ -176,7 +177,11 @@ def get_user_info(request, nickname):
             'friend_request_sent_status'    : 'pending' if friend_request_sent else None,
             'friend_request_received_status': 'pending' if friend_request_received else None,
         }
-        return render(request, 'accounts/user_info.html', {'user_data': user_data})
+        context = {
+            'url_config': settings.URL_CONFIG,
+            'user_data' : user_data,
+        }
+        return render(request, 'accounts/user_info.html', context)
 
     except Exception as e:
         logging.error(f"API request failed: {e}")
@@ -256,3 +261,19 @@ class UploadAvatarAPI(APIView):
         if ext not in valid_extensions:
             raise ValidationError(f'Unsupported file extension {ext}.'
                                   f' Allowed types are: jpg, jpeg, png, gif.')
+
+
+class GetUserProfileTemplateView(LoginRequiredMixin, TemplateView):
+    template_name = "accounts/game_history.html"
+
+    def get(self, request, *args, **kwargs):
+        if not is_valid_jwt(request):
+            return redirect('accounts:login')
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['nickname'] = user.nickname
+        return context

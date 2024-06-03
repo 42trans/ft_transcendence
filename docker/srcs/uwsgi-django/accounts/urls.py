@@ -7,6 +7,8 @@ from accounts.views.basic_auth import LogoutTemplateView
 from accounts.views.basic_auth import LoginTemplateView
 from accounts.views.user import UserProfileView, get_user_info, ChangeAvatarView
 from accounts.views.user import EditUserProfileTemplateView
+from accounts.views.user import GetUserProfileTemplateView
+from accounts.views.friend import UserFriendsView
 from accounts.views.oauth import OAuthWith42
 from accounts.views.two_factor_auth import Disable2FaView
 from accounts.views.two_factor_auth import Enable2FaTemplateView
@@ -28,9 +30,12 @@ urlpatterns = [
     path('edit/', EditUserProfileTemplateView.as_view(), name='edit'),
     path('change-avatar/', ChangeAvatarView.as_view(), name='change_avatar'),
 
+    path('history/', GetUserProfileTemplateView.as_view(), name='history'),
+
+    path('friends/', UserFriendsView.as_view(), name='friends'),
+
     path('info/<str:nickname>/', get_user_info, name='info'),
 
-    path('verify/disable_2fa/', Disable2FaView.as_view(), name='disable_2fa'),
     path('verify/enable_2fa/', Enable2FaTemplateView.as_view(), name='enable_2fa'),
     path('verify/verify_2fa/', Verify2FaTepmlateView.as_view(), name='verify_2fa'),
 ]

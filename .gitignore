@@ -45,6 +45,11 @@ docker/srcs/uwsgi-django/pong/utils
 # Pong online用
 js-tests
 
+# selenium test screenshot用
+docker/srcs/uwsgi-django/trans_pj/tests/screenshot/*
+!docker/srcs/uwsgi-django/trans_pj/tests/screenshot/.gitkeep
+
+
 #### init/ #####
 
 

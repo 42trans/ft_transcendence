@@ -26,6 +26,16 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
                 request.user = user
 
 
+class DisableCSRFForJWT(MiddlewareMixin):
+    """
+    JWT認証を行うエンドポイントでCSRF検証をスキップ
+    """
+    def process_request(self, request):
+        auth_header = request.headers.get('Authorization', '')
+        if auth_header.startswith('Bearer '):
+            request._dont_enforce_csrf_checks = True
+
+
 def print_yellow(text):
     print(f"\033[93m[DEBUG] {text}\033[0m")
 

@@ -1,109 +1,147 @@
 {% load static %}
-<!-- 
+
+<!--
 	navbar: Bootstrap defaultのクラス
 	参考:【ナビゲーションバー · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/components/navbar/#%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84>
 
 	navbar-expand-md: mdブレークポイントまでは折りたたみ
-	
-	fixed-top: 
+
+	fixed-top:
 	参考:【ポジション · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/helpers/position/#fixed-top>
  -->
-<nav 
+<nav
 	aria-label="Main navigation"
 	id="hth-header-navi"
 	class="
-		navbar 
-		navbar-expand-md 
+		navbar
+		navbar-expand-md
 		fixed-top">
 
-<!-- 
+<!--
 	container-fluid: bootstrap: 親要素の全幅をとるクラス
-	参考:【コンテナ · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/layout/containers/#%E4%BB%95%E7%B5%84%E3%81%BF> 
+	参考:【コンテナ · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/layout/containers/#%E4%BB%95%E7%B5%84%E3%81%BF>
 	- ブレークポイント毎に固定するなら.container
 		- .container	100%	540px	720px	960px	1140px	1320px
  -->
 <div class="container-fluid">
-	
+
 	<!-- site logo -->
-	<a id="hth-site-logo" href="/pong/">
+	<a id="hth-site-logo"
+	   href="{{ url_config.kSpaPongTopUrl }}"
+	   data-link>
 		<img src="{% static 'pong/img/logo.png' %}" alt="">
 	</a>
 
 	<!-- toggle -->
-	<button 
-		class="navbar-toggler" 
-		type="button" 
-		data-bs-toggle="collapse" 
-		data-bs-target="#hth-toggle-menu" 
-		aria-controls="hth-toggle-menu" 
-		aria-expanded="false" 
+	<button
+		class="navbar-toggler"
+		type="button"
+		data-bs-toggle="collapse"
+		data-bs-target="#hth-toggle-menu"
+		aria-controls="hth-toggle-menu"
+		aria-expanded="false"
 		aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	</button>
 
 	<!-- TODO_ft: アクセシビリティ aria-current="page" -->
 	<!-- navi -->
-	<div 
+	<div
 		id="hth-toggle-menu"
 		class="
-			collapse 
+			collapse
 			navbar-collapse">
-		
+
 		<!--
-			mb-md-0: 
-			Medium ブレークポイント以上のデバイスにおいて下側のマージンをゼロ 
+			mb-md-0:
+			Medium ブレークポイント以上のデバイスにおいて下側のマージンをゼロ
 		-->
 		<ul class="
-			navbar-nav 
-			me-auto 
-			mb-2 
+			navbar-nav
+			me-auto
+			mb-2
 			mb-md-0">
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize" href="/pong/game/">Free Play</a></li>
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize" href="/pong/tournament">Tournament</a></li>
-		</ul>
-	
-		<!-- log in -->
-		<div class="
-			col-md-4 
-			text-end">
 
+			<!-- 開発用テストリンク -->
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="{{ url_config.kSpaHomeUrl }}"
+									data-link>TransPJ-Index</a></li>
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="/lang/"
+									data-link>Lang</a></li>
+<!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
+<!--									href="/script1/"
+										data-link>Script1</a></li>-->
+<!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
+<!--									href="/script2/"
+										data-link>Script2</a></li>-->
+
+			<!-- pong -->
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="{{ url_config.kSpaFreeGame }}"
+									data-link>Free-Play</a></li>
+
+		{% if user.is_authenticated %}
+			<!-- pong -->
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="{{ url_config.kSpaGame1vs1Url }}"
+									data-link>1vs1</a></li>
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="{{ url_config.kSpaTournamentUrl }}"
+									data-link>Tournament</a></li>
+
+			<!-- user -->
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="{{ url_config.kSpaGameHistoryUrl }}"
+									data-link>Game-History</a></li>
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="{{ url_config.kSpaUserFriendUrl }}"
+									data-link>Friend</a></li>
+			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									href="{{ url_config.kSpaDmUrl }}"
+									data-link>DM</a></li>
+		{% endif %}
+
+		</ul>
+
+		<div class="ms-auto">
 			{% if user.is_authenticated %}
-				<!-- me-x: margin end" の略 -->
-				<button 
-					type="button" 
-					class="
-						btn 
-						btn-outline-light 
-						transition-ease-color
-						me-2" 
-					onclick="location.href='/accounts/logout/'">Log out</button>
-				<button 
-					type="button" 
-					class="
-						btn 
-						btn-primary
-						transition-ease-color"
-					onclick="location.href='/accounts/user/'">Profile</button>
+				<a class="btn
+						  btn-primary
+						  transition-ease-color
+						  me-2
+						  nav__link
+						  profileButton"
+				   data-link
+				   href='{{ url_config.kSpaUserProfileUrl }}'>Profile</a>
+
+				<a class="btn
+						  btn-outline-light
+						  transition-ease-color
+						  me-2
+						  logoutButton">Log-out</a>
+
 			{% else %}
-				<button 
-					type="button" 
-					class="
-						btn 
-						btn-primary
-						transition-ease-color
-						me-2" 
-					onclick="location.href='/accounts/login/'">Log in</button>
-				<button 
-					type="button" 
-					class="
-						btn 
-						btn-primary
-						transition-ease-color" 
-					onclick="location.href='/accounts/signup/'">Sign up</button>
+				<a class="btn
+						  btn-primary
+						  transition-ease-color
+						  me-2
+						  nav__link
+						  loginButton"
+				   data-link
+				   href='{{ url_config.kSpaAuthLoginUrl }}'>Log-in</a>
+
+				<a class="btn
+						  btn-primary
+						  transition-ease-color
+						  nav__link
+						  signupButton"
+				   data-link
+				   href='{{ url_config.kSpaAuthSignupUrl }}'>Sign-up</a>
 			{% endif %}
-	
 		</div>
+
+
 	</div>
 </div>
 </nav>
-
