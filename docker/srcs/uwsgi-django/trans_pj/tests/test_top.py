@@ -8,17 +8,25 @@ class TopPageTest(TestConfig):
         # self._screenshot("top_page")
 
         # link
-        actual_free_play_url = self._text_link_url("Free-Play")
-        expected_free_play_url = self.free_game_url
-        self.assertEqual(actual_free_play_url, expected_free_play_url)
+        actual_2d_pong_url = self._text_link_url("2D-Pong")
+        expected_2d_pong_url = self.game_2d_url
+        self.assertEqual(actual_2d_pong_url, expected_2d_pong_url)
+
+        actual_3d_pong_url = self._text_link_url("3D-Pong")
+        expected_3d_pong_url = self.game_3d_url
+        self.assertEqual(actual_3d_pong_url, expected_3d_pong_url)
 
     def test_user_top_link(self):
         self._login_user1_from_top_page()
 
         # link
-        actual_free_play_url = self._text_link_url("Free-Play")
-        expected_free_play_url = self.free_game_url
-        self.assertEqual(actual_free_play_url, expected_free_play_url)
+        actual_2d_pong_url = self._text_link_url("2D-Pong")
+        expected_2d_pong_url = self.game_2d_url
+        self.assertEqual(actual_2d_pong_url, expected_2d_pong_url)
+
+        actual_3d_pong_url = self._text_link_url("3D-Pong")
+        expected_3d_pong_url = self.game_3d_url
+        self.assertEqual(actual_3d_pong_url, expected_3d_pong_url)
 
         actual_tournament_url = self._text_link_url("Tournament")
         expected_tournament_url = self.tournament_url

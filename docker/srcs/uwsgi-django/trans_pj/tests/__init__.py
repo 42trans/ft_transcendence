@@ -59,14 +59,13 @@ class TestConfig(LiveServerTestCase):
 
         self.top_url            = f"{kURL_PREFIX}{self.url_config['kSpaPongTopUrl']}"
 
-        self.free_game_url      = f"{kURL_PREFIX}{self.url_config['kSpaFreeGame']}"
+        self.game_2d_url        = f"{kURL_PREFIX}{self.url_config['kSpaGame2D']}"
+        self.game_3d_url        = f"{kURL_PREFIX}{self.url_config['kSpaGame3D']}"
         self.tournament_url     = f"{kURL_PREFIX}{self.url_config['kSpaTournamentUrl']}"
-        self.game1vs1_url       = f"{kURL_PREFIX}{self.url_config['kSpaGame1vs1Url']}"
-        self.online_pong_url    = f"{kURL_PREFIX}{self.url_config['kSpaOnlinePong']}"
 
         self.game_history_url   = f"{kURL_PREFIX}{self.url_config['kSpaGameHistoryUrl']}"
         self.profile_url        = f"{kURL_PREFIX}{self.url_config['kSpaUserProfileUrl']}"
-        self.user_info_url       = f"{kURL_PREFIX}{self.url_config['kSpaUserInfoUrl']}"
+        self.user_info_url      = f"{kURL_PREFIX}{self.url_config['kSpaUserInfoUrl']}"
         self.user_info_base_url = f"{kURL_PREFIX}{self.url_config['kSpaUserInfoUrlBase']}"
         self.friend_url         = f"{kURL_PREFIX}{self.url_config['kSpaUserFriendUrl']}"
         self.edit_profile_url   = f"{kURL_PREFIX}{self.url_config['kSpaEditProfileUrl']}"

@@ -5,7 +5,6 @@
   "kSpaTournamentUrl"   : "/app/game/tournament/",
   "kSpaGame2D"          : "/app/game/game-2d/",
   "kSpaGame3D"          : "/app/game/game-3d/",
-  "kSpaOnlinePong"      : "/app/game/online/",
 
   "kSpaGameHistoryUrl"  : "/app/user/game-history/",
   "kSpaUserProfileUrl"  : "/app/user/profile/",
