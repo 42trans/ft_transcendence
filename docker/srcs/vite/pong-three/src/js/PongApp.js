@@ -22,9 +22,10 @@ class PongApp
 	constructor(env) 
 	{
 		this.env = env;
-		
-		document.addEventListener('DOMContentLoaded', () => 
-		{
+
+		// SPA対応
+		// document.addEventListener('DOMContentLoaded', () =>
+		// {
 			const matchDataElement = document.getElementById('match-data');
 			if (matchDataElement) {
 				this.matchData = JSON.parse(matchDataElement.textContent);
@@ -34,12 +35,13 @@ class PongApp
 			// 無限ループでアニメーションの更新を担当。シングルトン
 			this.renderLoop = LoopManager.getInstance(this);
 			this.renderLoop.start();
-						
+
 						//dev用　index.jsで`PongApp.main('dev');`で呼び出す
 						if (env === 'dev'){
 							this.setupDevEnv();
 						}
-		});
+
+		// });
 	}
 
 	/**
@@ -61,22 +63,38 @@ class PongApp
 		// ゲームの状態（待機、Play、終了）を担当。シングルトン
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
 	}
-	
-	static main(env) 
+
+	stopRenderLoop() {
+		if (this.renderLoop) {
+			this.renderLoop.stop();
+			this.renderLoop = null;
+		}
+	}
+
+	static main(env)
 	{
 		new PongApp(env);
 	}
 				// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除
-				setupDevEnv() 
+				setupDevEnv()
 				{
 					this.gui = new lil.GUI();
 					const contorolsGUI = new ControlsGUI(
-						this.allScenesManager.effectsScene.scene, 
-						this.gui, 
+						this.allScenesManager.effectsScene.scene,
+						this.gui,
 						this.allScenesManager.effectsScene.camera
 					);
 					contorolsGUI.setupControlsGUI();
 				}
 }
+
+
+// Three.jsのアニメーションループを制御するためのグローバルな関数を定義
+window.controlThreeAnimation = {
+	stopAnimation: function() {
+		PongApp.getInstance().stopRenderLoop();
+	},
+};
+
 
 export default PongApp;

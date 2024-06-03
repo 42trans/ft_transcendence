@@ -1,6 +1,7 @@
 # chat/views.py
 
 import logging
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
@@ -26,7 +27,7 @@ class DMView(LoginRequiredMixin, TemplateView):
     nicknameが存在しないuserなどの不正値出会った場合は、chat:dm_sessions へ遷移
     Login認証していなければ accounts:login へ遷移
     """
-    template_name = "chat/dm.html"
+    template_name = "chat/dm_with.html"
     error_occurred_redirect_to = "chat:dm_sessions"
 
     def get(self, request, target_nickname):
@@ -53,7 +54,8 @@ class DMView(LoginRequiredMixin, TemplateView):
             'isBlockingUser'    : is_blocking_user,
             'isSystemUser'      : other_user.is_system,
             'user_avatar_url'   : user.avatar.url,
-            'other_avatar_url'  : other_user.avatar.url
+            'other_avatar_url'  : other_user.avatar.url,
+            'url_config'        : settings.URL_CONFIG,
         }
         # logging.error(f'dm_room: user: {user.nickname}, dm_to: {nickname}, blocking: {is_blocking_user}')
         return render(request, self.template_name, data)

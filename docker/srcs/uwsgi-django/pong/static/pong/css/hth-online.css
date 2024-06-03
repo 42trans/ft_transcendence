@@ -1,7 +1,8 @@
 
 #pong-online-canvas-container {
 	/* ページのスクロールに関係なくビューポートに固定 */
-	position: fixed;
+	/*position: fixed;*/
+	position: absolute;
 	/* ゲームテーブルであることがわかるように余白をつける */
 	width: 90vw;
 	height: 90vh;
@@ -12,6 +13,11 @@
 	padding: 0;
 	/* 最前面に浮かせる */
 	z-index: 8888;
+
+	/* 画面中央に配置 */
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
 #hth-pong-online-start-game-btn,

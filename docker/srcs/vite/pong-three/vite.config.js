@@ -13,8 +13,11 @@ export default defineConfig({
       output: {
         entryFileNames: `assets/[name].js`,
         chunkFileNames: `assets/[name].js`,
-        assetFileNames: `assets/[name].[ext]`
-      }
+        assetFileNames: `assets/[name].[ext]`,
+        globals: {
+          controlThreeAnimation: 'window.controlThreeAnimation',
+        },
+      },
     },
     outDir: path.resolve(__dirname, 'public/static/pong/three/'),
   },
