@@ -87,6 +87,9 @@ class FriendTest(TestConfig):
         friends_div = self._element(By.ID, "friends-container")
         friend_item = friends_div.find_element(By.XPATH, f".//li[contains(., '{self.test_user1_nickname}')]")
         delete_button = friend_item.find_element(By.CSS_SELECTOR, ".deleteButton")
+        # friend nameのlink: info page
+        user_name_link_url = self._text_link_url(self.test_user1_nickname)
+        self.assertEqual(user_name_link_url, f"{self.user_info_base_url}{self.test_user1_nickname}/")
 
         # delete buttonのチェック
         # ConfirmでCancelしDelete中断
