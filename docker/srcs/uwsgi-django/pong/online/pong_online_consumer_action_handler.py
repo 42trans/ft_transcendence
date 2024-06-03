@@ -7,6 +7,10 @@ DEBUG_FLOW = 1
 DEBUG_DETAIL = 0
 
 class PongOnlineConsumerActionHandler:
+    """
+    # 例外処理: 呼び出し元の PongOnlineConsumer でキャッチする
+    - 他のクラスのデータ・メソッド呼び出しだけであり、外部リソースへのアクセスやユーザー入力への依存がないため
+    """
     def __init__(self, consumer, game_manager):
         self.consumer       = consumer
         self.game_manager   = game_manager

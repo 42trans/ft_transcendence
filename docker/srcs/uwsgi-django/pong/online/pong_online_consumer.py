@@ -11,6 +11,10 @@ DEBUG_FLOW = 1
 DEBUG_DETAIL = 0
 
 class PongOnlineConsumer(AsyncWebsocketConsumer):
+    """
+    # 例外処理:このクラスのメソッドから呼ばれるものを全て包括的にキャッチする
+    """
+
     # permission_classes = [IsAuthenticated]
     
     def __init__(self, *args, **kwargs):
