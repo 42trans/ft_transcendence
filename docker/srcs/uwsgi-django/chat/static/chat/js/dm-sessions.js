@@ -39,8 +39,32 @@ export function startDMwithUser() {
     // ボタンクリックでDM画面へのリダイレクト
     submitButton.onclick = function() {
         const dmTargetNickname = input.value;
-        window.location.pathname = routeTable['dmWithUserBase'].path + dmTargetNickname + '/';
-    };
+        const messageArea = document.getElementById('message-area');
+
+        if (!dmTargetNickname) {
+            messageArea.textContent = "Nickname cannot be empty";
+            return;
+        }
+
+        fetch(`/chat/api/validate-dm-target/${dmTargetNickname}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.error);
+                    });
+                }
+                window.location.pathname = routeTable['dmWithUserBase'].path + dmTargetNickname + '/';
+            })
+            .catch(error => {
+                messageArea.textContent = error.message;
+            });
+    }
 }
 
 
