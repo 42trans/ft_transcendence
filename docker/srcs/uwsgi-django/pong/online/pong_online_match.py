@@ -7,6 +7,11 @@ DEBUG_FLOW = 1
 DEBUG_DETAIL = 0
 
 class PongOnlineMatch:
+    """
+    # 例外処理: 呼び出し元の PongOnlineUpdater > PongOnlineGameManager でキャッチする
+    - 単純な計算処理が中心であり、外部リソースへのアクセスやユーザー入力への依存がないため
+    - 全て game_state (ゲームの状態を保持する辞書)に対する処理
+    """
     def __init__(self, consumer, game_state):
         self.consumer     = consumer
         self.game_state   = game_state

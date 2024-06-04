@@ -3,6 +3,11 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 class PongOnlineInit:
+    """
+    # 例外処理: 呼び出し元の PongOnlineGameManager でキャッチする
+    - 単純なデータ操作であり、外部リソースへのアクセスやユーザー入力への依存がないため
+    - 例外は、ゲームの設定ファイル (self.config) の内容が不正である場合のため
+    """
     def __init__(self, config):
         self.config = config
 

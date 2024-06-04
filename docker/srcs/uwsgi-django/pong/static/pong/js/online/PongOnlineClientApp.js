@@ -4,8 +4,12 @@ import PongOnlineSyncWS from "./PongOnlineSyncWS.js";
 import PongOnlineGameStateManager from "./PongOnlineGameStateManager.js"
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-let DEBUG_FLOW = 1;
+let DEBUG_FLOW = 0;
 let DEBUG_DETAIL = 0;
+let TEST_TRY1 = 0;
+let TEST_TRY2 = 0;
+let TEST_TRY3 = 0;
+let TEST_TRY4 = 0;
 
 /**
  * 2D-Pong Onlineのメインクラス
@@ -14,14 +18,13 @@ let DEBUG_DETAIL = 0;
  * ## Websocket接続テスト:
  * - brew install websocat
  * - websocat wss://localhost/ws/pong/online/
- * 
- * - 座標変換: 参考:【CanvasRenderingContext2D: setTransform() method - Web APIs | MDN】 <https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setTransform>
  */
 class PongOnlineClientApp 
 {
 	constructor() 
 	{
-		if (DEBUG_FLOW){	console.log('PongOnlineClientApp constructor begin');	}
+				if (DEBUG_FLOW){	console.log('PongOnlineClientApp constructor begin');	}
+
 		this.initWebSocket();
 		this.initStartButton();
 	}
@@ -30,40 +33,61 @@ class PongOnlineClientApp
 	{
 		this.socketUrl			= 'wss://localhost/ws/pong/online/';
 		this.gameStateManager	= new PongOnlineGameStateManager(this);
-		this.syncWS				= new PongOnlineSyncWS(this, this.gameStateManager, this.socketUrl);
+		this.syncWS				= new PongOnlineSyncWS(this, this.gameStateManager);
 		PongEngineKey.listenForEvents();
 	}
 	
 	// websocket接続開始のためのスタートボタン
 	initStartButton() 
 	{
-		this.createButton('Start Game', 'hth-pong-online-start-game-btn', () => {
-			this.setupWebSocketConnection();
-			document.getElementById('hth-pong-online-start-game-btn').remove();
-		});
+		try {
+					if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+
+			this.createButton('Start Game', 'hth-pong-online-start-game-btn', () => {
+				this.setupWebSocketConnection();
+				document.getElementById('hth-pong-online-start-game-btn').remove();
+			});
+		} catch (error) {
+			console.error('hth: initStartButton() failed: ', error);
+		}
 	}
 		
 	createButton(text, id, onClickHandler) 
 	{
-		const button		= document.createElement('button');
-		button.textContent	= text;
-		button.id			= id;
-		button.classList.add('hth-btn');
-		document.getElementById('hth-main').appendChild(button);
-		button.addEventListener('click', onClickHandler);
+		try {
+					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
+
+			const button		= document.createElement('button');
+			button.textContent	= text;
+			button.id			= id;
+			button.classList.add('hth-btn');
+			document.getElementById('hth-main').appendChild(button);
+			button.addEventListener('click', onClickHandler);
+		} catch (error) {
+			console.error('hth:: createButton() failed: ', error);
+		}
 	}
 
-	/** Start buttonをクリックしてからWebsocket接続 */
+	/** Start buttonクリックでWebsocket接続開始 */
 	setupWebSocketConnection()
 	{
-		this.socket							= new WebSocket(this.socketUrl);
-		this.syncWS.socket					= this.socket;
-		this.gameStateManager.socket		= this.socket;
+		try {
+					if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 
-		this.socket.onmessage	= (event) => this.syncWS.onSocketMessage(event);
-		this.socket.onopen		= () => this.syncWS.onSocketOpen();
-		this.socket.onclose		= (event) => this.syncWS.onSocketClose(event);
-		this.socket.onerror		= (event) => this.syncWS.onSocketError(event);
+			this.socket	= new WebSocket(this.socketUrl);
+
+					if (TEST_TRY4){ this.socket = new WebSocket("wss://example.com");}
+
+			this.syncWS.socket					= this.socket;
+			this.gameStateManager.socket		= this.socket;
+
+			this.socket.onmessage	= (event) => this.syncWS.onSocketMessage(event);
+			this.socket.onopen		= () => this.syncWS.onSocketOpen();
+			this.socket.onclose		= (event) => this.syncWS.onSocketClose(event);
+			this.socket.onerror		= (event) => this.syncWS.onSocketError(event);
+		} catch(error) {
+			console.error('hth: setupWebSocketConnection() failed: ', error)
+		}
 	}
 
 	static main(env) {

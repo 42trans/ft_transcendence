@@ -1,10 +1,11 @@
 from django.test import TestCase
 from pong.online.pong_online_game_manager import PongOnlineGameManager
 from asgiref.sync import async_to_sync
+from unittest.mock import AsyncMock
 
 class TestPongOnlinePhysics(TestCase):
     def setUp(self):
-        self.game_manager = PongOnlineGameManager(consumer=None, user_id=1)
+        self.game_manager = PongOnlineGameManager(consumer=AsyncMock(), user_id=1)
         # await self.game_manager.initialize_game()
         async_to_sync(self.game_manager.initialize_game)()
 

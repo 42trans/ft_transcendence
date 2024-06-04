@@ -6,7 +6,6 @@ DEBUG_FLOW = 1
 DEBUG_DETAIL = 0
 
 class PongOnlineConsumerUtil:
-    ''' クラスメソッドのみ  '''
 
     @classmethod
     async def broadcast_event(cls, consumer, event):
@@ -26,7 +25,6 @@ class PongOnlineConsumerUtil:
         ゲーム状態をグループに送信する
         ゲーム状態を全参加者に送信する特化したメソッド 
         """
-        # グループ(内の全てのクライアント)にゲーム状態を送信する
         event = {
              "data": {
                 "event_type": "game_state",

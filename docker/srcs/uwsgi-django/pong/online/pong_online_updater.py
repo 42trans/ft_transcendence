@@ -8,6 +8,10 @@ DEBUG_FLOW = 1
 DEBUG_DETAIL = 0
 
 class PongOnlineUpdater:
+    """
+    # 例外処理: 呼び出し元の PongOnlineGameManager でキャッチする
+    - 単純な計算処理が中心であり、外部リソースへのアクセスやユーザー入力への依存がないため
+    """
     def __init__(self, pong_engine_data, physics, match):
         self.physics            = physics
         self.match              = match

@@ -4,7 +4,7 @@ import PongOnlineClientApp from './PongOnlineClientApp.js';
 /**
  * 2D-Pong entry point
  */
-// document.addEventListener('DOMContentLoaded', () =>
+// document.addEventListener('DOMContentLoaded', () => 
 // {
 	PongOnlineClientApp.main();
 // });
