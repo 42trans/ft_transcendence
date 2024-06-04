@@ -40,13 +40,22 @@ class RenderLoop
 		const animate = () => 
 		{
 			// console.log('requestAnimationFrame');
-			requestAnimationFrame(animate);
+			this.requestID = requestAnimationFrame(animate);
 			this.pong.gameStateManager.update();
 			this.pong.allScenesManager.updateAllScenes();
 			this.pong.animationMixersManager.update(); 
 			this.pong.allScenesManager.renderAllScenes(RendererManager.getRenderer())
 		};
 		animate();
+	}
+
+	stop()
+	{
+		if (this.requestID)
+		{
+			cancelAnimationFrame(this.requestID);
+			this.requestID = null;
+		}
 	}
 }
 

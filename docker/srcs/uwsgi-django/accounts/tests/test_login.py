@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import JsonResponse
@@ -65,7 +66,7 @@ class LoginAPIViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('2fa authentication needed', response_json['message'])
-        self.assertIn('/accounts/verify/verify_2fa/', response_json['redirect'])
+        self.assertIn('/verify-2fa/', response_json['redirect'])
 
     def test_basic_authentication_successful(self):
         login_data = {
@@ -77,7 +78,7 @@ class LoginAPIViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Basic authentication successful', response_json['message'])
-        self.assertIn('/accounts/user/', response_json['redirect'])
+        self.assertIn(settings.URL_CONFIG['kSpaPongTopUrl'], response_json['redirect'])
 
         self.assertIn('Access-Token', response.cookies)
         self.assertIn('Refresh-Token', response.cookies)

@@ -7,10 +7,11 @@ from typing import Tuple, Optional
 import re
 import requests
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, get_user_model
 from django.conf import settings
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
@@ -25,7 +26,6 @@ logger = logging.getLogger(__name__)
 
 
 class OAuthWith42(View):
-    authenticated_redirect_to = "/pong/"
     error_page_path = "pong/error.html"
     callback_name = "api_accounts:oauth_ft_callback"
     api_path = "https://api.intra.42.fr"
@@ -41,12 +41,11 @@ class OAuthWith42(View):
 
     def oauth_ft(self, request: HttpRequest, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(to=self.authenticated_redirect_to)
+            return redirect(to=settings.URL_CONFIG['kSpaPongTopUrl'])
 
         # CSRF対策のためのstateを生成
         state = secrets.token_urlsafe()
         request.session['oauth_state'] = state
-
 
         params = {
             'client_id': settings.FT_CLIENT_ID,
@@ -59,7 +58,7 @@ class OAuthWith42(View):
         return redirect(to=auth_url)
 
 
-    def oauth_ft_callback(self, request: HttpRequest, *args, **kwargs):
+    def oauth_ft_callback(self, request: HttpRequest, *args, **kwargs) -> JsonResponse:
         if not self._is_valid_state(request):
             logger.error(f'error: {err}', exc_info=True)
             return render(request, self.error_page_path, {'message': 'Invalid state parameter'})
@@ -70,6 +69,7 @@ class OAuthWith42(View):
             return render(request,
                           self.error_page_path,
                           {'message': 'An error occurred during the authentication process'})
+            # return JsonResponse({'error': 'An error occurred during the authentication process'}, status=500)
 
         User = get_user_model()
         user, new_user_created = User.objects.get_or_create(email=email,
@@ -80,10 +80,20 @@ class OAuthWith42(View):
 
         if user.enable_2fa:
             request.session['tmp_auth_user_id'] = user.id
-            return redirect(to='accounts:verify_2fa')
+            return redirect(to=settings.URL_CONFIG['kSpaAuthVerify2FaUrl'])
+            # return JsonResponse({'redirect': '/verify-2fa/'})
 
-        # login(request, user, backend='django.contrib.auth.backends.ModelBackend')  # jwt: login() unused
-        response = redirect(to=self.authenticated_redirect_to)
+        # response_data = {
+        #     'message': 'OAuth successful',
+        #     'redirect': '/user-profile/',
+        #     'user_id': user.id,
+        # }
+
+        # リダイレクトURLにクエリパラメータを追加
+        # redirect_url = f"/user-profile/?message=OAuth%20successful&user_id={user.id}&redirect=/user-profile/"
+        # response = redirect(to=redirect_url)
+        response = redirect(to=settings.URL_CONFIG['kSpaPongTopUrl'])
+        # response = JsonResponse(response_data)
         set_jwt_to_cookie(user, response)
         return response
 

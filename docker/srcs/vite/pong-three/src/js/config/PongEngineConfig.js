@@ -113,7 +113,7 @@ class PongEngineConfig
 		this.gameSettings = 
 		{
 			// MAX_SCORE: 15,
-			MAX_SCORE: 1, // for test
+			MAX_SCORE: 5, // for test
 			INIT_BALL_SPEED: 2,
 			MAX_BALL_SPEED: 10, //10を超えると衝突判定がバグります
 			// TOD_ft:
