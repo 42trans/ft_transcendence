@@ -1,7 +1,7 @@
 // chat/js/dm-with-user.js
 import { applyStylesToInitialLoadMessages } from './module/apply-message-style.js';
 import { setupDmWebsocket } from './module/setup-dm-websocket.js';
-import { setupDOMEventListeners, scrollToBottom } from './module/ui-util.js';
+import { setupSendKeyEventListener, scrollToBottom } from './module/ui-util.js';
 
 
 function isDMwithBlockingUser() {
@@ -22,7 +22,7 @@ export function initDM() {
     scrollToBottom();  // 受信時にスクロール位置を調整
 
     setupDmWebsocket(dmTargetNickname);
-    setupDOMEventListeners();
+    setupSendKeyEventListener();
 }
 
 
