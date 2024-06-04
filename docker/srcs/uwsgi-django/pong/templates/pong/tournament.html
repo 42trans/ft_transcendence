@@ -1,27 +1,21 @@
 {% load static %}
 
 	{% csrf_token %}
-	<!-- <div class="hth-container"> -->
-
 		<div class="container" id="tournament-container">
 
 			<div class="hth-accounts-container">
-				<!-- <h1>User</h1> -->
 				<ul id="user-info">
-					<!-- JavaScriptで動的に内容が生成される -->
 				</ul>
 			</div>
 
 			<div id="tournament-round"></div>
 
 			<div id="ongoing-tournament">
-				<!-- JavaScriptで動的に内容が生成される -->
 			</div>
 
 			<p id="error-message" style="color: red;"></p>
 
 			<div id="tournament-form">	
-				<!-- JavaScriptで動的に内容が生成される -->
 			</div>
 			
 			<p id="submit-message" style="color: green;"></p>
@@ -29,9 +23,4 @@
 
 		</div>
 
-	<!-- </div> -->
-
-	<!-- TODO_ft: tournamentIDの有無？でAPI送信をどうするか検討する -->
-
-<!-- 要素のidを変更した場合、ConfigTournament.js を修正してください -->
-<!--<script type="module" src='{% static "pong/js/tournament/TournamentMain.js" %}'></script>-->
+ {% comment %} 要素のidを変更した場合、ConfigTournament.js を修正してください {% endcomment %}
