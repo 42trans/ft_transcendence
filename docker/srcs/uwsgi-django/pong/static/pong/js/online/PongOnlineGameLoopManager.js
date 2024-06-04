@@ -21,7 +21,7 @@ class PongOnlineGameLoopManager
 		this.animationFrameId	= null; 
 	}
 
-	
+
 	startGameLoop(gameFPS) 
 	{
 				if (DEBUG_FLOW){	console.log("startGameLoop(): begin")	}
@@ -103,11 +103,12 @@ class PongOnlineGameLoopManager
 
 		try {
 			// ゲーム終了時に Back to Home ボタンリンクを表示する
-			this.createEndGameButton();
+			// this.createEndGameButton();
+			this.updateEndGameBtn();
 
 					if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 		} catch(error) {
-			console.error("hth: stopGameLoop(): createEndGameButton() failed:", error);
+			console.error("hth: stopGameLoop(): updateEndGameBtn() failed:", error);
 		}
 
 		// アニメーションを指定してキャンセル
@@ -124,14 +125,33 @@ class PongOnlineGameLoopManager
 	
 
 	// ゲーム終了時に Back to Home ボタンリンクを表示する
-	createEndGameButton() 
+	// createEndGameButton() 
+	// {
+	// 	this.clientApp.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {
+	// 		// TODO_ft:SPA
+	// 		// history.pushState(null, null, routeTable['top'].path);
+	// 		// renderView(routeTable['top'].path); // 必要に応じて再描画
+	// 		switchPage(routeTable['top'].path); 
+	// 		// window.location.href = routeTable['top'].path;
+	// 	});
+	// }
+	
+	updateEndGameBtn() 
 	{
-		this.clientApp.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {
-			// TODO_ft:SPA
-			window.location.href = routeTable['top'].path;
-		});
+		try {
+			const endGameButton = document.getElementById('hth-pong-online-back-to-home-Btn');
+			if (endGameButton) {
+				endGameButton.style.display = 'block';
+				endGameButton.addEventListener('click', () => {
+					window.location.href = routeTable['top'].path;
+				});
+			} else {
+				console.error('End Game button not found');
+			}
+		} catch (error){
+			console.error('hth: updateEndGameBtn() failed: ', error);
+		}
 	}
-
 }
 
 export default PongOnlineGameLoopManager;
