@@ -1,8 +1,8 @@
-<!-- chat/templates/chat/dm_with.html -->
+ {% comment %} chat/templates/chat/dm_with.html  {% endcomment %}
 
 {% load static %}
 
-    <!-- メッセージのスタイル（仮仕様） -->
+     {% comment %} メッセージのスタイル（仮仕様）  {% endcomment %}
     <style>
         /* DM表示領域 */
         #dm-log {
@@ -108,7 +108,7 @@
 
 
 {% if not isBlockingUser %}
-    <!-- DM logを表示 -->
+     {% comment %} DM logを表示  {% endcomment %}
     <ul id="dm-log" style="list-style: none;">
         {% for message in messages %}
         <li class="{{ message.sender.nickname|slugify }}" data-sender-name="{{ message.sender.nickname }}">
@@ -140,4 +140,4 @@
 
 {{ target_nickname|json_script:"target_nickname" }}
 
-<!--<script type="module" src="{% static 'chat/js/dm-with-user.js' %}"></script>-->
+{% comment %} <script type="module" src="{% static 'chat/js/dm-with-user.js' %}"></script> {% endcomment %}
