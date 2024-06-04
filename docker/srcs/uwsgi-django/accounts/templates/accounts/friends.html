@@ -1,29 +1,25 @@
-<!-- friends.html -->
+{% comment %} friends.html  {% endcomment %}
 
 {% load static %}
 
-<!-- <div class="canvas-container"> -->
-<!-- <div class="hs-text"> -->
 <div class="container" >
 
-    <div class="friends-info-container">
-        <!-- UserFriendsViewで受け取ったuser_idをJSでuser-idとして使用できるようにする -->
-        <input type="hidden" id="user-id" value="{{ user_id }}">
+	<div class="friends-info-container">
+		{% comment %} UserFriendsViewで受け取ったuser_idをJSでuser-idとして使用できるようにする  {% endcomment %}
+		<input type="hidden" id="user-id" value="{{ user_id }}">
 
-        <ul id="friends-container">
-            <!-- JavaScriptで動的に内容が生成される -->
-        </ul>
-        <hr>
-        <ul id="requests-container">
-            <!-- JavaScriptで動的に内容が生成される -->
-        </ul>
+		<ul id="friends-container">
+			{% comment %} JavaScriptで動的に内容が生成される  {% endcomment %}
+		</ul>
+		<hr>
+		<ul id="requests-container">
+			{% comment %} JavaScriptで動的に内容が生成される  {% endcomment %}
+		</ul>
 
-        <!-- online-status取得のためのwebsocketに接続 -->
-    </div>
+		{% comment %} online-status取得のためのwebsocketに接続  {% endcomment %}
+	</div>
 
 </div>
-<!-- </div> -->
-<!-- </div> -->
 
-<!--<script type="module" src="{% static 'accounts/js/friend.js' %}"></script>-->
-<!--<script type="module" src="{% static 'accounts/js/online-status.js' %}"></script>-->
+{% comment %} <script type="module" src="{% static 'accounts/js/friend.js' %}"></script> {% endcomment %}
+{% comment %} <script type="module" src="{% static 'accounts/js/online-status.js' %}"></script> {% endcomment %}

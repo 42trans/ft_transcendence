@@ -7,13 +7,12 @@
 {% block content %}
 	{% csrf_token %}
 	<canvas id="threejs-canvas-container"></canvas>
-<!-- TODO_ft: Free playとトーナメントマッチ、1vs1プレイの違いが決まったら共通化する -->
 <script type="application/json" id="match-data">
 	{{ match_json|safe }}
 </script>	
 <script>
 	window.isDevServer = "{{ is_dev_server }}";
-	// console.log('window.isDevServer', window.isDevServer);
+	{% comment %} console.log('window.isDevServer', window.isDevServer); {% endcomment %}
 </script>
 <script type="module" crossorigin src="{% static 'pong/three/assets/index.js' %}"></script>
 {% endblock %}

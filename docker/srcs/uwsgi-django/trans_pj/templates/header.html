@@ -1,14 +1,12 @@
 {% load static %}
 
-<!--
-	navbar: Bootstrap defaultのクラス
-	参考:【ナビゲーションバー · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/components/navbar/#%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84>
+{% comment %} navbar: Bootstrap defaultのクラス
+参考:【ナビゲーションバー · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/components/navbar/#%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84>
 
-	navbar-expand-md: mdブレークポイントまでは折りたたみ
+navbar-expand-md: mdブレークポイントまでは折りたたみ
 
-	fixed-top:
-	参考:【ポジション · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/helpers/position/#fixed-top>
- -->
+fixed-top:
+参考:【ポジション · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/helpers/position/#fixed-top> {% endcomment %}
 <nav
 	aria-label="Main navigation"
 	id="hth-header-navi"
@@ -17,12 +15,10 @@
 		navbar-expand-md
 		fixed-top">
 
-<!--
-	container-fluid: bootstrap: 親要素の全幅をとるクラス
+	{% comment %} container-fluid: bootstrap: 親要素の全幅をとるクラス
 	参考:【コンテナ · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/layout/containers/#%E4%BB%95%E7%B5%84%E3%81%BF>
 	- ブレークポイント毎に固定するなら.container
-		- .container	100%	540px	720px	960px	1140px	1320px
- -->
+		- .container	100%	540px	720px	960px	1140px	1320px {% endcomment %}
 <div class="container-fluid">
 
 	<!-- site logo -->
@@ -32,7 +28,6 @@
 		<img src="{% static 'pong/img/logo.png' %}" alt="">
 	</a>
 
-	<!-- toggle -->
 	<button
 		class="navbar-toggler"
 		type="button"
@@ -44,39 +39,26 @@
 		<span class="navbar-toggler-icon"></span>
 	</button>
 
-	<!-- TODO_ft: アクセシビリティ aria-current="page" -->
-	<!-- navi -->
 	<div
 		id="hth-toggle-menu"
 		class="
 			collapse
 			navbar-collapse">
 
-		<!--
-			mb-md-0:
-			Medium ブレークポイント以上のデバイスにおいて下側のマージンをゼロ
-		-->
+		{% comment %} mb-md-0:
+		Medium ブレークポイント以上のデバイスにおいて下側のマージンをゼロ {% endcomment %}
 		<ul class="
 			navbar-nav
 			me-auto
 			mb-2
 			mb-md-0">
 
-			<!-- 開発用テストリンク -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="{{ url_config.kSpaHomeUrl }}"
 									data-link>TransPJ-Index</a></li>
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="/lang/"
 									data-link>Lang</a></li>
-<!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
-<!--									href="/script1/"
-										data-link>Script1</a></li>-->
-<!--			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"-->
-<!--									href="/script2/"
-										data-link>Script2</a></li>-->
-
-			<!-- pong -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="{{ url_config.kSpaGame2D }}"
 									data-link>2D-Pong</a></li>
@@ -85,12 +67,10 @@
 									data-link>3D-Pong</a></li>
 
 		{% if user.is_authenticated %}
-			<!-- pong -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="{{ url_config.kSpaTournamentUrl }}"
 									data-link>Tournament</a></li>
 
-			<!-- user -->
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="{{ url_config.kSpaGameHistoryUrl }}"
 									data-link>Game-History</a></li>
