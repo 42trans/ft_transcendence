@@ -86,6 +86,13 @@ class ProfileTest(TestConfig):
         self._assert_current_url(self.edit_profile_url)
         # self._screenshot("edit_nickname_4")
 
+        # user1 -> invalid nickname format
+        multi_byte_nickname = "ニックネーム"
+        self._edit_nickname(multi_byte_nickname, wait_for_button_invisible=False)
+        self._assert_message("The nickname can only contain ASCII characters")
+        self._assert_current_url(self.edit_profile_url)
+        # self._screenshot("edit_nickname_5")
+
         # nicknameはuser1から不変のはず
         self._move_top_to_profile()
         self._assert_profile_nickname(current_nickname)

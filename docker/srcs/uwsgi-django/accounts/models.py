@@ -84,6 +84,8 @@ class UserManager(BaseUserManager):
         if CustomUser.kNICKNAME_MAX_LENGTH < len(nickname):
             err = f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"
             return False, err
+        if not nickname.isascii():
+            return False, "The nickname can only contain ASCII characters"
         if not nickname.isalnum():
             return False, "Invalid nickname format"
 
