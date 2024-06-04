@@ -2,7 +2,7 @@
 import { config }	from '../ConfigTournament.js';
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-let DEBUG_FLOW		= 1;
+let DEBUG_FLOW		= 0;
 let DEBUG_DETAIL	= 0;
 let TEST_TRY1 = 0;
 let TEST_TRY2 = 0;
