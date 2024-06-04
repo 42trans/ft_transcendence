@@ -93,6 +93,7 @@ class BasicAuthTest(TestConfig):
     def test_signup_failure(self):
         self._move_top_to_signup()
 
+        # すでに存在するemail
         user1_email = "user1@example.com"
         nickname = self._generate_random_string()
         password1 = "pass0123"
@@ -104,6 +105,62 @@ class BasicAuthTest(TestConfig):
                      password2,
                      wait_for_button_invisible=False)
         self._assert_message("This email is already in use")
+        self._assert_current_url(self.signup_url)
+
+        # すでに存在するnicknmae
+        new_email = "new_user@example.com"
+        user1_nickname = "user1"
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(new_email,
+                     user1_nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message("This nickname is already in use")
+        self._assert_current_url(self.signup_url)
+
+        # 不正なニックネーム（alnum以外）
+        new_email = "new_user@example.com"
+        invalid_nickname = "nick_name"
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(new_email,
+                     invalid_nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message("Invalid nickname format")
+        self._assert_current_url(self.signup_url)
+
+        # 不正なニックネーム（全角）
+        new_email = "new_user@example.com"
+        invalid_nickname = "ニックネーム"
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(new_email,
+                     invalid_nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message("The nickname can only contain ASCII characters")
+        self._assert_current_url(self.signup_url)
+
+        # 不正なpassword
+        new_email = "new_user@example.com"
+        new_nickname = "newTestUser"
+        password1 = "pass0123"
+        password2 = "0123pass"
+
+        self._signup(new_email,
+                     new_nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message("passwords don't match")
         self._assert_current_url(self.signup_url)
 
     def _signup(self,
