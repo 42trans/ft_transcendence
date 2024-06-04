@@ -27,6 +27,7 @@ class PongOnlineClientApp
 
 		this.initWebSocket();
 		this.initStartButton();
+		this.initEndButton();
 	}
 	
 	initWebSocket()
@@ -43,15 +44,31 @@ class PongOnlineClientApp
 		try {
 					if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 
-			this.createButton('Start Game', 'hth-pong-online-start-game-btn', () => {
+			const startGameButton = document.getElementById('hth-pong-online-start-game-btn');
+			if (!startGameButton) {
+				throw new Error('Start Game button not found');
+			}
+			startGameButton.addEventListener('click', () => {
 				this.setupWebSocketConnection();
-				document.getElementById('hth-pong-online-start-game-btn').remove();
+				// ボタンをDOMから削除
+				startGameButton.remove();  
 			});
+			// this.createButton('Start Game', 'hth-pong-online-start-game-btn', () => {
+			// 	this.setupWebSocketConnection();
+			// 	document.getElementById('hth-pong-online-start-game-btn').remove();
+			// });
 		} catch (error) {
 			console.error('hth: initStartButton() failed: ', error);
 		}
 	}
-		
+	
+	initEndButton() {
+		const endGameButton = document.getElementById('hth-pong-online-back-to-home-Btn');
+		if (!endGameButton) return; 
+		endGameButton.style.display = 'none'; 
+	}
+
+	
 	createButton(text, id, onClickHandler) 
 	{
 		try {
