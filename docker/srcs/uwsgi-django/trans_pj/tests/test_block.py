@@ -64,8 +64,8 @@ class DMTest(TestConfig):
         blockしていない場合、dm-log, message-inputが表示されている
         """
         try:
-            self._element(By.ID, "dm-log")
-            self._element(By.ID, "message-input")
+            self._element(By.ID, "dm-log", retries=1)
+            self._element(By.ID, "message-input", retries=1)
             return True
         except Exception:
             return False
