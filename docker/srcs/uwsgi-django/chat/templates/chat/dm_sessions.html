@@ -4,13 +4,7 @@
 <h2>Start DM</h2>
 
  {% comment %} エラーメッセージの表示  {% endcomment %}
-{% if messages %}
-<ul>
-    {% for message in messages %}
-    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+<p id="message-area"></p>
 
  {% comment %} DM相手を指定して開始するtext field  {% endcomment %}
 <label for="nickname-input">DM with:</label>
