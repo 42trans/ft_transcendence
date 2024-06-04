@@ -1,4 +1,4 @@
-<!-- signup.html -->
+ {% comment %} signup.html  {% endcomment %}
 
 {% load static %}
 
@@ -15,7 +15,7 @@
 
 		<p id="message-area"></p>
 
-		<!-- auth form -->
+		 {% comment %} auth form  {% endcomment %}
 		<form class="hth-sign-form" onsubmit="signupUser(event)">
 			<div class="
 				slideup-text
@@ -24,7 +24,7 @@
 				id="email"
 				type="text"
 				placeholder="name@example.com" required>
-				<!-- labelはinputの下に記述する: bootstrap templateのアニメーションのため -->
+				 {% comment %} labelはinputの下に記述する: bootstrap templateのアニメーションのため  {% endcomment %}
 				<label for="floatingInput">Email address</label>
 			</div>
 			<div class="
@@ -69,7 +69,7 @@
 
 		<hr>
 
-		<!-- button 42 auth -->
+		 {% comment %} button 42 auth  {% endcomment %}
 		<a class="
 			slideup-text
 			sign_btn
@@ -82,24 +82,24 @@
 			href="{% url 'accounts:oauth_ft' %}"
 			>Signing up for a 42 account</a>
 
-		<!-- link: login here -->
+		 {% comment %} link: login here  {% endcomment %}
 		<div class="slideup-text form-sign-text pt-4" >
-            <a href="{{ login_url }}" class="nav__link" data-link>Login here</a>
-			<!-- <a href="{% url 'accounts:login'%}">ログインはこちら</a> -->
+			<a href="{{ login_url }}" class="nav__link" data-link>Login here</a>
+			 {% comment %} <a href="{% url 'accounts:login'%}">ログインはこちら</a>  {% endcomment %}
 		</div>
 
-		<!-- text: Password requirements -->
+		 {% comment %} text: Password requirements  {% endcomment %}
 		<div class="slideup-text form-sign-text text-white py-2" id="password-requirements">Password requirements:</div>
 		<ul class="form-sign-text">
 			<li class="slideup-text">8文字以上</li>
 			<li class="slideup-text">一般的によく使われるパスワードは使用不可</li>
 			<li class="slideup-text">数字のみのパスワードは使用不可</li>
-			<!-- <li class="slideup-text">At least 8 characters</li>
+			{% comment %} <li class="slideup-text">At least 8 characters</li>
 			<li class="slideup-text">Cannot be a commonly used password</li>
-			<li class="slideup-text">Cannot be all numeric</li> -->
+			<li class="slideup-text">Cannot be all numeric</li>  {% endcomment %}
 		</ul>
 
-    </div>
+	</div>
  </div>
 
-<!--<script src="{% static 'accounts/js/signup.js' %}"></script>-->
+{% comment %} <script src="{% static 'accounts/js/signup.js' %}"></script> {% endcomment %}

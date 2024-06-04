@@ -1,4 +1,4 @@
-<!-- edit_profile.html -->
+{% comment %} edit_profile.html  {% endcomment %}
 
 {% load static %}
 
@@ -6,29 +6,29 @@
 	<div class="hth-accounts-container">
 
 		<h2>Edit user profile</h2>
-        <!-- TODO_ft:あらかじめスペースをとっているので、トーストに変更したい -->
+		{% comment %} TODO_ft:あらかじめスペースをとっているので、トーストに変更したい  {% endcomment %}
 		<p id="message-area"></p>
 
-        <!-- ニックネーム更新用のフォーム -->
-        <form id="nickname-form" onsubmit="updateNickname(event)">
-            <h2>Nickname</h2>
-            <p>
-                <label for="nickname">Nickname:</label>
-                <input type="text" id="nickname" placeholder="{{ current_nickname }}" required></p>
-            <button class="hth-btn" type="submit">Update nickname</button>
-        </form>
+		{% comment %} ニックネーム更新用のフォーム  {% endcomment %}
+		<form id="nickname-form" onsubmit="updateNickname(event)">
+			<h2>Nickname</h2>
+			<p>
+				<label for="nickname">Nickname:</label>
+				<input type="text" id="nickname" placeholder="{{ current_nickname }}" required></p>
+			<button class="hth-btn" type="submit">Update nickname</button>
+		</form>
 
-		<!-- 42authの場合はpassword変更非表示 -->
-        {% if not is_42auth_user %}
-        <form id="password-form" onsubmit="updatePassword(event)">
-            <h3 class="mb-1">password</h3>
-            <p>current password: <input type="password" id="current_password" placeholder="current-password" required></p>
-            <p>new password: <input type="password" id="new_password" placeholder="new-password"></p>
-            <button class="hth-btn" type="submit">update password</button>
-        </form>
+		{% comment %} 42authの場合はpassword変更非表示  {% endcomment %}
+		{% if not is_42auth_user %}
+		<form id="password-form" onsubmit="updatePassword(event)">
+			<h3 class="mb-1">password</h3>
+			<p>current password: <input type="password" id="current_password" placeholder="current-password" required></p>
+			<p>new password: <input type="password" id="new_password" placeholder="new-password"></p>
+			<button class="hth-btn" type="submit">update password</button>
+		</form>
 		{% endif %}
 
 	</div>
 </div>
 
-<!--<script src="{% static 'accounts/js/edit_profile.js' %}"></script>-->
+{% comment %} script src="{% static 'accounts/js/edit_profile.js' %}"></script> {% endcomment %}
