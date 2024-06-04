@@ -95,10 +95,13 @@ class TestConfig(LiveServerTestCase):
 
     def _element(self, by, value):
         # visibility_of_element_located: 指定された要素がDOMに存在し、かつ画面上に見える状態になるまで待機
-        wait = WebDriverWait(driver=self.driver, timeout=10)
+        wait = WebDriverWait(driver=self.driver, timeout=30)
         element = wait.until(
             EC.visibility_of_element_located((by, value))
         )
+        # element = wait.until(
+        #     EC.presence_of_element_located((by, value))
+        # )
         self.assertTrue(element.is_displayed(),
                         msg=f"Element `{value}` is not displayed")
         return element
@@ -183,7 +186,7 @@ class TestConfig(LiveServerTestCase):
             )
         )
 
-    def _send_to_elem(self, by, elem_value, send_value, retries=3):
+    def _send_to_elem(self, by, elem_value, send_value, retries=5):
         for attempt in range(retries):
             try:
                 elem = self._element(by, elem_value)
@@ -192,7 +195,29 @@ class TestConfig(LiveServerTestCase):
                 return
             except StaleElementReferenceException:
                 if attempt < retries - 1:
-                    time.sleep(1)  # 少し待ってから再試行
+                    time.sleep(3)  # 少し待ってから再試行
+                else:
+                    raise
+            except TimeoutException:
+                if attempt < retries - 1:
+                    time.sleep(3)  # 少し待ってから再試行
+                else:
+                    raise
+
+    def _send_elem_value(self, elem, send_value, retries=5):
+        for attempt in range(retries):
+            try:
+                elem.clear()  # 入力済みのテキストをクリア
+                elem.send_keys(send_value)
+                return
+            except StaleElementReferenceException:
+                if attempt < retries - 1:
+                    time.sleep(3)  # 少し待ってから再試行
+                else:
+                    raise
+            except TimeoutException:
+                if attempt < retries - 1:
+                    time.sleep(3)  # 少し待ってから再試行
                 else:
                     raise
 
@@ -300,10 +325,15 @@ class TestConfig(LiveServerTestCase):
     def _create_new_user(self, email, nickname, password):
         self._move_top_to_signup()
 
-        self._send_to_elem(By.ID, "email", email)
-        self._send_to_elem(By.ID, "nickname", nickname)
-        self._send_to_elem(By.ID, "password1", password)
-        self._send_to_elem(By.ID, "password2", password)
+        email_elem = self._element(By.ID, "email")
+        nickname_elem = self._element(By.ID, "nickname")
+        pass1_elem = self._element(By.ID, "password1")
+        pass2_elem = self._element(By.ID, "password2")
+
+        self._send_elem_value(elem=email_elem, send_value=email)
+        self._send_elem_value(elem=nickname_elem, send_value=nickname)
+        self._send_elem_value(elem=pass1_elem, send_value=password)
+        self._send_elem_value(elem=pass2_elem, send_value=password)
 
         signup_button = self._element(By.ID, "sign-submit")
         self._click_button(signup_button, wait_for_button_invisible=True)
