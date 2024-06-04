@@ -195,6 +195,11 @@ class TestConfig(LiveServerTestCase):
                     time.sleep(1)  # 少し待ってから再試行
                 else:
                     raise
+            except TimeoutException:
+                if attempt < retries - 1:
+                    time.sleep(1)  # 少し待ってから再試行
+                else:
+                    raise
 
     def _access_to(self, url):
         self.driver.get(url)
