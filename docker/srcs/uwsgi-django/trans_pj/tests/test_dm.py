@@ -59,7 +59,42 @@ class DMTest(TestConfig):
         self.assertEqual(received_message.text, message)
         # self._screenshot("dm3")
 
+    def test_input_nickname(self):
+        """
+        StartDMでnicknameを入力した時の挙動を評価
+        """
+        self._login(email=self.test_user1_email, password=self.password)
+        self._move_top_to_dm()
+
+        empty_nickname = ""
+        self._send_nickname(empty_nickname, wait_for_button_invisible=False)
+        self._assert_message("Nickname cannot be empty")
+        self._assert_current_url(self.dm_url)
+        self._screenshot("dm1")
+
+        invalid_nickname = "invalid"
+        self._send_nickname(invalid_nickname, wait_for_button_invisible=False)
+        self._assert_message("The specified user does not exist")
+        self._assert_current_url(self.dm_url)
+        self._screenshot("dm2")
+
+        own_nickname = self.test_user1_nickname
+        self._send_nickname(own_nickname, wait_for_button_invisible=False)
+        self._assert_message("You cannot send a message to yourself")
+        self._assert_current_url(self.dm_url)
+        self._screenshot("dm3")
+
+        valid_nickname = "user2"
+        self._send_nickname(valid_nickname, wait_for_button_invisible=True)
+        self._assert_current_url(f"{self.dm_with_base_url}{valid_nickname}/")
+        self._screenshot("dm4")
+
     def _send_message(self, message):
         self._send_to_elem(By.ID, "message-input", message)
         send_button = self._element(By.ID, "message-submit")
         self._click_button(send_button, wait_for_button_invisible=False)
+
+    def _send_nickname(self, nickname, wait_for_button_invisible: bool):
+        self._send_to_elem(By.ID, "nickname-input", nickname)
+        send_button = self._element(By.ID, "nickname-submit")
+        self._click_button(send_button, wait_for_button_invisible)
