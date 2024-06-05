@@ -6,6 +6,15 @@ import {scrollToBottom} from "./ui-util.js";
 export { handleReceiveMessage };
 
 
+export function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 function createMessageElement(senderName, message, timestamp, avatarUrl) {
     let messageElement = document.createElement('li');
     let avatarAndSenderContainer = document.createElement('div');
@@ -28,7 +37,8 @@ function createMessageElement(senderName, message, timestamp, avatarUrl) {
 
     // メッセージテキスト設定
     let messageTextElement = document.createElement('span');
-    messageTextElement.textContent = message;
+    // messageTextElement.textContent = message;
+    messageTextElement.innerHTML = escapeHtml(message);
 
     // アバターと送信者名のコンテナに追加
     avatarAndSenderContainer.appendChild(avatarElement);
