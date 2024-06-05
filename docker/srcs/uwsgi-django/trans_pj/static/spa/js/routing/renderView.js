@@ -4,13 +4,17 @@ import { isLogined } from "../utility/user.js";
 
 
 export const switchPage = (url) => {
-  console.log("history pushState:" + url);
+  // console.log("history pushState:" + url);
   history.pushState(null, null, url);
 
   let currentPath = window.location.pathname;
-  console.log('switchPage url:' + url)
-  console.log('switchPage currentPath:' + currentPath)
-  renderView(currentPath);
+  // console.log('switchPage url:' + url)
+  // console.log('switchPage currentPath:' + currentPath)
+
+  renderView(currentPath).then(() => {
+    // resetState イベントを発行
+    window.dispatchEvent(new CustomEvent('switchPageResetState'));
+  });
 };
 
 
@@ -52,26 +56,26 @@ const getSelectedRoute = (currentPath, routeTable, isLogined) => {
 function getView(path) {
   // 選択されたルートを取得
   const selectedRoute = getSelectedRoute(path, routeTable, isLogined());
-  console.log("renderView: selectedRoute.path: " + selectedRoute.path)
+  // console.log("renderView: selectedRoute.path: " + selectedRoute.path)
 
   // 選択されたルートに対応するビューをインスタンス化して、paramsを渡す
   const url_params = selectedRoute.params;
-  console.log("renderView: params: " + JSON.stringify(url_params));
+  // console.log("renderView: params: " + JSON.stringify(url_params));
   const view = new selectedRoute.view(url_params);
   return view
 }
 
 
 export const renderView = async (path) => {
-  console.log("    renderView 1: path: " + path)
+  // console.log("    renderView 1: path: " + path)
   const view = getView(path)
 
   // HTMLの描画 <div id="app">
   const htmlSrc = await view.getHtml();
   document.querySelector("#spa").innerHTML = htmlSrc;
-  console.log("    renderView 2")
+  // console.log("    renderView 2")
 
   // スクリプトの読み込みと実行
   await view.executeScript();
-  console.log("    renderView 3")
+  // console.log("    renderView 3")
 };
