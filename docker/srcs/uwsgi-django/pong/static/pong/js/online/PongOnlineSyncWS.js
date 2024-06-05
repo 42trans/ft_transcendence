@@ -106,30 +106,34 @@ class PongOnlineSyncWS
 	// ------------------------------
 	onSocketOpen() 
 	{
-		if (DEBUG_FLOW){	
-			console.log("WebSocket connection established.");	}
-		
-		// if (!this.isReconnecting)
-		// {
-			// 初回接続時の処理　{ action: "initialize" }を送信
-			const initData = JSON.stringify({ action: "initialize" });
-			this.socket.send(initData);
-		// } else {
-		// 	// 再接続時の処理
-		// 			if (DEBUG_FLOW){	
-		// 				console.log("WebSocket connection re-established.");	}
-		// 	const initData = JSON.stringify
-		// 	({
-		// 		action: "reconnect",
-		// 		...this.gameStateManager.getState() 
-		// 	});
-		// 			if (DEBUG_DETAIL){	
-		// 				console.log("Sending data to server:", JSON.stringify(dataToSend, null, 2)); }
+		try { 
+			if (DEBUG_FLOW){	
+				console.log("WebSocket connection established.");	}
+			
+			// if (!this.isReconnecting)
+			// {
+				// 初回接続時の処理　{ action: "initialize" }を送信
+				const initData = JSON.stringify({ action: "initialize" });
+				this.socket.send(initData);
+			// } else {
+			// 	// 再接続時の処理
+			// 			if (DEBUG_FLOW){	
+			// 				console.log("WebSocket connection re-established.");	}
+			// 	const initData = JSON.stringify
+			// 	({
+			// 		action: "reconnect",
+			// 		...this.gameStateManager.getState() 
+			// 	});
+			// 			if (DEBUG_DETAIL){	
+			// 				console.log("Sending data to server:", JSON.stringify(dataToSend, null, 2)); }
 
-		// 	this.socket.send(initData);
-		// 	// 接続成功時に再接続試行回数をリセット
-		// 	this.reconnectAttempts = 0;
-		// }
+			// 	this.socket.send(initData);
+			// 	// 接続成功時に再接続試行回数をリセット
+			// 	this.reconnectAttempts = 0;
+			// }
+		} catch (error) {
+			console.error("hth: onSocketOpen() failed", error);
+		}
 	}
 
 	// ------------------------------
@@ -137,9 +141,13 @@ class PongOnlineSyncWS
 	// ------------------------------
 	onSocketClose(event) 
 	{
-		console.log("onSocketClose(): Code:", event.code);
-		// this.attemptReconnect();
-		this.clientApp.socket.close();
+		try {
+			console.log("onSocketClose(): Code:", event.code);
+			// this.attemptReconnect();
+			// this.clientApp.socket.close();
+		} catch (error) {
+			console.error("hth: onSocketClose() failed", error);
+		}
 	}
 	
 	/** close時: 自動再接続 */
@@ -171,13 +179,31 @@ class PongOnlineSyncWS
 	}
 
 
+
+	// createButton(text, id, onClickHandler) 
+	// {
+	// 	try {
+	// 				if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
+
+	// 		const button		= document.createElement('button');
+	// 		button.textContent	= text;
+	// 		button.id			= id;
+	// 		button.classList.add('hth-btn');
+	// 		document.getElementById('hth-main').appendChild(button);
+	// 		button.addEventListener('click', onClickHandler);
+	// 	} catch (error) {
+	// 		console.error('hth:: createButton() failed: ', error);
+	// 	}
+	// }
+
+	
 	/** dev用 再接続チェック用 */
-	devTestCloseButton()
-	{
-		this.clientApp.createButton('Test Close WebSocket', 'hth-pong-online-close-ws-btn', () => {
-			this.socket.close();
-		});
-	}
+	// devTestCloseButton()
+	// {
+	// 	this.createButton('Test Close WebSocket', 'hth-pong-online-close-ws-btn', () => {
+	// 		this.socket.close();
+	// 	});
+	// }
 }
 
 export default PongOnlineSyncWS;
