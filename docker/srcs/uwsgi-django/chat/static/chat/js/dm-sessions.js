@@ -1,6 +1,7 @@
 // dm_sessions.js
 
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 
 export function fetchDMList() {
@@ -59,7 +60,8 @@ export function startDMwithUser() {
                         throw new Error(data.error);
                     });
                 }
-                window.location.pathname = routeTable['dmWithUserBase'].path + dmTargetNickname + '/';
+                const routePath = routeTable['dmWithUserBase'].path + dmTargetNickname + '/'
+                switchPage(routePath)
             })
             .catch(error => {
                 messageArea.textContent = error.message;
