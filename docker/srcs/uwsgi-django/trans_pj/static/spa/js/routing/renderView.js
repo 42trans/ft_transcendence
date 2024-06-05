@@ -10,7 +10,11 @@ export const switchPage = (url) => {
   let currentPath = window.location.pathname;
   console.log('switchPage url:' + url)
   console.log('switchPage currentPath:' + currentPath)
-  renderView(currentPath);
+
+  renderView(currentPath).then(() => {
+    // resetState イベントを発行
+    window.dispatchEvent(new CustomEvent('switchPageResetState'));
+  });
 };
 
 

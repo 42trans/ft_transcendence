@@ -63,9 +63,15 @@ class PongOnlineClientApp
 	}
 	
 	initEndButton() {
-		const endGameButton = document.getElementById('hth-pong-online-back-to-home-Btn');
+		const endGameButton = document.getElementById('hth-pong-online-back-to-home-btn');
 		if (!endGameButton) return; 
 		endGameButton.style.display = 'none'; 
+		window.addEventListener('switchPageResetState', () => {
+			alert("test");
+			if (endGameButton) {
+				endGameButton.style.display = 'none';
+			}
+		});
 	}
 
 	
