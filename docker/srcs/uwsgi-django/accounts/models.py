@@ -114,6 +114,9 @@ class UserManager(BaseUserManager):
             return False, "The password cannot be None"
         if not password:
             return False, "The password cannot be set"
+        if CustomUser.kPASSWORD_MAX_LENGTH < len(password):
+            err = f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less"
+            return False, err
         try:
             validate_password(password, user=tmp_user)
             return True, None
@@ -178,6 +181,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     kNICKNAME_MAX_LENGTH = 30
     kEMAIL_MIN_LENGTH = 5   # 最小構成: a@b.c
     kEMAIL_MAX_LENGTH = 64  # RFC5321: local@domain, local:max64, domain:max255
+    kPASSWORD_MAX_LENGTH = 64
     email = models.EmailField(_("email address"), unique=True)
     nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
     enable_2fa = models.BooleanField(_("enable 2fa"), default=False)
