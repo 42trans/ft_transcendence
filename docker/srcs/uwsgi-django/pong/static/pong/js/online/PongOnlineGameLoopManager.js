@@ -9,6 +9,7 @@ let TEST_TRY1 = 0;
 let TEST_TRY2 = 0;
 let TEST_TRY3 = 0;
 /**
+ * 参考:【window.cancelAnimationFrame() - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/Window/cancelAnimationFrame>
  */
 class PongOnlineGameLoopManager 
 {
@@ -80,7 +81,6 @@ class PongOnlineGameLoopManager
 						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 			} catch(error) {
 				console.error("hth: gameLoop error:", error);
-				// this.stopGameLoop();
 			}
 		};
 		// 最初のフレームを要求
@@ -95,7 +95,6 @@ class PongOnlineGameLoopManager
 		try {
 			// 最終スコアの描画: 終了フラグ受信後に、最後に一度だけ描画する（静止画像）
 			this.renderer.render(this.ctx, this.field, gameState);
-
 					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 		} catch(error) {
 			console.error("hth: stopGameLoop():  renderer.render() failed:", error);
@@ -103,16 +102,17 @@ class PongOnlineGameLoopManager
 
 		try {
 			// ゲーム終了時に Back to Home ボタンリンクを表示する
-			// this.createEndGameButton();
 			this.updateEndGameBtn();
-
+			// ws接続をcloseする
+			// このタイミングは、loopの最後であり、サーバーからのis_running=false受け取り直後でもある
+			this.clientApp.socket.close();
+					if (DEBUG_FLOW) {	console.log("stopGameLoop(): socket.close");	}
 					if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 		} catch(error) {
 			console.error("hth: stopGameLoop(): updateEndGameBtn() failed:", error);
 		}
 
 		// アニメーションを指定してキャンセル
-		// 参考:【window.cancelAnimationFrame() - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/Window/cancelAnimationFrame>
 		if (this.animationFrameId) {
 			cancelAnimationFrame(this.animationFrameId);
 			this.animationFrameId = null;
@@ -124,18 +124,7 @@ class PongOnlineGameLoopManager
 	}
 	
 
-	// ゲーム終了時に Back to Home ボタンリンクを表示する
-	// createEndGameButton() 
-	// {
-	// 	this.clientApp.createButton('Back to Home', 'hth-pong-online-back-to-home-btn', () => {
-	// 		// TODO_ft:SPA
-	// 		// history.pushState(null, null, routeTable['top'].path);
-	// 		// renderView(routeTable['top'].path); // 必要に応じて再描画
-	// 		switchPage(routeTable['top'].path); 
-	// 		// window.location.href = routeTable['top'].path;
-	// 	});
-	// }
-	
+	// ゲーム終了時に Back to Home ボタンリンクを表示する	
 	updateEndGameBtn() 
 	{
 		try {
