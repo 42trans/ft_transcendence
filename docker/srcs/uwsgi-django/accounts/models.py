@@ -81,6 +81,9 @@ class UserManager(BaseUserManager):
     def _is_valid_nickname(self, nickname):
         if not nickname:
             return False, "The given nickname must be set"
+        if len(nickname) < CustomUser.kNICKNAME_MIN_LENGTH:
+            err = f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"
+            return False, err
         if CustomUser.kNICKNAME_MAX_LENGTH < len(nickname):
             err = f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"
             return False, err
@@ -161,6 +164,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     - nickname: A unique nickname for the user. if OAuth with 42 used, 42-login by default.
     - bloking_users: A list of bloking users
     """
+    kNICKNAME_MIN_LENGTH = 3
     kNICKNAME_MAX_LENGTH = 30
     email = models.EmailField(_("email address"), unique=True)
     nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
