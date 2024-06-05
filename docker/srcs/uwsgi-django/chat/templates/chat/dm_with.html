@@ -101,7 +101,7 @@
 
 
 {% if not isSystemUser %}
-    <h2>DM with <a href="{{ url_config.kSpaUserInfoUrlBase }}{{ target_nickname }}/">{{ target_nickname }}</a></h2>
+    <h2>DM with <a href="{{ url_config.kSpaUserInfoUrlBase }}{{ target_nickname }}/" data-link>{{ target_nickname }}</a></h2>
 {% else %}
     <h2>System Message</h2>
 {% endif %}
