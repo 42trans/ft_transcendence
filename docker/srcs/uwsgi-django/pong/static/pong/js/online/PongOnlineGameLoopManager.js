@@ -127,7 +127,7 @@ class PongOnlineGameLoopManager
 	// ゲーム終了時に Back to Home ボタンリンクを表示する
 	// createEndGameButton() 
 	// {
-	// 	this.clientApp.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {
+	// 	this.clientApp.createButton('Back to Home', 'hth-pong-online-back-to-home-btn', () => {
 	// 		// TODO_ft:SPA
 	// 		// history.pushState(null, null, routeTable['top'].path);
 	// 		// renderView(routeTable['top'].path); // 必要に応じて再描画
@@ -139,7 +139,7 @@ class PongOnlineGameLoopManager
 	updateEndGameBtn() 
 	{
 		try {
-			const endGameButton = document.getElementById('hth-pong-online-back-to-home-Btn');
+			const endGameButton = document.getElementById('hth-pong-online-back-to-home-btn');
 			if (endGameButton) {
 				endGameButton.style.display = 'block';
 				endGameButton.addEventListener('click', () => {
