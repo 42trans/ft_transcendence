@@ -97,7 +97,7 @@ class TestConfig(LiveServerTestCase):
         """要素を取得する 必要に応じて再取得を試みる """
         for attempt in range(retries):
             try:
-                wait = WebDriverWait(driver=self.driver, timeout=30)
+                wait = WebDriverWait(driver=self.driver, timeout=10)
                 element = wait.until(EC.visibility_of_element_located((by, value)))
 
                 self.assertTrue(element.is_displayed(),
@@ -194,6 +194,11 @@ class TestConfig(LiveServerTestCase):
             EC.text_to_be_present_in_element_value((by, elem_value), send_value)
         )
 
+    def _wait_to_be_url(self, url):
+        WebDriverWait(self.driver, 10).until(
+            EC.url_to_be(url)
+        )
+
     def _wait_display_message(self, expected_message):
         WebDriverWait(driver=self.driver, timeout=10).until(
             EC.text_to_be_present_in_element(
@@ -203,18 +208,17 @@ class TestConfig(LiveServerTestCase):
         )
 
     def _send_to_elem(self, by, elem_value, send_value, retries=5):
+        wait = WebDriverWait(driver=self.driver, timeout=10)
+        wait.until(EC.presence_of_element_located((by, elem_value)))
+
         for attempt in range(retries):
             try:
-                elem = self._element(by, elem_value)
+                # elem = self._element(by, elem_value)
+                elem = wait.until(EC.presence_of_element_located((by, elem_value)))
                 elem.clear()  # 入力済みのテキストをクリア
                 elem.send_keys(send_value)
                 return
-            except StaleElementReferenceException:
-                if attempt < retries - 1:
-                    time.sleep(3)  # 少し待ってから再試行
-                else:
-                    raise
-            except TimeoutException:
+            except (StaleElementReferenceException, TimeoutException):
                 if attempt < retries - 1:
                     time.sleep(3)  # 少し待ってから再試行
                 else:
@@ -223,14 +227,14 @@ class TestConfig(LiveServerTestCase):
     def _access_to(self, url):
         self.driver.get(url)
 
-    def _click_link(self, target, wait_for_link_invisible=True):
-        """
-        linkはwait_for_link_invisible=Trueでtimeoutになる？？
-        """
-        # target.click()
+    def _click_link(self, target, wait_for_link_invisible=False):
+        url = target.get_attribute("href")
         self.driver.execute_script("arguments[0].click();", target)
+
         if wait_for_link_invisible:
             self._wait_invisible(target)
+        else:
+            self._wait_to_be_url(url)
 
     def _click_button(self, target, wait_for_button_invisible=True):
         self.driver.execute_script("arguments[0].click();", target)
@@ -323,7 +327,6 @@ class TestConfig(LiveServerTestCase):
 
     def _create_new_user(self, email, nickname, password):
         self._move_top_to_signup()
-        time.sleep(1)
 
         self._send_to_elem(By.ID, "email", email)
         self._send_to_elem(By.ID, "nickname", nickname)
