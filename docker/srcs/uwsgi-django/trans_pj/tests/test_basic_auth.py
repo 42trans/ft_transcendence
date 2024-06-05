@@ -107,6 +107,48 @@ class BasicAuthTest(TestConfig):
         self._assert_message("This email is already in use")
         self._assert_current_url(self.signup_url)
 
+        # 不正なemail
+        user1_email = "invalid-email.com"
+        nickname = self._generate_random_string()
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(user1_email,
+                     nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message("有効なメールアドレスを入力してください。")  # todo message
+        self._assert_current_url(self.signup_url)
+
+        # 不正なemail（too short）
+        user1_email = "a@b"
+        nickname = self._generate_random_string()
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(user1_email,
+                     nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message(f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters")
+        self._assert_current_url(self.signup_url)
+
+        # 不正なemail（too long）
+        user1_email = f"a@{'b' * 64}.com"
+        nickname = self._generate_random_string()
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(user1_email,
+                     nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message(f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less")
+        self._assert_current_url(self.signup_url)
+
         # すでに存在するnicknmae
         new_email = "new_user@example.com"
         user1_nickname = "user1"
