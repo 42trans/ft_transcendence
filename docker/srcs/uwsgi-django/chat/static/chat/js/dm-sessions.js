@@ -79,6 +79,7 @@ function createDMSessionLinks(data) {
 
         // リンクの設定
         link.href = `${routeTable['dmSessions'].path}${dmSession.target_nickname}/`;
+        link.setAttribute('data-link', '');
 
         // システムメッセージの場合は表示を変更
         if (dmSession.is_system_message) {
