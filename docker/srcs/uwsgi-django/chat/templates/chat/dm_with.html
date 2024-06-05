@@ -121,7 +121,7 @@
                 <span class="sender-name">{{ message.sender.nickname }}</span>
             </div>
             <div class="message-content">
-                <span>{{ message.message|safe }}</span>
+                <span>{{ message.message|escape }}</span>
                 <span class="timestamp">{{ message.timestamp|date:"Y-m-d H:i:s" }}</span>
             </div>
         </li>

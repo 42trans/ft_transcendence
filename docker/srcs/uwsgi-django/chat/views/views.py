@@ -51,7 +51,9 @@ class ValidateDmTargetAPI(APIView):
 
     def get(self, request, target_nickname) -> Response:
         user, other_user, err = _get_dm_users(request, target_nickname)
+        logger.error(f"ValidateDmTargetAPI target: {target_nickname}")
         if err is not None:
+            logger.error(f"ValidateDmTargetAPI error: {err}")
             return Response({'error': err}, status=400)
         return Response({'status': 'ok'}, status=200)
 
