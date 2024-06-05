@@ -6,7 +6,7 @@ import {scrollToBottom} from "./ui-util.js";
 export { handleReceiveMessage };
 
 
-function escapeHtml(unsafe) {
+export function escapeHtml(unsafe) {
     return unsafe
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
