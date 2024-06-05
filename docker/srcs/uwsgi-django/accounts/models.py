@@ -70,7 +70,17 @@ class UserManager(BaseUserManager):
         if CustomUser.objects.filter(email=email).exists():
             return False, "This email is already in use"
 
+        # 長さの判定
+        if len(email) < CustomUser.kEMAIL_MIN_LENGTH:
+            err = f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters"
+            return False, err
+        if CustomUser.kEMAIL_MAX_LENGTH < len(email):
+            err = f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less"
+            return False, err
+
         try:
+            # local@domainの判定
+            # https://docs.djangoproject.com/en/5.0/ref/validators/#emailvalidator
             validate_email(email)
             return True, None
         except ValidationError as e:
@@ -166,6 +176,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     """
     kNICKNAME_MIN_LENGTH = 3
     kNICKNAME_MAX_LENGTH = 30
+    kEMAIL_MIN_LENGTH = 5   # 最小構成: a@b.c
+    kEMAIL_MAX_LENGTH = 64  # RFC5321: local@domain, local:max64, domain:max255
     email = models.EmailField(_("email address"), unique=True)
     nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
     enable_2fa = models.BooleanField(_("enable 2fa"), default=False)
