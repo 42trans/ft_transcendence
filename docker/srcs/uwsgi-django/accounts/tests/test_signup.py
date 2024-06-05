@@ -85,6 +85,26 @@ class SignUpAPITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("This nickname is already in use", response.json()['error'])
 
+    def test_invalid_password_too_short(self):
+        user_data = self.user_data.copy()
+        user_data['email'] = 'test1@signup.com'
+        user_data['nickname'] = 'test1'
+        user_data['password1'] = "pass0"
+        user_data['password2'] = "pass0"
+        response = self.client.post(self.signup_api_url, user_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("このパスワードは短すぎます。最低 8 文字以上必要です。", response.json()['error'])
+
+    def test_invalid_password_too_long(self):
+        user_data = self.user_data.copy()
+        user_data['email'] = 'test1@signup.com'
+        user_data['nickname'] = 'test1'
+        user_data['password1'] = "pass0" + "0123456789" * 6
+        user_data['password2'] = "pass0" + "0123456789" * 6
+        response = self.client.post(self.signup_api_url, user_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less", response.json()['error'])
+
     def test_successful_signup(self):
         user_data = self.user_data.copy()
         user_data['email'] = 'test1@signup.com'

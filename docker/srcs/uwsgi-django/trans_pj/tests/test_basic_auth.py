@@ -205,6 +205,20 @@ class BasicAuthTest(TestConfig):
         self._assert_message("passwords don't match")
         self._assert_current_url(self.signup_url)
 
+        # 不正なpassword（too long）
+        new_email = "new_user@example.com"
+        new_nickname = "newTestUser"
+        password1 = "pass0" + "0123456789" * 6
+        password2 = "pass0" + "0123456789" * 6
+
+        self._signup(new_email,
+                     new_nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message(f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less")
+        self._assert_current_url(self.signup_url)
+
     def _signup(self,
                 email,
                 nickname,
