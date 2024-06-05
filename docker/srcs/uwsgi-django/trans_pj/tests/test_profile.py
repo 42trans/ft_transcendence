@@ -162,6 +162,14 @@ class ProfileTest(TestConfig):
         self._assert_current_url(self.edit_profile_url)
         # self._screenshot("edit_pass_3")
 
+        # new passwordが不正(too long)
+        current_pass = "pass0123"
+        new_pass = "pass0" + "0123456789" * 6
+        self._edit_password(current_pass, new_pass, wait_for_button_invisible=False)
+        self._assert_message(f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less")
+        self._assert_current_url(self.edit_profile_url)
+        # self._screenshot("edit_pass_3")
+
     ############################################################################
 
     def _assert_profile_email(self, expected_email):
