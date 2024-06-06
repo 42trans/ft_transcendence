@@ -4,6 +4,7 @@ header {
 	align-items: center; 
 	justify-content: space-between; 
 	box-sizing: border-box;
+	background: #131313;
 }
 
 #hth-site-logo {

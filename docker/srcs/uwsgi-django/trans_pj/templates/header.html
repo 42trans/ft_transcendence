@@ -53,27 +53,28 @@ fixed-top:
 			mb-2
 			mb-md-0">
 
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+			{% comment %} <li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="{{ url_config.kSpaHomeUrl }}"
-									data-link>TransPJ-Index</a></li>
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									data-link>TransPJ-Index</a></li> {% endcomment %}
+			{% comment %} <li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="/lang/"
-									data-link>Lang</a></li>
+									data-link>Lang</a></li> {% endcomment %}
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="{{ url_config.kSpaGame2D }}"
-									data-link>2D-Pong</a></li>
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+									data-link>Free Play</a></li>
+									{% comment %} data-link>2D-Pong</a></li> {% endcomment %}
+			{% comment %} <li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="{{ url_config.kSpaGame3D }}"
-									data-link>3D-Pong</a></li>
+									data-link>3D-Pong</a></li> {% endcomment %}
 
 		{% if user.is_authenticated %}
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="{{ url_config.kSpaTournamentUrl }}"
 									data-link>Tournament</a></li>
 
-			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
+			{% comment %} <li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="{{ url_config.kSpaGameHistoryUrl }}"
-									data-link>Game-History</a></li>
+									data-link>Game-History</a></li> {% endcomment %}
 			<li class="nav-item"><a class="nav-link hth-nav-link hth-menu-fsize nav__link"
 									href="{{ url_config.kSpaUserFriendUrl }}"
 									data-link>Friend</a></li>

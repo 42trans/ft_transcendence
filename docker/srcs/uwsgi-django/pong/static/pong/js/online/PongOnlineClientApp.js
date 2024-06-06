@@ -65,7 +65,8 @@ class PongOnlineClientApp
 
 			this.startGameButton = document.getElementById('hth-pong-online-start-game-btn');
 			if (!this.startGameButton) {
-				throw new Error('Start Game button not found');
+				// throw new Error('Start Game button not found');
+				return;
 			}
 			this.startGameButton.style.display = 'block' 
 
