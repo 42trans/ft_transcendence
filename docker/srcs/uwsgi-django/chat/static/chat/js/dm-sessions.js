@@ -2,6 +2,7 @@
 
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { escapeHtml } from "./module/handle-receive-message.js"
 
 
 export function fetchDMList() {
@@ -39,7 +40,7 @@ export function startDMwithUser() {
 
     // ボタンクリックでDM画面へのリダイレクト
     submitButton.onclick = function() {
-        const dmTargetNickname = input.value;
+        const dmTargetNickname = escapeHtml(input.value);
         const messageArea = document.getElementById('message-area');
 
         if (!dmTargetNickname) {
@@ -55,16 +56,24 @@ export function startDMwithUser() {
             }
         })
             .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
+                return response.json().then(data => {
+                    if (!response.ok) {
                         throw new Error(data.error);
-                    });
-                }
-                const routePath = routeTable['dmWithUserBase'].path + dmTargetNickname + '/'
-                switchPage(routePath)
+                    } else {
+                        // 検証が成功した場合にdiWithUserに遷移
+                        const routePath = routeTable['dmWithUserBase'].path + dmTargetNickname + '/'
+                        switchPage(routePath);
+                    }
+                });
             })
             .catch(error => {
-                messageArea.textContent = error.message;
+                console.log('startDMwithUser 6');
+                if (error.message.includes('<!doctype')) {
+                    // <script></script>入力された場合。APIにたどり着く前にエラー判定されている
+                    messageArea.textContent = "The specified user does not exist";
+                } else {
+                    messageArea.textContent = error.message;
+                }
             });
     }
 }

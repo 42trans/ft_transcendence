@@ -84,10 +84,16 @@ class DMTest(TestConfig):
         self._assert_current_url(self.dm_url)
         # self._screenshot("dm3")
 
+        xss_input = '<script>alert("hello")</script>'
+        self._send_nickname(xss_input, wait_for_button_invisible=False)
+        self._assert_message("The specified user does not exist")
+        self._assert_current_url(self.dm_url)
+        # self._screenshot("dm4")
+
         valid_nickname = "user2"
         self._send_nickname(valid_nickname, wait_for_button_invisible=True)
         self._assert_current_url(f"{self.dm_with_base_url}{valid_nickname}/")
-        # self._screenshot("dm4")
+        # self._screenshot("dm5")
 
     def _send_message(self, message):
         self._send_to_elem(By.ID, "message-input", message)
