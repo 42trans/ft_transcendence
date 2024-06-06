@@ -34,8 +34,10 @@
 
 
         {% if not isSystemUser %}
-        <input id="message-input" type="text">
-        <input id="message-submit" type="button" value="Send">
+        <div class="message-container">
+            <input id="message-input" type="text">
+            <input id="message-submit" type="button" value="Send">
+        </div>
     {% endif %}
 
     </div>

@@ -15,10 +15,24 @@
 	box-sizing: border-box; /* paddingを含む全体のwidthとheightが600pxと400pxになるように設定 */
 }
 
+/* DM送信フォームとボタンのコンテナ */
+.message-container {
+	display: flex;
+	align-items: center;
+}
+
 /* DM送信フォーム */
 #message-input {
-	width: 80%;   
-	/* width: 600px;    */
+	flex: 1;
+	margin-right: 10px;
+	/* width: 90%; */
+	/* width: 600px; */
+}
+
+/* DM送信ボタン */
+#message-submit {
+	width: 60px;
+	/*width: 6%;*/
 }
 
 /*!* メッセージコンテンツのスタイル *!*/
