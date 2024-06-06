@@ -226,6 +226,7 @@ class TestConfig(LiveServerTestCase):
 
     def _access_to(self, url):
         self.driver.get(url)
+        self._wait_to_be_url(url)
 
     def _click_link(self, target, wait_for_link_invisible=False):
         url = target.get_attribute("href")
