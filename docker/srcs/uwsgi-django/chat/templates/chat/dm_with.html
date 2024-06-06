@@ -2,104 +2,6 @@
 
 {% load static %}
 
-     {% comment %} メッセージのスタイル（仮仕様）  {% endcomment %}
-    <style>
-        /* DM表示領域 */
-        #dm-log {
-            width: 600px; /* メッセージログの幅を入力フィールドと同じにする */
-            max-height: 400px; /* メッセージログの最大高さを設定 */
-            overflow-y: auto; /* 縦方向にスクロールバーを表示 */
-            padding: 10px; /* 内側に余白を設定 */
-            box-sizing: border-box; /* paddingを含む全体のwidthとheightが600pxと400pxになるように設定 */
-        }
-
-        /* DM送信フォーム */
-        #message-input {
-            width: 600px;               /* 幅を600pxに設定 */
-        }
-
-        /*!* メッセージコンテンツのスタイル *!*/
-        .message-content {
-            display: flex;
-            flex-direction: column;
-            max-width: 100%;             /* メッセージの最大幅を設定 */
-            width: fit-content; /* コンテンツの幅に合わせて自動調整 */
-            word-wrap: break-word; /* 長い単語を折り返す */
-            overflow-wrap: break-word; /* 長い非単語も折り返す */
-            word-break: break-all; /* 長い単語を強制的に折り返す */
-        }
-
-        /* アバターとsender名を含むコンテナ */
-        .avatar-and-sender {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-right: 10px;
-        }
-
-        .sender-name {
-            font-size: 0.8em;               /* 小さめのフォントサイズ */
-            color: #666;                    /* 色は暗めに設定 */
-            margin-top: 5px;  /* アバターと名前の間に少しスペースを追加 */
-        }
-
-        #dm-log li {
-            display: flex;
-            align-items: flex-start;  /* アバターとメッセージ内容を上端で揃える */
-            margin-bottom: 1.3em;     /* メッセージ間の間隔を1.5倍に設定 */
-            padding: 5px;             /* 内側の余白を設定 */
-            border-radius: 5px;       /* 角の丸みを10pxで設定 */
-            clear: both;              /* 他の要素との重なりを防ぐ */
-            background-color: #f0f0f0;/* メッセージの背景色を設定 */
-            max-width: 100%;              /* リストの幅を100%に設定 */
-        }
-
-        .timestamp {
-            font-size: 0.5em;               /* 小さめのフォントサイズ */
-            color: #666;                    /* 色は暗めに設定 */
-            align-self: flex-end;     /* タイムスタンプを右揃え */
-            text-align: right;        /* テキストも右揃え */
-            width: 100%;              /* 幅を親要素の幅いっぱいに広げる */
-            padding-top: 5px;         /* メッセージとの間隔を設定 */
-        }
-
-        .avatar {
-            width: 30px;              /* 幅を30pxに設定 */
-            height: 30px;             /* 高さを30pxに設定 */
-            border-radius: 50%;       /* 角を円形にする */
-            object-fit: cover;        /* 画像のアスペクト比を維持しながら、設定された領域に収まるようにする */
-        }
-
-        /* 受信者側のメッセージ */
-        #dm-log li.dm-to {
-            text-align: left;           /* dmToのメッセージを左詰め */
-            float: left;                /* 左側に配置 */
-            background-color: #808080;  /* 背景色 */
-            color: white;               /* 文字色 */
-            max-width: 70%;             /* DM表示領域の70%の幅 */
-        }
-
-        /* 送信者側のメッセージ */
-        #dm-log li.dm-from {
-            text-align: left;           /* 自分のメッセージを右詰め */
-            float: right;               /* 右側に配置 */
-            background-color: #b0c4de;  /* 背景色 */
-            color: white;               /* 文字色 */
-            max-width: 70%;             /* DM表示領域の70%の幅 */
-        }
-
-        /* 受信者側のメッセージ */
-        #dm-log li.system-message {
-            text-align: left;           /* dmToのメッセージを左詰め */
-            float: left;                /* 左側に配置 */
-            background-color: #483d8b;  /* 背景色 */
-            color: white;               /* 文字色 */
-            max-width: 70%;             /* DM表示領域の70%の幅 */
-        }
-
-    </style>
-
-
 {% if not isSystemUser %}
     <h2>DM with <a href="{{ url_config.kSpaUserInfoUrlBase }}{{ target_nickname }}/" data-link>{{ target_nickname }}</a></h2>
 {% else %}
@@ -108,36 +10,40 @@
 
 
 {% if not isBlockingUser %}
-     {% comment %} DM logを表示  {% endcomment %}
-    <ul id="dm-log" style="list-style: none;">
-        {% for message in messages %}
-        <li class="{{ message.sender.nickname|slugify }}" data-sender-name="{{ message.sender.nickname }}">
-            <div class="avatar-and-sender">
-                {% if message.sender.nickname == target_nickname %}
-                    <img src="{{ other_avatar_url }}" alt="Avatar" class="avatar">
-                {% else %}
-                    <img src="{{ user_avatar_url }}" alt="Avatar" class="avatar">
-                {% endif %}
-                <span class="sender-name">{{ message.sender.nickname }}</span>
-            </div>
-            <div class="message-content">
-                <span>{{ message.message|escape }}</span>
-                <span class="timestamp">{{ message.timestamp|date:"Y-m-d H:i:s" }}</span>
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
+    <div id="dm-container">
+    
+        {% comment %} DM logを表示  {% endcomment %}
+        <ul id="dm-log" style="list-style: none;">
+            {% for message in messages %}
+            <li class="{{ message.sender.nickname|slugify }}" data-sender-name="{{ message.sender.nickname }}">
+                <div class="avatar-and-sender">
+                    {% if message.sender.nickname == target_nickname %}
+                        <img src="{{ other_avatar_url }}" alt="Avatar" class="avatar">
+                    {% else %}
+                        <img src="{{ user_avatar_url }}" alt="Avatar" class="avatar">
+                    {% endif %}
+                    <span class="sender-name">{{ message.sender.nickname }}</span>
+                </div>
+                <div class="message-content">
+                    <span>{{ message.message|escape }}</span>
+                    <span class="timestamp">{{ message.timestamp|date:"Y-m-d H:i:s" }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
 
-    {% if not isSystemUser %}
-    <input id="message-input" type="text">
-    <input id="message-submit" type="button" value="Send">
+
+        {% if not isSystemUser %}
+        <div class="message-container">
+            <input id="message-input" type="text">
+            <input id="message-submit" type="button" value="Send">
+        </div>
     {% endif %}
 
+    </div>
 {% else %}
     <p>[blocking user]</p>
 {% endif %}
 
 
 {{ target_nickname|json_script:"target_nickname" }}
-
-{% comment %} <script type="module" src="{% static 'chat/js/dm-with-user.js' %}"></script> {% endcomment %}

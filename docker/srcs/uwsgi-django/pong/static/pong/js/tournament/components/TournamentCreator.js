@@ -37,54 +37,54 @@ class TournamentCreator
 	_generateFormHTML(csrfToken, organizerNickname)
 	{
 		return `
-		<main class="form-sign m-auto" id="signup-form">
+		<div class="form-sign m-auto" id="tournament-create-form">
 				<form class="hth-sign-form" onsubmit="signupUser(event)">
 					<h2 class="slideup-text mb-3">Create Tournament</h2>
 					
 					<input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
-					<input type="hidden" id="date" name="date" readonly>
+					<input type="hidden"  name="date" readonly>
 
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="name" name="name" placeholder="Tournament Name" value="My Tournament">
+						<input type="text" class="form-control" name="name" placeholder="Tournament Name" value="My Tournament">
 						<label for="floatingInput">My Tournament</label>
 	 				</div>
 					
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="${organizerNickname}" readonly>
+						<input type="text" class="form-control" name="nickname" placeholder="Nickname" value="${organizerNickname}" readonly>
 						<label for="floatingInput">Nickname1</label>
 	 				</div>
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname2">
+						<input type="text" class="form-control" name="nickname" placeholder="Nickname" value="Nickname2">
 						<label for="floatingInput">Player2</label>
 	 				</div>
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname3">
+						<input type="text" class="form-control" name="nickname" placeholder="Nickname" value="Nickname3">
 						<label for="floatingInput">Player3</label>
 	 				</div>
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname4">
+						<input type="text" class="form-control" name="nickname" placeholder="Nickname" value="Nickname4">
 						<label for="floatingInput">Player4</label>
 	 				</div>
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname5">
+						<input type="text" class="form-control" name="nickname" placeholder="Nickname" value="Nickname5">
 						<label for="floatingInput">Player5</label>
 	 				</div>
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname6">
+						<input type="text" class="form-control" name="nickname" placeholder="Nickname" value="Nickname6">
 						<label for="floatingInput">Player6</label>
 	 				</div>
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname7">
+						<input type="text" class="form-control" name="nickname" placeholder="Nickname" value="Nickname7">
 						<label for="floatingInput">Player7</label>
 	 				</div>
 					<div class="slideup-text form-floating">
-						<input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname" value="Nickname8">
+						<input type="text" class="form-control" name="nickname" placeholder="Nickname" value="Nickname8">
 						<label for="floatingInput">Player8</label>
 	 				</div>
 					
 					<button class="hth-btn my-4" type="submit">Submit</button>
 			</form>
-		</main>
+		</div>
 		`;
 	}
 	/** トーナメントを保存する */
