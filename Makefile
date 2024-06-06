@@ -74,7 +74,7 @@ build_up_three: init
 	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) up -d
 	
 .PHONY: build_up_default
-build_up_default: init
+build_up_default: init build_up_three vite_npm_run_build django_collectstatic
 	docker-compose $(COMPOSE_FILES_ARGS) build
 	docker-compose $(COMPOSE_FILES_ARGS) up -d
 
