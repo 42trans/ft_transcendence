@@ -1,6 +1,7 @@
 // dm_sessions.js
 
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { escapeHtml } from "./module/handle-receive-message.js"
 
 
@@ -42,12 +43,10 @@ export function startDMwithUser() {
         const dmTargetNickname = escapeHtml(input.value);
         const messageArea = document.getElementById('message-area');
 
-        console.log('startDMwithUser 1 target: ' + dmTargetNickname)
         if (!dmTargetNickname) {
             messageArea.textContent = "Nickname cannot be empty";
             return;
         }
-        console.log('startDMwithUser 2')
 
         fetch(`/chat/api/validate-dm-target/${dmTargetNickname}/`, {
             method: 'GET',
@@ -58,16 +57,13 @@ export function startDMwithUser() {
         })
             .then(response => {
                 return response.json().then(data => {
-                    console.log('startDMwithUser 3')
                     if (!response.ok) {
-                        console.log('startDMwithUser 4')
-                        // 検証が成功した場合にdiWithUserに遷移
                         throw new Error(data.error);
                     } else {
-                        console.log('startDMwithUser 5')
-                        window.location.pathname = routeTable['dmWithUserBase'].path + dmTargetNickname + '/';
+                        // 検証が成功した場合にdiWithUserに遷移
+                        const routePath = routeTable['dmWithUserBase'].path + dmTargetNickname + '/'
+                        switchPage(routePath);
                     }
-                    console.log('startDMwithUser 5')
                 });
             })
             .catch(error => {
@@ -94,6 +90,7 @@ function createDMSessionLinks(data) {
 
         // リンクの設定
         link.href = `${routeTable['dmSessions'].path}${dmSession.target_nickname}/`;
+        link.setAttribute('data-link', '');
 
         // システムメッセージの場合は表示を変更
         if (dmSession.is_system_message) {
