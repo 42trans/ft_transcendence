@@ -219,6 +219,7 @@ class TestConfig(LiveServerTestCase):
                 return
             except (StaleElementReferenceException, TimeoutException):
                 if attempt < retries - 1:
+                    print(f"send_to_elem(): {elem_value}, retry: {attempt + 1}/{retries}")
                     time.sleep(3)  # 少し待ってから再試行
                 else:
                     raise
