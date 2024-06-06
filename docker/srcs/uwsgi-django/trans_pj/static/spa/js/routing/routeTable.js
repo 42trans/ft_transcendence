@@ -6,6 +6,7 @@ import FreePlay     from "../views/pong/FreePlay.js";
 import Tournament   from "../views/pong/Tournament.js";
 import Game2D       from "../views/pong/Game2D.js";
 import Game3D       from "../views/pong/Game3D.js";
+import GameMatch    from "../views/pong/GameMatch.js";
 
 import GameHistory  from "../views/user/GameHistory.js";
 
@@ -44,6 +45,7 @@ export const routeTable = {
   tournament    : { path: "/app/game/tournament/",   view: Tournament },
   game2d        : { path: "/app/game/game-2d/",      view: Game2D },
   game3d        : { path: "/app/game/game-3d/",      view: Game3D },
+  gameMatch     : { path: "/app/game/match/:matchId/",  view: GameMatch },
 
   gameHistory   : { path: "/app/user/game-history/", view: GameHistory },
 

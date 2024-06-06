@@ -208,8 +208,7 @@ class TestConfig(LiveServerTestCase):
         )
 
     def _send_to_elem(self, by, elem_value, send_value, retries=5):
-        wait = WebDriverWait(driver=self.driver, timeout=10)
-        wait.until(EC.presence_of_element_located((by, elem_value)))
+        wait = WebDriverWait(driver=self.driver, timeout=20)
 
         for attempt in range(retries):
             try:
@@ -220,6 +219,7 @@ class TestConfig(LiveServerTestCase):
                 return
             except (StaleElementReferenceException, TimeoutException):
                 if attempt < retries - 1:
+                    print(f"send_to_elem(): {elem_value}, retry: {attempt + 1}/{retries}")
                     time.sleep(3)  # 少し待ってから再試行
                 else:
                     raise
@@ -230,6 +230,7 @@ class TestConfig(LiveServerTestCase):
     def _click_link(self, target, wait_for_link_invisible=False):
         url = target.get_attribute("href")
         self.driver.execute_script("arguments[0].click();", target)
+        time.sleep(1)  # 明示的に待機
 
         if wait_for_link_invisible:
             self._wait_invisible(target)

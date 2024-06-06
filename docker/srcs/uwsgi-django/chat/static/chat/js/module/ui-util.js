@@ -11,12 +11,6 @@ function setupSendKeyEventListener() {
     // Enterキーで送信
     input.addEventListener('keydown', (event) => {
         if (event.keyCode === 13) {
-            // 空文字列の送信はしない
-            if (input.value === '') {
-                return
-            }
-
-            // console.log("sendKeyEventListener send")
             submitButton.click();
         }
     });
