@@ -1,6 +1,8 @@
 // logout.js
 
 import { disconnectOnlineStatusWebSocket } from "./online-status.js";
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 
 function handleLogout() {
@@ -22,7 +24,8 @@ function handleLogout() {
 			disconnectOnlineStatusWebSocket(data.user_id)
 
 			// alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
-			window.location.href = data.redirect;
+			switchPage(data.redirect)
+
 		} else {
 			throw new Error('No message in response');
 		}
