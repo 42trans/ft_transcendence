@@ -55,13 +55,29 @@ const setupBodyClickListener = () => {
   console.log('clickEvent: path: ' + window.location.pathname);
   stopGamePageAnimation()
 
+
     const linkElement = event.target.closest("[data-link]");
-    if (linkElement) {
+    // 条件にドロップダウンメニューを追加
+    if (linkElement && linkElement.closest('.dropdown-menu')) {
+    // if (linkElement) {
+
       console.log('clickEvent: taga-link');
       event.preventDefault();
       const url = linkElement.href;
       switchPage(url);
+    
+    } else if (!linkElement) {
+      return;
     }
+
+// 元のコード
+    // const linkElement = event.target.closest("[data-link]");
+    // if (linkElement) {
+    //   console.log('clickEvent: taga-link');
+    //   event.preventDefault();
+    //   const url = linkElement.href;
+    //   switchPage(url);
+    // }
 
     // if (event.target.matches("[data-link]")) {
     //   console.log('clickEvent: taga-link');

@@ -1,4 +1,4 @@
-{% load static %} {% load i18n %}
+{% comment %} {% load static %} {% load i18n %}
 
 <body>
   <form action="{% url 'set_language' %}" id="lang_form" method="post">
@@ -15,4 +15,4 @@
   <h2>{% trans "Japanese" %}</h2>
   <h2>{% trans "English" %}</h2>
   <p>テスト用　後で消す</p>
-</body>
+</body> {% endcomment %}
