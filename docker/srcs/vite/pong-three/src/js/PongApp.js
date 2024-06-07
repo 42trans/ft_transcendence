@@ -114,11 +114,11 @@ class PongApp
 
 // errorが出るし、ページ遷移の問題は違う箇所で解消したのでコメントアウト
 // Three.jsのアニメーションループを制御するためのグローバルな関数を定義
-// window.controlThreeAnimation = {
-// 	stopAnimation: function() {
-// 		PongApp.getInstance().stopRenderLoop();
-// 	},
-// };
+window.controlThreeAnimation = {
+	stopAnimation: function() {
+		PongApp.getInstance().stopRenderLoop();
+	},
+};
 
 
 export default PongApp;

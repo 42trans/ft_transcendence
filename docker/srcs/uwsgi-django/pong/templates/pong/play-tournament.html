@@ -1,18 +1,7 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block extra_css %}
-<link rel="stylesheet" crossorigin href="{% static 'pong/three/assets/index.css' %}">
-{% endblock %}
-{% block title %}Play - hth Pong{% endblock title %}
-{% block content %}
-	{% csrf_token %}
-	<canvas id="threejs-canvas-container"></canvas>
+<canvas id="threejs-canvas-container"></canvas>
 <script type="application/json" id="match-data">
 	{{ match_json|safe }}
 </script>	
 <script>
 	window.isDevServer = "{{ is_dev_server }}";
-	{% comment %} console.log('window.isDevServer', window.isDevServer); {% endcomment %}
 </script>
-<script type="module" crossorigin src="{% static 'pong/three/assets/index.js' %}"></script>
-{% endblock %}
