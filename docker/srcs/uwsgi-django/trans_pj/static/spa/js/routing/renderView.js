@@ -11,10 +11,11 @@ export const switchPage = (url) => {
   // console.log('switchPage url:' + url)
   // console.log('switchPage currentPath:' + currentPath)
 
-  renderView(currentPath).then(() => {
-    // resetState イベントを発行
-    window.dispatchEvent(new CustomEvent('switchPageResetState'));
-  });
+  renderView(currentPath);
+  // renderView(currentPath).then(() => {
+  //   // resetState イベントを発行
+  //   window.dispatchEvent(new CustomEvent('switchPageResetState'));
+  // });
 };
 
 
@@ -78,4 +79,6 @@ export const renderView = async (path) => {
   // スクリプトの読み込みと実行
   await view.executeScript();
   // console.log("    renderView 3")
+
+  window.dispatchEvent(new CustomEvent('switchPageResetState'));
 };
