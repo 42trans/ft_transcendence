@@ -2,6 +2,7 @@
 
 import { createFriendsList } from "./online-status.js";
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 
 export function sendFriendRequest(userId) {
@@ -20,7 +21,7 @@ export function sendFriendRequest(userId) {
             }
             const event = new CustomEvent('sendFriendRequest success:', { detail: data });
             document.dispatchEvent(event);
-            window.location.reload();  // ページをリロード
+            switchPage(window.location.pathname);
             return data;
         });
     }).catch(error => {
@@ -49,7 +50,7 @@ export function cancelFriendRequest(userId) {
         })
         .then(data => {
             alert(data.status);
-            window.location.reload();  // ページをリロード
+            switchPage(window.location.pathname);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -76,7 +77,7 @@ export function acceptFriendRequest(userId) {
     })
         .then(data => {
             alert(data.status);
-            window.location.reload();  // ページをリロード
+            switchPage(window.location.pathname);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -104,7 +105,7 @@ export function rejectFriendRequest(userId) {
             })
             .then(data => {
                 alert(data.status);
-                window.location.reload();  // ページをリロード
+                switchPage(window.location.pathname);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -135,7 +136,7 @@ export function deleteFriend(userId) {
             })
             .then(data => {
                 alert(data.status);
-                window.location.reload();  // ページをリロード
+                switchPage(window.location.pathname);
             })
             .catch(error => {
                 console.error('Error:', error);
