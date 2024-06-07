@@ -176,6 +176,14 @@ class TestConfig(LiveServerTestCase):
         self._wait_display_message(expected_message)
         self.assertEqual(message_area.text, expected_message)
 
+    def _assert_is_2fa_enabled(self, expected_2fa_enabled: bool):
+        twofa_status_element = self._element(By.ID, "2fa-status")
+        actual_status_text = twofa_status_element.text
+
+        # Disable2FA, Enable2FAリンク含む要素になっている
+        expected_status_text = "2FA: ✅Enabled Disable2FA" if expected_2fa_enabled else "2FA: Disabled Enable2FA"
+        self.assertEqual(actual_status_text, expected_status_text)
+
     ############################################################################
     # ページ遷移、操作 要素
 
@@ -226,6 +234,7 @@ class TestConfig(LiveServerTestCase):
 
     def _access_to(self, url):
         self.driver.get(url)
+        time.sleep(0.1)  # 明示的に待機
         self._wait_to_be_url(url)
 
     def _click_link(self, target, wait_for_link_invisible=False):
@@ -327,7 +336,7 @@ class TestConfig(LiveServerTestCase):
         self._wait_invisible(logout_page_button)
         # self._screenshot("logout 2")
 
-    def _create_new_user(self, email, nickname, password):
+    def _create_new_user(self, email, nickname, password, is_enable_2fa=False):
         self._move_top_to_signup()
 
         self._send_to_elem(By.ID, "email", email)
@@ -337,7 +346,51 @@ class TestConfig(LiveServerTestCase):
 
         signup_button = self._element(By.ID, "sign-submit")
         self._click_button(signup_button, wait_for_button_invisible=True)
+
+        if is_enable_2fa:
+            self._move_top_to_profile()
+            self._setting_enable_2fa()
+            self._assert_is_2fa_enabled(expected_2fa_enabled=True)
+
         self._logout()
+
+    def _setting_enable_2fa(self):
+        """
+        user profile pageから2FAを有効にする
+        """
+        # user profile page -> enable2fa page
+        enable2fa_link = self._text_link("Enable2FA")
+        self.assertTrue(enable2fa_link.text, "Enable2FA")
+        self._click_link(enable2fa_link)
+        self._assert_current_url(self.enable_2fa_url)
+
+        # あらかじめbutton要素を取得しておく
+        enable2ba_button = self._button(By.CSS_SELECTOR, ".verifyTokenButton")
+
+        set_up_key_element = self._element(By.CSS_SELECTOR, ".pb-1")
+        set_up_key = set_up_key_element.text
+
+        # otpを送信（11 sec以上の余裕あり）
+        otp_token = self._get_otp_token(set_up_key)
+        self._send_to_elem(By.ID, "token", otp_token)
+
+        # 有効化
+        self._click_button(enable2ba_button)
+        return set_up_key
+
+    def _get_otp_token(self, set_up_key: str):
+        update_interval = 30
+        current_timestamp = int(time.time())
+        remaining_sec = update_interval - (current_timestamp % update_interval)
+
+        # otpの更新まで10sec以上を保証（html要素取得のdefault timeout = 10sec）
+        if remaining_sec <= 10:
+            time.sleep(remaining_sec + 1)
+
+        totp = TOTP(set_up_key)
+        otp_token = totp.now()
+        # print(f"otp_token: {otp_token}")
+        return otp_token
 
     def _send_dm_with_form(self, target_nickname):
         self._send_to_elem(By.ID, "nickname-input", target_nickname)
