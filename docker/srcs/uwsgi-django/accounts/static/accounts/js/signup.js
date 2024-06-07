@@ -2,17 +2,8 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 
-// -----
-// 追加:DOMが完全にロードされた後に実行
-document.addEventListener('DOMContentLoaded', function() {
-	const form = document.getElementById('signup-form');
-	if (form) {
-		form.addEventListener('submit', signupUser);
-	}
-});
-// -----
 function signupUser(event) {
-	event.preventDefault();
+	// event.preventDefault();
 	const email = document.getElementById('email').value;
 	const nickname = document.getElementById('nickname').value;
 	const password1 = document.getElementById('password1').value;
@@ -44,4 +35,17 @@ function signupUser(event) {
 		}
 	})
 	.catch(error => console.error('Error:', error));
+}
+
+
+export function setupSignupEventListener() {
+	console.log("Setup signup event listeners");
+	const form = document.getElementById('signup-form-container')
+	if (form) {
+		form.addEventListener('submit', (event) => {
+			event.preventDefault();
+			signupUser(event);
+		});
+		console.log('Form event listener added');
+	}
 }
