@@ -76,7 +76,7 @@ class UrlAccessTest(TestConfig):
             url = self._get_url(page_name, page_path)
             self._access_to(url)
             time.sleep(0.5)  # 明示的に待機
-            self._screenshot(f"user1_{page_name}")
+            # self._screenshot(f"user1_{page_name}")
 
             if self._is_page_redirect_to_top(page_name, is_enable_2fa=False):
                 expected_url = self.top_url
