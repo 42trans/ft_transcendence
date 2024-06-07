@@ -234,10 +234,11 @@ class TestConfig(LiveServerTestCase):
                 else:
                     raise
 
-    def _access_to(self, url):
+    def _access_to(self, url, wait_to_be_url=True):
         self.driver.get(url)
         time.sleep(0.1)  # 明示的に待機
-        self._wait_to_be_url(url)
+        if wait_to_be_url:
+            self._wait_to_be_url(url)
 
     def _click_link(self, target, wait_for_link_invisible=False):
         url = target.get_attribute("href")
