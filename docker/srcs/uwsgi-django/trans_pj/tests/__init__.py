@@ -350,12 +350,16 @@ class TestConfig(LiveServerTestCase):
         signup_button = self._element(By.ID, "sign-submit")
         self._click_button(signup_button, wait_for_button_invisible=True)
 
+        set_up_key = None
         if is_enable_2fa:
+            self.driver.refresh()
             self._move_top_to_profile()
-            self._setting_enable_2fa()
+            self.driver.refresh()
+            set_up_key = self._setting_enable_2fa()
             self._assert_is_2fa_enabled(expected_2fa_enabled=True)
 
         self._logout()
+        return set_up_key
 
     def _setting_enable_2fa(self):
         """
@@ -380,6 +384,14 @@ class TestConfig(LiveServerTestCase):
         # 有効化
         self._click_button(enable2ba_button)
         return set_up_key
+
+    def _verify_login_2fa(self, set_up_key: str):
+        verify2fa_button = self._button(By.CSS_SELECTOR, ".verify2FaButton")
+
+        otp_token = self._get_otp_token(set_up_key)
+        self._send_to_elem(By.ID, "token", otp_token)
+
+        self._click_button(verify2fa_button)
 
     def _get_otp_token(self, set_up_key: str):
         update_interval = 30

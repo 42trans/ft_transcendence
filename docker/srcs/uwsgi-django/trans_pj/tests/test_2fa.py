@@ -74,11 +74,3 @@ class TwoFactorAuthTest(TestConfig):
         self._click_button(disable2fa_button, wait_for_button_invisible=False)
         self._close_alert("Are you sure you want to Disable2FA ?")
         self._close_alert("2FA disable successful")
-
-    def _verify_login_2fa(self, set_up_key: str):
-        verify2fa_button = self._button(By.CSS_SELECTOR, ".verify2FaButton")
-
-        otp_token = self._get_otp_token(set_up_key)
-        self._send_to_elem(By.ID, "token", otp_token)
-
-        self._click_button(verify2fa_button)
