@@ -24,8 +24,8 @@ function handleLogout() {
 			disconnectOnlineStatusWebSocket(data.user_id)
 
 			// alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
-			switchPage(data.redirect)
-
+			window.location.href = data.redirect;
+			// switchPage(data.redirect)
 		} else {
 			throw new Error('No message in response');
 		}

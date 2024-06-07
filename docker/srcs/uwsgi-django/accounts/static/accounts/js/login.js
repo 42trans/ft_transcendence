@@ -23,14 +23,16 @@ export function loginUser(event) {
 				document.getElementById('message-area').textContent = data.error;
 				if (data.redirect) {
 					alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
-					switchPage(data.redirect)
+					window.location.href = data.redirect;
+					// switchPage(data.redirect)
 				} else {
 					console.error('Error:', data.error);
 				}
 			} else if (data.message) {
 				// Verified
 				console.log(data.message);
-				switchPage(data.redirect)  // Redirect on successful verification
+				window.location.href = data.redirect;
+				// switchPage(data.redirect)  // Redirect on successful verification
 			}
 		})
 		.catch(error => console.error('Error:', error));

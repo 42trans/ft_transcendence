@@ -1,6 +1,7 @@
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 
+
 // -----
 // 追加:DOMが完全にロードされた後に実行
 document.addEventListener('DOMContentLoaded', function() {
@@ -30,14 +31,16 @@ function signupUser(event) {
 			// Error
 			document.getElementById('message-area').textContent = data.error;
 			if (data.redirect) {
-				switchPage(data.redirect)
+				window.location.href = data.redirect;
+				// switchPage(data.redirect)
 			} else {
 				console.error('Error:', data.error);
 			}
 		} else if (data.message) {
 			// Verified
 			console.log(data.message);
-			switchPage(data.redirect)  // Redirect on successful verification
+			window.location.href = data.redirect;
+			// switchPage(data.redirect)  // Redirect on successful verification
 		}
 	})
 	.catch(error => console.error('Error:', error));
