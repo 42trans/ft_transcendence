@@ -1,6 +1,8 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineGameLoopManager.js
 import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 let DEBUG_FLOW 		= 0;
@@ -132,7 +134,8 @@ class PongOnlineGameLoopManager
 			if (endGameButton) {
 				endGameButton.style.display = 'block';
 				endGameButton.addEventListener('click', () => {
-					window.location.href = routeTable['top'].path;
+					const redirectTo = routeTable['top'].path;
+					switchPage(redirectTo);
 				});
 			} else {
 				console.error('End Game button not found');
