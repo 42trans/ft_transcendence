@@ -8,7 +8,7 @@ import AnimationMixersManager from './manager/AnimationMixersManager'
 import GameStateManager from './manager/GameStateManager'
 import LoopManager from './manager/LoopManager'
 import RendererManager from './manager/RendererManager'
-// import { routeTable } from "../static/spa/js/routing/routeTable.js";
+
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
@@ -22,37 +22,9 @@ class PongApp
 	constructor(env) 
 	{
 		this.env = env;
-
-		// const matchDataElement = document.getElementById('match-data');
-		// if (matchDataElement) {
-		// 	this.matchData = JSON.parse(matchDataElement.textContent);
-		// 	console.log('Match Data:', this.matchData);
-		// }
-
-		// this.loadRouteTable().then(routeTable => {
-		// 	this.routeTable = routeTable;
-		// }).catch(error => {
-		// 	console.error('Failed to load route table:', error);
-		// });
-		// // ゲームの終了状態をチェックして、必要に応じてリダイレクト
-		// if (this.matchData && this.matchData.is_finished) {
-		// 	window.location.href = this.routeTable['tournament'].path;
-		// 	// window.location.href = 'https://localhost/app/game/tournament/';
-		// 	return;  // リダイレクト後の処理を停止
-		// }
-		
 		this.init();
 		this.boundInit = this.init.bind(this);
 		window.addEventListener('switchPageResetState', this.boundInit);
-		// // 無限ループでアニメーションの更新を担当。シングルトン
-		// this.renderLoop = LoopManager.getInstance(this);
-		// this.renderLoop.start();
-
-		// 			//dev用　index.jsで`PongApp.main('dev');`で呼び出す
-		// 			if (env === 'dev'){
-		// 				this.setupDevEnv();
-		// 			}
-
 	}
 
 	async loadRouteTable() {
@@ -85,11 +57,12 @@ class PongApp
 
 		this.routeTable = await this.loadRouteTable();
 
-		// ゲームの終了状態をチェックして、必要に応じてリダイレクト
+		// ゲームが終了状態の場合リダイレクト
 		if (this.matchData && this.matchData.is_finished) {
 			window.location.href = this.routeTable['top'].path;
 			// window.location.href = 'https://localhost/app/game/tournament/';
-			return;  // リダイレクト後の処理を停止
+			// リダイレクト後の処理を停止
+			return;
 		}
 
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
@@ -100,7 +73,7 @@ class PongApp
 		this.allScenesManager = AllScenesManager.getInstance(this.animationMixersManager);
 		// 3D空間（カメラ、照明、オブジェクト）を担当
 		// TODO_ft:開幕はモデルを読み込まないようにしたい。もう少し遅延できないものか。要設計
-		this.allScenesManager.setupScenes();
+		await this.allScenesManager.setupScenes();
 		// ゲームの状態（待機、Play、終了）を担当。シングルトン
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
 
@@ -111,9 +84,11 @@ class PongApp
 					//dev用　index.jsで`PongApp.main('dev');`で呼び出す
 					if (this.env === 'dev'){
 						this.setupDevEnv();
-					}
+					} 
+		
+		window.addEventListener('resize', this.allScenesManager.handleResize.bind(this.allScenesManager), false);
 	}
-
+	
 	stopRenderLoop() {
 		if (this.renderLoop) {
 			this.renderLoop.stop();
@@ -125,7 +100,6 @@ class PongApp
 	{
 		new PongApp(env);
 	}
-				// TODO_ft: dev用GUI: カメラと照明をコントロールするパネルを表示　レビュー時削除
 				setupDevEnv()
 				{
 					this.gui = new lil.GUI();
@@ -138,13 +112,13 @@ class PongApp
 				}
 }
 
-
+// errorが出るし、ページ遷移の問題は違う箇所で解消したのでコメントアウト
 // Three.jsのアニメーションループを制御するためのグローバルな関数を定義
-window.controlThreeAnimation = {
-	stopAnimation: function() {
-		PongApp.getInstance().stopRenderLoop();
-	},
-};
+// window.controlThreeAnimation = {
+// 	stopAnimation: function() {
+// 		PongApp.getInstance().stopRenderLoop();
+// 	},
+// };
 
 
 export default PongApp;
