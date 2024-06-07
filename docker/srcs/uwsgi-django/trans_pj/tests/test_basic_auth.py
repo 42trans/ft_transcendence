@@ -62,7 +62,7 @@ class BasicAuthTest(TestConfig):
         # self._screenshot("login failure")
 
     def test_logout(self):
-        self._login_user1_from_top_page()
+        self._login(self.email, self.password)
 
         self._logout()
         self._assert_current_url(self.top_url)

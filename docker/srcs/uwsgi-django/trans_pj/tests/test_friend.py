@@ -25,7 +25,7 @@ class FriendTest(TestConfig):
     ############################################################################
 
     def test_access_friend(self):
-        self._login_user1_from_top_page()
+        self._login(email=self.test_user1_email, password=self.password)
         # self._screenshot("friend")
         self._move_top_to_friend()
 

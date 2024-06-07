@@ -236,11 +236,13 @@ class TestConfig(LiveServerTestCase):
             self._wait_invisible(target)
         else:
             self._wait_to_be_url(url)
+        self.driver.refresh()
 
     def _click_button(self, target, wait_for_button_invisible=True):
         self.driver.execute_script("arguments[0].click();", target)
         if wait_for_button_invisible:
             self._wait_invisible(target)
+            self.driver.refresh()
 
     def _screenshot(self, img_name):
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -312,13 +314,6 @@ class TestConfig(LiveServerTestCase):
         login_button = self._element(By.ID, "login-btn")
         self._click_button(login_button, wait_for_button_invisible)
 
-    def _login_user1_from_top_page(self):
-        self._move_top_to_login()
-
-        user1_email = 'user1@example.com'
-        user1_password = 'pass0123'
-        self._login(user1_email, user1_password)
-
     def _logout(self):
         logout_page_button = self._button(By.CSS_SELECTOR, "header .logoutButton")
         self.driver.execute_script("arguments[0].click();", logout_page_button)
@@ -326,7 +321,7 @@ class TestConfig(LiveServerTestCase):
         self._wait_invisible(logout_page_button)
         # self._screenshot("logout 2")
 
-    def _create_new_user(self, email, nickname, password):
+    def _create_new_user(self, email, nickname, password, logout=True):
         self._move_top_to_signup()
 
         self._send_to_elem(By.ID, "email", email)
@@ -336,7 +331,8 @@ class TestConfig(LiveServerTestCase):
 
         signup_button = self._element(By.ID, "sign-submit")
         self._click_button(signup_button, wait_for_button_invisible=True)
-        self._logout()
+        if logout:
+            self._logout()
 
     def _send_dm_with_form(self, target_nickname):
         self._send_to_elem(By.ID, "nickname-input", target_nickname)

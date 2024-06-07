@@ -1,3 +1,5 @@
+import time
+
 from . import *
 
 
@@ -9,7 +11,6 @@ class TwoFactorAuthTest(TestConfig):
         self.email = f"{self.nickname}@example.com"
         self.password = "pass0123"
 
-        # friend request用のtest_user1, test_user2を作成
         self._create_new_user(email=self.email,
                               nickname=self.nickname,
                               password=self.password)
@@ -106,6 +107,7 @@ class TwoFactorAuthTest(TestConfig):
         self._click_button(disable2fa_button, wait_for_button_invisible=False)
         self._close_alert("Are you sure you want to Disable2FA ?")
         self._close_alert("2FA disable successful")
+        self.driver.refresh()
 
     def _get_otp_token(self, set_up_key: str):
         update_interval = 30

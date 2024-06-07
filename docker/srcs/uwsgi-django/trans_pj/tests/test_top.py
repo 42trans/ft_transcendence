@@ -2,6 +2,17 @@ from . import *
 
 
 class TopPageTest(TestConfig):
+    def setUp(self):
+        super().setUp()
+
+        self.nickname = self._generate_random_string(20)
+        self.email = f"{self.nickname}@example.com"
+        self.password = "pass0123"
+
+        self._create_new_user(email=self.email,
+                              nickname=self.nickname,
+                              password=self.password)
+
     def test_guest_top_page(self):
         self._assert_page_url_and_title(expecter_url=self.top_url,
                                         expected_title='PongTop')
@@ -17,7 +28,7 @@ class TopPageTest(TestConfig):
         # self.assertEqual(actual_3d_pong_url, expected_3d_pong_url)
 
     def test_user_top_link(self):
-        self._login_user1_from_top_page()
+        self._login(self.email, self.password)
 
         # link
         # actual_2d_pong_url = self._text_link_url("2D-Pong")

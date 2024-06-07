@@ -4,7 +4,15 @@ from . import *
 class ProfileTest(TestConfig):
     def setUp(self):
         super().setUp()  # login, top page遷移まで実行
-        self._login_user1_from_top_page()
+
+        self.nickname = self._generate_random_string(20)
+        self.email = f"{self.nickname}@example.com"
+        self.password = "pass0123"
+
+        self._create_new_user(email=self.email,
+                              nickname=self.nickname,
+                              password=self.password,
+                              logout=False)
         self._move_top_to_profile()
 
     ############################################################################
@@ -14,11 +22,11 @@ class ProfileTest(TestConfig):
 
     def test_profile_page(self):
         # emailの表示を検証
-        expected_email = "user1@example.com"
+        expected_email = self.email
         self._assert_profile_email(expected_email)
 
         # nicknameの表示を検証
-        expected_nickname = "user1"
+        expected_nickname = self.nickname
         self._assert_profile_nickname(expected_nickname)
 
     def test_edit_profile_page(self):
@@ -44,7 +52,7 @@ class ProfileTest(TestConfig):
         self._move_to_edit_page()
 
         # user1 <- user12345 : 後続のテストのために戻す
-        prev_nickname = "user1"
+        prev_nickname = self.nickname
         self._edit_nickname(prev_nickname, wait_for_button_invisible=True)
         self._assert_profile_nickname(prev_nickname)
 
@@ -59,7 +67,7 @@ class ProfileTest(TestConfig):
         self._move_to_edit_page()
 
         # user1 -> user1
-        current_nickname = "user1"
+        current_nickname = self.nickname
         self._edit_nickname(current_nickname, wait_for_button_invisible=False)
         self._assert_message("new nickname same as current")
         self._assert_current_url(self.edit_profile_url)
@@ -118,7 +126,7 @@ class ProfileTest(TestConfig):
 
         # new passwordでlogin
         self._move_top_to_login()
-        user1_email = 'user1@example.com'
+        user1_email = self.email
         self._login(user1_email, new_pass)
 
         # user1であることを評価
