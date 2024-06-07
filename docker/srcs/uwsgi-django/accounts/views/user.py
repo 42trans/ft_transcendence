@@ -147,12 +147,12 @@ class EditUserProfileAPIView(APIView):
 # todo: tmp, API and FBV -> CBV
 def get_user_info(request, nickname):
     if not nickname:
-        return redirect('/pong/')
+        return redirect('/accounts/login/')
 
     try:
         user = request.user
         if not user.is_authenticated:
-            return redirect(to='/pong/')
+            return redirect(to='/accounts/login/')
 
         info_user = CustomUser.objects.get(nickname=nickname)
         avatar_url = info_user.avatar.url
@@ -185,7 +185,7 @@ def get_user_info(request, nickname):
 
     except Exception as e:
         logging.error(f"API request failed: {e}")
-        return redirect('/pong/')
+        return redirect('/accounts/login/')
 
 
 class ChangeAvatarView(LoginRequiredMixin, TemplateView):
