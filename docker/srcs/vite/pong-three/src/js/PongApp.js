@@ -8,13 +8,13 @@ import AnimationMixersManager from './manager/AnimationMixersManager'
 import GameStateManager from './manager/GameStateManager'
 import LoopManager from './manager/LoopManager'
 import RendererManager from './manager/RendererManager'
+// import { routeTable } from "../static/spa/js/routing/routeTable.js";
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
 
 /**
- * constructor: C++でいうとmain()のような役割。RenderLoopは非同期で再帰し、アプリ終了まで残ります。
- *   -コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
+ * -コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
  * setupScenes: オーバーレイするシーンの数だけインスタンスを作成してください。
  */
 class PongApp 
@@ -23,34 +23,75 @@ class PongApp
 	{
 		this.env = env;
 
-		// SPA対応
-		// document.addEventListener('DOMContentLoaded', () =>
-		// {
-			const matchDataElement = document.getElementById('match-data');
-			if (matchDataElement) {
-				this.matchData = JSON.parse(matchDataElement.textContent);
-				console.log('Match Data:', this.matchData);
-			}
-			this.init();
-			// 無限ループでアニメーションの更新を担当。シングルトン
-			this.renderLoop = LoopManager.getInstance(this);
-			this.renderLoop.start();
+		// const matchDataElement = document.getElementById('match-data');
+		// if (matchDataElement) {
+		// 	this.matchData = JSON.parse(matchDataElement.textContent);
+		// 	console.log('Match Data:', this.matchData);
+		// }
 
-						//dev用　index.jsで`PongApp.main('dev');`で呼び出す
-						if (env === 'dev'){
-							this.setupDevEnv();
-						}
-
+		// this.loadRouteTable().then(routeTable => {
+		// 	this.routeTable = routeTable;
+		// }).catch(error => {
+		// 	console.error('Failed to load route table:', error);
 		// });
+		// // ゲームの終了状態をチェックして、必要に応じてリダイレクト
+		// if (this.matchData && this.matchData.is_finished) {
+		// 	window.location.href = this.routeTable['tournament'].path;
+		// 	// window.location.href = 'https://localhost/app/game/tournament/';
+		// 	return;  // リダイレクト後の処理を停止
+		// }
+		
+		this.init();
+		this.boundInit = this.init.bind(this);
+		window.addEventListener('switchPageResetState', this.boundInit);
+		// // 無限ループでアニメーションの更新を担当。シングルトン
+		// this.renderLoop = LoopManager.getInstance(this);
+		// this.renderLoop.start();
+
+		// 			//dev用　index.jsで`PongApp.main('dev');`で呼び出す
+		// 			if (env === 'dev'){
+		// 				this.setupDevEnv();
+		// 			}
+
 	}
 
+	async loadRouteTable() {
+		if (import.meta.env.MODE === 'development') {
+			// 開発環境用のパス
+			const devUrl = new URL('../static/spa/js/routing/routeTable.js', import.meta.url);
+			const module = await import(devUrl.href);
+			return module.routeTable;
+		} else {
+			// 本番環境用のパス
+			const prodUrl = new URL('../../../spa/js/routing/routeTable.js', import.meta.url);
+			const module = await import(prodUrl.href);
+			return module.routeTable;
+		}
+	}
+	
 	/**
+	 * - SPAによるreloard時に対応するためコンストラクタでキャッチし、initで最初から全て処理し直す
 	 * - キャッシュ機能をON
 	 * - manager/内のクラスのシングルトンのインスタンスを生成
 	 * - Sceneの基礎(camera,lightなど)をあらかじめ設定
 	 */
-	init() 
+	async init() 
 	{
+		const matchDataElement = document.getElementById('match-data');
+		if (matchDataElement) {
+			this.matchData = JSON.parse(matchDataElement.textContent);
+			console.log('Match Data:', this.matchData);
+		}
+
+		this.routeTable = await this.loadRouteTable();
+
+		// ゲームの終了状態をチェックして、必要に応じてリダイレクト
+		if (this.matchData && this.matchData.is_finished) {
+			window.location.href = this.routeTable['top'].path;
+			// window.location.href = 'https://localhost/app/game/tournament/';
+			return;  // リダイレクト後の処理を停止
+		}
+
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
 		this.renderer = RendererManager.getRenderer();
 		// 全てのシーンのmixerを一元的に管理。シングルトン
@@ -62,6 +103,15 @@ class PongApp
 		this.allScenesManager.setupScenes();
 		// ゲームの状態（待機、Play、終了）を担当。シングルトン
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
+
+		// 無限ループでアニメーションの更新を担当。シングルトン
+		this.renderLoop = LoopManager.getInstance(this);
+		this.renderLoop.start();
+
+					//dev用　index.jsで`PongApp.main('dev');`で呼び出す
+					if (this.env === 'dev'){
+						this.setupDevEnv();
+					}
 	}
 
 	stopRenderLoop() {
