@@ -19,6 +19,10 @@ from django.conf import settings
 from django.test import LiveServerTestCase
 from accounts.models import CustomUser
 
+# uwsgi-djangoコンテナからアクセスできないためnginxコンテナ経由とする
+kURL_PREFIX = "https://nginx"
+#                            ^^^^ /app/などのURL要素をurl_configと比較評価する
+
 # test_*.pyで使用するために__all__にも定義
 __all__ = [
     'json', 'datetime', 'random', 'string', 'time',
@@ -29,11 +33,9 @@ __all__ = [
     'TOTP',
     'settings', 'LiveServerTestCase', 'CustomUser',
     'TestConfig',
+    'kURL_PREFIX',
 ]
 
-# uwsgi-djangoコンテナからアクセスできないためnginxコンテナ経由とする
-kURL_PREFIX = "https://nginx"
-#                            ^^^^ /app/などのURL要素をurl_configと比較評価する
 
 # selemiumのlink.click()が失敗するため、JSによるクリック↓ を使用する
 # self.driver.execute_script("arguments[0].click();", link)
