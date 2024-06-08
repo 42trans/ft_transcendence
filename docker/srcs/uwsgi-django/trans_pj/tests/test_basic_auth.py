@@ -2,12 +2,25 @@ from . import *
 
 
 class BasicAuthTest(TestConfig):
+    def setUp(self):
+        super().setUp()
+
+        self.nickname = self._generate_random_string(20)
+        self.email = f"{self.nickname}@example.com"
+        self.password = "pass0123"
+
+        self._create_new_user(email=self.email,
+                              nickname=self.nickname,
+                              password=self.password)
+
     def test_login_page(self):
         """
         login pageの評価
         """
+        # self._screenshot("login1")
         self._move_top_to_login()
 
+        # self._screenshot("login2")
         # フォームの要素の検証 ####################################################
         self._assert_element(By.ID, "email", is_displayed=True)
         self._assert_element(By.ID, "password", is_displayed=True)
@@ -27,12 +40,10 @@ class BasicAuthTest(TestConfig):
         """
         login成功
         """
+
         self._move_top_to_login()
 
-        user1_email = 'user1@example.com'
-        user1_password = 'pass0123'
-
-        self._login(user1_email, user1_password)
+        self._login(self.email, self.password)
         self._assert_current_url(self.top_url)
         # self._screenshot("login success")
 
@@ -43,7 +54,7 @@ class BasicAuthTest(TestConfig):
         self._move_top_to_login()
 
         wrong_email = 'nothing@example.com'
-        password = 'pass0123'
+        password = self.password
 
         self._login(wrong_email, password, wait_for_button_invisible=False)
         self._assert_current_url(self.login_url)
@@ -51,7 +62,7 @@ class BasicAuthTest(TestConfig):
         # self._screenshot("login failure")
 
     def test_logout(self):
-        self._login_user1_from_top_page()
+        self._login(self.email, self.password)
 
         self._logout()
         self._assert_current_url(self.top_url)

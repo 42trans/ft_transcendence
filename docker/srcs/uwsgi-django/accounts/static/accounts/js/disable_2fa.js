@@ -1,5 +1,9 @@
 // disable_2fa.js
 
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+
+
 export function disable2FA() {
 	if (confirm('Are you sure you want to Disable2FA ?')) {
 		fetch('/accounts/api/disable_2fa/', {
@@ -18,7 +22,7 @@ export function disable2FA() {
 				if (data.message) {
 					alert(data.message);
 					console.log("redirect to " + data.redirect);
-					window.location.href = data.redirect;
+					switchPage(data.redirect)
 				} else {
 					throw new Error('No message in response');
 				}

@@ -1,6 +1,9 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/TournamentCreator.js
 import UIHelper		from '../UIHelper.js';
 import { config }	from '../ConfigTournament.js';
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+
 
 class TournamentCreator 
 {
@@ -187,8 +190,9 @@ class TournamentCreator
 				throw new Error(data.message);
 			}
 	
-			UIHelper.handleSuccess('Tournament successfully', '/pong/', this.submitMessage)
-			location.reload();
+			UIHelper.handleSuccess('Tournament successfully', routeTable["top"].path, this.submitMessage)
+			switchPage(routeTable["tournament"].path)
+
 		} catch (error) {
 			console.error('Fetch error:', error);
 			UIHelper.putError(error, this.errorMessage);

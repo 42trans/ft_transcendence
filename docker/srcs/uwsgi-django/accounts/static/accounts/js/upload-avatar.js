@@ -1,6 +1,7 @@
 // upload-avatar.js
 
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 
 function uploadAvatar() {
@@ -46,7 +47,8 @@ function handleResponse(response) {
 function showSuccess(data) {
     console.log('Success:', data);
     alert('Avatar updated successfully');
-    window.location.href = routeTable['userProfile'].path;
+    const redirectTo = routeTable['userProfile'].path;
+    switchPage(redirectTo)
 }
 
 

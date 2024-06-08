@@ -249,11 +249,13 @@ class TestConfig(LiveServerTestCase):
             self._wait_invisible(target)
         else:
             self._wait_to_be_url(url)
+        self.driver.refresh()
 
     def _click_button(self, target, wait_for_button_invisible=True):
         self.driver.execute_script("arguments[0].click();", target)
         if wait_for_button_invisible:
             self._wait_invisible(target)
+            self.driver.refresh()
 
     def _screenshot(self, img_name):
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
