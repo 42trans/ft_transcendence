@@ -58,6 +58,7 @@ urlpatterns += _set_i18n_url(
 		path('view/lang/', main_views.lang, name='lang'),
 		path('view/script1/', main_views.script1, name='script1'),
 		path('view/script2/', main_views.script2, name='script2'),
+		path('spa/header/', main_views.header, name='header'),
 
 		# SPA
 		path('', main_views.spa, name='index'),
