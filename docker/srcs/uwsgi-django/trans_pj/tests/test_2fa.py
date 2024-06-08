@@ -57,6 +57,38 @@ class TwoFactorAuthTest(TestConfig):
         # verify2faではなくtopに遷移
         self._assert_current_url(self.top_url)
 
+    def _assert_is_2fa_enabled(self, expected_2fa_enabled: bool):
+        twofa_status_element = self._element(By.ID, "2fa-status")
+        actual_status_text = twofa_status_element.text
+
+        # Disable2FA, Enable2FAリンク含む要素になっている
+        expected_status_text = "2FA: ✅Enabled Disable2FA" if expected_2fa_enabled else "2FA: Disabled Enable2FA"
+        self.assertEqual(actual_status_text, expected_status_text)
+
+    def _setting_enable_2fa(self):
+        """
+        user profile pageから2FAを有効にする
+        """
+        # user profile page -> enable2fa page
+        enable2fa_link = self._text_link("Enable2FA")
+        self.assertTrue(enable2fa_link.text, "Enable2FA")
+        self._click_link(enable2fa_link)
+        self._assert_current_url(self.enable_2fa_url)
+
+        # あらかじめbutton要素を取得しておく
+        enable2ba_button = self._button(By.CSS_SELECTOR, ".verifyTokenButton")
+
+        set_up_key_element = self._element(By.CSS_SELECTOR, ".pb-1")
+        set_up_key = set_up_key_element.text
+
+        # otpを送信（11 sec以上の余裕あり）
+        otp_token = self._get_otp_token(set_up_key)
+        self._send_to_elem(By.ID, "token", otp_token)
+
+        # 有効化
+        self._click_button(enable2ba_button)
+        return set_up_key
+
     def _setting_disable_2fa(self):
         """
         user profile pageから2FAを無効にする
@@ -74,3 +106,26 @@ class TwoFactorAuthTest(TestConfig):
         self._click_button(disable2fa_button, wait_for_button_invisible=False)
         self._close_alert("Are you sure you want to Disable2FA ?")
         self._close_alert("2FA disable successful")
+        self.driver.refresh()
+
+    def _get_otp_token(self, set_up_key: str):
+        update_interval = 30
+        current_timestamp = int(time.time())
+        remaining_sec = update_interval - (current_timestamp % update_interval)
+
+        # otpの更新まで10sec以上を保証（html要素取得のdefault timeout = 10sec）
+        if remaining_sec <= 10:
+            time.sleep(remaining_sec + 1)
+
+        totp = TOTP(set_up_key)
+        otp_token = totp.now()
+        # print(f"otp_token: {otp_token}")
+        return otp_token
+
+    def _verify_login_2fa(self, set_up_key: str):
+        verify2fa_button = self._button(By.CSS_SELECTOR, ".verify2FaButton")
+
+        otp_token = self._get_otp_token(set_up_key)
+        self._send_to_elem(By.ID, "token", otp_token)
+
+        self._click_button(verify2fa_button)

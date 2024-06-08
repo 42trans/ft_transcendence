@@ -1,6 +1,9 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/TournamentDeleter.js
 import UIHelper		from '../UIHelper.js';
 import { config }	from '../ConfigTournament.js';
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+
 
 class TournamentDeleter 
 {
@@ -36,8 +39,9 @@ class TournamentDeleter
 
 			const data = await response.json();
 			if (data.status === 'success') {
-				UIHelper.handleSuccess('Tournament deleted successfully', '/pong/', this.submitMessage)
-				location.reload();
+				UIHelper.handleSuccess('Tournament deleted successfully', routeTable["top"].path, this.submitMessage)
+				switchPage(routeTable["tournament"].path)
+
 			} else {
 				UIHelper.putError("No data returned. Please try again later.", this.errorMessage);
 			}

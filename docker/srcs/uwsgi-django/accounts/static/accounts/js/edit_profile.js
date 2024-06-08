@@ -1,6 +1,7 @@
 // edit_profile.js
 
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 
 export function updateNickname(event) {
@@ -24,7 +25,8 @@ export function updateNickname(event) {
 			} else {
 				document.getElementById('message-area').textContent = data.message;
 				console.log('Success:', data.message);
-				window.location.href = routeTable['userProfile'].path;
+				const redirectTo = routeTable['userProfile'].path;
+				switchPage(redirectTo)
 			}
 		})
 		.catch(error => console.error('Error:', error));
@@ -54,7 +56,8 @@ export function updatePassword(event) {
 			} else {
 				document.getElementById('message-area').textContent = data.message;
 				console.log('Success:', data.message);
-				window.location.href = routeTable['userProfile'].path;
+				const redirectTo = routeTable['userProfile'].path;
+				switchPage(redirectTo)
 			}
 		})
 		.catch(error => console.error('Error:', error));

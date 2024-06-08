@@ -1,3 +1,5 @@
+import time
+
 from . import *
 
 
@@ -25,7 +27,7 @@ class FriendTest(TestConfig):
     ############################################################################
 
     def test_access_friend(self):
-        self._login_user1_from_top_page()
+        self._login(email=self.test_user1_email, password=self.password)
         # self._screenshot("friend")
         self._move_top_to_friend()
 
@@ -83,6 +85,9 @@ class FriendTest(TestConfig):
         self._close_alert(f"Success: accept request")
         # self._screenshot("friend6")
 
+        self.driver.refresh()
+        time.sleep(0.5)
+
         # Friendsにtest_user1が追加されていることを確認
         friends_div = self._element(By.ID, "friends-container")
         friend_item = friends_div.find_element(By.XPATH, f".//li[contains(., '{self.test_user1_nickname}')]")
@@ -97,10 +102,15 @@ class FriendTest(TestConfig):
         self._dismiss_alert("Are you sure you want to delete this friend ?")
         self._close_alert("Friend deletion has been canceled")
         self.assertTrue(friend_item.is_displayed())  # friendが削除されていない
+
         # ConfirmでCanselせずにDelete実行
         self._click_button(delete_button, wait_for_button_invisible=False)
         self._close_alert("Are you sure you want to delete this friend ?")
         self._close_alert("Success: delete friend")
+
+        self.driver.refresh()
+        time.sleep(0.5)
+
         updated_friends_div = self._element(By.ID, "friends-container")
         friend_items = updated_friends_div.find_elements(By.XPATH, f".//li[contains(., '{self.test_user1_nickname}')]")
         self.assertEqual(len(friend_items), 0, msg="Friend item should be removed after deletion")
@@ -119,10 +129,16 @@ class FriendTest(TestConfig):
         request_link = self._text_link("Send Friend Reques")
         self._click_link(request_link, wait_for_link_invisible=True)
 
+        self.driver.refresh()
+        time.sleep(0.5)
+
         # Cancel
         cancel_button = self._element(By.CSS_SELECTOR, ".cancelFriendRequestButton")
         self._click_button(cancel_button, wait_for_button_invisible=False)
         self._close_alert("Friend request cancelled")
+
+        self.driver.refresh()
+        time.sleep(0.5)
 
         # requestを再送信
         request_link = self._text_link("Send Friend Reques")
@@ -186,6 +202,9 @@ class FriendTest(TestConfig):
         self._click_button(reject_button, wait_for_button_invisible=False)
         self._close_alert("Are you sure you want to reject this request ?")
         self._close_alert("Success: reject request")
+
+        self.driver.refresh()
+        time.sleep(0.5)
 
         # Received Friend Requestsにtest_user1からのリクエストが存在しないことを確認
         updated_received_requests_div = self._element(By.XPATH, "//div[h3[contains(text(), 'Received Friend Requests')]]")

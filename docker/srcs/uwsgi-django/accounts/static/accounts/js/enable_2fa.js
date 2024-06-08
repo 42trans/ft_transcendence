@@ -1,5 +1,9 @@
 // enable_2fa.js
 
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+
+
 export function fetchEnable2FA() {
 	fetch('/accounts/api/enable_2fa/', {
 		method: 'GET',
@@ -13,7 +17,7 @@ export function fetchEnable2FA() {
 				document.getElementById('error-message').textContent = "Error retrieving 2FA setup: " + data.error;
 			} else if (data.redirect) {
 				console.log(data.message);
-				window.location.href = data.redirect;
+				switchPage(data.redirect)
 			}
 			else {
 				const qrCodeHtml = `
@@ -48,11 +52,11 @@ function verifyToken() {
 			document.getElementById('error-message').textContent = "Verification failed: " + data.error;
 		} else if (data.redirect) {
 			console.log(data.message);
-			window.location.href = data.redirect;
+			switchPage(data.redirect)
 		} else if (data.success) {
 			console.log(data.message);
 			alert(data.message);
-			window.location.href = data.redirect;
+			switchPage(data.redirect)
 		}
 		})
 		.catch(error => {
