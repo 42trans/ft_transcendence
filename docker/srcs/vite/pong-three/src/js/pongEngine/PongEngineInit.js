@@ -94,11 +94,11 @@ class PongEngineInit
 		Object.keys(this.objects).forEach(key => {
 			this.scene.add(this.objects[key]);
 		});
-		this.scene.traverse(obj => {
-			if (obj instanceof THREE.Mesh) {
-				console.log('Object in scene:', obj.name); // デバッグのためにオブジェクト名を出力
-			}
-		});
+		// this.scene.traverse(obj => {
+		// 	if (obj instanceof THREE.Mesh) {
+		// 		console.log('Object in scene:', obj.name); // デバッグのためにオブジェクト名を出力
+		// 	}
+		// });
 	}
 
 	// 参考:【MeshStandardMaterial – three.js docs】 <https://threejs.org/docs/#api/en/materials/MeshStandardMaterial>

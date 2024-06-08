@@ -4,6 +4,8 @@
  */
 
 import * as THREE from 'three';
+let TEST_MAX_PADDLE_HEIGHT = 0;
+let TEST_END_GAME = 1;
 
 /**
  * ゲームに必要な初期値を設定
@@ -15,6 +17,22 @@ class PongEngineConfig
 {
 	constructor() 
 	{
+		if (TEST_END_GAME)
+		{
+			this.ball_speed  = 9
+			this.max_score   = 1
+		} else {
+			this.ball_speed = 2
+			this.max_score   = 15
+		}
+		
+		if (TEST_MAX_PADDLE_HEIGHT)
+		{
+			this.paddle_height = 300
+		} else {
+			this.paddle_height = 30
+		}
+
 		this.fields = 
 		{
 			WIDTH: 400,
@@ -64,7 +82,8 @@ class PongEngineConfig
 				transparent: false,
 				opacity: 1.0,
 			},
-			SPEED: 2,
+			// SPEED: 2,
+			SPEED: this.ball_speed,
 			DIRECTION: { x: 1, y: 0.1 },
 			RECEIVE_SHADOW: true,
 			CAST_SHADOW: true,
@@ -73,8 +92,8 @@ class PongEngineConfig
 		this.paddle1 = 
 		{
 			WIDTH: 10,
-			// HEIGHT: this.fields.HEIGHT, //for psycs test
-			HEIGHT: 30,
+			// HEIGHT: 30,
+			HEIGHT: this.paddle_height,
 			DEPTH: 10,
 			SEGMENTS: 1,
 			MATERIAL: {
@@ -86,15 +105,15 @@ class PongEngineConfig
 			},
 			RECEIVE_SHADOW: true, 
 			CAST_SHADOW: true,
-			SPEED: 10, //  
+			SPEED: 10, 
 			DirY: 0,
 		};
 		
 		this.paddle2 = 
 		{
 			WIDTH: 10,
-			// HEIGHT: this.fields.HEIGHT,
-			HEIGHT: 30,
+			// HEIGHT: 30,
+			HEIGHT: this.paddle_height,
 			DEPTH: 10,
 			SEGMENTS: 1,
 			MATERIAL: {
@@ -113,10 +132,10 @@ class PongEngineConfig
 		this.gameSettings = 
 		{
 			// MAX_SCORE: 15,
-			MAX_SCORE: 5, // for test
-			INIT_BALL_SPEED: 2,
-			MAX_BALL_SPEED: 10, //10を超えると衝突判定がバグります
-			// TOD_ft:
+			MAX_SCORE: this.max_score,
+			INIT_BALL_SPEED: this.ball_speed,
+			// INIT_BALL_SPEED: 2,
+			MAX_BALL_SPEED: 9.9, //10を超えると衝突判定がバグります
 			ABSOLUTE_MAX_SPEED: 9.9, // init時にpddle.WIDTH を超えないよう補正されます。
 			DIFFICULTY: 0.5,
 		};

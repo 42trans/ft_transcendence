@@ -31,6 +31,9 @@ def pong_view(request):
 
 # 3D
 def play_tournament(request, match_id):
+	if not request.user.is_authenticated:
+		return redirect(to='/accounts/login/')
+
 	match = get_object_or_404(Match, id=match_id)
 	match_data = {
 		"id": match.id,

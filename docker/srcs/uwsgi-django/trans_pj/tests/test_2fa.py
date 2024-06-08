@@ -1,5 +1,3 @@
-import time
-
 from . import *
 
 
@@ -11,6 +9,7 @@ class TwoFactorAuthTest(TestConfig):
         self.email = f"{self.nickname}@example.com"
         self.password = "pass0123"
 
+        # friend request用のtest_user1, test_user2を作成
         self._create_new_user(email=self.email,
                               nickname=self.nickname,
                               password=self.password)

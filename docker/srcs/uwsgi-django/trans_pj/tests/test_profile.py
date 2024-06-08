@@ -11,8 +11,8 @@ class ProfileTest(TestConfig):
 
         self._create_new_user(email=self.email,
                               nickname=self.nickname,
-                              password=self.password,
-                              logout=False)
+                              password=self.password)
+        self._login(self.email, self.password)
         self._move_top_to_profile()
 
     ############################################################################
