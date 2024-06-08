@@ -17,10 +17,10 @@ class BasicAuthTest(TestConfig):
         """
         login pageの評価
         """
-        self._screenshot("login1")
+        # self._screenshot("login1")
         self._move_top_to_login()
 
-        self._screenshot("login2")
+        # self._screenshot("login2")
         # フォームの要素の検証 ####################################################
         self._assert_element(By.ID, "email", is_displayed=True)
         self._assert_element(By.ID, "password", is_displayed=True)
