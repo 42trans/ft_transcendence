@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 # def index(request):
 #     return HttpResponse("<h1>[Django]</h1> <p>index pageです</p>")
@@ -92,3 +93,8 @@ def home(request):
 		"content": "Welcome to the home page!"
 	}
 	return JsonResponse(data)
+
+
+def header(request):
+	url_config = settings.URL_CONFIG
+	return render(request, 'header.html', {'url_config': url_config})
