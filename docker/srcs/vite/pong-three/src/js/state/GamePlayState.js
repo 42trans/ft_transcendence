@@ -7,18 +7,12 @@ import AllScenesManager from '../manager/AllScenesManager';
 import * as THREE from "three";
 import ZoomTable from '../effect/ZoomTable';
 
+let DEBUG_FLOW 		= 0;
+let DEBUG_DETAIL 	= 0;
+let TEST_TRY1 		= 0;
+
 class GameplayState extends BaseGameState 
 {
-	static zoomParams = 
-	{
-		zoomInDistance: 1000,
-		zoomOutDistance: 420,
-		duration: 1500,
-		pauseDuration: 100,
-		initialPolarAngle: Math.PI / 4,
-		finalPolarAngle: 0
-	};
-
 	constructor (PongApp)
 	{
 		super(PongApp);
@@ -26,22 +20,49 @@ class GameplayState extends BaseGameState
 		this.camera = this.scenesMgr.gameScene.camera;
 		this.controls = this.scenesMgr.gameScene.controls;
 	}
-	
+
+	static zoomParams = 
+	{
+		duration: 1500,
+		pauseDuration: 100,
+		initialPolarAngle: Math.PI / 4,
+		finalPolarAngle: 0
+	};
+
 	enter() 
 	{
-		// console.log("Entering GamePlay state");
+					if (DEBUG_FLOW){	console.log("Entering GamePlay state");	 };
 		this.scenesMgr.gameScene.refreshScene(new GameSceneConfig());
-		this.pongEngine = new PongEngine(this.PongApp);
+		this.pongEngine	= new PongEngine(this.PongApp);
+		this.camera 	= this.scenesMgr.getGameSceneCamera()
+					if (DEBUG_DETAIL)
+					{
+						console.log('this.camera.z', this.camera.position.z);
+						console.log('this.camera', this.camera);
+					}
+		this.scenesMgr.handleResize();
+					if (DEBUG_DETAIL)
+					{
+						console.log('this.camera.z', this.camera.position.z);
+						console.log('this.camera', this.camera);
+					}
+		const targetPosition = new THREE.Vector3();
+		// テーブルの中心位置を取得　実際は0,0,0
+		this.pongEngine.data.objects.plane.getWorldPosition(targetPosition); 
+		// 初期距離を計算
+		this.initialDistance = this.camera.position.distanceTo(targetPosition);
 
 		const zoomParams = 
 		{
 			...GameplayState.zoomParams,
-			targetPosition: new THREE.Vector3(),
-			startDistance: this.camera.position.distanceTo(new THREE.Vector3()), // Assuming some target position
+			zoomInDistance: this.initialDistance * 1.5,
+			zoomOutDistance: this.initialDistance * 0.5,
+			targetPosition: targetPosition,
+			initialDistance: this.initialDistance,
 		};
-		this.pongEngine.data.objects.plane.getWorldPosition(zoomParams.targetPosition);
 
-		const zoomController = new ZoomTable(
+		const zoomController = new ZoomTable
+		(
 			this.pongEngine,
 			this.camera,
 			this.controls
@@ -67,8 +88,7 @@ class GameplayState extends BaseGameState
 
 	exit() 
 	{
-		// console.log("Exiting GamePlay state");
-		// this.PongApp.allScenesManager.backgroundScene.clearScene();
+					if (DEBUG_FLOW){	console.log("Exiting GamePlay state");	 };
 		this.PongApp.allScenesManager.gameScene.clearScene();
 	}
 

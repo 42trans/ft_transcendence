@@ -51,13 +51,13 @@ class PongEngine
 		this.update		= new PongEngineUpdate(this.data, this.physics, this.match);
 	}
 
-	animate() 
+	async animate() 
 	{
 		if (this.isRunning)
 		{
 			requestAnimationFrame(this.animate);
 		}
-		this.update.updateGame();
+		await this.update.updateGame();
 	}
 }
 

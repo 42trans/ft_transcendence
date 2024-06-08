@@ -118,7 +118,10 @@ services:
     ports:
       - "${VITE_PORT:?}:5173"
     environment:
-      - NODE_ENV=development
+      # TODO_ft 
+      # - NODE_ENV=development
+      # - VITE_MODE=development
+      - VITE_MODE=production
     profiles:
       - three
 
