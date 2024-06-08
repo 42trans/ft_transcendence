@@ -2,6 +2,7 @@
 
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
 
 // ブラウザURLがloginでない（=リダイレクトでloginへ遷移した）場合は、元のURLに戻す
@@ -39,10 +40,8 @@ export function loginUser(event) {
 				// Error
 				document.getElementById('message-area').textContent = data.error;
 				if (data.redirect) {
-					// alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
-					// alert('[tmp] login failure')
-					window.location.href = data.redirect;
-					// switchPage(data.redirect)
+                    // alert('[tmp] login failure')
+					switchPage(data.redirect)
 				} else {
 					// alert('[tmp] error: ' + data.error)
 					console.error('Error:', data.error);
@@ -51,10 +50,11 @@ export function loginUser(event) {
 				// Verified
 				console.log(data.message);
 				const nextUrl = getNextUrl(data.redirect);
-				console.log('login: next=' + nextUrl)
+				// console.log('login: next=' + nextUrl)
 				// alert('[tmp] login success, next:' + nextUrl)
 				// window.location.href = nextUrl
 				switchPage(nextUrl)  // Redirect on successful verification
+                updateHeader();
 			}
 		})
 		.catch(error => console.error('Error:', error));
