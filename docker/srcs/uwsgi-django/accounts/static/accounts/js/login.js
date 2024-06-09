@@ -4,10 +4,18 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 
+// ブラウザURLがloginでない（=リダイレクトでloginへ遷移した）場合は、元のURLに戻す
+function getNextUrl(redirectTo) {
+	const currentBrowserUrl = window.location.pathname;
+	if (currentBrowserUrl === routeTable['login'].path) {
+		return redirectTo;
+	}
+	return currentBrowserUrl;
+}
+
 export function loginUser(event) {
 	const email = document.getElementById('email').value;
 	const password = document.getElementById('password').value;
-	const nextUrl = document.getElementById('next').value;
 
 	fetch('/accounts/api/login/', {
 		method: 'POST',
@@ -23,15 +31,20 @@ export function loginUser(event) {
 				document.getElementById('message-area').textContent = data.error;
 				if (data.redirect) {
 					alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
+					// alert('[tmp] login failure')
 					window.location.href = data.redirect;
 					// switchPage(data.redirect)
 				} else {
+					// alert('[tmp] error: ' + data.error)
 					console.error('Error:', data.error);
 				}
 			} else if (data.message) {
 				// Verified
 				console.log(data.message);
-				window.location.href = data.redirect;
+				const nextUrl = getNextUrl(data.redirect);
+				console.log('login: next=' + nextUrl)
+				// alert('[tmp] login success, next:' + nextUrl)
+				window.location.href = nextUrl
 				// switchPage(data.redirect)  // Redirect on successful verification
 			}
 		})
@@ -50,10 +63,16 @@ export function setupLoginEventListener() {
 	console.log("Setup login event listeners");
 	const form = document.querySelector('.hth-sign-form');
 	if (form) {
-		form.addEventListener('submit', (event) => {
-			event.preventDefault();
-			loginUser(event);
-		});
-		console.log('Form event listener added');
+		// Check if the event listener has already been added
+		if (form.classList.contains('listener-added')) {
+			console.log('Form event listener already exists');
+		} else {
+			form.addEventListener('submit', (event) => {
+				event.preventDefault();
+				loginUser(event);
+			});
+			form.classList.add('listener-added');
+			console.log('Form event listener added');
+		}
 	}
 }

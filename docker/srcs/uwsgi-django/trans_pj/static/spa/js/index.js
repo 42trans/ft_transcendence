@@ -3,6 +3,7 @@
 import { routeTable } from "./routing/routeTable.js"
 import { switchPage, renderView } from "./routing/renderView.js";
 import { setOnlineStatus } from "/static/accounts/js/online-status.js";
+import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
 
 function isRenderByThreeJsPage(path) {
@@ -25,6 +26,7 @@ const setupPopStateListener = () => {
   window.addEventListener("popstate", (event) => {
     const path = window.location.pathname;
     stopGamePageAnimation()
+    setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     renderView(path);
     setOnlineStatus();  // WebSocket接続を再確立
   });
@@ -54,6 +56,7 @@ const setupBodyClickListener = () => {
   document.body.addEventListener("click", (event) => {
   console.log('clickEvent: path: ' + window.location.pathname);
   stopGamePageAnimation()
+  setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
 
     const linkElement = event.target.closest("[data-link]");
     if (linkElement) {
@@ -81,6 +84,7 @@ const setupLoadListener = () => {
     console.log('loadEvent: path: ' + window.location.pathname);
 
     stopGamePageAnimation()
+    setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     setOnlineStatus();  // WebSocket接続を再確立
   });
 };
