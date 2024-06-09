@@ -7,6 +7,7 @@
 
 <label for="token">Verification Code:</label>
 <input type="text" id="token" required>
+<input type="hidden" id="next_url" name="next_url" value="{{ next_url }}">
 <button class="hth-btn verify2FaButton">Verify</button>
 
 {% comment %} <script type="module" src="{% static 'accounts/js/verify.js' %}"></script> {% endcomment %}

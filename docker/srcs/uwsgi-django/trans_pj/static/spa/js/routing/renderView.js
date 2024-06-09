@@ -4,12 +4,18 @@ import { isLogined } from "../utility/user.js";
 
 
 export const switchPage = (url) => {
-  // console.log("history pushState:" + url);
-  history.pushState(null, null, url);
+  const currentUrl = new URL(window.location.href);
+  const newUrl = new URL(url, currentUrl.origin);
+
+  const path = newUrl.pathname;
+  const queryString = newUrl.search;
+
+  console.log('path:', path);
+  console.log('queryString:', queryString);
+
+  history.pushState(null, null, path + queryString);
 
   let currentPath = window.location.pathname;
-  // console.log('switchPage url:' + url)
-  // console.log('switchPage currentPath:' + currentPath)
 
   renderView(currentPath).then(() => {
     // resetState イベントを発行
@@ -44,6 +50,7 @@ const getSelectedRoute = (currentPath, routeTable, isLogined) => {
 
   if (matchedRoute) {
     matchedRoute.params = params;
+    matchedRoute.queryParams = new URLSearchParams(window.location.search);
     return matchedRoute;
   } else if (isLogined) {
     return routeTable['home'];

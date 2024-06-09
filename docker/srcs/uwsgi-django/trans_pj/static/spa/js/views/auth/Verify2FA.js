@@ -13,7 +13,7 @@ export default class extends AbstractView {
   }
 
   async getHtml() {
-    const uri = "/accounts/verify/verify_2fa/";
+    const uri = "/accounts/verify/verify_2fa/" + window.location.search;;
     const data = fetchData(uri);
     return data;
   }

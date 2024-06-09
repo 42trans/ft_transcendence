@@ -7,8 +7,17 @@ import { switchPage } from "/static/spa/js/routing/renderView.js"
 // ブラウザURLがloginでない（=リダイレクトでloginへ遷移した）場合は、元のURLに戻す
 function getNextUrl(redirectTo) {
 	const currentBrowserUrl = window.location.pathname;
+
+	// ブラウザURLが/login/であれば、login APIのredirect先に遷移
 	if (currentBrowserUrl === routeTable['login'].path) {
 		return redirectTo;
+	}
+
+	// ブラウザURLが/login/でなく、LoginAPIのredirect先がvarify2faの場合は
+	// query parameterで遷移先を保持
+	if (redirectTo === routeTable['veryfy2fa'].path) {
+		return `${redirectTo}?next=${encodeURIComponent(currentBrowserUrl)}`;
+		// return `${redirectTo}?next=aaa`;
 	}
 	return currentBrowserUrl;
 }
@@ -30,7 +39,7 @@ export function loginUser(event) {
 				// Error
 				document.getElementById('message-area').textContent = data.error;
 				if (data.redirect) {
-					alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
+					// alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
 					// alert('[tmp] login failure')
 					window.location.href = data.redirect;
 					// switchPage(data.redirect)
@@ -44,8 +53,8 @@ export function loginUser(event) {
 				const nextUrl = getNextUrl(data.redirect);
 				console.log('login: next=' + nextUrl)
 				// alert('[tmp] login success, next:' + nextUrl)
-				window.location.href = nextUrl
-				// switchPage(data.redirect)  // Redirect on successful verification
+				// window.location.href = nextUrl
+				switchPage(nextUrl)  // Redirect on successful verification
 			}
 		})
 		.catch(error => console.error('Error:', error));
