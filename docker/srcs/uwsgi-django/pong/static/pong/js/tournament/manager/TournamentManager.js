@@ -107,11 +107,11 @@ class TournamentManager
 
 	/** ゲストユーザーへ表示する内容 */
 	_handleGuestUser() {
-		switchPage(routeTable['login'].path)
-		// document.getElementById('tournament-container').innerHTML = `
-		// 	<p>Please log in to manage or create tournaments.</p>
-		// 	<p><a href="/accounts/login">Log in</a> or <a href="/accounts/signup">Sign up</a></p>
-		// `;
+		// view関数で/login/にリダイレクトされるが、念の為に↓を用意しておく
+		document.getElementById('tournament-container').innerHTML = `
+			<p>Please log in to manage or create tournaments.</p>
+			<p><a href="${routeTable['login'].path}" data-link>Log in</a> or <a href="${routeTable['signup'].path}" data-link>Sign up</a></p>
+		`;
 	}
 }
 

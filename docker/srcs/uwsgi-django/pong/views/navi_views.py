@@ -8,8 +8,11 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-# @login_required
+
 def tournament(request):
+	if not request.user.is_authenticated:
+		return redirect(to='/accounts/login/')
+
 	if request.method == 'GET':
 		return render(request, 'pong/tournament.html')
 	else:
