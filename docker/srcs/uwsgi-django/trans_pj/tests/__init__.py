@@ -95,11 +95,11 @@ class TestConfig(LiveServerTestCase):
     ############################################################################
     # DOM要素
 
-    def _element(self, by, value, retries=5):
+    def _element(self, by, value, timeout=10, retries=5):
         """要素を取得する 必要に応じて再取得を試みる """
         for attempt in range(retries):
             try:
-                wait = WebDriverWait(driver=self.driver, timeout=10)
+                wait = WebDriverWait(driver=self.driver, timeout=timeout)
                 element = wait.until(EC.visibility_of_element_located((by, value)))
 
                 self.assertTrue(element.is_displayed(),
