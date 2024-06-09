@@ -23,13 +23,16 @@ class EntryGameState extends BaseGameState
 		this.magmaFlare			= new MagmaFlare();
 
 		this.handleButtonClick	= this.changeStateGamePlay.bind(this);
-		this.button				= null;
+		this.startGameButton	= null;
 
-		this.bundRemoveEnterGameButton =  this.removeEnterGameButton.bind(this);
+		this.boundStartBtn = this.displayEnterGameButton.bind(this);
+		window.addEventListener('switchPageResetState', this.boundStartBtn);
+
+		// this.bundRemoveEnterGameButton =  this.removeEnterGameButton.bind(this);
 
 		// window.addEventListener('switchPageResetState', () => this.removeEnterGameButton());
 		// window.addEventListener('switchPageResetState', this.bundRemoveEnterGameButton);
-		window.addEventListener('popstate', this.handlePopState.bind(this));
+		// window.addEventListener('popstate', this.handlePopState.bind(this));
 	}
 
 	enter() 
@@ -41,6 +44,8 @@ class EntryGameState extends BaseGameState
 		this.scenesMgr.effectsScene.scene.add(this.magmaFlare);
 		
 		this.displayEnterGameButton(); 
+		this.initEndButton();
+
 		this.camera		= this.scenesMgr.effectsScene.camera;
 		this.controls	= this.scenesMgr.effectsScene.controls;
 		this.zoomBall	= new ZoomBall(this.camera, this.controls);
@@ -70,26 +75,60 @@ class EntryGameState extends BaseGameState
 		this.scenesMgr.backgroundScene.clearScene();
 	}
 
-	displayEnterGameButton() 
+	displayEnterGameButton()
 	{
-		this.button = document.getElementById('sButton');
-		if (!this.button) {
-			this.button = document.createElement('button');
-			this.button.textContent = 'Enter Game';
-			this.button.className = 'game-button';
-			this.button.id = 'sButton';
-			document.body.appendChild(this.button);
-			this.button.addEventListener('click', this.handleButtonClick);
+		try {
+					if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+
+			this.startGameButton = document.getElementById('hth-threejs-start-game-btn');
+			if (!this.startGameButton) {
+				return;
+			}
+			this.startGameButton.style.display = 'block' 
+
+			// const startGameButtonClickHandler = () => {
+				// console.log('this.socket', this.socket);
+
+				// this.setupWebSocketConnection();
+				// this.startGameButton.remove();  
+				// this.startGameButton.style.display = 'none';  
+			// };
+			this.startGameButton.addEventListener('click', this.handleButtonClick);
+		} catch (error) {
+			console.error('hth: initStartButton() failed: ', error);
 		}
 	}
+
+	// displayEnterGameButton() 
+	// {
+	// 	this.button = document.getElementById('sButton');
+	// 	if (!this.button) {
+	// 		this.button = document.createElement('button');
+	// 		this.button.textContent = 'Enter Game';
+	// 		this.button.className = 'game-button';
+	// 		this.button.id = 'sButton';
+	// 		document.body.appendChild(this.button);
+	// 		this.button.addEventListener('click', this.handleButtonClick);
+	// 	}
+	// }
 
 	changeStateGamePlay() 
 	{
 		this.PongApp.gameStateManager.changeState('gamePlay');
-		if (this.button) {
-			this.button.style.display = 'none';
+		if (this.startGameButton) {
+			this.startGameButton.style.display = 'none';
 		}
 	}
+
+	initEndButton() 
+	{
+		const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
+		if (!endGameButton) {
+			return;
+		}
+		endGameButton.style.display = 'none';
+	}
+
 
 	// removeEnterGameButton() 
 	// {
@@ -107,19 +146,19 @@ class EntryGameState extends BaseGameState
 	// 	}
 	// }
 
-	handlePopState() {
-		// URLをチェックして、現在のページが特定のページであるかを確認
-		const pathName = window.location.pathname;
-		const matchPageRegex = /^\/app\/game\/match\/\d+\/$/;
+	// handlePopState() {
+	// 	// URLをチェックして、現在のページが特定のページであるかを確認
+	// 	const pathName = window.location.pathname;
+	// 	const matchPageRegex = /^\/app\/game\/match\/\d+\/$/;
 
-		if (matchPageRegex.test(pathName)) {
-			// ページが特定の条件に一致する場合、ボタンを再配置
-			this.displayEnterGameButton();
-		} else {
-			// 一致しない場合は、ボタンを削除
-			this.removeEnterGameButton();
-		}
-	}
+	// 	if (matchPageRegex.test(pathName)) {
+	// 		// ページが特定の条件に一致する場合、ボタンを再配置
+	// 		this.displayEnterGameButton();
+	// 	} else {
+	// 		// 一致しない場合は、ボタンを削除
+	// 		this.removeEnterGameButton();
+	// 	}
+	// }
 	
 }
 

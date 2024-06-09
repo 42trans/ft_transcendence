@@ -14,6 +14,8 @@
 	transform: translate(-50%, -50%);
 }
 
+#hth-threejs-start-game-btn,
+#hth-threejs-back-to-home-btn,
 #hth-pong-online-start-game-btn,
 #hth-pong-online-back-to-home-btn {
 	position: absolute;
