@@ -49,6 +49,12 @@ const setupDOMContentLoadedListener = () => {
     setupBodyClickListener();
 
     setOnlineStatus();  // WebSocket接続を再確立
+
+    // three-jsのEndGameボタン押下でSPA遷移するためのイベント
+    document.addEventListener('endGame', function() {
+      console.log('endGame event');
+      switchPage(routeTable['tournament'].path);
+    });
   });
 };
 

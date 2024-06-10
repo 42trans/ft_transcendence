@@ -144,12 +144,19 @@ class PongEngineMatch
 		const button = document.createElement('button');
 		button.textContent = 'End Game';
 		button.className = 'game-button';
-		button.setAttribute('data-link', '');
-		button.onclick = function() {
-			window.location.href = '/app/';
-		};
+
+		// SPAとして'/app/'に遷移するため、endGameイベントをdjango側で補足する
+		const endGameEvent = new CustomEvent('endGame');
+
 		// ボタンをページに追加
 		document.body.appendChild(button);
+
+		button.onclick = function() {
+			// endGameEventをdjangoで補足し、SPA遷移する
+			document.dispatchEvent(endGameEvent);
+			// ボタンをページから削除
+			document.body.removeChild(button);
+		};
 	}
 
 	sendMatchResult() 
