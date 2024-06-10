@@ -6,18 +6,33 @@ import { isLogined } from "../utility/user.js";
 export const switchPage = (url) => {
   const currentUrl = new URL(window.location.href);
   const newUrl = new URL(url, currentUrl.origin);
+const getPathAndQueryString = (targetPath) => {
+  const targetUrl = new URL(targetPath, window.location.origin);
+  const targetPathName = targetUrl.pathname;
+  const targetQueryString = targetUrl.search;
+  return { targetPathName, targetQueryString };
+};
 
-  const path = newUrl.pathname;
-  const queryString = newUrl.search;
 
-  console.log('path:', path);
-  console.log('queryString:', queryString);
+export const switchPage = (targePath) => {
+  // const currentUrl = new URL(window.location.href);
+  const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
 
-  history.pushState(null, null, path + queryString);
+  // console.log('path:', targetPathName);
+  // console.log('queryString:', targetQueryString);
 
-  let currentPath = window.location.pathname;
+  // query string込みでURLをpush
+  history.pushState(null, null, targetPathName + targetQueryString);
 
-  renderView(currentPath).then(() => {
+  // DEBUG console log
+  // console.log(`switchPage`)
+  // console.log(` currentUrl        :${currentUrl}`)
+  // console.log(` targetPathName    :${targetPathName}`)
+  // console.log(` targetQueryString :${targetQueryString}`)
+  // console.log(` currentPath       :${window.location.pathname}`)
+  // alert(`[debug] switchPage consolelog確認用`)
+
+  renderView(targetPathName).then(() => {
     // resetState イベントを発行
     window.dispatchEvent(new CustomEvent('switchPageResetState'));
   });
