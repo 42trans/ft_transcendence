@@ -16,7 +16,7 @@ function getNextUrl(redirectTo) {
 	// ブラウザURLが/login/でなく、LoginAPIのredirect先がvarify2faの場合は
 	// query parameterで遷移先を保持
 	if (redirectTo === routeTable['veryfy2fa'].path) {
-		return `${redirectTo}?next=${encodeURIComponent(currentBrowserUrl)}`;
+		return `${redirectTo}?next=${currentBrowserUrl}`;
 		// return `${redirectTo}?next=aaa`;
 	}
 	return currentBrowserUrl;
