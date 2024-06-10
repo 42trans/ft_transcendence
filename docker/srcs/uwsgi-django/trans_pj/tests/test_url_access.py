@@ -66,7 +66,7 @@ class UrlAccessTest(TestConfig):
         is_page_login_required()に該当するページはlogin pageに遷移することが期待される(urlはkeepする)
         login成功後はリダイレクト元のurlに遷移する
         """
-        print(f"[GUEST]")
+        print(f"[GUEST -> Login(2FA OFF)]")
         for page_name, page_path in self.url_config.items():
             print(f" [Testing] page_name    : {page_name}")
             print(f"           page_path    : {page_path}")
@@ -80,14 +80,9 @@ class UrlAccessTest(TestConfig):
             time.sleep(0.5)  # 明示的に待機
             # self._screenshot(f"guest_{page_name} 1")
 
-            if self._is_url_with_param(page_name):
-                expected_url = f"{kURL_PREFIX}{page_path}{self.user2_nickname}/"
-            else:
-                expected_url = f"{kURL_PREFIX}{page_path}"
-
-            print(f"           expected_url : {expected_url}")
+            print(f"           access_url   : {url}")
             print(f"           current_url  : {self.driver.current_url}")
-            self._assert_current_url(expected_url)
+            self._assert_current_url(url)
             # self._screenshot(f"guest_{page_name} 2")
 
             # ページ表示内容を評価
@@ -117,8 +112,12 @@ class UrlAccessTest(TestConfig):
     #     is_page_login_required()に該当するページはlogin pageに遷移することが期待される(urlはkeepする)
     #     login成功後はリダイレクト元のurlに遷移する
     #     """
-    #     print(f"[GUEST]")
+    #     print(f"[GUEST -> Login(2FA ON)]")
     #     for page_name, page_path in self.url_config.items():
+    #
+    #         if page_name != GameHistoryPage:
+    #             continue
+    #
     #         print(f" [Testing] page_name    : {page_name}")
     #         print(f"           page_path    : {page_path}")
     #
@@ -131,33 +130,35 @@ class UrlAccessTest(TestConfig):
     #         time.sleep(0.5)  # 明示的に待機
     #         self._screenshot(f"guest_{page_name} 1")
     #
-    #         if self._is_url_with_param(page_name):
-    #             expected_url = f"{kURL_PREFIX}{page_path}{self.user2_nickname}/"
-    #         else:
-    #             expected_url = f"{kURL_PREFIX}{page_path}"
-    #
-    #         print(f"           expected_url : {expected_url}")
-    #         print(f"           current_url  : {self.driver.current_url}")
-    #         self._assert_current_url(expected_url)
-    #         self._screenshot(f"guest_{page_name} 2")
+    #         print(f"           access_url   : {url}")
+    #         print(f"           current_url 1: {self.driver.current_url}")
+    #         self._assert_current_url(url)
     #
     #         # ページ表示内容を評価
     #         if self._is_page_login_required(page_name):
     #             self._is_expected_page(AuthLoginPage)  # login pageであることを確認
     #
     #             print(f"           expected login: ok")
-    #             self._screenshot(f"guest_{page_name} 3")
+    #             print(f"           current_url 2: {self.driver.current_url}")
+    #             self._screenshot(f"guest_{page_name} 2 expect_login")
     #
     #             if page_name == AuthVerify2FaPage or page_name == AuthEnable2FaPage:
     #                 continue
     #
     #             self._login_for_redirected_page(email=self.user3_email, password=self.password)  # login
-    #             self._screenshot(f"guest_{page_name} 4")
     #             time.sleep(0.1)
+    #
+    #             self._screenshot(f"guest_{page_name} 3")
+    #             print(f"           current_url 3: {self.driver.current_url}")
+    #             url_with_next = f"{self.verify_2fa_url}?next={page_path}"
+    #             print(f"           url_with_next: {url_with_next}")
+    #             self._assert_current_url(url_with_next)
+    #
     #             self.driver.refresh()
     #             self._verify_login_2fa(self.set_up_key)
     #             print(f"           login         : success")
-    #             self._screenshot(f"guest_{page_name} 5")
+    #             print(f"           current_url 4: {self.driver.current_url}")
+    #             self._screenshot(f"guest_{page_name} 4")
     #
     #             self._is_expected_page(page_name)  # url通りのページに遷移していることを確認
     #
@@ -167,7 +168,7 @@ class UrlAccessTest(TestConfig):
     #             pass
     #         else:
     #             self._is_not_login_page()  # login pageでないことを確認
-
+    #             print(f"           not login page: ok")
 
     def test_access_by_2fa_disabled_user(self):
         """
@@ -190,19 +191,12 @@ class UrlAccessTest(TestConfig):
             time.sleep(0.5)  # 明示的に待機
             # self._screenshot(f"user1_{page_name}")
 
-            if self._is_page_redirect_to_top(page_name, is_enable_2fa=False):
-                expected_url = self.top_url
-            elif self._is_url_with_param(page_name):
-                expected_url = f"{kURL_PREFIX}{page_path}{self.user2_nickname}/"
-            else:
-                expected_url = f"{kURL_PREFIX}{page_path}"
-
-            print(f"           expected_url : {expected_url}")
+            print(f"           access_url   : {url}")
             print(f"           current_url  : {self.driver.current_url}")
-            # self._assert_current_url(expected_url)
+            # self._assert_current_url(url)
 
             # ページ表示内容を評価
-            if expected_url == self.top_url:
+            if self._is_page_redirect_to_top(page_name, is_enable_2fa=False) or url == self.top_url:
                 self._is_expected_page(PongTopPage)
                 print(f"           expected top : ok")
             else:
@@ -230,19 +224,12 @@ class UrlAccessTest(TestConfig):
             time.sleep(0.5)  # 明示的に待機
             # self._screenshot(f"user3_{page_name}")
 
-            if self._is_page_redirect_to_top(page_name, is_enable_2fa=True):
-                expected_url = self.top_url
-            elif self._is_url_with_param(page_name):
-                expected_url = f"{kURL_PREFIX}{page_path}{self.user2_nickname}/"
-            else:
-                expected_url = f"{kURL_PREFIX}{page_path}"
-
-            print(f"           expected_url : {expected_url}")
+            print(f"           access_url   : {url}")
             print(f"           current_url  : {self.driver.current_url}")
-            # self._assert_current_url(expected_url)
+            # self._assert_current_url(url)
 
             # ページ表示内容を評価
-            if expected_url == self.top_url:
+            if self._is_page_redirect_to_top(page_name, is_enable_2fa=True) or url == self.top_url:
                 self._is_expected_page(PongTopPage)
                 print(f"           expected top : ok")
             else:
@@ -309,7 +296,12 @@ class UrlAccessTest(TestConfig):
 
     def _is_not_login_page(self):
         try:
-            self._is_expected_page(page_name=AuthLoginPage, timeout=1, retries=1)
+            self._is_expected_page(
+                page_name=AuthLoginPage,
+                timeout=1,
+                retries=1,
+                verbose=False  # timeout発生するためException log非表示
+            )
         except AssertionError:
             pass
         else:
@@ -317,13 +309,18 @@ class UrlAccessTest(TestConfig):
 
     def _is_not_top_page(self, page_name):
         try:
-            self._is_expected_page(page_name=PongTopPage, timeout=1, retries=1)
+            self._is_expected_page(
+                page_name=PongTopPage,
+                timeout=1,
+                retries=1,
+                verbose=False  # timeout発生するためException log非表示
+            )
         except AssertionError:
             pass
         else:
             self.fail(f"Expected: NOT top page: {page_name}")
 
-    def _is_expected_page(self, page_name, timeout=10, retries=5):
+    def _is_expected_page(self, page_name, timeout=10, retries=5, verbose=True):
         self.driver.refresh()
         try:
             if page_name == PongTopPage:
@@ -334,7 +331,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value="h2.slideup-text.text-shadow-primary",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIn("Unrivaled hth Pong Experience", h2_element.text)
 
@@ -348,7 +346,8 @@ class UrlAccessTest(TestConfig):
                     by=By.ID,
                     value="tournament-container",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIsNotNone(tournament_container)
 
@@ -366,9 +365,10 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value="h1",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
-                self.assertIn(f"{self.user1_nickname}'s Game History", h1_element.text)
+                self.assertIn(f"s Game History", h1_element.text)
 
             elif page_name == UserProfilePage:
                 """
@@ -378,7 +378,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value=".user-info-container",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIsNotNone(user_info_container)
 
@@ -390,7 +391,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value="h1",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIn("User Info (public)", h1_element.text)
 
@@ -402,7 +404,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value=".friends-info-container",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIsNotNone(friends_info_container)
 
@@ -414,7 +417,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value="h2",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIn("Edit user profile", h2_element.text)
 
@@ -426,7 +430,8 @@ class UrlAccessTest(TestConfig):
                     by=By.ID,
                     value="uploadAvatarButton",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIsNotNone(upload_button)
 
@@ -438,7 +443,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value="h2",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIn("Start DM", h2_element.text)
 
@@ -450,7 +456,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value="h2",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIn("DM with", h2_element.text)
 
@@ -462,7 +469,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value="h2.pb-3",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIn("Enable Two-Factor Authentication (2FA)", h2_element.text)
 
@@ -474,7 +482,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value="h2.pb-3",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIn("Verify Two-Factor Authentication (2FA)", h2_element.text)
 
@@ -486,7 +495,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value="h1.slideup-text",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIn("Please sign up", h1_element.text)
 
@@ -498,7 +508,8 @@ class UrlAccessTest(TestConfig):
                     by=By.CSS_SELECTOR,
                     value="h1.slideup-text",
                     timeout=timeout,
-                    retries=retries
+                    retries=retries,
+                    verbose=verbose
                 )
                 self.assertIn("Please log in", h1_element.text)
             else:

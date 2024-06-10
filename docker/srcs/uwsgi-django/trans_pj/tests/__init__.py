@@ -95,7 +95,7 @@ class TestConfig(LiveServerTestCase):
     ############################################################################
     # DOM要素
 
-    def _element(self, by, value, timeout=10, retries=5):
+    def _element(self, by, value, timeout=10, retries=5, verbose=True):
         """要素を取得する 必要に応じて再取得を試みる """
         for attempt in range(retries):
             try:
@@ -106,19 +106,22 @@ class TestConfig(LiveServerTestCase):
                                 msg=f"Element `{value}` is not displayed")
                 return element
             except StaleElementReferenceException:
-                print(f"element(): StaleElementReferenceException: by:{by}, value:{value}, {attempt + 1}/{retries}")
+                if verbose:
+                    print(f"element(): StaleElementReferenceException: by:{by}, value:{value}, {attempt + 1}/{retries}")
                 if attempt < retries - 1:
                     time.sleep(1)  # 少し待ってから再試行
                 else:
                     raise
             except NoSuchElementException:
-                print(f"element(): NoSuchElementException: by:{by}, value:{value}, {attempt + 1}/{retries}")
+                if verbose:
+                    print(f"element(): NoSuchElementException: by:{by}, value:{value}, {attempt + 1}/{retries}")
                 if attempt < retries - 1:
                     time.sleep(1)  # 少し待ってから再試行
                 else:
                     raise
             except TimeoutException:
-                print(f"element(): TimeoutException: by:{by}, value:{value}, {attempt + 1}/{retries}")
+                if verbose:
+                    print(f"element(): TimeoutException: by:{by}, value:{value}, {attempt + 1}/{retries}")
                 if attempt < retries - 1:
                     time.sleep(1)  # 少し待ってから再試行
                 else:
