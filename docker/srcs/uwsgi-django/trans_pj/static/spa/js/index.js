@@ -36,11 +36,13 @@ const setupPopStateListener = () => {
 // spa.htmlの読み込みと解析が完了した時点で発火
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", () => {
-    console.log('DOMContentLoaded: path: ' + window.location.pathname);
+    console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
     stopGamePageAnimation()
 
     // 初期ビューを表示
-    let currentPath = window.location.pathname;
+    const pathName = window.location.pathname;
+    const queryString =  window.location.search;
+    const currentPath = pathName + queryString;
     switchPage(currentPath);
 
     // リンククリック時の遷移を設定
