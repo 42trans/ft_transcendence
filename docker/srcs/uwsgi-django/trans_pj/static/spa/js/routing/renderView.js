@@ -3,13 +3,17 @@ import { getUrl } from "../utility/url.js";
 import { isLogined } from "../utility/user.js";
 
 
-export const switchPage = (url) => {
-  const currentUrl = new URL(window.location.href);
-  const newUrl = new URL(url, currentUrl.origin);
 const getPathAndQueryString = (targetPath) => {
   const targetUrl = new URL(targetPath, window.location.origin);
   const targetPathName = targetUrl.pathname;
-  const targetQueryString = targetUrl.search;
+  let targetQueryString = targetUrl.search;
+
+  // query stringのnextの要素がpathNameと一致している場合、query stringを空文字列に置き換える
+  const params = new URLSearchParams(targetQueryString);
+  const nextParam = params.get('next');
+  if (nextParam === targetPathName) {
+    targetQueryString = '';
+  }
   return { targetPathName, targetQueryString };
 };
 
