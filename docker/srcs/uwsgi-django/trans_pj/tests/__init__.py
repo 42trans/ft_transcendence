@@ -88,6 +88,8 @@ class TestConfig(LiveServerTestCase):
 
         # set up operation #####################################################
         self._access_to(self.top_url)
+        # ページの読み込みが完了するまでの待機時間を設定
+        self.driver.implicitly_wait(10)
 
     def tearDown(self):
         self.driver.quit()
@@ -350,7 +352,7 @@ class TestConfig(LiveServerTestCase):
         # self._screenshot("logout 2")
 
     def _create_new_user(self, email, nickname, password, is_enable_2fa=False):
-        self._move_top_to_signup(assert_page_and_title=False)
+        self._move_top_to_signup()
 
         self._send_to_elem(By.ID, "email", email)
         self._send_to_elem(By.ID, "nickname", nickname)
