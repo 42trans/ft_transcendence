@@ -19,7 +19,7 @@ class PongEngine
 		this.env		= PongApp.env;
 		this.matchData	= PongApp.matchData;
 		
-		this.init3DEnvironment(PongApp);
+		this.init3DEnvironment();
 		this.initParameters();
 		this.initGameLogic();
 		
@@ -29,7 +29,7 @@ class PongEngine
 		setTimeout(() => this.animate(), 4500);
 	}
 
-	init3DEnvironment(PongApp) 
+	init3DEnvironment() 
 	{
 		this.scene		= AllScenesManager.getInstance().gameScene.scene;
 		this.camera		= this.scene.camera;
@@ -48,7 +48,7 @@ class PongEngine
 	{
 		this.physics	= new PongEnginePhysics(this.data);
 		this.match		= new PongEngineMatch(this, this.scene, this.data);
-		this.update		= new PongEngineUpdate(this.data, this.physics, this.match);
+		this.update		= new PongEngineUpdate(this, this.data, this.physics, this.match);
 	}
 
 	async animate() 
