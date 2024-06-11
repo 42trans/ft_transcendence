@@ -167,6 +167,9 @@ class TestConfig(LiveServerTestCase):
         self.assertEqual(self.driver.current_url, expected_url)
 
     def _assert_page_url_and_title(self, expecter_url, expected_title):
+        WebDriverWait(self.driver, 10).until(
+            EC.title_contains(expected_title)
+        )
         # ページのURLを検証
         self._assert_current_url(expecter_url)
         # ページのタイトルを検証
@@ -300,7 +303,7 @@ class TestConfig(LiveServerTestCase):
     def _move_top_to_signup(self):
         signup_page_link = self._text_link("Sign-up")
         self._click_link(signup_page_link, wait_for_link_invisible=False)
-        time.sleep(0.2)
+        time.sleep(1)
         self.driver.refresh()
         self._assert_page_url_and_title(expecter_url=self.signup_url,
                                         expected_title='Signup')
