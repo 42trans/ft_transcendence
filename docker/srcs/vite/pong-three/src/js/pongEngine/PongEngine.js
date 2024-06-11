@@ -48,7 +48,8 @@ class PongEngine
 	{
 		this.physics	= new PongEnginePhysics(this.data);
 		this.match		= new PongEngineMatch(this, this.scene, this.data);
-		this.update		= new PongEngineUpdate(this.data, this.physics, this.match);
+		this.update		= new PongEngineUpdate(this, this.data, this.physics, this.match);
+		// this.update		= new PongEngineUpdate(this.data, this.physics, this.match);
 	}
 
 	async animate() 

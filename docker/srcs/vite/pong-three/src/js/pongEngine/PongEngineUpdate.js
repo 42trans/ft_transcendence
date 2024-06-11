@@ -5,8 +5,10 @@ import PongEngineKey from './PongEngineKey'
  */
 class PongEngineUpdate 
 {
-	constructor(pongEngineData, physics, match)
+	constructor(pongEngine, pongEngineData, physics, match)
+	// constructor(pongEngineData, physics, match)
 	{
+		this.pongEngine = pongEngine;
 		this.physics	= physics;
 		this.match		= match;
 		this.pongEngineData = pongEngineData;
@@ -144,7 +146,9 @@ class PongEngineUpdate
 		// 	field \twidth: ${this.field.width}  \height: ${this.field.height}
 		// `);	
 		await this.handleCollisions();
-		this.updateBallPosition();
+		if (this.pongEngine.isRunning){
+			this.updateBallPosition();
+		}
 		
 		this.handlePaddleMovement();
 	}

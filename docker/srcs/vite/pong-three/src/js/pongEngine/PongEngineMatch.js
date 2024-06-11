@@ -18,6 +18,7 @@ class PongEngineMatch
 		this.maxScore	= data.settings.maxScore;
 		this.matchData	= pongEngine.matchData;
 		this.env		= pongEngine.env; 
+		this.ball		= data.objects.ball;
 
 		// console.log('match constructor', this.matchData.id);
 
@@ -123,6 +124,7 @@ class PongEngineMatch
 	{
 		if (this.score1 >= this.maxScore || this.score2 >= this.maxScore) 
 		{
+			this.ball.position.set(0, 0, 0); 
 			this.endGame();
 		}
 	}
@@ -132,9 +134,9 @@ class PongEngineMatch
 		console.log('Game end');
 		this.pongEngine.isRunning = false;
 		
-		if (this.matchData)
+		if (this.matchData){
 			this.sendMatchResult();
-		
+		}
 		this.displayEndGameButton();
 	}
 
