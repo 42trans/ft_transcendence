@@ -1,12 +1,13 @@
 {% load static %}
 
-<h2>Verify Two-Factor Authentication (2FA)</h2>
+<h2 class="pb-3">Verify Two-Factor Authentication (2FA)</h2>
 <p>Enter the verification code from your authentication app:</p>
 
 <div id="error-message" style="color: red;"></div>
 
 <label for="token">Verification Code:</label>
 <input type="text" id="token" required>
+<input type="hidden" id="next_url" name="next_url" value="{{ next_url }}">
 <button class="hth-btn verify2FaButton">Verify</button>
 
 {% comment %} <script type="module" src="{% static 'accounts/js/verify.js' %}"></script> {% endcomment %}

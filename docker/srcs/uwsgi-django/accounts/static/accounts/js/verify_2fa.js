@@ -1,13 +1,25 @@
 // verify_2fa.js
 
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+
+
+function getNextUrl() {
+	const urlParams = new URLSearchParams(window.location.search);
+	return urlParams.get('next') || '';
+}
+
 function verify2FA() {
 	const token = document.getElementById('token').value;
+	const nextUrl = getNextUrl()
+
+	console.log('verify2fa nextUrl:' + nextUrl)
+
 	fetch('/accounts/api/verify_2fa/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ token: token })
+		body: JSON.stringify({ token: token , next: nextUrl})
 	})
 		.then(response => response.json())
 		.then(data => {
@@ -15,14 +27,17 @@ function verify2FA() {
 				// Error
 				document.getElementById('error-message').textContent = data.error;
 				if (data.redirect) {
+					// alert('[tmp] varify2fa error: redirectTo:' + data.redirect)
 					window.location.href = data.redirect;
 				} else {
+					// alert('[tmp] varify2fa error' + data.error)
 					console.error('Error:', data.error);
 				}
 			} else if (data.message) {
 				// Verified
 				console.log(data.message);
-				window.location.href = data.redirect;  // Redirect on successful verification
+				// alert('[tmp] varify2fa success, redirect:' + data.redirect)
+				switchPage(data.redirect)  // Redirect on successful verification
 			}
 		})
 		.catch(error => console.error("Error:", error));

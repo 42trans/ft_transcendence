@@ -3,6 +3,7 @@
 import { routeTable } from "./routing/routeTable.js"
 import { switchPage, renderView } from "./routing/renderView.js";
 import { setOnlineStatus } from "/static/accounts/js/online-status.js";
+import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
 
 function isRenderByThreeJsPage(path) {
@@ -25,6 +26,7 @@ const setupPopStateListener = () => {
   window.addEventListener("popstate", (event) => {
     const path = window.location.pathname;
     stopGamePageAnimation()
+    setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     renderView(path);
     setOnlineStatus();  // WebSocket接続を再確立
   });
@@ -34,11 +36,13 @@ const setupPopStateListener = () => {
 // spa.htmlの読み込みと解析が完了した時点で発火
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", () => {
-    console.log('DOMContentLoaded: path: ' + window.location.pathname);
+    console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
     stopGamePageAnimation()
 
     // 初期ビューを表示
-    let currentPath = window.location.pathname;
+    const pathName = window.location.pathname;
+    const queryString =  window.location.search;
+    const currentPath = pathName + queryString;
     switchPage(currentPath);
 
     // リンククリック時の遷移を設定
@@ -54,6 +58,7 @@ const setupBodyClickListener = () => {
   document.body.addEventListener("click", (event) => {
   console.log('clickEvent: path: ' + window.location.pathname);
   stopGamePageAnimation()
+  setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
 
     const linkElement = event.target.closest("[data-link]");
     if (linkElement) {
@@ -81,6 +86,7 @@ const setupLoadListener = () => {
     console.log('loadEvent: path: ' + window.location.pathname);
 
     stopGamePageAnimation()
+    setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     setOnlineStatus();  // WebSocket接続を再確立
   });
 };

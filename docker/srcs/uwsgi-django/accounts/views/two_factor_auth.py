@@ -34,6 +34,9 @@ from accounts.forms import Enable2FAForm, Verify2FAForm
 from accounts.models import CustomUser, UserManager
 from accounts.views.jwt import get_jwt_response
 
+import logging
+logger = logging.getLogger('accounts')
+
 
 class Enable2FaTemplateView(TemplateView):
     template_name = 'verify/enable_2fa.html'
@@ -202,6 +205,13 @@ class Verify2FaTepmlateView(TemplateView):
             return redirect(self.login_page_path)
         return super().dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        next_url = self.request.GET.get('next')
+        context['next_url'] = next_url
+        logger.error(f'verify get: next {next_url}')
+        return context
+
 
 class Verify2FaAPIView(APIView):
     permission_classes = [AllowAny]  # Non-Login before verify 2FA
@@ -216,13 +226,16 @@ class Verify2FaAPIView(APIView):
             return Response(data, status=401)
 
         token = request.data.get('token')
+        next_url = request.data.get('next')
+        logger.error(f'verify post: next {next_url}')
+
         for device in devices:
             if device.verify_token(token):
                 # login(request, user)  # JWT auth -> login() unused
                 del request.session['tmp_auth_user_id']
                 data = {
                     'message'   : '2FA verification successful',
-                    'redirect'  : settings.URL_CONFIG['kSpaPongTopUrl'],
+                    'redirect': next_url if next_url else settings.URL_CONFIG['kSpaPongTopUrl'],
                 }
                 return get_jwt_response(user, data)
 
