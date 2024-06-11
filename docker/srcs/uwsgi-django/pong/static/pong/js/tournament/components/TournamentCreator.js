@@ -84,6 +84,12 @@ class TournamentCreator
 						<input type="text" class="form-control" name="nickname" placeholder="Nickname" value="Nickname8">
 						<label for="floatingInput">Player8</label>
 	 				</div>
+					 <div class="slideup-text form-check mb-3">
+						<input class="form-check-input" type="checkbox" value="true" name="randomize" id="randomizeCheckbox">
+						<label class="form-check-label" for="randomizeCheckbox">
+						Create Matches with Random Player Orde
+						</label>
+					</div>
 					
 					<button class="hth-btn my-4" type="submit">Submit</button>
 			</form>
