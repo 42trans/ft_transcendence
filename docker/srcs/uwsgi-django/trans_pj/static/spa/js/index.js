@@ -103,8 +103,9 @@ const setupBodyClickListener = () => {
       event.preventDefault();
 
       const linkUrl = linkElement.href;
-      const url = await getLoggedInUserRedirectUrl(linkUrl)
-      switchPage(url);
+      // const url = await getLoggedInUserRedirectUrl(linkUrl)
+      // switchPage(url);
+      switchPage(linkUrl);
     }
 
     // if (event.target.matches("[data-link]")) {
