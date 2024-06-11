@@ -87,7 +87,7 @@ class TournamentCreator
 					 <div class="slideup-text form-check mb-3">
 						<input class="form-check-input" type="checkbox" value="true" name="randomize" id="randomizeCheckbox">
 						<label class="form-check-label" for="randomizeCheckbox">
-						Create Matches with Random Player Orde
+						Create Matches with Random Player Order
 						</label>
 					</div>
 					
