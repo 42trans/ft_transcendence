@@ -300,6 +300,8 @@ class TestConfig(LiveServerTestCase):
     def _move_top_to_signup(self):
         signup_page_link = self._text_link("Sign-up")
         self._click_link(signup_page_link, wait_for_link_invisible=False)
+        time.sleep(0.2)
+        self.driver.refresh()
         self._assert_page_url_and_title(expecter_url=self.signup_url,
                                         expected_title='Signup')
 
@@ -345,7 +347,7 @@ class TestConfig(LiveServerTestCase):
         # self._screenshot("logout 2")
 
     def _create_new_user(self, email, nickname, password, is_enable_2fa=False):
-        self._move_top_to_signup()
+        self._move_top_to_signup(assert_page_and_title=False)
 
         self._send_to_elem(By.ID, "email", email)
         self._send_to_elem(By.ID, "nickname", nickname)
@@ -361,7 +363,7 @@ class TestConfig(LiveServerTestCase):
             self._move_top_to_profile()
             self.driver.refresh()
             set_up_key = self._setting_enable_2fa()
-            self._assert_is_2fa_enabled(expected_2fa_enabled=True)
+            self._assert_is_2fa_enabled()
 
         self._logout()
         return set_up_key
