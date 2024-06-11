@@ -1,15 +1,19 @@
 // chat/js/ui-util.js
 
-export { setupDOMEventListeners, scrollToBottom };
+export { setupSendKeyEventListener, scrollToBottom };
 
 
-// DOMイベントリスナーの設定
-function setupDOMEventListeners() {
-    document.querySelector('#message-input').onkeyup = function(e) {
-        if (e.keyCode === 13) {  // enter, return
-            document.querySelector('#message-submit').click();
+// メッセージ送信のイベントを制御
+function setupSendKeyEventListener() {
+    const input = document.getElementById('message-input');
+    const submitButton = document.getElementById('message-submit');
+
+    // Enterキーで送信
+    input.addEventListener('keydown', (event) => {
+        if (event.keyCode === 13) {
+            submitButton.click();
         }
-    };
+    });
 }
 
 

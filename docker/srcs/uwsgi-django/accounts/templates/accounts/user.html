@@ -1,16 +1,16 @@
-<!-- user.html -->
+{% comment %} user.html  {% endcomment %}
 
 {% load static %}
 
 <div class="container" >
 
-    <div class="user-info-container">
-        <h1>User Page</h1>
-        <ul id="user-info">
-            <!-- JavaScriptで動的に内容が生成される -->
-        </ul>
-    </div>
+	<div class="user-info-container">
+		<h1>User Page</h1>
+		<ul id="user-info">
+			{% comment %} JavaScriptで動的に内容が生成される  {% endcomment %}
+		</ul>
+	</div>
 
 </div>
 
-<!--<script type="module" src="{% static 'accounts/js/userProfile.js' %}"></script>-->
+{% comment %} <script type="module" src="{% static 'accounts/js/userProfile.js' %}"></script> {% endcomment %}

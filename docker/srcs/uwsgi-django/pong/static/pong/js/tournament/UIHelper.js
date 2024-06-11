@@ -1,3 +1,7 @@
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+
+
 /**
  * メソッドのみのクラス
  * # 呼び出し方:
@@ -34,7 +38,8 @@ class UIHelper
 		const backHomeButton = document.createElement('button');
 		backHomeButton.textContent = 'Back Home';
 		backHomeButton.style.display = 'block';
-		backHomeButton.onclick = () => window.location.href = href;
+		// backHomeButton.onclick = () => window.location.href = href;
+		backHomeButton.onclick = () => switchPage(href);
 	}
 
 	static putError(message, container) 

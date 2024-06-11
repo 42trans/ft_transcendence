@@ -1,5 +1,9 @@
 // static/accounts/js/unblock-user.js
 
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+
+
 function unblockUser(nickname) {
     fetch(`/accounts/api/unblock/${nickname}/`, {
         method: 'POST',
@@ -16,7 +20,8 @@ function unblockUser(nickname) {
         })
         .then(data => {
             alert(data.message);       // 結果をポップアップで表示
-            window.location.reload();  // ページをリロード
+            const redirectTo = routeTable['userInfoBase'].path + nickname + '/'
+            switchPage(redirectTo)
         })
         .catch(error => {
             console.error('Error:', error);

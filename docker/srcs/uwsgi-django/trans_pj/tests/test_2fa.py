@@ -106,6 +106,7 @@ class TwoFactorAuthTest(TestConfig):
         self._click_button(disable2fa_button, wait_for_button_invisible=False)
         self._close_alert("Are you sure you want to Disable2FA ?")
         self._close_alert("2FA disable successful")
+        self.driver.refresh()
 
     def _get_otp_token(self, set_up_key: str):
         update_interval = 30

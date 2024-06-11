@@ -1,4 +1,4 @@
-// Verify2FA.js
+// Game1vs1.js
 
 import AbstractView from "../AbstractView.js";
 import fetchData from "../../utility/fetch.js";
@@ -9,20 +9,20 @@ import { loadAndExecuteScript } from "../../utility/script.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Verify2FA");
+    this.params = params
+    this.setTitle("GameMatch");
   }
 
   async getHtml() {
-    const uri = "/accounts/verify/verify_2fa/" + window.location.search;;
-    const data = fetchData(uri);
+    const matchId = this.params.matchId;
+    const uri = `/pong/play/${matchId}`;
+    const data = await fetchData(uri);
+    //console.log("Pong:" + data);
     return data;
   }
 
   async executeScript() {
-    loadAndExecuteScript("/static/accounts/js/verify_2fa.js", true);
-
-    const verify2FaModule = await import("/static/accounts/js/verify_2fa.js");
-    verify2FaModule.setupVerify2FaEventListener();
+    loadAndExecuteScript("/static/pong/three/assets/index.js", true);
   }
 
 }

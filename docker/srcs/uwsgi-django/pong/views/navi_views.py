@@ -8,8 +8,11 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-# @login_required
+
 def tournament(request):
+	if not request.user.is_authenticated:
+		return redirect(to='/accounts/login/')
+
 	if request.method == 'GET':
 		return render(request, 'pong/tournament.html')
 	else:
@@ -31,6 +34,9 @@ def pong_view(request):
 
 # 3D
 def play_tournament(request, match_id):
+	if not request.user.is_authenticated:
+		return redirect(to='/accounts/login/')
+
 	match = get_object_or_404(Match, id=match_id)
 	match_data = {
 		"id": match.id,

@@ -1,5 +1,7 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/TournamentManager.js
 import { config }	from '../ConfigTournament.js';
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 let DEBUG_FLOW		= 0;
@@ -118,7 +120,11 @@ class TournamentManager
 
 	/** ゲストユーザーへ表示する内容 */
 	_handleGuestUser() {
-		window.location.href = "/login/"  
+		// view関数で/login/にリダイレクトされるが、念の為に↓を用意しておく
+		document.getElementById('tournament-container').innerHTML = `
+			<p>Please log in to manage or create tournaments.</p>
+			<p><a href="${routeTable['login'].path}" data-link>Log in</a> or <a href="${routeTable['signup'].path}" data-link>Sign up</a></p>
+		`;
 	}
 }
 

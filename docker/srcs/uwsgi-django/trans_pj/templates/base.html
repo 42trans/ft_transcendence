@@ -6,7 +6,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="description" content="3D-Pong">
-		<!-- Stylesheets -->
+
 		<link rel="stylesheet" href="{% static 'pong/css/bootstrap/bootstrap.min.css' %}"/>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 		<link rel="stylesheet" href="{% static 'pong/css/hth-default.css' %}">
@@ -23,18 +23,19 @@
 		<link rel="stylesheet" href="{% static 'pong/css/hth-accounts-edit.css' %}">
 		<link rel="stylesheet" href="{% static 'pong/css/hth-match-history.css' %}">
 		<link rel="stylesheet" href="{% static 'pong/css/hth-btn.css' %}">
-		<!-- 追加css: Game用 -->
+		
+		{% comment %} 追加css: Game用 {% endcomment %}
 		{% block extra_css %}{% endblock %}
 
-		<!-- title -->
 		<title>{% block title %}{% endblock %}</title>
 	</head>
 
 	<body class="d-flex flex-column h-100">
-		<!-- color mode -->
 		{% include 'icons.html' %}
 		{% include 'theme-toggle.html' %}
-		<!--<header>{% include 'header.html' %}</header>-->
+		{% comment %} <header>{% include 'header.html' %}</header> {% endcomment %}
+		<header>{% include 'header.html' with url_config=url_config %}</header>
+
 
 		<main id="hth-main" class="flex-shrink-0">
 			<div class="hth-container">
@@ -44,7 +45,7 @@
 			</div>
 		</main>
 
-		<footer>{% include 'footer.html' %}</footer>
+		<footer>{% include 'footer.html' with url_config=url_config %}</footer>
 
 		{% block extra_js %}{% endblock %}
 

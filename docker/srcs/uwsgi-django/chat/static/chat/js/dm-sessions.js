@@ -1,6 +1,8 @@
 // dm_sessions.js
 
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { escapeHtml } from "./module/handle-receive-message.js"
 
 
 export function fetchDMList() {
@@ -38,9 +40,42 @@ export function startDMwithUser() {
 
     // ボタンクリックでDM画面へのリダイレクト
     submitButton.onclick = function() {
-        const dmTargetNickname = input.value;
-        window.location.pathname = routeTable['dmWithUserBase'].path + dmTargetNickname + '/';
-    };
+        const dmTargetNickname = escapeHtml(input.value);
+        const messageArea = document.getElementById('message-area');
+
+        if (!dmTargetNickname) {
+            messageArea.textContent = "Nickname cannot be empty";
+            return;
+        }
+
+        fetch(`/chat/api/validate-dm-target/${dmTargetNickname}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
+        })
+            .then(response => {
+                return response.json().then(data => {
+                    if (!response.ok) {
+                        throw new Error(data.error);
+                    } else {
+                        // 検証が成功した場合にdiWithUserに遷移
+                        const routePath = routeTable['dmWithUserBase'].path + dmTargetNickname + '/'
+                        switchPage(routePath);
+                    }
+                });
+            })
+            .catch(error => {
+                console.log('startDMwithUser 6');
+                if (error.message.includes('<!doctype')) {
+                    // <script></script>入力された場合。APIにたどり着く前にエラー判定されている
+                    messageArea.textContent = "The specified user does not exist";
+                } else {
+                    messageArea.textContent = error.message;
+                }
+            });
+    }
 }
 
 
@@ -55,6 +90,7 @@ function createDMSessionLinks(data) {
 
         // リンクの設定
         link.href = `${routeTable['dmSessions'].path}${dmSession.target_nickname}/`;
+        link.setAttribute('data-link', '');
 
         // システムメッセージの場合は表示を変更
         if (dmSession.is_system_message) {

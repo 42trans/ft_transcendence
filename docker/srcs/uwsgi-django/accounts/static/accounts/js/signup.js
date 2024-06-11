@@ -1,14 +1,10 @@
-// -----
-// 追加:DOMが完全にロードされた後に実行
-document.addEventListener('DOMContentLoaded', function() {
-	const form = document.getElementById('signup-form');
-	if (form) {
-		form.addEventListener('submit', signupUser);
-	}
-});
-// -----
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { updateHeader } from "/static/spa/js/views/updateHeader.js"
+
+
 function signupUser(event) {
-	event.preventDefault();
+	// event.preventDefault();
 	const email = document.getElementById('email').value;
 	const nickname = document.getElementById('nickname').value;
 	const password1 = document.getElementById('password1').value;
@@ -27,15 +23,29 @@ function signupUser(event) {
 			// Error
 			document.getElementById('message-area').textContent = data.error;
 			if (data.redirect) {
-				window.location.href = data.redirect;
+				switchPage(data.redirect)
 			} else {
 				console.error('Error:', data.error);
 			}
 		} else if (data.message) {
 			// Verified
 			console.log(data.message);
-			window.location.href = data.redirect;  // Redirect on successful verification
+			switchPage(data.redirect)  // Redirect on successful verification
+			updateHeader();
 		}
 	})
 	.catch(error => console.error('Error:', error));
+}
+
+
+export function setupSignupEventListener() {
+	console.log("Setup signup event listeners");
+	const form = document.getElementById('signup-form-container')
+	if (form) {
+		form.addEventListener('submit', (event) => {
+			event.preventDefault();
+			signupUser(event);
+		});
+		console.log('Form event listener added');
+	}
 }

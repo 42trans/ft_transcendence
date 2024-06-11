@@ -39,6 +39,13 @@ function handleSendMessage(dmSocket) {
     const messageInputDom = document.querySelector('#message-input');
     const message = messageInputDom.value;
 
+    // console.log('message: ' + message)
+    // 空文字列、空白のみのメッセージの送信はしない
+    if (message.trim() === '') {
+        // console.log(' smessage is empty')
+        return;
+    }
+
     dmSocket.send(JSON.stringify({
         'message': message
     }));

@@ -12,10 +12,10 @@
 			slideup-text
 			">Please log in</h1>
 
-		<!-- TODO_ft:あらかじめスペースを用意しているのでPOPUPに切り替えたい -->
+		 {% comment %} TODO_ft:あらかじめスペースを用意しているのでPOPUPに切り替えたい  {% endcomment %}
 		<p id="message-area"></p>
 
-		<!-- auth form -->
+		 {% comment %} auth form  {% endcomment %}
 		<form class="hth-sign-form" onsubmit="loginUser(event)">
 			<div class="
 				slideup-text
@@ -49,7 +49,7 @@
 
 		<hr>
 
-		<!-- button 42 auth -->
+		 {% comment %} button 42 auth  {% endcomment %}
 		<a class="
 			slideup-text
 			sign_btn
@@ -62,13 +62,12 @@
 			href="{% url 'accounts:oauth_ft' %}"
 			>Log in to your 42 account</a>
 
-		<!-- link: Sign up -->
+		 {% comment %} link: Sign up  {% endcomment %}
 		<div class="slideup-text form-sign-text pt-4" >
 			<a href="{{ signup_url }}">Create an Account</a>
-			<!-- <a href="{% url 'accounts:signup'%}">新規アカウントの作成</a> -->
 		</div>
 
     </div>
 </div>
 
-<!--<script src="{% static 'accounts/js/login.js' %}"></script>-->
+{% comment %} <script src="{% static 'accounts/js/login.js' %}"></script> {% endcomment %}

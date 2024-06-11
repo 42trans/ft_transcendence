@@ -59,13 +59,16 @@ class PongEngineInit
 		objects.paddle1.castShadow = this.config.paddle1.CAST_SHADOW;
 		objects.paddle2.castShadow = this.config.paddle2.CAST_SHADOW;
 		// position
+		const PADDLE_INSET = 50
 		objects.paddle1.position.set(
-			(this.config.fields.WIDTH * -0.95) / 2 + 50, 
+			(this.config.fields.WIDTH * -0.95) / 2 + PADDLE_INSET, 
+			// (this.config.fields.WIDTH * -0.95) / 2 + 50, 
 			0, 
 			this.config.paddle1.DEPTH,
 		);
 		objects.paddle2.position.set(
-			(this.config.fields.WIDTH * 0.95)/ 2 - 50, 
+			(this.config.fields.WIDTH * 0.95)/ 2 - PADDLE_INSET, 
+			// (this.config.fields.WIDTH * 0.95)/ 2 - 50, 
 			0, 
 			this.config.paddle2.DEPTH,
 		);
@@ -94,6 +97,11 @@ class PongEngineInit
 		Object.keys(this.objects).forEach(key => {
 			this.scene.add(this.objects[key]);
 		});
+		// this.scene.traverse(obj => {
+		// 	if (obj instanceof THREE.Mesh) {
+		// 		console.log('Object in scene:', obj.name); // デバッグのためにオブジェクト名を出力
+		// 	}
+		// });
 	}
 
 	// 参考:【MeshStandardMaterial – three.js docs】 <https://threejs.org/docs/#api/en/materials/MeshStandardMaterial>
@@ -128,7 +136,10 @@ class PongEngineInit
 			transparent: this.config.table.MATERIAL.transparent,
 			opacity: this.config.table.MATERIAL.opacity,
 		});
-		return new THREE.Mesh(geometry, material);
+		// return new THREE.Mesh(geometry, material);
+		const table = new THREE.Mesh(geometry, material);
+		table.name = 'table';
+		return table;
 	}
 
 	createBall() {

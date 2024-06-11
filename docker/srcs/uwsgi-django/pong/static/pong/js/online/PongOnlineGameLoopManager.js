@@ -1,6 +1,8 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineGameLoopManager.js
 import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
+
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 let DEBUG_FLOW 		= 0;
@@ -9,6 +11,7 @@ let TEST_TRY1 = 0;
 let TEST_TRY2 = 0;
 let TEST_TRY3 = 0;
 /**
+ * 参考:【window.cancelAnimationFrame() - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/Window/cancelAnimationFrame>
  */
 class PongOnlineGameLoopManager 
 {
@@ -21,7 +24,7 @@ class PongOnlineGameLoopManager
 		this.animationFrameId	= null; 
 	}
 
-	
+
 	startGameLoop(gameFPS) 
 	{
 				if (DEBUG_FLOW){	console.log("startGameLoop(): begin")	}
@@ -80,7 +83,6 @@ class PongOnlineGameLoopManager
 						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 			} catch(error) {
 				console.error("hth: gameLoop error:", error);
-				// this.stopGameLoop();
 			}
 		};
 		// 最初のフレームを要求
@@ -95,7 +97,6 @@ class PongOnlineGameLoopManager
 		try {
 			// 最終スコアの描画: 終了フラグ受信後に、最後に一度だけ描画する（静止画像）
 			this.renderer.render(this.ctx, this.field, gameState);
-
 					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 		} catch(error) {
 			console.error("hth: stopGameLoop():  renderer.render() failed:", error);
@@ -103,15 +104,17 @@ class PongOnlineGameLoopManager
 
 		try {
 			// ゲーム終了時に Back to Home ボタンリンクを表示する
-			this.createEndGameButton();
-
+			this.updateEndGameBtn();
+			// ws接続をcloseする
+			// このタイミングは、loopの最後であり、サーバーからのis_running=false受け取り直後でもある
+			this.clientApp.socket.close();
+					if (DEBUG_FLOW) {	console.log("stopGameLoop(): socket.close");	}
 					if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 		} catch(error) {
-			console.error("hth: stopGameLoop(): createEndGameButton() failed:", error);
+			console.error("hth: stopGameLoop(): updateEndGameBtn() failed:", error);
 		}
 
 		// アニメーションを指定してキャンセル
-		// 参考:【window.cancelAnimationFrame() - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/Window/cancelAnimationFrame>
 		if (this.animationFrameId) {
 			cancelAnimationFrame(this.animationFrameId);
 			this.animationFrameId = null;
@@ -123,15 +126,24 @@ class PongOnlineGameLoopManager
 	}
 	
 
-	// ゲーム終了時に Back to Home ボタンリンクを表示する
-	createEndGameButton() 
+	// ゲーム終了時に Back to Home ボタンリンクを表示する	
+	updateEndGameBtn() 
 	{
-		this.clientApp.createButton('Back to Home', 'hth-pong-online-back-to-home-Btn', () => {
-			// TODO_ft:SPA
-			window.location.href = routeTable['top'].path;
-		});
+		try {
+			const endGameButton = document.getElementById('hth-pong-online-back-to-home-btn');
+			if (endGameButton) {
+				endGameButton.style.display = 'block';
+				endGameButton.addEventListener('click', () => {
+					const redirectTo = routeTable['top'].path;
+					switchPage(redirectTo);
+				});
+			} else {
+				console.error('End Game button not found');
+			}
+		} catch (error){
+			console.error('hth: updateEndGameBtn() failed: ', error);
+		}
 	}
-
 }
 
 export default PongOnlineGameLoopManager;

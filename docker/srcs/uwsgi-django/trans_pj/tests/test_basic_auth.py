@@ -2,12 +2,25 @@ from . import *
 
 
 class BasicAuthTest(TestConfig):
+    def setUp(self):
+        super().setUp()
+
+        self.nickname = self._generate_random_string(20)
+        self.email = f"{self.nickname}@example.com"
+        self.password = "pass0123"
+
+        self._create_new_user(email=self.email,
+                              nickname=self.nickname,
+                              password=self.password)
+
     def test_login_page(self):
         """
         login pageの評価
         """
+        # self._screenshot("login1")
         self._move_top_to_login()
 
+        # self._screenshot("login2")
         # フォームの要素の検証 ####################################################
         self._assert_element(By.ID, "email", is_displayed=True)
         self._assert_element(By.ID, "password", is_displayed=True)
@@ -27,12 +40,10 @@ class BasicAuthTest(TestConfig):
         """
         login成功
         """
+
         self._move_top_to_login()
 
-        user1_email = 'user1@example.com'
-        user1_password = 'pass0123'
-
-        self._login(user1_email, user1_password)
+        self._login(self.email, self.password)
         self._assert_current_url(self.top_url)
         # self._screenshot("login success")
 
@@ -43,7 +54,7 @@ class BasicAuthTest(TestConfig):
         self._move_top_to_login()
 
         wrong_email = 'nothing@example.com'
-        password = 'pass0123'
+        password = self.password
 
         self._login(wrong_email, password, wait_for_button_invisible=False)
         self._assert_current_url(self.login_url)
@@ -51,7 +62,7 @@ class BasicAuthTest(TestConfig):
         # self._screenshot("login failure")
 
     def test_logout(self):
-        self._login_user1_from_top_page()
+        self._login(self.email, self.password)
 
         self._logout()
         self._assert_current_url(self.top_url)
@@ -93,6 +104,7 @@ class BasicAuthTest(TestConfig):
     def test_signup_failure(self):
         self._move_top_to_signup()
 
+        # すでに存在するemail
         user1_email = "user1@example.com"
         nickname = self._generate_random_string()
         password1 = "pass0123"
@@ -104,6 +116,118 @@ class BasicAuthTest(TestConfig):
                      password2,
                      wait_for_button_invisible=False)
         self._assert_message("This email is already in use")
+        self._assert_current_url(self.signup_url)
+
+        # 不正なemail
+        user1_email = "invalid-email.com"
+        nickname = self._generate_random_string()
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(user1_email,
+                     nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message("有効なメールアドレスを入力してください。")  # todo message
+        self._assert_current_url(self.signup_url)
+
+        # 不正なemail（too short）
+        user1_email = "a@b"
+        nickname = self._generate_random_string()
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(user1_email,
+                     nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message(f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters")
+        self._assert_current_url(self.signup_url)
+
+        # 不正なemail（too long）
+        user1_email = f"a@{'b' * 64}.com"
+        nickname = self._generate_random_string()
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(user1_email,
+                     nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message(f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less")
+        self._assert_current_url(self.signup_url)
+
+        # すでに存在するnicknmae
+        new_email = "new_user@example.com"
+        user1_nickname = "user1"
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(new_email,
+                     user1_nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message("This nickname is already in use")
+        self._assert_current_url(self.signup_url)
+
+        # 不正なニックネーム（alnum以外）
+        new_email = "new_user@example.com"
+        invalid_nickname = "nick_name"
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(new_email,
+                     invalid_nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message("Invalid nickname format")
+        self._assert_current_url(self.signup_url)
+
+        # 不正なニックネーム（全角）
+        new_email = "new_user@example.com"
+        invalid_nickname = "ニックネーム"
+        password1 = "pass0123"
+        password2 = "pass0123"
+
+        self._signup(new_email,
+                     invalid_nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message("The nickname can only contain ASCII characters")
+        self._assert_current_url(self.signup_url)
+
+        # 不正なpassword
+        new_email = "new_user@example.com"
+        new_nickname = "newTestUser"
+        password1 = "pass0123"
+        password2 = "0123pass"
+
+        self._signup(new_email,
+                     new_nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message("passwords don't match")
+        self._assert_current_url(self.signup_url)
+
+        # 不正なpassword（too long）
+        new_email = "new_user@example.com"
+        new_nickname = "newTestUser"
+        password1 = "pass0" + "0123456789" * 6
+        password2 = "pass0" + "0123456789" * 6
+
+        self._signup(new_email,
+                     new_nickname,
+                     password1,
+                     password2,
+                     wait_for_button_invisible=False)
+        self._assert_message(f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less")
         self._assert_current_url(self.signup_url)
 
     def _signup(self,

@@ -88,7 +88,7 @@ class StateBaseRound
 			} else {
 				if (match.can_start) {
 					// Pong gameへのリンク APIにmatch.idを渡す。
-					matchDetails += `<a class="hth-btn px-3 mx-4 mt-2 mb-3" href="/pong/play/${match.id}">Start Match</a>`;
+					matchDetails += `<a class="hth-btn px-3 mx-4 mt-2 mb-3" href="/app/game/match/${match.id}/" data-link>Start Match</a>`;
 				} else {
 					matchDetails += `<p class="px-4 pb-2" >On Hold</p>`;
 				}

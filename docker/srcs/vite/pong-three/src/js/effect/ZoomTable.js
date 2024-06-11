@@ -2,15 +2,12 @@ import * as THREE from "three";
 import AnimationUtils from "./AnimationUtils";
 import AllScenesManager from '../manager/AllScenesManager';
 
+let DEBUG_FLOW 		= 0;
+let DEBUG_DETAIL 	= 0;
+let TEST_TRY1 		= 0;
+
 /**
  * テーブルのズームアニメーションを実行する
- * 
- * @param zoomInDistance ズームイン後の距離
- * @param zoomOutDistance ズームアウト後の距離
- * @param duration アニメーション時間
- * @param pauseDuration 一時停止時間
- * @param initialPolarAngle: 初期カメラの傾き
- * @param finalPolarAngle: 最終カメラの傾き
  * 
  * 参考:【OrbitControls – three.js docs】 <https://threejs.org/docs/#examples/en/controls/OrbitControls>
  */
@@ -22,18 +19,24 @@ class ZoomTable
 		const sceneMgr = AllScenesManager.getInstance();
 		this.camera = sceneMgr.gameScene.camera;
 		this.controls = sceneMgr.gameScene.controls;
+		this.initialCameraPosition = null;
 	}
 
-	/**
-	 * テーブルへのズームアウト・インを実行するメソッド
-	 * @param {*} params 
-	 */
 	zoomToTable(params) 
 	{
+					if (DEBUG_DETAIL) 
+					{
+						console.log('Initial camera position:', this.camera.position);
+						console.log('Target position:', params.targetPosition);
+					} 
+
 		 // カメラのターゲット位置を設定
 		this.controls.target.copy(params.targetPosition);
+		// ターゲット（テーブル）とカメラの距離
+		this.initialDistance = this.camera.position.distanceTo(params.targetPosition);
+		this.currentDistance = this.initialDistance * 2; 
 
-		 // 最初のズーム処理を開始
+		// 最初のズーム処理を開始
 		this.zoom(params, () => 
 		{
 			// 最初のズーム後に一時停止
@@ -42,6 +45,7 @@ class ZoomTable
 				const reverseParams = 
 				{
 					...params,
+					// 開始と終了の値を真逆にする
 					startDistance: params.zoomInDistance,
 					endDistance: params.zoomOutDistance,
 					initialPolarAngle: params.finalPolarAngle,
@@ -50,14 +54,14 @@ class ZoomTable
 				// 逆方向のズームを実行
 				this.zoom(
 					reverseParams, 
-					this.resetCameraPositionAndOrientation.bind(this, params.targetPosition, params.zoomOutDistance));
+					// 最後はウィンドウサイズに戻すためinitialDistanceを指定
+					this.resetCameraPositionAndOrientation.bind(this, params.targetPosition, this.initialDistance));
 			}, params.pauseDuration);
 		});
 	}
 
 	zoom(params, callback) 
 	{
-		// ズーム開始時間を記録
 		let startTime = performance.now();
 		const updateZoom = () => {
 			// 経過時間を計算
@@ -68,7 +72,14 @@ class ZoomTable
 			{
 				// ズーム中の処理
 				const easedFraction = AnimationUtils.easeInOutQuad(fraction);
-				const newPos = this.adjustCameraTilt(params.targetPosition, params.startDistance, params.endDistance, params.initialPolarAngle, params.finalPolarAngle, easedFraction);
+				const newPos = this.updateCameraPositionAndAngle(
+					params.targetPosition, 
+					params.startDistance, 
+					params.endDistance, 
+					params.initialPolarAngle, 
+					params.finalPolarAngle, 
+					easedFraction
+				);
 				this.camera.position.copy(newPos);
 				this.camera.lookAt(params.targetPosition);
 				this.controls.update();
@@ -83,8 +94,14 @@ class ZoomTable
 		updateZoom();
 	}
 
-	// カメラの傾きを調整するメソッド
-	adjustCameraTilt(targetPosition, startDistance, endDistance, initialPolarAngle, finalPolarAngle, fraction) 
+	// カメラの位置と角度を更新
+	updateCameraPositionAndAngle(
+		targetPosition, 
+		startDistance, 
+		endDistance, 
+		initialPolarAngle, 
+		finalPolarAngle, 
+		fraction)
 	{
 		// 現在の距離を計算
 		const currentDistance = THREE.MathUtils.lerp(startDistance, endDistance, fraction);

@@ -70,7 +70,17 @@ class UserManager(BaseUserManager):
         if CustomUser.objects.filter(email=email).exists():
             return False, "This email is already in use"
 
+        # 長さの判定
+        if len(email) < CustomUser.kEMAIL_MIN_LENGTH:
+            err = f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters"
+            return False, err
+        if CustomUser.kEMAIL_MAX_LENGTH < len(email):
+            err = f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less"
+            return False, err
+
         try:
+            # local@domainの判定
+            # https://docs.djangoproject.com/en/5.0/ref/validators/#emailvalidator
             validate_email(email)
             return True, None
         except ValidationError as e:
@@ -81,9 +91,14 @@ class UserManager(BaseUserManager):
     def _is_valid_nickname(self, nickname):
         if not nickname:
             return False, "The given nickname must be set"
+        if len(nickname) < CustomUser.kNICKNAME_MIN_LENGTH:
+            err = f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"
+            return False, err
         if CustomUser.kNICKNAME_MAX_LENGTH < len(nickname):
             err = f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"
             return False, err
+        if not nickname.isascii():
+            return False, "The nickname can only contain ASCII characters"
         if not nickname.isalnum():
             return False, "Invalid nickname format"
 
@@ -99,6 +114,9 @@ class UserManager(BaseUserManager):
             return False, "The password cannot be None"
         if not password:
             return False, "The password cannot be set"
+        if CustomUser.kPASSWORD_MAX_LENGTH < len(password):
+            err = f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less"
+            return False, err
         try:
             validate_password(password, user=tmp_user)
             return True, None
@@ -159,7 +177,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     - nickname: A unique nickname for the user. if OAuth with 42 used, 42-login by default.
     - bloking_users: A list of bloking users
     """
+    kNICKNAME_MIN_LENGTH = 3
     kNICKNAME_MAX_LENGTH = 30
+    kEMAIL_MIN_LENGTH = 5   # 最小構成: a@b.c
+    kEMAIL_MAX_LENGTH = 64  # RFC5321: local@domain, local:max64, domain:max255
+    kPASSWORD_MAX_LENGTH = 64
     email = models.EmailField(_("email address"), unique=True)
     nickname = models.CharField(_("nickname"), max_length=kNICKNAME_MAX_LENGTH, unique=True)
     enable_2fa = models.BooleanField(_("enable 2fa"), default=False)

@@ -19,6 +19,10 @@ from django.conf import settings
 from django.test import LiveServerTestCase
 from accounts.models import CustomUser
 
+# uwsgi-djangoコンテナからアクセスできないためnginxコンテナ経由とする
+kURL_PREFIX = "https://nginx"
+#                            ^^^^ /app/などのURL要素をurl_configと比較評価する
+
 # test_*.pyで使用するために__all__にも定義
 __all__ = [
     'json', 'datetime', 'random', 'string', 'time',
@@ -29,11 +33,9 @@ __all__ = [
     'TOTP',
     'settings', 'LiveServerTestCase', 'CustomUser',
     'TestConfig',
+    'kURL_PREFIX',
 ]
 
-# uwsgi-djangoコンテナからアクセスできないためnginxコンテナ経由とする
-kURL_PREFIX = "https://nginx"
-#                            ^^^^ /app/などのURL要素をurl_configと比較評価する
 
 # selemiumのlink.click()が失敗するため、JSによるクリック↓ を使用する
 # self.driver.execute_script("arguments[0].click();", link)
@@ -93,18 +95,37 @@ class TestConfig(LiveServerTestCase):
     ############################################################################
     # DOM要素
 
-    def _element(self, by, value):
-        # visibility_of_element_located: 指定された要素がDOMに存在し、かつ画面上に見える状態になるまで待機
-        wait = WebDriverWait(driver=self.driver, timeout=30)
-        element = wait.until(
-            EC.visibility_of_element_located((by, value))
-        )
-        # element = wait.until(
-        #     EC.presence_of_element_located((by, value))
-        # )
-        self.assertTrue(element.is_displayed(),
-                        msg=f"Element `{value}` is not displayed")
-        return element
+    def _element(self, by, value, timeout=10, retries=5, verbose=True):
+        """要素を取得する 必要に応じて再取得を試みる """
+        for attempt in range(retries):
+            try:
+                wait = WebDriverWait(driver=self.driver, timeout=timeout)
+                element = wait.until(EC.visibility_of_element_located((by, value)))
+
+                self.assertTrue(element.is_displayed(),
+                                msg=f"Element `{value}` is not displayed")
+                return element
+            except StaleElementReferenceException:
+                if verbose:
+                    print(f"element(): StaleElementReferenceException: by:{by}, value:{value}, {attempt + 1}/{retries}")
+                if attempt < retries - 1:
+                    time.sleep(1)  # 少し待ってから再試行
+                else:
+                    raise
+            except NoSuchElementException:
+                if verbose:
+                    print(f"element(): NoSuchElementException: by:{by}, value:{value}, {attempt + 1}/{retries}")
+                if attempt < retries - 1:
+                    time.sleep(1)  # 少し待ってから再試行
+                else:
+                    raise
+            except TimeoutException:
+                if verbose:
+                    print(f"element(): TimeoutException: by:{by}, value:{value}, {attempt + 1}/{retries}")
+                if attempt < retries - 1:
+                    time.sleep(1)  # 少し待ってから再試行
+                else:
+                    raise
 
     def _text_link_url(self, text):
         link = self._text_link(text)
@@ -160,6 +181,14 @@ class TestConfig(LiveServerTestCase):
         self._wait_display_message(expected_message)
         self.assertEqual(message_area.text, expected_message)
 
+    def _assert_is_2fa_enabled(self, expected_2fa_enabled: bool):
+        twofa_status_element = self._element(By.ID, "2fa-status")
+        actual_status_text = twofa_status_element.text
+
+        # Disable2FA, Enable2FAリンク含む要素になっている
+        expected_status_text = "2FA: ✅Enabled Disable2FA" if expected_2fa_enabled else "2FA: Disabled Enable2FA"
+        self.assertEqual(actual_status_text, expected_status_text)
+
     ############################################################################
     # ページ遷移、操作 要素
 
@@ -178,6 +207,11 @@ class TestConfig(LiveServerTestCase):
             EC.text_to_be_present_in_element_value((by, elem_value), send_value)
         )
 
+    def _wait_to_be_url(self, url):
+        WebDriverWait(self.driver, 10).until(
+            EC.url_to_be(url)
+        )
+
     def _wait_display_message(self, expected_message):
         WebDriverWait(driver=self.driver, timeout=10).until(
             EC.text_to_be_present_in_element(
@@ -187,61 +221,44 @@ class TestConfig(LiveServerTestCase):
         )
 
     def _send_to_elem(self, by, elem_value, send_value, retries=5):
+        wait = WebDriverWait(driver=self.driver, timeout=20)
+
         for attempt in range(retries):
             try:
-                elem = self._element(by, elem_value)
+                # elem = self._element(by, elem_value)
+                elem = wait.until(EC.presence_of_element_located((by, elem_value)))
                 elem.clear()  # 入力済みのテキストをクリア
                 elem.send_keys(send_value)
                 return
-            except StaleElementReferenceException:
+            except (StaleElementReferenceException, TimeoutException):
                 if attempt < retries - 1:
-                    time.sleep(3)  # 少し待ってから再試行
-                else:
-                    raise
-            except TimeoutException:
-                if attempt < retries - 1:
+                    print(f"send_to_elem(): {elem_value}, retry: {attempt + 1}/{retries}")
                     time.sleep(3)  # 少し待ってから再試行
                 else:
                     raise
 
-    def _send_elem_value(self, elem, send_value, retries=5):
-        for attempt in range(retries):
-            try:
-                elem.clear()  # 入力済みのテキストをクリア
-                elem.send_keys(send_value)
-                return
-            except StaleElementReferenceException:
-                if attempt < retries - 1:
-                    time.sleep(3)  # 少し待ってから再試行
-                else:
-                    raise
-            except TimeoutException:
-                if attempt < retries - 1:
-                    time.sleep(3)  # 少し待ってから再試行
-                else:
-                    raise
-            except TimeoutException:
-                if attempt < retries - 1:
-                    time.sleep(1)  # 少し待ってから再試行
-                else:
-                    raise
-
-    def _access_to(self, url):
+    def _access_to(self, url, wait_to_be_url=True):
         self.driver.get(url)
+        time.sleep(0.1)  # 明示的に待機
+        if wait_to_be_url:
+            self._wait_to_be_url(url)
 
-    def _click_link(self, target, wait_for_link_invisible=True):
-        """
-        linkはwait_for_link_invisible=Trueでtimeoutになる？？
-        """
-        # target.click()
+    def _click_link(self, target, wait_for_link_invisible=False):
+        url = target.get_attribute("href")
         self.driver.execute_script("arguments[0].click();", target)
+        time.sleep(1)  # 明示的に待機
+
         if wait_for_link_invisible:
             self._wait_invisible(target)
+        else:
+            self._wait_to_be_url(url)
+        self.driver.refresh()
 
     def _click_button(self, target, wait_for_button_invisible=True):
         self.driver.execute_script("arguments[0].click();", target)
         if wait_for_button_invisible:
             self._wait_invisible(target)
+            self.driver.refresh()
 
     def _screenshot(self, img_name):
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -327,22 +344,73 @@ class TestConfig(LiveServerTestCase):
         self._wait_invisible(logout_page_button)
         # self._screenshot("logout 2")
 
-    def _create_new_user(self, email, nickname, password):
+    def _create_new_user(self, email, nickname, password, is_enable_2fa=False):
         self._move_top_to_signup()
 
-        email_elem = self._element(By.ID, "email")
-        nickname_elem = self._element(By.ID, "nickname")
-        pass1_elem = self._element(By.ID, "password1")
-        pass2_elem = self._element(By.ID, "password2")
-
-        self._send_elem_value(elem=email_elem, send_value=email)
-        self._send_elem_value(elem=nickname_elem, send_value=nickname)
-        self._send_elem_value(elem=pass1_elem, send_value=password)
-        self._send_elem_value(elem=pass2_elem, send_value=password)
+        self._send_to_elem(By.ID, "email", email)
+        self._send_to_elem(By.ID, "nickname", nickname)
+        self._send_to_elem(By.ID, "password1", password)
+        self._send_to_elem(By.ID, "password2", password)
 
         signup_button = self._element(By.ID, "sign-submit")
         self._click_button(signup_button, wait_for_button_invisible=True)
+
+        set_up_key = None
+        if is_enable_2fa:
+            self.driver.refresh()
+            self._move_top_to_profile()
+            self.driver.refresh()
+            set_up_key = self._setting_enable_2fa()
+            self._assert_is_2fa_enabled(expected_2fa_enabled=True)
+
         self._logout()
+        return set_up_key
+
+    def _setting_enable_2fa(self):
+        """
+        user profile pageから2FAを有効にする
+        """
+        # user profile page -> enable2fa page
+        enable2fa_link = self._text_link("Enable2FA")
+        self.assertTrue(enable2fa_link.text, "Enable2FA")
+        self._click_link(enable2fa_link)
+        self._assert_current_url(self.enable_2fa_url)
+
+        # あらかじめbutton要素を取得しておく
+        enable2ba_button = self._button(By.CSS_SELECTOR, ".verifyTokenButton")
+
+        set_up_key_element = self._element(By.CSS_SELECTOR, ".pb-1")
+        set_up_key = set_up_key_element.text
+
+        # otpを送信（11 sec以上の余裕あり）
+        otp_token = self._get_otp_token(set_up_key)
+        self._send_to_elem(By.ID, "token", otp_token)
+
+        # 有効化
+        self._click_button(enable2ba_button)
+        return set_up_key
+
+    def _verify_login_2fa(self, set_up_key: str):
+        verify2fa_button = self._button(By.CSS_SELECTOR, ".verify2FaButton")
+
+        otp_token = self._get_otp_token(set_up_key)
+        self._send_to_elem(By.ID, "token", otp_token)
+
+        self._click_button(verify2fa_button)
+
+    def _get_otp_token(self, set_up_key: str):
+        update_interval = 30
+        current_timestamp = int(time.time())
+        remaining_sec = update_interval - (current_timestamp % update_interval)
+
+        # otpの更新まで10sec以上を保証（html要素取得のdefault timeout = 10sec）
+        if remaining_sec <= 10:
+            time.sleep(remaining_sec + 1)
+
+        totp = TOTP(set_up_key)
+        otp_token = totp.now()
+        # print(f"otp_token: {otp_token}")
+        return otp_token
 
     def _send_dm_with_form(self, target_nickname):
         self._send_to_elem(By.ID, "nickname-input", target_nickname)

@@ -1,26 +1,20 @@
-<!-- chat/templates/chat/dm_sessions.html -->
+ {% comment %} chat/templates/chat/dm_sessions.html  {% endcomment %}
 {% load static %}
 
 <h2>Start DM</h2>
 
-<!-- エラーメッセージの表示 -->
-{% if messages %}
-<ul>
-    {% for message in messages %}
-    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+ {% comment %} エラーメッセージの表示  {% endcomment %}
+<p id="message-area"></p>
 
-<!-- DM相手を指定して開始するtext field -->
+ {% comment %} DM相手を指定して開始するtext field  {% endcomment %}
 <label for="nickname-input">DM with:</label>
 <input id="nickname-input" type="text" size="20">
 <input id="nickname-submit" type="button" value="Enter">
 
 <hr>
 
-<!-- DM履歴のあるuserとのDMはこちらから-->
+ {% comment %} DM履歴のあるuserとのDMはこちらから {% endcomment %}
 <h3>DM Session List</h3>
 <ul id="dm-sessions"></ul>
 
-<!--<script type=module src="{% static 'chat/js/dm-sessions.js' %}"></script>-->
+{% comment %} <script type=module src="{% static 'chat/js/dm-sessions.js' %}"></script> {% endcomment %}

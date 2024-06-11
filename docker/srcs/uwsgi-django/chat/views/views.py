@@ -8,7 +8,11 @@ from django.db import models
 from django.shortcuts import render, redirect
 from django.templatetags.static import static
 from django.views.generic import TemplateView
+
+from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from accounts.models import CustomUser
 from chat.models import DMSession, Message
@@ -19,6 +23,39 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _get_dm_users(request, target_nickname):
+    try:
+        if not target_nickname:
+            err = "Nickname cannot be empty"
+            return None, None, err
+
+        user = request.user
+        other_user = CustomUser.objects.get(nickname=target_nickname)
+        err = None
+
+        if target_nickname == user.nickname:
+            err = "You cannot send a message to yourself"
+        return user, other_user, err
+
+    except CustomUser.DoesNotExist:
+        err = "The specified user does not exist"
+    except Exception as e:
+        err = str(e)
+    return None, None, err
+
+
+class ValidateDmTargetAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, target_nickname) -> Response:
+        user, other_user, err = _get_dm_users(request, target_nickname)
+        logger.error(f"ValidateDmTargetAPI target: {target_nickname}")
+        if err is not None:
+            logger.error(f"ValidateDmTargetAPI error: {err}")
+            return Response({'error': err}, status=400)
+        return Response({'status': 'ok'}, status=200)
 
 
 class DMView(LoginRequiredMixin, TemplateView):
@@ -33,10 +70,10 @@ class DMView(LoginRequiredMixin, TemplateView):
     def get(self, request, target_nickname):
         # user, other_userを取得
         # dm targetのnicknameがuser.nicknameである場合はerr
-        user, other_user, err = self._get_dm_users(request, target_nickname)
+        user, other_user, err = _get_dm_users(request, target_nickname)
         if err is not None:
-            messages.error(request, err)
-            return redirect(self.error_occurred_redirect_to)
+            # messages.error(request, err)
+            return redirect(self.error_occurred_redirect_to)  # ValidateDmTargetAPIで判定済み
 
         # DBから user, other_userのメッセージを取得。検索パターンは
         #  1) sender=user,       receiver=other_user
@@ -60,22 +97,6 @@ class DMView(LoginRequiredMixin, TemplateView):
         # logging.error(f'dm_room: user: {user.nickname}, dm_to: {nickname}, blocking: {is_blocking_user}')
         return render(request, self.template_name, data)
 
-
-    def _get_dm_users(self, request, target_nickname):
-        try:
-            user = request.user
-            other_user = CustomUser.objects.get(nickname=target_nickname)
-            err = None
-
-            if target_nickname == user.nickname:
-                err = "You cannot send a message to yourself"
-            return user, other_user, err
-
-        except CustomUser.DoesNotExist:
-            err = "The specified user does not exist"
-        except Exception as e:
-            err = str(e)
-        return None, None, err
 
 
 class DMSessionsView(LoginRequiredMixin, TemplateView):

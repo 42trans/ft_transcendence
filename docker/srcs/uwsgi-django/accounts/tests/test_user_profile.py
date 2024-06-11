@@ -94,8 +94,13 @@ class EditUserProfileAPITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('This nickname is already in use', response.data['error'])
 
-    def test_update_nickname_fail_invalid_nickname(self):
-        response = self.client.post(self.edit_user_profile_url, {'nickname': '*'})
+    def test_update_nickname_fail_invalid_nickname_len(self):
+        response = self.client.post(self.edit_user_profile_url, {'nickname': 'aa'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('The nickname must be at least 3 characters', response.data['error'])
+
+    def test_update_nickname_fail_invalid_nickname_char(self):
+        response = self.client.post(self.edit_user_profile_url, {'nickname': '***'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('Invalid nickname format', response.data['error'])
 
