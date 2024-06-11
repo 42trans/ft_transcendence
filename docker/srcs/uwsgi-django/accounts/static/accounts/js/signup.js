@@ -1,5 +1,6 @@
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
 
 function signupUser(event) {
@@ -22,16 +23,15 @@ function signupUser(event) {
 			// Error
 			document.getElementById('message-area').textContent = data.error;
 			if (data.redirect) {
-				window.location.href = data.redirect;
-				// switchPage(data.redirect)
+				switchPage(data.redirect)
 			} else {
 				console.error('Error:', data.error);
 			}
 		} else if (data.message) {
 			// Verified
 			console.log(data.message);
-			window.location.href = data.redirect;
-			// switchPage(data.redirect)  // Redirect on successful verification
+			switchPage(data.redirect)  // Redirect on successful verification
+			updateHeader();
 		}
 	})
 	.catch(error => console.error('Error:', error));

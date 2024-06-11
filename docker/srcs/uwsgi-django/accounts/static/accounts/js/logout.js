@@ -3,6 +3,7 @@
 import { disconnectOnlineStatusWebSocket } from "./online-status.js";
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
 
 function handleLogout() {
@@ -24,8 +25,8 @@ function handleLogout() {
 			disconnectOnlineStatusWebSocket(data.user_id)
 
 			// alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
-			window.location.href = data.redirect;
-			// switchPage(data.redirect)
+			switchPage(data.redirect);
+			updateHeader();
 		} else {
 			throw new Error('No message in response');
 		}
@@ -36,6 +37,17 @@ function handleLogout() {
 	});
 }
 
+
+export function setupLogoutEventListener() {
+	console.log("Setup logout event listeners");
+	const button = document.querySelector('.logoutButton');
+	if (button) {
+		button.addEventListener('click', function(event) {
+			event.preventDefault();
+			handleLogout();
+		});
+	}
+}
 
 // header
 document.addEventListener('DOMContentLoaded', function() {
