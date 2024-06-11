@@ -3,15 +3,40 @@ import { getUrl } from "../utility/url.js";
 import { isLogined } from "../utility/user.js";
 
 
-export const switchPage = (url) => {
-  // console.log("history pushState:" + url);
-  history.pushState(null, null, url);
+const getPathAndQueryString = (targetPath) => {
+  const targetUrl = new URL(targetPath, window.location.origin);
+  const targetPathName = targetUrl.pathname;
+  let targetQueryString = targetUrl.search;
 
-  let currentPath = window.location.pathname;
-  // console.log('switchPage url:' + url)
-  // console.log('switchPage currentPath:' + currentPath)
+  // query stringのnextの要素がpathNameと一致している場合、query stringを空文字列に置き換える
+  const params = new URLSearchParams(targetQueryString);
+  const nextParam = params.get('next');
+  if (nextParam === targetPathName) {
+    targetQueryString = '';
+  }
+  return { targetPathName, targetQueryString };
+};
 
-  renderView(currentPath).then(() => {
+
+export const switchPage = (targePath) => {
+  // const currentUrl = new URL(window.location.href);
+  const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
+
+  // console.log('path:', targetPathName);
+  // console.log('queryString:', targetQueryString);
+
+  // query string込みでURLをpush
+  history.pushState(null, null, targetPathName + targetQueryString);
+
+  // DEBUG console log
+  // console.log(`switchPage`)
+  // console.log(` currentUrl        :${currentUrl}`)
+  // console.log(` targetPathName    :${targetPathName}`)
+  // console.log(` targetQueryString :${targetQueryString}`)
+  // console.log(` currentPath       :${window.location.pathname}`)
+  // alert(`[debug] switchPage consolelog確認用`)
+
+  renderView(targetPathName).then(() => {
     // resetState イベントを発行
     window.dispatchEvent(new CustomEvent('switchPageResetState'));
   });
@@ -44,6 +69,7 @@ const getSelectedRoute = (currentPath, routeTable, isLogined) => {
 
   if (matchedRoute) {
     matchedRoute.params = params;
+    matchedRoute.queryParams = new URLSearchParams(window.location.search);
     return matchedRoute;
   } else if (isLogined) {
     return routeTable['home'];
