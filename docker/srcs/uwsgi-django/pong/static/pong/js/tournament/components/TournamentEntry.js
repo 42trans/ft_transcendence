@@ -44,7 +44,6 @@ class TournamentEntry
 		this.tournamentContainer.appendChild(header);
 		this.tournamentContainer.appendChild(naviButton);
 		this.tournamentContainer.appendChild(overview);
-		// TODO_ft:naviButtonが2回ある。リファクタリングする。
 		// this.tournamentContainer.appendChild(tourId);
 		this.tournamentContainer.appendChild(deleteButton);
 	}

@@ -5,6 +5,7 @@ from django.urls import include, path
 from accounts.views.basic_auth import SignupAPIView
 from accounts.views.basic_auth import LogoutAPIView
 from accounts.views.basic_auth import LoginAPIView
+from accounts.views.is_user import IsUserLoggedInAPIView, IsUserEnabled2FaAPIView
 from accounts.views.user import UserProfileAPIView
 from accounts.views.user import EditUserProfileAPIView
 from accounts.views.user import UploadAvatarAPI
@@ -27,6 +28,8 @@ urlpatterns = [
     path('api/signup/'              , SignupAPIView.as_view()           , name='api_signup'),
     path('api/login/'               , LoginAPIView.as_view()            , name='api_login'),
     path('api/logout/'              , LogoutAPIView.as_view()           , name='api_logout'),
+    path('api/is-user-logged-in/'   , IsUserLoggedInAPIView.as_view()   , name='api_is_user_logged_in'),
+    path('api/is-user-enabled2fa/'  , IsUserEnabled2FaAPIView.as_view() , name='api_is_user_enabled2fa'),
     path('api/user/profile/'        , UserProfileAPIView.as_view()      , name='api_user_profile'),
     path('api/user/edit-profile/'   , EditUserProfileAPIView.as_view()  , name='api_edit_profile'),
     path('api/change-avatar/'       , UploadAvatarAPI.as_view()         , name='change_avatar'),

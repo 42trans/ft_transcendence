@@ -18,6 +18,7 @@ class PongEngineMatch
 		this.maxScore	= data.settings.maxScore;
 		this.matchData	= pongEngine.matchData;
 		this.env		= pongEngine.env; 
+		this.ball		= data.objects.ball;
 
 		// console.log('match constructor', this.matchData.id);
 
@@ -76,7 +77,6 @@ class PongEngineMatch
 	updateScoreText() 
 	{
 		// スコア表示領域の中心のxの値を取りたいので一つの文字列として扱う
-		// TODO_ft:等幅フォントを用いも表示は崩れるので、別の方法も検討すべき
 		const scoreText = `${this.score2}       ${this.score1}`;
 		const textGeometry = new TextGeometry(scoreText, 
 		{
@@ -123,6 +123,7 @@ class PongEngineMatch
 	{
 		if (this.score1 >= this.maxScore || this.score2 >= this.maxScore) 
 		{
+			this.ball.position.set(0, 0, 0); 
 			this.endGame();
 		}
 	}
@@ -132,9 +133,9 @@ class PongEngineMatch
 		console.log('Game end');
 		this.pongEngine.isRunning = false;
 		
-		if (this.matchData)
+		if (this.matchData){
 			this.sendMatchResult();
-		
+		}
 		this.displayEndGameButton();
 	}
 
@@ -142,20 +143,37 @@ class PongEngineMatch
 	// ゲーム終了時に Back to Home ボタンリンクを表示する	
 	displayEndGameButton() 
 	{
-		try {
-			const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
-			if (endGameButton) {
-				endGameButton.style.display = 'block';
-				endGameButton.addEventListener('click', () => {
-					const redirectTo = routeTable['top'].path;
-					switchPage(redirectTo);
-				});
-			} else {
-				console.error('End Game button not found');
-			}
-		} catch (error){
-			console.error('hth: updateEndGameBtn() failed: ', error);
-		}
+		// try {
+		// 	const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
+		// 	if (endGameButton) {
+		// 		endGameButton.style.display = 'block';
+		// 		endGameButton.addEventListener('click', () => {
+		// 			const redirectTo = routeTable['top'].path;
+		// 			switchPage(redirectTo);
+		// 		});
+		// 	} else {
+		// 		console.error('End Game button not found');
+		// 	}
+		// } catch (error){
+		// 	console.error('hth: updateEndGameBtn() failed: ', error);
+		// }
+		// buttonタグを追加
+		const button = document.createElement('button');
+		button.textContent = 'End Game';
+		button.className = 'game-button';
+
+		// SPAとして'/app/'に遷移するため、endGameイベントをdjango側で補足する
+		const endGameEvent = new CustomEvent('endGame');
+
+		// ボタンをページに追加
+		document.body.appendChild(button);
+
+		button.onclick = function() {
+			// endGameEventをdjangoで補足し、SPA遷移する
+			document.dispatchEvent(endGameEvent);
+			// ボタンをページから削除
+			document.body.removeChild(button);
+		};
 	}
 
 	// displayEndGameButton() 

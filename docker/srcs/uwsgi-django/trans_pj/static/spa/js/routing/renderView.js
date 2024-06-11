@@ -1,6 +1,5 @@
 import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
-import { isLogined } from "../utility/user.js";
 
 
 const getPathAndQueryString = (targetPath) => {
@@ -43,7 +42,7 @@ export const switchPage = (targePath) => {
 };
 
 
-const getSelectedRoute = (currentPath, routeTable, isLogined) => {
+const getSelectedRoute = (currentPath, routeTable) => {
   let params = {};  // URLパラメータを格納するオブジェクト
 
   // パスパラメータを含む可能性があるルートを評価
@@ -71,17 +70,17 @@ const getSelectedRoute = (currentPath, routeTable, isLogined) => {
     matchedRoute.params = params;
     matchedRoute.queryParams = new URLSearchParams(window.location.search);
     return matchedRoute;
-  } else if (isLogined) {
-    return routeTable['home'];
   } else {
-    return routeTable['login']
+    // routeTableに存在しないpathの場合、Guest, Userともにtopを表示
+    // todo: URLとinnerHTMLが乖離 -> URLも/app/に切り替えるべきか？
+    return routeTable['top'];
   }
 };
 
 
-function getView(path) {
+async function getView(path) {
   // 選択されたルートを取得
-  const selectedRoute = getSelectedRoute(path, routeTable, isLogined());
+  const selectedRoute = getSelectedRoute(path, routeTable);
   // console.log("renderView: selectedRoute.path: " + selectedRoute.path)
 
   // 選択されたルートに対応するビューをインスタンス化して、paramsを渡す
@@ -94,7 +93,7 @@ function getView(path) {
 
 export const renderView = async (path) => {
   // console.log("    renderView 1: path: " + path)
-  const view = getView(path)
+  const view = await getView(path)
 
   // HTMLの描画 <div id="app">
   const htmlSrc = await view.getHtml();

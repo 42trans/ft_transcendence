@@ -1,6 +1,7 @@
 // verify_2fa.js
-
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
 
 function getNextUrl() {
@@ -28,7 +29,7 @@ function verify2FA() {
 				document.getElementById('error-message').textContent = data.error;
 				if (data.redirect) {
 					// alert('[tmp] varify2fa error: redirectTo:' + data.redirect)
-					window.location.href = data.redirect;
+					switchPage(data.redirect);
 				} else {
 					// alert('[tmp] varify2fa error' + data.error)
 					console.error('Error:', data.error);
@@ -38,6 +39,7 @@ function verify2FA() {
 				console.log(data.message);
 				// alert('[tmp] varify2fa success, redirect:' + data.redirect)
 				switchPage(data.redirect)  // Redirect on successful verification
+                updateHeader();
 			}
 		})
 		.catch(error => console.error("Error:", error));
@@ -54,7 +56,7 @@ export function clearForm() {
 // window.verify2FA = verify2FA;
 
 export function setupVerify2FaEventListener() {
-	console.log("Setup logout event listeners");
+	console.log("Setup verify2fa event listeners");
 	const verify2FaButton = document.querySelector('.hth-btn.verify2FaButton');
 	if (verify2FaButton) {
 		verify2FaButton.addEventListener('click', (event) => {

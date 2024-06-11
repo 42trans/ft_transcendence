@@ -12,8 +12,6 @@ class PongEngineData
 		this.settings	= {};
 		this.env		= pongEngine.env;
 		this.matchData	= pongEngine.matchData;
-		// console.log('env data',this.env);
-		// console.log('match data',this.matchData);
 
 		this.state = 
 		{

@@ -59,13 +59,16 @@ class PongEngineInit
 		objects.paddle1.castShadow = this.config.paddle1.CAST_SHADOW;
 		objects.paddle2.castShadow = this.config.paddle2.CAST_SHADOW;
 		// position
+		const PADDLE_INSET = 50
 		objects.paddle1.position.set(
-			(this.config.fields.WIDTH * -0.95) / 2 + 50, 
+			(this.config.fields.WIDTH * -0.95) / 2 + PADDLE_INSET, 
+			// (this.config.fields.WIDTH * -0.95) / 2 + 50, 
 			0, 
 			this.config.paddle1.DEPTH,
 		);
 		objects.paddle2.position.set(
-			(this.config.fields.WIDTH * 0.95)/ 2 - 50, 
+			(this.config.fields.WIDTH * 0.95)/ 2 - PADDLE_INSET, 
+			// (this.config.fields.WIDTH * 0.95)/ 2 - 50, 
 			0, 
 			this.config.paddle2.DEPTH,
 		);
