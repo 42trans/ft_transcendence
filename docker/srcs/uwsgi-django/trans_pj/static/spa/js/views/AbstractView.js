@@ -15,7 +15,7 @@ export default class {
     return "";
   }
 
-  dispose() {
+  async dispose() {
     // 必要に応じてオーバーライド
   }
 }

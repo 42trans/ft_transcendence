@@ -38,7 +38,8 @@ const DEBUG_FLOW = 1;
 PongApp.main();
 
 window.addEventListener('switchPageResetState', () => {
-	if (DEBUG_FLOW) {	console.log('switchPageResetState event fired');	}
+				if (DEBUG_FLOW) {	console.log('switchPageResetState: event');	}
 	PongApp.main();
+				if (DEBUG_FLOW) {	console.log('PongApp.main(): called');	}
 });
 

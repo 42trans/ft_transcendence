@@ -57,6 +57,10 @@ class PongEngine
 		if (this.isRunning)
 		{
 			requestAnimationFrame(this.animate);
+			// ここで描画ループを止めると終了後のアスペクト比がバグる
+		// } else {
+		// 	// ゲームが終了した場合は、描画ループを停止
+		// 	this.pongApp.stopRenderLoop();
 		}
 		await this.update.updateGame();
 	}

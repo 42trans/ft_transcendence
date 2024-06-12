@@ -14,6 +14,7 @@ import RendererManager from './manager/RendererManager'
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
+import { thickness } from 'three/examples/jsm/nodes/core/PropertyNode.js';
 
 const DEBUG_FLOW = 1;
 const DEBUG_DETAIL = 1;
@@ -79,17 +80,25 @@ class PongApp
 
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
 		this.renderer = RendererManager.getRenderer();
+				if (DEBUG_FLOW) {	console.log('this.renderer', this.renderer);	}
+
 		// 全てのシーンのmixerを一元的に管理。シングルトン
 		this.animationMixersManager = AnimationMixersManager.getInstance();
 		// 複数のSceneを一元的に管理。シングルトン
 		this.allScenesManager = AllScenesManager.getInstance(this.animationMixersManager);
 		// 3D空間（カメラ、照明、オブジェクト）を担当
 		await this.allScenesManager.setupScenes();
+
+					if (DEBUG_FLOW) {	console.log('this.allScenesManager', this.allScenesManager);	}
+
 		// ゲームの状態（待機、Play、終了）を担当。シングルトン
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
+					if (DEBUG_FLOW) {	console.log('this.gameStateManager', this.gameStateManager);	}
 
 		// 無限ループでアニメーションの更新を担当。シングルトン
 		this.renderLoop = LoopManager.getInstance(this);
+					if (DEBUG_FLOW) {	console.log('this.renderLoop', this.renderLoop);	}
+
 		this.renderLoop.start();
 
 					//dev用　index.jsで`PongApp.main('dev');`で呼び出す
@@ -98,6 +107,9 @@ class PongApp
 					} 
 		
 		window.addEventListener('resize', this.allScenesManager.handleResize.bind(this.allScenesManager), false);
+
+				if (DEBUG_FLOW) {	console.log('init(): done');	}
+
 	}
 	
 	stopRenderLoop() 
@@ -109,19 +121,27 @@ class PongApp
 	}
 
 	// spa/js/views/AbstractView.jsの dispose から呼び出される
-	destroy() 
+	async destroy() 
 	{
 		const currentPath = window.location.pathname;
-		const gameMatchPath = this.routeTable['gameMatch'].path;
+		const routeTable = await PongApp.loadRouteTable();
+		const gameMatchPath = routeTable['gameMatch'].path;
 		const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
+					if (DEBUG_FLOW) {	console.log('pongApp.destroy()', currentPath, gameMatchRegex);	}
 
-		if (!gameMatchRegex.test(currentPath)) {
-						if (DEBUG_DETAIL) {	console.log('gameMatchRegex.test() is false');	}
-			return;
-		}
+		// if (!gameMatchRegex.test(currentPath)) {
+						// if (DEBUG_DETAIL) {	console.log('gameMatchRegex.test() is false');	}
+						// if (DEBUG_FLOW) {	console.log('pongApp.destroy()', currentPath, gameMatchRegex);	}
+			// return;
+		// }
 					if (DEBUG_DETAIL) {	console.log('destroy()');	}
 		this.stopRenderLoop();
 
+		if (!this.allScenesManager || !this.renderer || !this.animationMixersManager){
+			if (DEBUG_DETAIL) {	console.log('allScenesManager, renderer, animationMixerManager is false');	}
+
+			return;
+		}
 		this.allScenesManager.dispose();
 		// THREE.WebGLRendererのメソッド
 		this.renderer.dispose();
@@ -154,18 +174,23 @@ class PongApp
 		const gameMatchPath = routeTable['gameMatch'].path;
 		const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
 
+					if (DEBUG_FLOW) {	console.log('pongApp.destroy()', currentPath, gameMatchRegex);	}
+
 		if (!gameMatchRegex.test(currentPath)) {
-			if (DEBUG_FLOW) {	console.log('pongApp.main()', currentPath, gameMatchRegex);	}
+						// if (DEBUG_FLOW) {	console.log('pongApp.main()', currentPath, gameMatchRegex);	}
 			return;
 		}
 
 		if (window.pongApp) {
 						if (DEBUG_FLOW) {	console.log('window.pongApp is true');	}
-						// ブラウザのグローバルスコープ（windowオブジェクト）にpongAppというプロパティを追加
+			// ブラウザのグローバルスコープ（windowオブジェクト）にpongAppというプロパティを追加
 			window.pongApp.destroy();
 		}
-					if (DEBUG_FLOW) {	console.log('main(): new PongApp();');	}
+
+		// const pongApp = new PongApp(env);
+	    // window.pongApp = pongApp;
 		window.pongApp = new PongApp(env);
+					if (DEBUG_FLOW) {	console.log('main(): new PongApp();', window.pongApp);	}
 	}
 
 	

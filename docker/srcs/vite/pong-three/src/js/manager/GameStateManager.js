@@ -2,6 +2,9 @@ import GamePlayState from '../state/GamePlayState'
 import EntryGameState from '../state/EntryGameState'
 import RendererManager from './RendererManager';
 
+const DEBUG_FLOW = 1;
+const DEBUG_DETAIL = 1;
+
 /**
  * - シングルトン
  */
@@ -59,8 +62,10 @@ class GameStateManager
 
 	update() 
 	{
+					if (DEBUG_DETAIL) {	console.log('update():', this.currentState);	}
 		if (this.currentState) 
 		{
+					if (DEBUG_DETAIL) {	console.log('update():', this.currentState);	}
 			this.currentState.update();
 		}
 	}

@@ -5,7 +5,7 @@ import EffectsSceneConfig from '../config/EffectsSceneConfig';
 import ZoomBall from '../effect/ZoomBall';
 import AllScenesManager from '../manager/AllScenesManager';
 
-let DEBUG_FLOW		= 0;
+let DEBUG_FLOW		= 1;
 let DEBUG_DETAIL1	= 0;
 let TEST_TRY1		= 0;
 
@@ -53,6 +53,8 @@ class EntryGameState extends BaseGameState
 
 	update() 
 	{
+			if (DEBUG_FLOW) {	console.log("entryState.update(): start");	}
+
 		this.magmaFlare.update();
 	}
 	

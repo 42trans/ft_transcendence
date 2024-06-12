@@ -120,6 +120,7 @@ export const renderView = async (path) => {
   document.querySelector("#spa").innerHTML = htmlSrc;
   await view.executeScript();
         if (DEBUG_DETAIL) { console.log('renderView(): currentView', currentView); }
+        if (DEBUG_DETAIL) { console.log('renderView(): selectedRoute.params', selectedRoute.params); }
 };
 
 // export const renderView = async (path) => {

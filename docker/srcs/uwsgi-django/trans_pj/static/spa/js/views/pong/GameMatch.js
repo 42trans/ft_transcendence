@@ -26,12 +26,12 @@ export default class extends AbstractView {
     loadAndExecuteScript("/static/pong/three/assets/index.js", true);
   }
 
-  dispose() {
-    if (DEBUG_FLOW) {  console.log('GameMatch: disopose(): start'); }
+  async dispose() {
+        if (DEBUG_FLOW) {  console.log('GameMatch: disopose(): start'); }
     // Three.jsのインスタンスを破棄
     if (window.pongApp) {
           if (DEBUG_FLOW) {  console.log('GameMatch: disopose(): window.pongApp is true'); }
-      window.pongApp.destroy();
+      await window.pongApp.destroy();
       window.pongApp = null;
     }
   }

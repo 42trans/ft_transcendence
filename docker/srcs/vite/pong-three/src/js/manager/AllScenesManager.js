@@ -5,8 +5,8 @@ import RendererManager from './RendererManager'
 import SceneUnit from '../SceneUnit';
 import * as THREE from 'three';
 
-let DEBUG_FLOW 		= 0;
-let DEBUG_DETAIL 	= 0;
+let DEBUG_FLOW 		= 1;
+let DEBUG_DETAIL 	= 1;
 let TEST_TRY1 		= 0;
 
 /**
@@ -141,6 +141,8 @@ class AllScenesManager
 			}
 		});
 		this.sceneUnits = [];
+				if (DEBUG_DETAIL) {	 console.log('AllSceneManager.dispose(): done', this.sceneUnits);	}
+
 	}
 
 }
