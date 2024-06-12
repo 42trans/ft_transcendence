@@ -1,3 +1,5 @@
+// docker/srcs/vite/pong-three/src/js/manager/AnimationMixersManager.js
+
 import * as THREE from 'three';
 
 /**
@@ -56,6 +58,18 @@ class AnimationMixersManager
 		}
 	}
 
+	dispose() {
+		// 各ミキサーを停止し、キャッシュをクリア
+		this.mixersMap.forEach((mixer) => {
+			mixer.stopAllAction();
+			// ループ参照を解除
+			// アニメーションが適用されるオブジェクトツリーの最上位にあるオブジェクトに関連するすべてのアニメーションデータをキャッシュから削除
+			mixer.uncacheRoot(mixer.getRoot()); 
+		});
+		this.mixersMap.clear(); 
+		this.clock = null; 
+	}
+	
 	update() 
 	{
 		const delta = this.clock.getDelta();

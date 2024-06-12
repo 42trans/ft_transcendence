@@ -26,12 +26,12 @@ class PongApp
 	{
 		this.env = env;
 		this.init();
-		this.boundInit = this.init.bind(this);
-		window.removeEventListener('switchPageResetState', this.boundInit);
-		window.addEventListener('switchPageResetState', () => {
-			if (DEBUG_DETAIL){	console.log('addEventListener(switchPageResetState): boundInit');	}
-			if (DEBUG_DETAIL){	console.log('boundInit: this:', this);	}
-		});
+		// this.boundInit = this.init.bind(this);
+		// window.removeEventListener('switchPageResetState', this.boundInit);
+		// window.addEventListener('switchPageResetState', () => {
+		// 	if (DEBUG_DETAIL){	console.log('addEventListener(switchPageResetState): boundInit');	}
+		// 	if (DEBUG_DETAIL){	console.log('boundInit: this:', this);	}
+		// });
 		// window.addEventListener('switchPageResetState', this.boundInit);
 	}
 
@@ -107,10 +107,10 @@ class PongApp
 	destroy() {
 		this.stopRenderLoop();
 
-		// 各マネージャーのリソースを破棄
 		this.allScenesManager.dispose();
+		// THREE.WebGLRendererのメソッド
 		this.renderer.dispose();
-		this.animationMixersManager.dispose(); // AnimationMixersManager に dispose メソッドを追加
+		this.animationMixersManager.dispose();
 
 		// イベントリスナーを削除
 		window.removeEventListener('resize', this.allScenesManager.handleResize);
@@ -121,10 +121,6 @@ class PongApp
 			this.gui = null; // 参照を削除
 		}
 
-		// その他のリソース解放 (WebSocket など)
-		// ここに、WebSocket 接続を閉じる処理などを追加
-
-		// インスタンス変数をクリア (任意)
 		this.env = null;
 		this.matchData = null;
 		this.routeTable = null;
