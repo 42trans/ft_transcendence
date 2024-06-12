@@ -117,6 +117,8 @@ class UserManager(BaseUserManager):
         if CustomUser.kPASSWORD_MAX_LENGTH < len(password):
             err = f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less"
             return False, err
+        if not password.isascii():
+            return False, "The password can only contain ASCII characters"
         try:
             validate_password(password, user=tmp_user)
             return True, None
