@@ -5,8 +5,9 @@ import PongEngineKey from './PongEngineKey'
  */
 class PongEngineUpdate 
 {
-	constructor(pongEngineData, physics, match)
+	constructor(pongEngine, pongEngineData, physics, match)
 	{
+		this.pongEngine = pongEngine;
 		this.physics	= physics;
 		this.match		= match;
 		this.pongEngineData = pongEngineData;
@@ -131,20 +132,15 @@ class PongEngineUpdate
 		this.ball.position.set(0, 0, 0); 
 		this.ball.dirX = loser === 1 ? -1 : 1;
 		this.ball.dirY = Math.random() - 0.5;
-		// this.ball.dirY = 0.1; // ボールサーブは少し角度をつける
 		this.ball.speed = this.initBallSpeed;
 	}
 
 	async updateGame() 
 	{
-		// console.log(`
-		// 	paddle1 \tX: ${this.paddle1.position.x}  \tY: ${this.paddle1.position.y}
-		// 	paddle1 \tW: ${this.paddle1.width}  \tH: ${this.paddle1.height}
-		// 	DirY \tpaddle1: ${this.paddle1.dirY}  \tpaddle2: ${this.paddle2.dirY}
-		// 	field \twidth: ${this.field.width}  \height: ${this.field.height}
-		// `);	
 		await this.handleCollisions();
-		this.updateBallPosition();
+		if (this.pongEngine.isRunning){
+			this.updateBallPosition();
+		}
 		
 		this.handlePaddleMovement();
 	}

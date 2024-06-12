@@ -11,6 +11,10 @@ let DEBUG_FLOW 		= 0;
 let DEBUG_DETAIL 	= 0;
 let TEST_TRY1 		= 0;
 
+const ZOOM_IN_FACTOR = 1.5;
+const ZOOM_OUT_FACTOR = 0.5;
+const SCENE_CHANGE_DELAY = 4500; // milliseconds
+
 class GameplayState extends BaseGameState 
 {
 	constructor (PongApp)
@@ -55,8 +59,8 @@ class GameplayState extends BaseGameState
 		const zoomParams = 
 		{
 			...GameplayState.zoomParams,
-			zoomInDistance: this.initialDistance * 1.5,
-			zoomOutDistance: this.initialDistance * 0.5,
+			zoomInDistance: this.initialDistance * ZOOM_IN_FACTOR,
+			zoomOutDistance: this.initialDistance * ZOOM_OUT_FACTOR,
 			targetPosition: targetPosition,
 			initialDistance: this.initialDistance,
 		};
@@ -79,7 +83,7 @@ class GameplayState extends BaseGameState
 		{
 			this.scenesMgr.effectsScene.clearScene();
 			this.scenesMgr.backgroundScene.refreshScene(new BackgroundSceneConfig());
-		}, 4500);
+		}, SCENE_CHANGE_DELAY);
 	}
 
 	update() {/** empty */}

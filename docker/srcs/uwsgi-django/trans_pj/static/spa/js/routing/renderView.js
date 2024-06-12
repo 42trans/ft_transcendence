@@ -1,25 +1,53 @@
 import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
-import { isLogined } from "../utility/user.js";
 
 
-export const switchPage = (url) => {
-  // console.log("history pushState:" + url);
-  history.pushState(null, null, url);
+const getPathAndQueryString = (targetPath) => {
+  const targetUrl = new URL(targetPath, window.location.origin);
+  const targetPathName = targetUrl.pathname;
+  let targetQueryString = targetUrl.search;
 
-  let currentPath = window.location.pathname;
-  // console.log('switchPage url:' + url)
-  // console.log('switchPage currentPath:' + currentPath)
+  // query stringのnextの要素がpathNameと一致している場合、query stringを空文字列に置き換える
+  const params = new URLSearchParams(targetQueryString);
+  const nextParam = params.get('next');
+  if (nextParam === targetPathName) {
+    targetQueryString = '';
+  }
+  return { targetPathName, targetQueryString };
+};
+
+
+export const switchPage = (targePath) => {
+  // const currentUrl = new URL(window.location.href);
+  const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
+
+  // console.log('path:', targetPathName);
+  // console.log('queryString:', targetQueryString);
+
+  // query string込みでURLをpush
+  history.pushState(null, null, targetPathName + targetQueryString);
+
+  // DEBUG console log
+  // console.log(`switchPage`)
+  // console.log(` currentUrl        :${currentUrl}`)
+  // console.log(` targetPathName    :${targetPathName}`)
+  // console.log(` targetQueryString :${targetQueryString}`)
+  // console.log(` currentPath       :${window.location.pathname}`)
+  // alert(`[debug] switchPage consolelog確認用`)
 
   renderView(currentPath);
   // renderView(currentPath).then(() => {
   //   // resetState イベントを発行
   //   window.dispatchEvent(new CustomEvent('switchPageResetState'));
   // });
+  renderView(targetPathName).then(() => {
+    // resetState イベントを発行
+    window.dispatchEvent(new CustomEvent('switchPageResetState'));
+  });
 };
 
 
-const getSelectedRoute = (currentPath, routeTable, isLogined) => {
+const getSelectedRoute = (currentPath, routeTable) => {
   let params = {};  // URLパラメータを格納するオブジェクト
 
   // パスパラメータを含む可能性があるルートを評価
@@ -45,18 +73,19 @@ const getSelectedRoute = (currentPath, routeTable, isLogined) => {
 
   if (matchedRoute) {
     matchedRoute.params = params;
+    matchedRoute.queryParams = new URLSearchParams(window.location.search);
     return matchedRoute;
-  } else if (isLogined) {
-    return routeTable['home'];
   } else {
-    return routeTable['login']
+    // routeTableに存在しないpathの場合、Guest, Userともにtopを表示
+    // todo: URLとinnerHTMLが乖離 -> URLも/app/に切り替えるべきか？
+    return routeTable['top'];
   }
 };
 
 
-function getView(path) {
+async function getView(path) {
   // 選択されたルートを取得
-  const selectedRoute = getSelectedRoute(path, routeTable, isLogined());
+  const selectedRoute = getSelectedRoute(path, routeTable);
   // console.log("renderView: selectedRoute.path: " + selectedRoute.path)
 
   // 選択されたルートに対応するビューをインスタンス化して、paramsを渡す
@@ -69,7 +98,7 @@ function getView(path) {
 
 export const renderView = async (path) => {
   // console.log("    renderView 1: path: " + path)
-  const view = getView(path)
+  const view = await getView(path)
 
   // HTMLの描画 <div id="app">
   const htmlSrc = await view.getHtml();
