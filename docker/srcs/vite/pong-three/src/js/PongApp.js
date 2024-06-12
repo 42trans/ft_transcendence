@@ -98,7 +98,11 @@ class PongApp
 
 	static main(env)
 	{
-		new PongApp(env);
+		if (window.pongApp) {
+			window.pongApp.dispose();
+		}
+		window.pongApp = new PongApp(env);
+		// new PongApp(env);
 	}
 				setupDevEnv()
 				{

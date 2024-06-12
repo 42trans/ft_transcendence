@@ -20,26 +20,43 @@ const getPathAndQueryString = (targetPath) => {
 export const switchPage = (targePath) => {
   // const currentUrl = new URL(window.location.href);
   const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
-
   // console.log('path:', targetPathName);
   // console.log('queryString:', targetQueryString);
-
   // query string込みでURLをpush
   history.pushState(null, null, targetPathName + targetQueryString);
-
-  // DEBUG console log
-  // console.log(`switchPage`)
-  // console.log(` currentUrl        :${currentUrl}`)
-  // console.log(` targetPathName    :${targetPathName}`)
-  // console.log(` targetQueryString :${targetQueryString}`)
-  // console.log(` currentPath       :${window.location.pathname}`)
-  // alert(`[debug] switchPage consolelog確認用`)
-
+  // 現在のビューのクリーンアップが必要な場合にのみ dispose を実行
+  if (currentView && typeof currentView.dispose === "function") {
+    currentView.dispose();
+  }
   renderView(targetPathName).then(() => {
     // resetState イベントを発行
     window.dispatchEvent(new CustomEvent('switchPageResetState'));
   });
 };
+
+// export const switchPage = (targePath) => {
+//   // const currentUrl = new URL(window.location.href);
+//   const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
+
+//   // console.log('path:', targetPathName);
+//   // console.log('queryString:', targetQueryString);
+
+//   // query string込みでURLをpush
+//   history.pushState(null, null, targetPathName + targetQueryString);
+
+//   // DEBUG console log
+//   // console.log(`switchPage`)
+//   // console.log(` currentUrl        :${currentUrl}`)
+//   // console.log(` targetPathName    :${targetPathName}`)
+//   // console.log(` targetQueryString :${targetQueryString}`)
+//   // console.log(` currentPath       :${window.location.pathname}`)
+//   // alert(`[debug] switchPage consolelog確認用`)
+
+//   renderView(targetPathName).then(() => {
+//     // resetState イベントを発行
+//     window.dispatchEvent(new CustomEvent('switchPageResetState'));
+//   });
+// };
 
 
 const getSelectedRoute = (currentPath, routeTable) => {
@@ -92,15 +109,24 @@ async function getView(path) {
 
 
 export const renderView = async (path) => {
-  // console.log("    renderView 1: path: " + path)
-  const view = await getView(path)
-
-  // HTMLの描画 <div id="app">
+  const selectedRoute = getSelectedRoute(path, routeTable);
+  const view = new selectedRoute.view(selectedRoute.params);
+  currentView = view;
   const htmlSrc = await view.getHtml();
   document.querySelector("#spa").innerHTML = htmlSrc;
-  // console.log("    renderView 2")
-
-  // スクリプトの読み込みと実行
   await view.executeScript();
-  // console.log("    renderView 3")
 };
+
+// export const renderView = async (path) => {
+//   // console.log("    renderView 1: path: " + path)
+//   const view = await getView(path)
+
+//   // HTMLの描画 <div id="app">
+//   const htmlSrc = await view.getHtml();
+//   document.querySelector("#spa").innerHTML = htmlSrc;
+//   // console.log("    renderView 2")
+
+//   // スクリプトの読み込みと実行
+//   await view.executeScript();
+//   // console.log("    renderView 3")
+// };
