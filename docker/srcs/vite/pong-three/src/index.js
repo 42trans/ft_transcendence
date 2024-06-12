@@ -1,4 +1,4 @@
-// docker/srcs/webpack2/ft_trans/src/index.js
+// docker/srcs/vite/pong-three/src/index.js
 
 /**
  * @file エントリーポイント
@@ -32,6 +32,13 @@
 import PongApp from './js/PongApp'
 import './css/3d.css';
 
+const DEBUG_FLOW = 1;
 // 'dev'= コントローラーGUI表示 
 // PongApp.main('dev');
 PongApp.main();
+
+window.addEventListener('switchPageResetState', () => {
+	if (DEBUG_FLOW) {	console.log('switchPageResetState event fired');	}
+	PongApp.main();
+});
+

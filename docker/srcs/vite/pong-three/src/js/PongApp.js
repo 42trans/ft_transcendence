@@ -28,11 +28,11 @@ class PongApp
 	{
 		this.env = env;
 		this.init();
-		this.boundInit = this.init.bind(this);
-		window.addEventListener('switchPageResetState', this.boundInit);
+		// this.boundInit = this.init.bind(this);
+		// window.addEventListener('switchPageResetState', this.boundInit);
 	}
 
-	async loadRouteTable() 
+	static async loadRouteTable() 
 	{
 		if (import.meta.env.MODE === 'development') {
 			// 開発環境用のパス
@@ -66,7 +66,8 @@ class PongApp
 			return;
 		}
 
-		this.routeTable = await this.loadRouteTable();
+		this.routeTable = await PongApp.loadRouteTable();
+		// this.routeTable = await this.loadRouteTable();
 
 		// ゲームが終了状態の場合リダイレクト
 		if (this.matchData && this.matchData.is_finished) 
@@ -110,6 +111,14 @@ class PongApp
 	// spa/js/views/AbstractView.jsの dispose から呼び出される
 	destroy() 
 	{
+		const currentPath = window.location.pathname;
+		const gameMatchPath = this.routeTable['gameMatch'].path;
+		const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
+
+		if (!gameMatchRegex.test(currentPath)) {
+						if (DEBUG_DETAIL) {	console.log('gameMatchRegex.test() is false');	}
+			return;
+		}
 					if (DEBUG_DETAIL) {	console.log('destroy()');	}
 		this.stopRenderLoop();
 
@@ -138,12 +147,22 @@ class PongApp
 	}
 	
 
-	static main(env)
+	static async main(env)
 	{
+		const currentPath = window.location.pathname;
+		const routeTable = await PongApp.loadRouteTable();
+		const gameMatchPath = routeTable['gameMatch'].path;
+		const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
+
+		if (!gameMatchRegex.test(currentPath)) {
+			if (DEBUG_FLOW) {	console.log('pongApp.main()', currentPath, gameMatchRegex);	}
+			return;
+		}
+
 		if (window.pongApp) {
 						if (DEBUG_FLOW) {	console.log('window.pongApp is true');	}
 						// ブラウザのグローバルスコープ（windowオブジェクト）にpongAppというプロパティを追加
-			window.pongApp.dispose();
+			window.pongApp.destroy();
 		}
 					if (DEBUG_FLOW) {	console.log('main(): new PongApp();');	}
 		window.pongApp = new PongApp(env);

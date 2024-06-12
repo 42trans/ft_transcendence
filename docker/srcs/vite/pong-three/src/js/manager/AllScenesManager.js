@@ -109,7 +109,7 @@ class AllScenesManager
 		}
 		const table = sceneUnit.scene.getObjectByName('table');
 		if (!table){
-			console.error('!table');
+			console.error('hth: table is not found');
 			return;
 		}
 		const tableSize = new THREE.Box3().setFromObject(table).getSize(new THREE.Vector3());
