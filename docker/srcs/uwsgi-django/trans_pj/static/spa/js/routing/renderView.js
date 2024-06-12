@@ -1,6 +1,7 @@
 import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
 
+const DEBUG_DETAIL = 1;
 
 const getPathAndQueryString = (targetPath) => {
   const targetUrl = new URL(targetPath, window.location.origin);
@@ -23,10 +24,13 @@ const getPathAndQueryString = (targetPath) => {
 let currentView = null;
 // ページ遷移が発生した場合のメソッド
 export const switchPage = (targePath) => {
+        if (DEBUG_DETAIL) { console.log('switchPage(): start');  } 
+
   const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
   history.pushState(null, null, targetPathName + targetQueryString);
   // currentViewにdisposeメソッドが存在するかどうかをチェック。オペランドの型がfunctionなら関数
   if (currentView && typeof currentView.dispose === "function") {
+          if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
     currentView.dispose();
   }
   renderView(targetPathName).then(() => {
@@ -115,6 +119,7 @@ export const renderView = async (path) => {
   const htmlSrc = await view.getHtml();
   document.querySelector("#spa").innerHTML = htmlSrc;
   await view.executeScript();
+        if (DEBUG_DETAIL) { console.log('renderView(): currentView', currentView); }
 };
 
 // export const renderView = async (path) => {

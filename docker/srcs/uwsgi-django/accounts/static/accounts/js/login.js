@@ -69,19 +69,19 @@ function clearForm() {
 
 
 export function setupLoginEventListener() {
-	console.log("Setup login event listeners");
+	// console.log("Setup login event listeners");
 	const form = document.querySelector('.hth-sign-form');
 	if (form) {
 		// Check if the event listener has already been added
 		if (form.classList.contains('listener-added')) {
-			console.log('Form event listener already exists');
+			// console.log('Form event listener already exists');
 		} else {
 			form.addEventListener('submit', (event) => {
 				event.preventDefault();
 				loginUser(event);
 			});
 			form.classList.add('listener-added');
-			console.log('Form event listener added');
+			// console.log('Form event listener added');
 		}
 	}
 }

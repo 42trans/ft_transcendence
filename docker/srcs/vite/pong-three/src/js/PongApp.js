@@ -15,6 +15,7 @@ import RendererManager from './manager/RendererManager'
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
 
+const DEBUG_FLOW = 1;
 const DEBUG_DETAIL = 1;
 
 /**
@@ -27,8 +28,8 @@ class PongApp
 	{
 		this.env = env;
 		this.init();
-		// this.boundInit = this.init.bind(this);
-		// window.addEventListener('switchPageResetState', this.boundInit);
+		this.boundInit = this.init.bind(this);
+		window.addEventListener('switchPageResetState', this.boundInit);
 	}
 
 	async loadRouteTable() 
@@ -54,12 +55,15 @@ class PongApp
 	 */
 	async init() 
 	{
+					if (DEBUG_FLOW) {	console.log('init()');	}
 		const matchDataElement = document.getElementById('match-data');
 		if (matchDataElement) 
 		{
 			this.matchData = JSON.parse(matchDataElement.textContent);
-			
 						if (DEBUG_DETAIL) {	console.log('Match Data:', this.matchData);	}
+		} else {
+						if (DEBUG_FLOW) {	console.log('matchDataElement not found');	}
+			return;
 		}
 
 		this.routeTable = await this.loadRouteTable();
@@ -67,6 +71,7 @@ class PongApp
 		// ゲームが終了状態の場合リダイレクト
 		if (this.matchData && this.matchData.is_finished) 
 		{
+						if (DEBUG_FLOW) {	console.log('matchData.is_finished is true');	}
 			window.location.href = this.routeTable['top'].path;
 			return;
 		}
@@ -136,9 +141,11 @@ class PongApp
 	static main(env)
 	{
 		if (window.pongApp) {
-			// ブラウザのグローバルスコープ（windowオブジェクト）にpongAppというプロパティを追加
+						if (DEBUG_FLOW) {	console.log('window.pongApp is true');	}
+						// ブラウザのグローバルスコープ（windowオブジェクト）にpongAppというプロパティを追加
 			window.pongApp.dispose();
 		}
+					if (DEBUG_FLOW) {	console.log('main(): new PongApp();');	}
 		window.pongApp = new PongApp(env);
 	}
 

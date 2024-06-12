@@ -48,6 +48,10 @@ class SceneUnit
 		}
 	}
 
+	dispose() {
+		this.clearScene();
+	}
+
 	clearScene() 
 	{
 		while (this.scene.children.length > 0) 

@@ -132,6 +132,16 @@ class AllScenesManager
 		return Math.max(distanceHeight, distanceWidth, camera.near + 1);
 	}
 	
+	dispose() {
+		// 各 SceneUnit の dispose メソッドを呼び出す
+		this.sceneUnits.forEach(sceneUnit => {
+			// sceneUnit が存在し、dispose メソッドを持っているか確認
+			if (sceneUnit && sceneUnit.dispose) { 
+				sceneUnit.dispose();
+			}
+		});
+		this.sceneUnits = [];
+	}
 
 }
 

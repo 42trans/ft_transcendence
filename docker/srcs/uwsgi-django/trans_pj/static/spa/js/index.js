@@ -22,7 +22,7 @@ import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
-  console.log('popState: path: ' + window.location.pathname);
+  // console.log('popState: path: ' + window.location.pathname);
 
   window.addEventListener("popstate", (event) => {
     const path = window.location.pathname;
@@ -37,7 +37,7 @@ const setupPopStateListener = () => {
 // spa.htmlの読み込みと解析が完了した時点で発火
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", () => {
-    console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
+    // console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
     // stopGamePageAnimation()
 
     // 初期ビューを表示
@@ -93,13 +93,13 @@ async function getLoggedInUserRedirectUrl(url) {
 // リンクのクリックイベントで発火
 const setupBodyClickListener = () => {
   document.body.addEventListener("click", async (event) => {
-  console.log('clickEvent: path: ' + window.location.pathname);
+  // console.log('clickEvent: path: ' + window.location.pathname);
   // stopGamePageAnimation()
   setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
 
     const linkElement = event.target.closest("[data-link]");
     if (linkElement) {
-      console.log('clickEvent: taga-link');
+      // console.log('clickEvent: taga-link');
       event.preventDefault();
 
       const linkUrl = linkElement.href;
@@ -122,7 +122,7 @@ const setupBodyClickListener = () => {
 // ページリロード時に発火
 const setupLoadListener = () => {
   window.addEventListener("load", () => {
-    console.log('loadEvent: path: ' + window.location.pathname);
+    // console.log('loadEvent: path: ' + window.location.pathname);
 
     // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
