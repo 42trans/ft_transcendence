@@ -154,36 +154,44 @@ class ProfileTest(TestConfig):
         """
         self._move_to_edit_page()
 
+        current_password = self.password
+        invalid_new_passwords_and_expected_messages = [
+            # current passwordと同一
+            {"new_password": current_password,  "message": "new password same as current"},
+
+            # 不正なpassword
+            {"new_password": "パスワード123",    "message": "The password can only contain ASCII characters"},
+            {"new_password": "パスワード",       "message": "The password can only contain ASCII characters"},
+
+            # too common
+            {"new_password": "password",        "message": "このパスワードは一般的すぎます。"},
+            {"new_password": "********",        "message": "このパスワードは一般的すぎます。"},
+
+            # too short
+            {"new_password": "***4567",         "message": "このパスワードは短すぎます。最低 8 文字以上必要です。"},
+            {"new_password": "a1",              "message": "このパスワードは短すぎます。最低 8 文字以上必要です。"},
+
+            # too long
+            {"new_password": f"{"pass0" + "0123456789" * 6}",   "message": f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less"},
+            {"new_password": f"{"pass0" + "0123456789" * 128}", "message": f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less"},
+        ]
+        print(f"[Testing] invalid password")
+        for invalid_data in invalid_new_passwords_and_expected_messages:
+            invalid_new_password = invalid_data["new_password"]
+            expected_message = invalid_data["message"]
+            print(f" new_password: [{invalid_new_password}]")
+
+            self._edit_password(current_password, invalid_new_password, wait_for_button_invisible=False)
+            self._assert_message(expected_message)
+            self._assert_current_url(self.edit_profile_url)
+
         # current passwordが不正
-        wrong_current_pass = "pass01234"
+        wrong_current_pass = current_password + 'a'
         new_pass = "0123pass"
         self._edit_password(wrong_current_pass, new_pass, wait_for_button_invisible=False)
         self._assert_message("Current password is incorrect")
         self._assert_current_url(self.edit_profile_url)
         # self._screenshot("edit_pass_1")
-
-        # new passwordがcurrent passwordと同一
-        current_pass = "pass0123"
-        self._edit_password(current_pass, current_pass, wait_for_button_invisible=False)
-        self._assert_message("new password same as current")
-        self._assert_current_url(self.edit_profile_url)
-        # self._screenshot("edit_pass_2")
-
-        # new passwordが不正
-        current_pass = "pass0123"
-        new_pass = "pass012"
-        self._edit_password(current_pass, new_pass, wait_for_button_invisible=False)
-        self._assert_message("このパスワードは短すぎます。最低 8 文字以上必要です。")
-        self._assert_current_url(self.edit_profile_url)
-        # self._screenshot("edit_pass_3")
-
-        # new passwordが不正(too long)
-        current_pass = "pass0123"
-        new_pass = "pass0" + "0123456789" * 6
-        self._edit_password(current_pass, new_pass, wait_for_button_invisible=False)
-        self._assert_message(f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less")
-        self._assert_current_url(self.edit_profile_url)
-        # self._screenshot("edit_pass_3")
 
     ############################################################################
 
