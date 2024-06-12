@@ -165,50 +165,57 @@ class BasicAuthTest(TestConfig):
     def test_signup_invalid_nickname(self):
         """
         不正なnicknameでsign up失敗を検証
+         - すでに存在するnickname
+         - alnum以外が含まれるnickname
+         - min lengthよりも短いnickname
+         - max lengthよりも長いnickname
         """
         self._move_top_to_signup()
 
-        # すでに存在するnicknmae
-        new_email = "new_user@example.com"
-        user1_nickname = "user1"
-        password1 = "pass0123"
-        password2 = "pass0123"
+        invalid_nicknames_and_expected_messages = [
+            # すでに存在するnickname
+            {"nickname": self.nickname,     "message": "This nickname is already in use"},
 
-        self._signup(new_email,
-                     user1_nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message("This nickname is already in use")
-        self._assert_current_url(self.signup_url)
+            # 不正なnickname
+            {"nickname": "nick_name",       "message": "Invalid nickname format"},
+            {"nickname": "nick name",       "message": "Invalid nickname format"},
+            {"nickname": "***",             "message": "Invalid nickname format"},
+            {"nickname": "   aaa",          "message": "Invalid nickname format"},
+            {"nickname": "<script>alert('x')</script>",  "message": f"Invalid nickname format"},
 
-        # 不正なニックネーム（alnum以外）
-        new_email = "new_user@example.com"
-        invalid_nickname = "nick_name"
-        password1 = "pass0123"
-        password2 = "pass0123"
+            # multi-byte
+            {"nickname": "ニックネーム",      "message": "The nickname can only contain ASCII characters"},
 
-        self._signup(new_email,
-                     invalid_nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message("Invalid nickname format")
-        self._assert_current_url(self.signup_url)
+            # too short
+            {"nickname": "n",               "message": f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"},
+            {"nickname": "ng",              "message": f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"},
+            {"nickname": " ",               "message": f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"},
 
-        # 不正なニックネーム（全角）
-        new_email = "new_user@example.com"
-        invalid_nickname = "ニックネーム"
-        password1 = "pass0123"
-        password2 = "pass0123"
+            # too long
+            {"nickname": "<script>alert('hello')</script>",  "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{'a' * 31}",     "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{' ' * 31}",     "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{'a' * 1024}",   "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{'a' * 8096}",   "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+        ]
 
-        self._signup(new_email,
-                     invalid_nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message("The nickname can only contain ASCII characters")
-        self._assert_current_url(self.signup_url)
+        print(f"[Testing] invalid nickname")
+        for invalid_data in invalid_nicknames_and_expected_messages:
+            invalid_nickname = invalid_data["nickname"]
+            expected_message = invalid_data["message"]
+            # print(f" nickname: [{invalid_nickname}]")
+
+            email = f"{self._generate_random_string()}@example.com"
+            password1 = "pass0123"
+            password2 = "pass0123"
+
+            self._signup(email,
+                         invalid_nickname,
+                         password1,
+                         password2,
+                         wait_for_button_invisible=False)
+            self._assert_message(expected_message)
+            self._assert_current_url(self.signup_url)
 
     def test_signup_invalid_password(self):
         """
