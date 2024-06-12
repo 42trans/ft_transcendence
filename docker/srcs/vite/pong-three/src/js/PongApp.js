@@ -13,6 +13,9 @@ import RendererManager from './manager/RendererManager'
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
 
+const DEBUG_FLOW = 1;
+const DEBUG_DETAIL = 1;
+
 /**
  * -コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
  * setupScenes: オーバーレイするシーンの数だけインスタンスを作成してください。
@@ -24,7 +27,12 @@ class PongApp
 		this.env = env;
 		this.init();
 		this.boundInit = this.init.bind(this);
-		window.addEventListener('switchPageResetState', this.boundInit);
+		window.removeEventListener('switchPageResetState', this.boundInit);
+		window.addEventListener('switchPageResetState', () => {
+			if (DEBUG_DETAIL){	console.log('addEventListener(switchPageResetState): boundInit');	}
+			if (DEBUG_DETAIL){	console.log('boundInit: this:', this);	}
+		});
+		// window.addEventListener('switchPageResetState', this.boundInit);
 	}
 
 	async loadRouteTable() {
@@ -49,18 +57,19 @@ class PongApp
 	 */
 	async init() 
 	{
+					if(DEBUG_FLOW){	console.log('init(): statr');	}
+
 		const matchDataElement = document.getElementById('match-data');
-		if (matchDataElement) {
+		if (matchDataElement) 
+		{
 			this.matchData = JSON.parse(matchDataElement.textContent);
-			console.log('Match Data:', this.matchData);
+						if(DEBUG_FLOW){	console.log('Match Data:', this.matchData);	}
 		}
 
 		this.routeTable = await this.loadRouteTable();
-
 		// ゲームが終了状態の場合リダイレクト
 		if (this.matchData && this.matchData.is_finished) {
 			window.location.href = this.routeTable['top'].path;
-			// window.location.href = 'https://localhost/app/game/tournament/';
 			// リダイレクト後の処理を停止
 			return;
 		}
@@ -95,6 +104,37 @@ class PongApp
 		}
 	}
 
+	destroy() {
+		this.stopRenderLoop();
+
+		// 各マネージャーのリソースを破棄
+		this.allScenesManager.dispose();
+		this.renderer.dispose();
+		this.animationMixersManager.dispose(); // AnimationMixersManager に dispose メソッドを追加
+
+		// イベントリスナーを削除
+		window.removeEventListener('resize', this.allScenesManager.handleResize);
+
+		// lil-gui を破棄
+		if (this.gui) {
+			this.gui.destroy();
+			this.gui = null; // 参照を削除
+		}
+
+		// その他のリソース解放 (WebSocket など)
+		// ここに、WebSocket 接続を閉じる処理などを追加
+
+		// インスタンス変数をクリア (任意)
+		this.env = null;
+		this.matchData = null;
+		this.routeTable = null;
+		this.renderer = null;
+		this.animationMixersManager = null;
+		this.allScenesManager = null;
+		this.gameStateManager = null;
+		this.renderLoop = null;
+	}
+	
 	static main(env)
 	{
 		new PongApp(env);
@@ -113,11 +153,11 @@ class PongApp
 
 // errorが出るし、ページ遷移の問題は違う箇所で解消したのでコメントアウト
 // Three.jsのアニメーションループを制御するためのグローバルな関数を定義
-window.controlThreeAnimation = {
-	stopAnimation: function() {
-		PongApp.getInstance().stopRenderLoop();
-	},
-};
+// window.controlThreeAnimation = {
+// 	stopAnimation: function() {
+// 		PongApp.getInstance().stopRenderLoop();
+// 	},
+// };
 
 
 export default PongApp;
