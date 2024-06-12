@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
+const DEBUG_FLOW = 0;
+const DEBUG_DETAIL = 0;
+
 /**
  * 試合のスコア管理と試合結果のチェックを担当。スコアの更新と試合の終了条件を評価する。
  * - 参考:【FontLoader – three.js docs】 <https://threejs.org/docs/#examples/en/loaders/FontLoader>
@@ -21,8 +24,6 @@ class PongEngineMatch
 		this.env		= pongEngine.env; 
 		this.ball		= data.objects.ball;
 
-		// console.log('match constructor', this.matchData.id);
-
 		this.fontSize	= 40;
 		this.depth		= 10;
 		this.textMaterial = new THREE.MeshBasicMaterial(
@@ -31,7 +32,8 @@ class PongEngineMatch
 			transparent: true,
 			opacity: 0.7,
 		});
-		this.rotationZ = Math.PI; // 180度回転
+		// 180度回転
+		this.rotationZ = Math.PI; 
 		this.pos = new THREE.Vector3(0, -90, -7);
 		
 		if (import.meta.env.MODE === 'development') {
@@ -49,14 +51,13 @@ class PongEngineMatch
 			// フォントが正常にロードされた後に実行の処理
 			( font ) => 
 				{
-					// console.log('Font loaded successfully', font);
 					this.font = font;
 					this.createScoreText();
 				},
 			// ロードされたデータの量と全体のデータ量を取得し、ロードの進行状況をパーセンテージでコンソールに出力
 			(xhr) => 
 				{
-					console.log((xhr.loaded / xhr.total * 100) + '% font loaded');
+								if (DEBUG_DETAIL) {	console.log((xhr.loaded / xhr.total * 100) + '% font loaded');	}
 				},
 			(err) => 
 				{
@@ -115,7 +116,7 @@ class PongEngineMatch
 		{
 			this.score2++;
 		}
-		// console.log(`score: ${this.score2} - ${this.score1}`);
+					if (DEBUG_FLOW) {	console.log(`score: ${this.score2} - ${this.score1}`);	};
 		this.updateScoreText();
 		await this.checkMatchEnd();
 	}
@@ -131,7 +132,7 @@ class PongEngineMatch
 
 	async endGame() 
 	{
-		console.log('Game end');
+					if (DEBUG_FLOW) {	console.log('Game end');	};
 		this.pongEngine.isRunning = false;
 		
 		if (this.matchData){
@@ -169,7 +170,7 @@ class PongEngineMatch
 					switchPage(redirectTo);
 				});
 			} else {
-				console.error('End Game button not found');
+				console.error('hth: End Game button not found');
 			}
 		} catch (error){
 			console.error('hth: updateEndGameBtn() failed: ', error);
@@ -198,8 +199,6 @@ class PongEngineMatch
 			player1_score: this.score1,
 			player2_score: this.score2,
 		};
-
-		// console.log('three window.isDevServer', window.isDevServer);
 		
 		// viteが開発環境ならば、this.env == 'dev'
 		// Djangoがdev server(:8002)ならば、window.isDevServer == true
@@ -222,7 +221,12 @@ class PongEngineMatch
 					}
 					return response.json();
 				})
-		.then(data => console.log('The Results have been saved to the DB: match.id:', this.matchData.id, data))
+		.then(data => 
+			{
+							if (DEBUG_DETAIL){
+								console.log('The Results have been saved to the DB: match.id:', this.matchData.id, data);
+							}
+			})
 		.catch((error) => console.error('Error:', error));
 	}
 

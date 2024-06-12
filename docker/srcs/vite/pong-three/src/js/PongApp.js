@@ -1,3 +1,5 @@
+// docker/srcs/vite/pong-three/src/js/PongApp.js
+
 /**
  * @file 
  * メインのクラス。システム全体の初期設定と、ゲームのメインループを担当
@@ -29,7 +31,8 @@ class PongApp
 		// window.addEventListener('switchPageResetState', this.boundInit);
 	}
 
-	async loadRouteTable() {
+	async loadRouteTable() 
+	{
 		if (import.meta.env.MODE === 'development') {
 			// 開発環境用のパス
 			const devUrl = new URL('../static/spa/js/routing/routeTable.js', import.meta.url);
@@ -52,18 +55,19 @@ class PongApp
 	async init() 
 	{
 		const matchDataElement = document.getElementById('match-data');
-		if (matchDataElement) {
+		if (matchDataElement) 
+		{
 			this.matchData = JSON.parse(matchDataElement.textContent);
-			console.log('Match Data:', this.matchData);
+			
+						if (DEBUG_DETAIL) {	console.log('Match Data:', this.matchData);	}
 		}
 
 		this.routeTable = await this.loadRouteTable();
 
 		// ゲームが終了状態の場合リダイレクト
-		if (this.matchData && this.matchData.is_finished) {
+		if (this.matchData && this.matchData.is_finished) 
+		{
 			window.location.href = this.routeTable['top'].path;
-			// window.location.href = 'https://localhost/app/game/tournament/';
-			// リダイレクト後の処理を停止
 			return;
 		}
 
@@ -90,15 +94,17 @@ class PongApp
 		window.addEventListener('resize', this.allScenesManager.handleResize.bind(this.allScenesManager), false);
 	}
 	
-	stopRenderLoop() {
+	stopRenderLoop() 
+	{
 		if (this.renderLoop) {
 			this.renderLoop.stop();
 			this.renderLoop = null;
 		}
 	}
 
-
-	destroy() {
+	// spa/js/views/AbstractView.jsの dispose から呼び出される
+	destroy() 
+	{
 					if (DEBUG_DETAIL) {	console.log('destroy()');	}
 		this.stopRenderLoop();
 
@@ -109,7 +115,6 @@ class PongApp
 
 		// イベントリスナーを削除
 		window.removeEventListener('resize', this.boundHandleResize);
-		// window.removeEventListener('resize', this.allScenesManager.handleResize);
 
 		// lil-gui を破棄
 		if (this.gui) {
@@ -135,8 +140,9 @@ class PongApp
 			window.pongApp.dispose();
 		}
 		window.pongApp = new PongApp(env);
-		// new PongApp(env);
 	}
+
+	
 				setupDevEnv()
 				{
 					this.gui = new lil.GUI();
@@ -147,6 +153,8 @@ class PongApp
 					);
 					contorolsGUI.setupControlsGUI();
 				}
+
+
 }
 
 // errorが出るし、ページ遷移の問題は違う箇所で解消したのでコメントアウト
