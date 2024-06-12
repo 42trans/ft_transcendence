@@ -23,8 +23,8 @@ class PongApp
 	{
 		this.env = env;
 		this.init();
-		this.boundInit = this.init.bind(this);
-		window.addEventListener('switchPageResetState', this.boundInit);
+		// this.boundInit = this.init.bind(this);
+		// window.addEventListener('switchPageResetState', this.boundInit);
 	}
 
 	async loadRouteTable() {
@@ -96,6 +96,36 @@ class PongApp
 		}
 	}
 
+
+	destroy() {
+		this.stopRenderLoop();
+
+		this.allScenesManager.dispose();
+		// THREE.WebGLRendererのメソッド
+		this.renderer.dispose();
+		this.animationMixersManager.dispose();
+
+		// イベントリスナーを削除
+		window.removeEventListener('resize', this.boundHandleResize);
+		// window.removeEventListener('resize', this.allScenesManager.handleResize);
+
+		// lil-gui を破棄
+		if (this.gui) {
+			this.gui.destroy();
+			this.gui = null; // 参照を削除
+		}
+
+		this.env = null;
+		this.matchData = null;
+		this.routeTable = null;
+		this.renderer = null;
+		this.animationMixersManager = null;
+		this.allScenesManager = null;
+		this.gameStateManager = null;
+		this.renderLoop = null;
+	}
+	
+
 	static main(env)
 	{
 		if (window.pongApp) {
@@ -118,11 +148,11 @@ class PongApp
 
 // errorが出るし、ページ遷移の問題は違う箇所で解消したのでコメントアウト
 // Three.jsのアニメーションループを制御するためのグローバルな関数を定義
-window.controlThreeAnimation = {
-	stopAnimation: function() {
-		PongApp.getInstance().stopRenderLoop();
-	},
-};
+// window.controlThreeAnimation = {
+// 	stopAnimation: function() {
+// 		PongApp.getInstance().stopRenderLoop();
+// 	},
+// };
 
 
 export default PongApp;

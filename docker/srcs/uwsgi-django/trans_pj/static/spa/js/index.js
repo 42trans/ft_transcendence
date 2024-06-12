@@ -12,13 +12,13 @@ function isRenderByThreeJsPage(path) {
 }
 
 // three-jsのレンダリングを停止
-const stopGamePageAnimation = () => {
-  if (isRenderByThreeJsPage(window.location.pathname)
-      && window.controlThreeAnimation
-      && typeof window.controlThreeAnimation.stopAnimation === "function") {
-    window.controlThreeAnimation.stopAnimation();
-  }
-};
+// const stopGamePageAnimation = () => {
+//   if (isRenderByThreeJsPage(window.location.pathname)
+//       && window.controlThreeAnimation
+//       && typeof window.controlThreeAnimation.stopAnimation === "function") {
+//     window.controlThreeAnimation.stopAnimation();
+//   }
+// };
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
@@ -26,7 +26,7 @@ const setupPopStateListener = () => {
 
   window.addEventListener("popstate", (event) => {
     const path = window.location.pathname;
-    stopGamePageAnimation()
+    // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     renderView(path);
     setOnlineStatus();  // WebSocket接続を再確立
@@ -38,7 +38,7 @@ const setupPopStateListener = () => {
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", () => {
     console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
-    stopGamePageAnimation()
+    // stopGamePageAnimation()
 
     // 初期ビューを表示
     const pathName = window.location.pathname;
@@ -94,7 +94,7 @@ async function getLoggedInUserRedirectUrl(url) {
 const setupBodyClickListener = () => {
   document.body.addEventListener("click", async (event) => {
   console.log('clickEvent: path: ' + window.location.pathname);
-  stopGamePageAnimation()
+  // stopGamePageAnimation()
   setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
 
     const linkElement = event.target.closest("[data-link]");
@@ -124,7 +124,7 @@ const setupLoadListener = () => {
   window.addEventListener("load", () => {
     console.log('loadEvent: path: ' + window.location.pathname);
 
-    stopGamePageAnimation()
+    // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     setOnlineStatus();  // WebSocket接続を再確立
   });
