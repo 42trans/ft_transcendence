@@ -176,9 +176,9 @@ class TestConfig(LiveServerTestCase):
         elem = self._element(by, value)
         self.assertTrue(elem.is_displayed())
 
-    def _assert_message(self, expected_message):
-        message_area = self._element(By.ID, "message-area")
-        self._wait_display_message(expected_message)
+    def _assert_message(self, expected_message, value="message-area"):
+        message_area = self._element(By.ID, value)
+        self._wait_display_message(expected_message, value)
         self.assertEqual(message_area.text, expected_message)
 
     def _assert_is_2fa_enabled(self, expected_2fa_enabled: bool):
@@ -212,10 +212,10 @@ class TestConfig(LiveServerTestCase):
             EC.url_to_be(url)
         )
 
-    def _wait_display_message(self, expected_message):
+    def _wait_display_message(self, expected_message, value):
         WebDriverWait(driver=self.driver, timeout=10).until(
             EC.text_to_be_present_in_element(
-                locator=(By.ID, "message-area"),
+                locator=(By.ID, value),
                 text_=expected_message
             )
         )
@@ -320,6 +320,12 @@ class TestConfig(LiveServerTestCase):
         self._click_link(friend_page_link, wait_for_link_invisible=False)
         self._assert_page_url_and_title(expecter_url=self.dm_url,
                                         expected_title='DMSessions')
+
+    def _move_top_to_tournament(self):
+        tournament_page_link = self._text_link("Tournament")
+        self._click_link(tournament_page_link, wait_for_link_invisible=False)
+        self._assert_page_url_and_title(expecter_url=self.tournament_url,
+                                        expected_title='Tournament')
 
     def _login(self, email, password, wait_for_button_invisible=True):
         self._move_top_to_login()
