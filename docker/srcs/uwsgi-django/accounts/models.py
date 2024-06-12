@@ -4,6 +4,7 @@ import logging
 from typing import List, Dict, Any
 
 from django.db import models
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.password_validation import validate_password
@@ -32,6 +33,10 @@ class UserManager(BaseUserManager):
         """
         Create and save a user with the given email, password, and nickname.
         """
+        # ユーザー数の上限チェック
+        if settings.MAX_USER_COUNT <= CustomUser.objects.count():
+            raise ValueError("User registration limit exceeded.")
+
         email = self.normalize_email(email)
         nickname = extra_fields.get("nickname")
         ok, err = self._is_valid_user_field(email, nickname, password)
