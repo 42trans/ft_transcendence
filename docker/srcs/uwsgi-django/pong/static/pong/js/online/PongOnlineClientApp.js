@@ -23,22 +23,18 @@ class PongOnlineClientApp
 				if (DEBUG_FLOW){	console.log('PongOnlineClientApp constructor begin');	}
 		this.socket = null;
 		this.init();
-		// window.addEventListener('switchPageResetState', this.init.bind(this));
 		this.boundInit = this.init.bind(this);
  		window.addEventListener('switchPageResetState', this.boundInit);
-
 	}
 	
 	init()
 	{
 		try {
-			// window.removeEventListener('switchPageResetState', this.boundInit);
 
 			if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 				console.log('init(): this.socket.close()');
 				this.socket.close();
 				this.socket = null;
-
 			};
 			this.initWebSocket();
 			this.initStartButton();
@@ -65,7 +61,6 @@ class PongOnlineClientApp
 
 			this.startGameButton = document.getElementById('hth-pong-online-start-game-btn');
 			if (!this.startGameButton) {
-				// throw new Error('Start Game button not found');
 				return;
 			}
 			this.startGameButton.style.display = 'block' 
