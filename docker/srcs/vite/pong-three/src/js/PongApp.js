@@ -72,7 +72,6 @@ class PongApp
 		// 複数のSceneを一元的に管理。シングルトン
 		this.allScenesManager = AllScenesManager.getInstance(this.animationMixersManager);
 		// 3D空間（カメラ、照明、オブジェクト）を担当
-		// TODO_ft:開幕はモデルを読み込まないようにしたい。もう少し遅延できないものか。要設計
 		await this.allScenesManager.setupScenes();
 		// ゲームの状態（待機、Play、終了）を担当。シングルトン
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
