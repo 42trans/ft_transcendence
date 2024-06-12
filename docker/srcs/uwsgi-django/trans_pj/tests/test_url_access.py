@@ -80,6 +80,9 @@ class UrlAccessTest(TestConfig):
             time.sleep(0.5)  # 明示的に待機
             # self._screenshot(f"guest_{page_name} 1")
 
+            if page_name == TournamentPage:
+                self._close_alert("Your session has expired. Please log in again.")
+
             print(f"           access_url   : {url}")
             print(f"           current_url  : {self.driver.current_url}")
             self._assert_current_url(url)
@@ -106,6 +109,7 @@ class UrlAccessTest(TestConfig):
             else:
                 self._is_not_login_page()  # login pageでないことを確認
 
+    # todo: Actionsで2FA loginが不安定のためコメントアウト
     # def test_access_by_guest_to_2fa_on_user(self):
     #     """
     #     ゲストでのアクセス -> 2FA off userでlogin
@@ -321,7 +325,7 @@ class UrlAccessTest(TestConfig):
             self.fail(f"Expected: NOT top page: {page_name}")
 
     def _is_expected_page(self, page_name, timeout=10, retries=5, verbose=True):
-        self.driver.refresh()
+        # self.driver.refresh()  # tournamentのalertが再popするため使用しない
         try:
             if page_name == PongTopPage:
                 """
