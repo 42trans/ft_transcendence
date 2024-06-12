@@ -3,12 +3,15 @@
 import { deleteFriend, createActionButton } from "./friend.js"
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 
+const DEBUG_FLOW = 0;
 
 let socket = null;
 
 
 export function connectOnlineStatusWebSocket(userId) {
-    console.log('Connecting WebSocket: userId: ' + userId);
+    if (DEBUG_FLOW){
+        console.log('Connecting WebSocket: userId: ' + userId);
+    }
 
     if (socket && socket.readyState === WebSocket.OPEN) {
         console.log('WebSocket already connected');
@@ -29,7 +32,9 @@ export function connectOnlineStatusWebSocket(userId) {
 
 
 export function disconnectOnlineStatusWebSocket(userId) {
-    console.log('Disconnecting WebSocket: userId: ' + userId);
+    if (DEBUG_FLOW){
+        console.log('Disconnecting WebSocket: userId: ' + userId);
+    }
     if (socket) {
         console.log(' socket exist -> disconnect');
         sendStatusUpdate(socket, false, userId);
