@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/manager/RendererManager.js
 import * as THREE from 'three';
 import RendererConfig from '../config/RendererConfig'
 

@@ -1,4 +1,4 @@
-// docker/srcs/webpack2/ft_trans/src/index.js
+// docker/srcs/vite/pong-three/src/index.js
 
 /**
  * @file エントリーポイント
@@ -31,6 +31,24 @@
 
 import PongApp from './js/PongApp'
 import './css/3d.css';
+
+let pongApp = null;
+
+// envは'dev'か空''のどちらか
+PongApp.main = (env) => {
+	if (pongApp) {
+		// 既存のインスタンスを破棄
+		pongApp.destroy(); 
+		pongApp = null;
+	}
+	// 新しいインスタンスを作成
+	pongApp = new PongApp(env); 
+};
+
+// イベント発生時に PongApp.main を呼び出す
+window.addEventListener('switchPageResetState', () => {
+	PongApp.main(); 
+});
 
 // 'dev'= コントローラーGUI表示 
 // PongApp.main('dev');

@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/manager/LoopManager.js
 import RendererManager from "./RendererManager";
 
 /**
@@ -39,12 +40,14 @@ class RenderLoop
 	{
 		const animate = () => 
 		{
-			// console.log('requestAnimationFrame');
-			this.requestID = requestAnimationFrame(animate);
-			this.pong.gameStateManager.update();
-			this.pong.allScenesManager.updateAllScenes();
-			this.pong.animationMixersManager.update(); 
-			this.pong.allScenesManager.renderAllScenes(RendererManager.getRenderer())
+			if (this.pong && this.pong.gameStateManager) 
+			{
+				this.requestID = requestAnimationFrame(animate);
+				this.pong.gameStateManager.update();
+				this.pong.allScenesManager.updateAllScenes();
+				this.pong.animationMixersManager.update(); 
+				this.pong.allScenesManager.renderAllScenes(RendererManager.getRenderer())
+			}
 		};
 		animate();
 	}

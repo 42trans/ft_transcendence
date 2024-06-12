@@ -1,6 +1,6 @@
+// docker/srcs/vite/pong-three/src/js/manager/GameStateManager.js
 import GamePlayState from '../state/GamePlayState'
 import EntryGameState from '../state/EntryGameState'
-import RendererManager from './RendererManager';
 
 /**
  * - シングルトン

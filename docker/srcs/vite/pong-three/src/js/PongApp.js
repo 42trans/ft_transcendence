@@ -33,6 +33,8 @@ class PongApp
 		// 	if (DEBUG_DETAIL){	console.log('boundInit: this:', this);	}
 		// });
 		// window.addEventListener('switchPageResetState', this.boundInit);
+		// window.addEventListener('resize', this.allScenesManager.handleResize.bind(this.allScenesManager), false);
+
 	}
 
 	async loadRouteTable() {
@@ -57,7 +59,7 @@ class PongApp
 	 */
 	async init() 
 	{
-					if(DEBUG_FLOW){	console.log('init(): statr');	}
+					if(DEBUG_FLOW){	console.log('init(): start');	}
 
 		const matchDataElement = document.getElementById('match-data');
 		if (matchDataElement) 
@@ -94,7 +96,9 @@ class PongApp
 						this.setupDevEnv();
 					} 
 		
-		window.addEventListener('resize', this.allScenesManager.handleResize.bind(this.allScenesManager), false);
+		this.boundHandleResize = this.allScenesManager.handleResize.bind(this.allScenesManager);
+		window.addEventListener('resize', this.boundHandleResize);
+			
 	}
 	
 	stopRenderLoop() {
@@ -113,7 +117,8 @@ class PongApp
 		this.animationMixersManager.dispose();
 
 		// イベントリスナーを削除
-		window.removeEventListener('resize', this.allScenesManager.handleResize);
+		window.removeEventListener('resize', this.boundHandleResize);
+		// window.removeEventListener('resize', this.allScenesManager.handleResize);
 
 		// lil-gui を破棄
 		if (this.gui) {
