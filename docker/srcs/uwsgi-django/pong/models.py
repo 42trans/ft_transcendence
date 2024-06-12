@@ -26,14 +26,13 @@ class Tournament(models.Model):
 	def clean(self):
 		# トーナメント名が空でないことを確認
 		if not self.__is_valid_tournament_name():
-			raise ValidationError('Invalid tournament name: non-empty alnum name required.')
+			raise ValidationError({'tournament_name': 'non-empty alnum name required.'})
 
 		if not self.__is_valid_date():
-			raise ValidationError('Invalid data: ISO 8601 format required.')
+			raise ValidationError({'date': 'ISO 8601 format required.'})
 
 		if not self.__is_valid_player_nicknames():
-			raise ValidationError('Invalid player nicknames: '
-								  '8 unique, non-empty alnum nicknames required.')
+			raise ValidationError({'player_nicknames': '8 unique, non-empty alnum nicknames required.'})
 
 	def __is_valid_tournament_name(self) -> bool:
 		return (self.name is not None

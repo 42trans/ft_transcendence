@@ -215,8 +215,14 @@ def create_new_tournament_and_matches(request) -> JsonResponse:
 		return JsonResponse({'status': 'success', 'tournament_id': tournament.id, 'matches': match_data})
 
 	except ValidationError as e:
-		logger.error(f'create_new_tournament: ValidationError: {str(e)}')
-		return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+		logger.error(f'create_new_tournament: ValidationError: {e.message_dict}')
+		if e.message_dict:
+			field = list(e.message_dict.keys())[0]
+			error = e.message_dict[field][0]
+			error_message = f'Invalid {field}: {error}'
+		else:
+			error_message = 'An error occurred'
+		return JsonResponse({'status': 'error', 'message': error_message}, status=400)
 	except Exception as e:
 		logger.error(f'create_new_tournament: Exception: {str(e)}')
 		return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
