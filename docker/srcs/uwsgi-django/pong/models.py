@@ -9,6 +9,7 @@ from accounts.models import CustomUser
 
 
 class Tournament(models.Model):
+	kTORNAMENT_NAME_MIN_LEN = 3
 	kTORNAMENT_NAME_MAX_LEN = 30
 
 	name = models.CharField(max_length=kTORNAMENT_NAME_MAX_LEN)
@@ -36,7 +37,7 @@ class Tournament(models.Model):
 
 	def __is_valid_tournament_name(self) -> bool:
 		return (self.name is not None
-				and 0 < len(self.name)
+				and self.kTORNAMENT_NAME_MIN_LEN < len(self.name)
 				and self.__is_valid_name(self.name))
 
 	def __is_valid_date(self) -> bool:
