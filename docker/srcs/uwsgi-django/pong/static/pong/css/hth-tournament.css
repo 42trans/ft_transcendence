@@ -2,3 +2,8 @@
 	text-shadow: none;
 }
 
+#tournament-form {
+	background: rgba(var(--transparent-bg-color), 0.8); 
+	padding: 1rem;
+	border-radius: 10px; 
+}

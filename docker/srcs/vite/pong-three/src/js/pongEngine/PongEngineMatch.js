@@ -77,7 +77,6 @@ class PongEngineMatch
 	updateScoreText() 
 	{
 		// スコア表示領域の中心のxの値を取りたいので一つの文字列として扱う
-		// TODO_ft:等幅フォントを用いも表示は崩れるので、別の方法も検討すべき
 		const scoreText = `${this.score2}       ${this.score1}`;
 		const textGeometry = new TextGeometry(scoreText, 
 		{
