@@ -9,8 +9,9 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
  */
 class PongEngineMatch 
 {
-	constructor(pongEngine, scene, data) 
+	constructor(pongApp, pongEngine, scene, data) 
 	{
+		this.pongApp	= pongApp;
 		this.pongEngine	= pongEngine;
 		this.scene		= scene;
 		this.score1		= data.state.score1;
@@ -104,7 +105,7 @@ class PongEngineMatch
 		this.scene.add(this.scoreMesh);
 	}
 
-	updateScore(scorer) 
+	async updateScore(scorer) 
 	{
 		if (scorer === 1) 
 		{
@@ -116,19 +117,19 @@ class PongEngineMatch
 		}
 		// console.log(`score: ${this.score2} - ${this.score1}`);
 		this.updateScoreText();
-		this.checkMatchEnd();
+		await this.checkMatchEnd();
 	}
 
-	checkMatchEnd() 
+	async checkMatchEnd() 
 	{
 		if (this.score1 >= this.maxScore || this.score2 >= this.maxScore) 
 		{
 			this.ball.position.set(0, 0, 0); 
-			this.endGame();
+			await this.endGame();
 		}
 	}
 
-	endGame() 
+	async endGame() 
 	{
 		console.log('Game end');
 		this.pongEngine.isRunning = false;
@@ -136,19 +137,35 @@ class PongEngineMatch
 		if (this.matchData){
 			this.sendMatchResult();
 		}
-		this.displayEndGameButton();
+		await this.displayEndGameButton();
 	}
 
+	async loadSwitchPage() {
+		if (import.meta.env.MODE === 'development') {
+			// 開発環境用のパス
+			const devUrl = new URL('../../static/spa/js/routing/renderView.js', import.meta.url);
+			const module = await import(devUrl.href);
+			return module.switchPage;
+		} else {
+			// 本番環境用のパス
+			const prodUrl = new URL('../../../spa/js/routing/renderView.js', import.meta.url);
+			const module = await import(prodUrl.href);
+			return module.switchPage;
+		}
+	}
 
 	// ゲーム終了時に Back to Home ボタンリンクを表示する	
-	displayEndGameButton() 
+	async displayEndGameButton() 
 	{
 		try {
 			const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
-			if (endGameButton) {
+			if (endGameButton) 
+			{
 				endGameButton.style.display = 'block';
-				endGameButton.addEventListener('click', () => {
-					const redirectTo = routeTable['top'].path;
+				const switchPage = await this.loadSwitchPage();
+				endGameButton.addEventListener('click', () => 
+				{
+					const redirectTo = this.pongApp.routeTable['top'].path;
 					switchPage(redirectTo);
 				});
 			} else {

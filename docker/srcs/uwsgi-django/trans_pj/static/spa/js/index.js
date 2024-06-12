@@ -7,9 +7,9 @@ import { setOnlineStatus } from "/static/accounts/js/online-status.js";
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
 
-function isRenderByThreeJsPage(path) {
-  return (window.location.pathname === routeTable['game3d'].path)
-}
+// function isRenderByThreeJsPage(path) {
+//   return (window.location.pathname === routeTable['game3d'].path)
+// }
 
 // three-jsのレンダリングを停止
 // const stopGamePageAnimation = () => {
@@ -52,10 +52,10 @@ const setupDOMContentLoadedListener = () => {
     setOnlineStatus();  // WebSocket接続を再確立
 
     // three-jsのEndGameボタン押下でSPA遷移するためのイベント
-    document.addEventListener('endGame', function() {
-      console.log('endGame event');
-      switchPage(routeTable['tournament'].path);
-    });
+    // document.addEventListener('endGame', function() {
+    //   console.log('endGame event');
+    //   switchPage(routeTable['tournament'].path);
+    // });
   });
 };
 
