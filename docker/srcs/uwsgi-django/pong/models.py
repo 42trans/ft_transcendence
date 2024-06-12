@@ -11,6 +11,7 @@ from accounts.models import CustomUser, UserManager
 class Tournament(models.Model):
 	kTORNAMENT_NAME_MIN_LEN = 3
 	kTORNAMENT_NAME_MAX_LEN = 30
+	kMAX_TORNAMENT_COUNT = 10000
 
 	name = models.CharField(max_length=kTORNAMENT_NAME_MAX_LEN)
 	# settings.py で USE_TZ=True が設定されている。保存はUTC
@@ -25,6 +26,9 @@ class Tournament(models.Model):
 		return self.name
 
 	def clean(self):
+		if self.kMAX_TORNAMENT_COUNT <= Tournament.objects.count():
+			raise ValueError("Tournament registration limit exceeded.")
+
 		# トーナメント名が空でないことを確認
 		if not self.__is_valid_tournament_name():
 			raise ValidationError({'tournament_name': 'non-empty alnum 3-30 length name required.'})
