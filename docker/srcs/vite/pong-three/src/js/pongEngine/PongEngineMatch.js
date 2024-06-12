@@ -140,26 +140,39 @@ class PongEngineMatch
 		this.displayEndGameButton();
 	}
 
+
+	// ゲーム終了時に Back to Home ボタンリンクを表示する	
 	displayEndGameButton() 
 	{
-		// buttonタグを追加
-		const button = document.createElement('button');
-		button.textContent = 'End Game';
-		button.className = 'game-button';
-
-		// SPAとして'/app/'に遷移するため、endGameイベントをdjango側で補足する
-		const endGameEvent = new CustomEvent('endGame');
-
-		// ボタンをページに追加
-		document.body.appendChild(button);
-
-		button.onclick = function() {
-			// endGameEventをdjangoで補足し、SPA遷移する
-			document.dispatchEvent(endGameEvent);
-			// ボタンをページから削除
-			document.body.removeChild(button);
-		};
+		try {
+			const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
+			if (endGameButton) {
+				endGameButton.style.display = 'block';
+				endGameButton.addEventListener('click', () => {
+					const redirectTo = routeTable['top'].path;
+					switchPage(redirectTo);
+				});
+			} else {
+				console.error('End Game button not found');
+			}
+		} catch (error){
+			console.error('hth: updateEndGameBtn() failed: ', error);
+		}
 	}
+
+	// displayEndGameButton() 
+	// {
+	// 	// buttonタグを追加
+	// 	const button = document.createElement('button');
+	// 	button.textContent = 'End Game';
+	// 	button.className = 'game-button';
+	// 	button.setAttribute('data-link', '');
+	// 	button.onclick = function() {
+	// 		window.location.href = '/app/';
+	// 	};
+	// 	// ボタンをページに追加
+	// 	document.body.appendChild(button);
+	// }
 
 	sendMatchResult() 
 	{
