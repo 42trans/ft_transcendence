@@ -17,19 +17,19 @@ const getPathAndQueryString = (targetPath) => {
 };
 
 
+
+// touteTable.jsの記述について
+// game3d: { path: "/app/game/game-3d/", view: Game3D }は、/app/game/game-3d/というパスに対してGame3Dという「クラス」を対応
+let currentView = null;
+// ページ遷移が発生した場合のメソッド
 export const switchPage = (targePath) => {
-  // const currentUrl = new URL(window.location.href);
   const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
-  // console.log('path:', targetPathName);
-  // console.log('queryString:', targetQueryString);
-  // query string込みでURLをpush
   history.pushState(null, null, targetPathName + targetQueryString);
-  // 現在のビューのクリーンアップが必要な場合にのみ dispose を実行
+  // currentViewにdisposeメソッドが存在するかどうかをチェック。オペランドの型がfunctionなら関数
   if (currentView && typeof currentView.dispose === "function") {
     currentView.dispose();
   }
   renderView(targetPathName).then(() => {
-    // resetState イベントを発行
     window.dispatchEvent(new CustomEvent('switchPageResetState'));
   });
 };

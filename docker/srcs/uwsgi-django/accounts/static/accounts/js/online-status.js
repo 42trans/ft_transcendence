@@ -8,15 +8,15 @@ let socket = null;
 
 
 export function connectOnlineStatusWebSocket(userId) {
-    console.log('Connecting WebSocket: userId: ' + userId);
+    // console.log('Connecting WebSocket: userId: ' + userId);
 
     if (socket && socket.readyState === WebSocket.OPEN) {
-        console.log('WebSocket already connected');
+        // console.log('WebSocket already connected');
         return;
     }
 
     const websocketUrl = 'wss://' + window.location.host + '/ws/online/';
-    console.log(`connectOnlineStatusWebSocket websocketUrl:${websocketUrl}`);
+    // console.log(`connectOnlineStatusWebSocket websocketUrl:${websocketUrl}`);
 
     socket = new WebSocket(websocketUrl);
     socket.onmessage = handleMessage;
@@ -29,9 +29,9 @@ export function connectOnlineStatusWebSocket(userId) {
 
 
 export function disconnectOnlineStatusWebSocket(userId) {
-    console.log('Disconnecting WebSocket: userId: ' + userId);
+    // console.log('Disconnecting WebSocket: userId: ' + userId);
     if (socket) {
-        console.log(' socket exist -> disconnect');
+        // console.log(' socket exist -> disconnect');
         sendStatusUpdate(socket, false, userId);
         socket.close();
         socket = null;
@@ -45,7 +45,7 @@ function handleMessage(event) {
 
 
 async function handleOpen(socket, userId) {
-    console.log('WebSocket connection established');
+    // console.log('WebSocket connection established');
     socket.userId = userId;
     await sendStatusUpdate(socket, true, userId);
 }
@@ -83,7 +83,7 @@ function updateFriendStatus(event) {
     const userId = data.user_id;
     const status = data.status;
 
-    console.log(`Received status update: userId=${userId}, status=${status}`);
+    // console.log(`Received status update: userId=${userId}, status=${status}`);
 
     // 変更があったフレンドのみ更新
     var statusElement = document.getElementById('friend-status-' + userId);
@@ -165,31 +165,31 @@ export function fetchUserId() {
     return fetch("/accounts/api/user/profile/")
         .then(response => {
             if (!response.ok) {
-                console.log('GuestUser? UserID not found');
+                // console.log('GuestUser? UserID not found');
                 return null;
             }
             return response.json();
         })
         .then(data => {
             if (!data.id) {
-                console.log('GuestUser? UserID not found');
+                // console.log('GuestUser? UserID not found');
                 return null;
             }
             return data.id;
         })
         .catch(error => {
-            console.log('Error:', error);
+            // console.log('Error:', error);
             return null;
         });
 }
 
 
 export function setOnlineStatus() {
-    console.log('setOnlineStatus called');
+    // console.log('setOnlineStatus called');
 
     fetchUserId().then(userId => {
         if (!userId) {
-            console.log('GuestUser? UserID not found');
+            // console.log('GuestUser? UserID not found');
             return;
         }
 

@@ -13,6 +13,8 @@ import RendererManager from './manager/RendererManager'
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
 
+const DEBUG_DETAIL = 1;
+
 /**
  * -コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
  * setupScenes: オーバーレイするシーンの数だけインスタンスを作成してください。
@@ -98,6 +100,7 @@ class PongApp
 
 
 	destroy() {
+					if (DEBUG_DETAIL) {	console.log('destroy()');	}
 		this.stopRenderLoop();
 
 		this.allScenesManager.dispose();
@@ -129,6 +132,7 @@ class PongApp
 	static main(env)
 	{
 		if (window.pongApp) {
+			// ブラウザのグローバルスコープ（windowオブジェクト）にpongAppというプロパティを追加
 			window.pongApp.dispose();
 		}
 		window.pongApp = new PongApp(env);

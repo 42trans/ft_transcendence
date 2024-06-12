@@ -1,4 +1,4 @@
-// Game1vs1.js
+// Game3D.js
 
 import AbstractView from "../AbstractView.js";
 import fetchData from "../../utility/fetch.js";
@@ -23,4 +23,11 @@ export default class extends AbstractView {
     loadAndExecuteScript("/static/pong/three/assets/index.js", true);
   }
 
+  dispose() {
+    // Three.jsのインスタンスを破棄
+    if (window.pongApp) {
+      window.pongApp.dispose();
+      window.pongApp = null;
+    }
+  }
 }

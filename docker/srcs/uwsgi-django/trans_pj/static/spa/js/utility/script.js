@@ -13,7 +13,7 @@ function getScriptElement(path, isModule) {
 function loadScript(scriptElement) {
   return new Promise((resolve, reject) => {
     scriptElement.onload = () => {
-      console.log(`Script loaded successfully: ${scriptElement.src}`);
+      // console.log(`Script loaded successfully: ${scriptElement.src}`);
       resolve();
     };
     scriptElement.onerror = () => {
@@ -31,7 +31,7 @@ function loadScript(scriptElement) {
  * @param {boolean} [isModule=false] - スクリプトをモジュールとして読み込むかどうか
  */
 export async function loadAndExecuteScript(path, isModule = false) {
-  console.log("loadAndExecuteScript: path: " + path);
+  // console.log("loadAndExecuteScript: path: " + path);
 
   // <script src="path"></script>
   const scriptElement = getScriptElement(path, isModule)
@@ -48,12 +48,12 @@ export async function loadAndExecuteScript(path, isModule = false) {
  * @param {string} setupFunctionName - セットアップ関数の名前
  */
 export async function setupEventListeners(modulePath, setupFunctionName) {
-  console.log("setupEventListeners: modulePath: " + modulePath);
+  // console.log("setupEventListeners: modulePath: " + modulePath);
   try {
     const module = await import(modulePath);
-    console.log(`setupEventListeners: Module loaded: ${module}`);
+    // console.log(`setupEventListeners: Module loaded: ${module}`);
     if (setupFunctionName in module) {
-      console.log(`setupEventListeners: Calling setup function: ${setupFunctionName}`);
+      // console.log(`setupEventListeners: Calling setup function: ${setupFunctionName}`);
       module[setupFunctionName]();
     } else {
       console.error(`setupEventListeners: Setup function ${setupFunctionName} not found in module ${modulePath}`);
