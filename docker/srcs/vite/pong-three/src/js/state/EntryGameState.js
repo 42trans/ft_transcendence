@@ -25,8 +25,8 @@ class EntryGameState extends BaseGameState
 		this.handleButtonClick	= this.changeStateGamePlay.bind(this);
 		this.startGameButton	= null;
 
-		this.boundStartBtn = this.displayEnterGameButton.bind(this);
-		window.addEventListener('switchPageResetState', this.boundStartBtn);
+		// this.boundStartBtn = this.displayEnterGameButton.bind(this);
+		// window.addEventListener('switchPageResetState', this.boundStartBtn);
 
 		// this.bundRemoveEnterGameButton =  this.removeEnterGameButton.bind(this);
 

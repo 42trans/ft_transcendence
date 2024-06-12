@@ -104,5 +104,5 @@ export const renderView = async (path) => {
   await view.executeScript();
   // console.log("    renderView 3")
 
-  window.dispatchEvent(new CustomEvent('switchPageResetState'));
+  // window.dispatchEvent(new CustomEvent('switchPageResetState'));
 };

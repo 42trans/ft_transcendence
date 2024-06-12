@@ -6,6 +6,7 @@ import { isUserLoggedIn, isUserEnable2FA } from "./utility/isUser.js"
 import { setOnlineStatus } from "/static/accounts/js/online-status.js";
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
+const DEBUG_FLOW = 0;
 
 function isRenderByThreeJsPage(path) {
   return (window.location.pathname === routeTable['game3d'].path)
@@ -22,11 +23,13 @@ const stopGamePageAnimation = () => {
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
-  console.log('popState: path: ' + window.location.pathname);
+  if (DEBUG_FLOW){
+    console.log('popState: path: ' + window.location.pathname);
+  }
 
   window.addEventListener("popstate", (event) => {
     const path = window.location.pathname;
-    stopGamePageAnimation()
+    // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     renderView(path);
     setOnlineStatus();  // WebSocket接続を再確立
@@ -37,8 +40,10 @@ const setupPopStateListener = () => {
 // spa.htmlの読み込みと解析が完了した時点で発火
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", () => {
-    console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
-    stopGamePageAnimation()
+    if (DEBUG_FLOW){
+      console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
+    }
+    // stopGamePageAnimation()
 
     // 初期ビューを表示
     const pathName = window.location.pathname;
@@ -52,10 +57,10 @@ const setupDOMContentLoadedListener = () => {
     setOnlineStatus();  // WebSocket接続を再確立
 
     // three-jsのEndGameボタン押下でSPA遷移するためのイベント
-    document.addEventListener('endGame', function() {
-      console.log('endGame event');
-      switchPage(routeTable['tournament'].path);
-    });
+    // document.addEventListener('endGame', function() {
+    //   console.log('endGame event');
+    //   switchPage(routeTable['tournament'].path);
+    // });
   });
 };
 
@@ -93,9 +98,11 @@ async function getLoggedInUserRedirectUrl(url) {
 // リンクのクリックイベントで発火
 const setupBodyClickListener = () => {
   document.body.addEventListener("click", async (event) => {
-  console.log('clickEvent: path: ' + window.location.pathname);
-  stopGamePageAnimation()
-  setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
+    if (DEBUG_FLOW){
+      console.log('clickEvent: path: ' + window.location.pathname);
+    }
+  // stopGamePageAnimation()
+    setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
 
     const linkElement = event.target.closest("[data-link]");
     if (linkElement) {
@@ -122,9 +129,11 @@ const setupBodyClickListener = () => {
 // ページリロード時に発火
 const setupLoadListener = () => {
   window.addEventListener("load", () => {
-    console.log('loadEvent: path: ' + window.location.pathname);
+    if (DEBUG_FLOW){
+      console.log('loadEvent: path: ' + window.location.pathname);
+    }
 
-    stopGamePageAnimation()
+    // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     setOnlineStatus();  // WebSocket接続を再確立
   });
