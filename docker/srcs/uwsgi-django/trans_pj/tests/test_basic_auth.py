@@ -220,35 +220,60 @@ class BasicAuthTest(TestConfig):
     def test_signup_invalid_password(self):
         """
         不正なpasswordでsign up失敗を検証
+         - 不正な文字列
+         - too common
+         - too short
+         - too long
         """
         self._move_top_to_signup()
 
-        # 不正なpassword
-        new_email = "new_user@example.com"
-        new_nickname = "newTestUser"
-        password1 = "pass0123"
-        password2 = "0123pass"
+        invalid_passwords_and_expected_messages = [
+            # 不正なpassword
+            {"password": "パスワード123",  "message": "The password can only contain ASCII characters"},
+            {"password": "パスワード",     "message": "The password can only contain ASCII characters"},
 
-        self._signup(new_email,
-                     new_nickname,
+            # too common
+            {"password": "password",     "message": "このパスワードは一般的すぎます。"},
+            {"password": "********",     "message": "このパスワードは一般的すぎます。"},
+
+            # too short
+            {"password": "***4567",      "message": "このパスワードは短すぎます。最低 8 文字以上必要です。"},
+            {"password": "a1",           "message": "このパスワードは短すぎます。最低 8 文字以上必要です。"},
+
+            # too long
+            {"password": f"{"pass0" + "0123456789" * 6}",   "message": f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less"},
+            {"password": f"{"pass0" + "0123456789" * 128}", "message": f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less"},
+        ]
+
+        print(f"[Testing] invalid password")
+        for invalid_data in invalid_passwords_and_expected_messages:
+            invalid_password = invalid_data["password"]
+            expected_message = invalid_data["message"]
+            print(f" passwords: [{invalid_password}]")
+
+            nickname = self._generate_random_string()
+            email = f"{nickname}@example.com"
+
+            self._signup(email,
+                         nickname,
+                         invalid_password,
+                         invalid_password,
+                         wait_for_button_invisible=False)
+            self._assert_message(expected_message)
+            self._assert_current_url(self.signup_url)
+
+        # password1,2が不一致
+        nickname = self._generate_random_string()
+        email = f"{nickname}@example.com"
+        password1 = "********"
+        password2 = "pass0123"
+
+        self._signup(email,
+                     nickname,
                      password1,
                      password2,
                      wait_for_button_invisible=False)
         self._assert_message("passwords don't match")
-        self._assert_current_url(self.signup_url)
-
-        # 不正なpassword（too long）
-        new_email = "new_user@example.com"
-        new_nickname = "newTestUser"
-        password1 = "pass0" + "0123456789" * 6
-        password2 = "pass0" + "0123456789" * 6
-
-        self._signup(new_email,
-                     new_nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message(f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less")
         self._assert_current_url(self.signup_url)
 
     def _signup(self,
