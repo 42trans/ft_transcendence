@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/manager/AllScenesManager.js
 import BackgroundSceneConfig from '../config/BackgroundSceneConfig';
 import GameSceneConfig from '../config/GameSceneConfig';
 import EffectsSceneConfig from '../config/EffectsSceneConfig';
@@ -132,6 +133,16 @@ class AllScenesManager
 		return Math.max(distanceHeight, distanceWidth, camera.near + 1);
 	}
 	
+	dispose() {
+		// 各 SceneUnit の dispose メソッドを呼び出す
+		this.sceneUnits.forEach(sceneUnit => {
+			// sceneUnit が存在し、dispose メソッドを持っているか確認
+			if (sceneUnit && sceneUnit.dispose) { 
+				sceneUnit.dispose();
+			}
+		});
+		this.sceneUnits = [];
+	}
 
 }
 

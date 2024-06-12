@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/SceneUnit.js
 
 /**
  * @file シーンのコンストラクタの実装
@@ -34,7 +35,7 @@ class SceneUnit
 
 	update() 
 	{
-		// 例えば、シーン内のすべての子オブジェクトに対して update メソッドがあれば呼び出す
+		// シーン内のすべての子オブジェクトに対して update メソッドがあれば呼び出す
 		this.scene.traverse((object) => 
 		{
 			if (object.update instanceof Function) 
@@ -48,6 +49,10 @@ class SceneUnit
 		}
 	}
 
+	dispose() {
+		this.clearScene();
+	}
+	
 	clearScene() 
 	{
 		while (this.scene.children.length > 0) 
