@@ -65,41 +65,48 @@ class ProfileTest(TestConfig):
          - 不正な文字列
         """
         self._move_to_edit_page()
-
-        # user1 -> user1
         current_nickname = self.nickname
-        self._edit_nickname(current_nickname, wait_for_button_invisible=False)
-        self._assert_message("new nickname same as current")
-        self._assert_current_url(self.edit_profile_url)
-        # self._screenshot("edit_nickname_1")
 
-        # user1 -> user2
-        already_use_nickname = "user2"
-        self._edit_nickname(already_use_nickname, wait_for_button_invisible=False)
-        self._assert_message("This nickname is already in use")
-        self._assert_current_url(self.edit_profile_url)
-        # self._screenshot("edit_nickname_2")
+        invalid_nicknames_and_expected_messages = [
+            # current nickname
+            {"nickname": current_nickname,  "message": "new nickname same as current"},
 
-        # user1 -> too long nickname
-        too_long_nickname = "a" * (self.nickname_max_len + 1)
-        self._edit_nickname(too_long_nickname, wait_for_button_invisible=False)
-        self._assert_message(f"The nickname must be {self.nickname_max_len} characters or less")
-        self._assert_current_url(self.edit_profile_url)
-        # self._screenshot("edit_nickname_3")
+            # すでに使用されているnickname
+            {"nickname": "user2",           "message": "This nickname is already in use"},
 
-        # user1 -> invalid nickname format
-        invalid_nickname = "SP in nickname"
-        self._edit_nickname(invalid_nickname, wait_for_button_invisible=False)
-        self._assert_message("Invalid nickname format")
-        self._assert_current_url(self.edit_profile_url)
-        # self._screenshot("edit_nickname_4")
 
-        # user1 -> invalid nickname format
-        multi_byte_nickname = "ニックネーム"
-        self._edit_nickname(multi_byte_nickname, wait_for_button_invisible=False)
-        self._assert_message("The nickname can only contain ASCII characters")
-        self._assert_current_url(self.edit_profile_url)
-        # self._screenshot("edit_nickname_5")
+            # 不正なnickname
+            {"nickname": "nick_name",       "message": "Invalid nickname format"},
+            {"nickname": "nick name",       "message": "Invalid nickname format"},
+            {"nickname": "***",             "message": "Invalid nickname format"},
+            {"nickname": "   aaa",          "message": "Invalid nickname format"},
+            {"nickname": "<script>alert('x')</script>",  "message": f"Invalid nickname format"},
+
+            # multi-byte
+            {"nickname": "ニックネーム",      "message": "The nickname can only contain ASCII characters"},
+
+            # too short
+            {"nickname": "n",               "message": f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"},
+            {"nickname": "ng",              "message": f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"},
+            {"nickname": " ",               "message": f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"},
+
+            # too long
+            {"nickname": "<script>alert('hello')</script>",  "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{'a' * 31}",     "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{' ' * 31}",     "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{'a' * 1024}",   "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{'a' * 8096}",   "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+        ]
+
+        print(f"[Testing] invalid nickname")
+        for invalid_data in invalid_nicknames_and_expected_messages:
+            invalid_nickname = invalid_data["nickname"]
+            expected_message = invalid_data["message"]
+            print(f" nickname: [{invalid_nickname}]")
+
+            self._edit_nickname(invalid_nickname, wait_for_button_invisible=False)
+            self._assert_message(expected_message)
+            self._assert_current_url(self.edit_profile_url)
 
         # nicknameはuser1から不変のはず
         self._move_top_to_profile()
