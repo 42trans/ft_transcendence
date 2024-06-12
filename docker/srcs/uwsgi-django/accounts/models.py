@@ -88,7 +88,7 @@ class UserManager(BaseUserManager):
 
 
     @classmethod
-    def _is_valid_nickname(self, nickname):
+    def _is_valid_nickname(self, nickname, is_check_exists=True):
         if not nickname:
             return False, "The given nickname must be set"
         if len(nickname) < CustomUser.kNICKNAME_MIN_LENGTH:
@@ -102,7 +102,7 @@ class UserManager(BaseUserManager):
         if not nickname.isalnum():
             return False, "Invalid nickname format"
 
-        if CustomUser.objects.filter(nickname=nickname).exists():
+        if is_check_exists and CustomUser.objects.filter(nickname=nickname).exists():
             return False, "This nickname is already in use"
 
         return True, None
