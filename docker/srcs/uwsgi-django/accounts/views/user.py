@@ -26,7 +26,6 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from accounts.forms import UserEditForm, CustomPasswordChangeForm
 from accounts.models import CustomUser, UserManager, Friend
-from accounts.views.jwt import is_valid_jwt
 
 
 logger = logging.getLogger(__name__)
@@ -254,13 +253,10 @@ class UploadAvatarAPI(APIView):
                                   f' Allowed types are: jpg, jpeg, png, gif.')
 
 
-class GetUserProfileTemplateView(LoginRequiredMixin, TemplateView):
+class GetUserHistoryTemplateView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/game_history.html"
 
     def get(self, request, *args, **kwargs):
-        if not is_valid_jwt(request):
-            return redirect('accounts:login')
-
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
