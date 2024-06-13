@@ -21,7 +21,7 @@ const getPathAndQueryString = (targetPath) => {
 
 // touteTable.jsの記述について
 // game3d: { path: "/app/game/game-3d/", view: Game3D }は、/app/game/game-3d/というパスに対してGame3Dという「クラス」を対応
-let currentView = null;
+
 // ページ遷移が発生した場合のメソッド
 export const switchPage = (targePath) => {
         if (DEBUG_DETAIL) { console.log('switchPage(): start');  } 
@@ -29,10 +29,10 @@ export const switchPage = (targePath) => {
   const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
   history.pushState(null, null, targetPathName + targetQueryString);
   // currentViewにdisposeメソッドが存在するかどうかをチェック。オペランドの型がfunctionなら関数
-  if (currentView && typeof currentView.dispose === "function") {
-          if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
-    currentView.dispose();
-  }
+  // if (currentView && typeof currentView.dispose === "function") {
+  //         if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
+  //   currentView.dispose();
+  // }
   renderView(targetPathName).then(() => {
     window.dispatchEvent(new CustomEvent('switchPageResetState'));
   });
@@ -111,8 +111,12 @@ async function getView(path) {
   return view
 }
 
-
+let currentView = null;
 export const renderView = async (path) => {
+  if (currentView && typeof currentView.dispose === "function") {
+        if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
+    currentView.dispose();
+  }
   const selectedRoute = getSelectedRoute(path, routeTable);
   const view = new selectedRoute.view(selectedRoute.params);
   currentView = view;
