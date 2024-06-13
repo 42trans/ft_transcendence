@@ -88,8 +88,7 @@ export function rejectFriendRequest(userId) {
         fetch(`/accounts/api/friend/reject-request/${userId}/`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                'Content-Type': 'application/json'
             }
         })
             .then(response => {
@@ -119,8 +118,7 @@ export function deleteFriend(userId) {
         fetch(`/accounts/api/friend/delete/${userId}/`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                'Content-Type': 'application/json'
             }
         })
             .then(response => {
