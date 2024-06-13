@@ -40,8 +40,7 @@ class TournamentOverview
 			const response = await fetch(url,
 			{
 				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+					'Content-Type': 'application/json'
 				}
 			});
 

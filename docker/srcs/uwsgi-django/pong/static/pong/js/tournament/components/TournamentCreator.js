@@ -155,9 +155,7 @@ class TournamentCreator
 	// 進行中のトーナメントを確認する関数
 	async _isOngoingTournaments() {
 		try {
-			const response = await fetch(this.API_URLS.ongoingLatestTour, {
-				headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
-			});
+			const response = await fetch(this.API_URLS.ongoingLatestTour);
 
 			// 見つからない場合でも、viewは204を返す。ここはそれ以外のエラーの場合の判定
 			// 見つからない場合のviewの戻り値: return JsonResponse({'status': 'success', 'message': 'No ongoing tournaments found'}, status=200)
