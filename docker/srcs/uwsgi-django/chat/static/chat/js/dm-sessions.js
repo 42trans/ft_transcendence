@@ -50,8 +50,7 @@ export function startDMwithUser() {
         fetch(`/chat/api/validate-dm-target/${dmTargetNickname}/`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                'Content-Type': 'application/json'
             }
         })
             .then(response => {
