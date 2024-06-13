@@ -8,8 +8,7 @@ function unblockUser(nickname) {
     fetch(`/accounts/api/unblock/${nickname}/`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            'Content-Type': 'application/json'
         }
     })
         .then(response => {
