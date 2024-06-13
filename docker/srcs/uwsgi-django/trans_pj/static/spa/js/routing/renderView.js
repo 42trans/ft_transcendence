@@ -35,7 +35,6 @@ export const switchPage = (targePath) => {
   // console.log(` currentPath       :${window.location.pathname}`)
   // alert(`[debug] switchPage consolelog確認用`)
 
-  renderView(currentPath);
   // renderView(currentPath).then(() => {
   //   // resetState イベントを発行
   //   window.dispatchEvent(new CustomEvent('switchPageResetState'));
