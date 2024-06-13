@@ -103,8 +103,10 @@ AUTHENTICATION_BACKENDS = [
 
 
 SIMPLE_JWT = {
-	'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),  # アクセストークンの有効期間
-	'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # リフレッシュトークンの有効期間
+	'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),  # テスト用
+	'REFRESH_TOKEN_LIFETIME': timedelta(seconds=60),  # テスト用
+	# 'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),  # アクセストークンの有効期間
+	# 'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # リフレッシュトークンの有効期間
 	'ROTATE_REFRESH_TOKENS': True,
 	'BLACKLIST_AFTER_ROTATION': True,
 	'UPDATE_LAST_LOGIN': False,
