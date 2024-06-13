@@ -3,6 +3,7 @@
 import { routeTable } from "./routing/routeTable.js"
 import { switchPage, renderView } from "./routing/renderView.js";
 import { isUserLoggedIn, isUserEnable2FA } from "./utility/isUser.js"
+import { refreshJWT } from "./utility/refreshJWT.js"
 import { setOnlineStatus } from "/static/accounts/js/online-status.js";
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
@@ -26,6 +27,7 @@ const setupPopStateListener = () => {
 
   window.addEventListener("popstate", (event) => {
     const path = window.location.pathname;
+    refreshJWT()
     stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     renderView(path);
@@ -39,6 +41,7 @@ const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", () => {
     console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
     stopGamePageAnimation()
+    refreshJWT()
 
     // 初期ビューを表示
     const pathName = window.location.pathname;
@@ -95,6 +98,7 @@ const setupBodyClickListener = () => {
   document.body.addEventListener("click", async (event) => {
   console.log('clickEvent: path: ' + window.location.pathname);
   stopGamePageAnimation()
+  refreshJWT()
   setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
 
     const linkElement = event.target.closest("[data-link]");
@@ -123,6 +127,7 @@ const setupBodyClickListener = () => {
 const setupLoadListener = () => {
   window.addEventListener("load", () => {
     console.log('loadEvent: path: ' + window.location.pathname);
+    refreshJWT()
 
     stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
