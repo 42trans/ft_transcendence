@@ -5,8 +5,7 @@ export async function isUserLoggedIn() {
         const response = await fetch('/accounts/api/is-user-logged-in/', {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                'Content-Type': 'application/json'
             },
         });
         const data = await response.json();
@@ -25,8 +24,7 @@ export async function isUserEnable2FA() {
         const response = await fetch('/accounts/api/is-user-enabled2fa/', {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                'Content-Type': 'application/json'
             },
         });
         const data = await response.json();
