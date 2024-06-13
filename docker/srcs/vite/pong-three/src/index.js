@@ -33,6 +33,45 @@ import PongApp from './js/PongApp'
 import './css/3d.css';
 
 const DEBUG_FLOW = 1;
+
+window.pongApp = null;
+let isEventListenerRegistered = false; 
+
+async function initPongApp(env)
+{
+				if (DEBUG_FLOW) {	console.log('initPongApp(): start');	}
+	if (window.pongApp){
+		return;
+		// await window.pongApp.destroy();
+	}
+			if (DEBUG_FLOW) {	console.log('initPongApp(): PongApp.getInstance');	}
+	window.pongApp = PongApp.getInstance(env)
+}
+
+initPongApp();
+
+
+// switchPageResetStateイベントハンドラ
+async function handleSwitchPageResetState() 
+{
+	if (DEBUG_FLOW) { console.log('switchPageResetState: event'); }
+	await initPongApp();
+}
+
+function registerEventListenerSwitchPageResetState() 
+{
+	if (isEventListenerRegistered) {
+		return; 
+	}
+	window.addEventListener('switchPageResetState', handleSwitchPageResetState);
+	// 登録済みフラグを立てる
+	isEventListenerRegistered = true;
+}
+
+registerEventListenerSwitchPageResetState();
+
+
+
 // 'dev'= コントローラーGUI表示 
 // PongApp.main('dev');
 // PongApp.main();
@@ -42,21 +81,3 @@ const DEBUG_FLOW = 1;
 // 	PongApp.main();
 // 				if (DEBUG_FLOW) {	console.log('PongApp.main(): called');	}
 // });
-
-let pongApp = null;
-
-async function initPongApp(env)
-{
-				if (DEBUG_FLOW) {	console.log('initPongApp(): start');	}
-	if (pongApp){
-		await pongApp.destroy();
-	}
-	pongApp = PongApp.getInstance(env)
-}
-
-initPongApp();
-
-window.addEventListener('switchPageResetState', () => {
-			if (DEBUG_FLOW) {	console.log('switchPageResetState: event');	}
-	initPongApp();
-})

@@ -7,6 +7,16 @@ import { loadAndExecuteScript } from "../../utility/script.js";
 
 const DEBUG_FLOW = 1;
 
+// --------------------------------------
+// グローバルスコープ
+// --------------------------------------
+// let isEventListenerRegistered = false;
+// イベントリスナーの削除 
+function  unregisterEventListenerSwitchPageResetState() {
+  window.removeEventListener('switchPageResetState', window.handleSwitchPageResetState);
+  window.isEventListenerRegistered = false; 
+}
+// --------------------------------------
 export default class extends AbstractView {
   constructor(params) {
     super(params);
@@ -18,7 +28,6 @@ export default class extends AbstractView {
     const matchId = this.params.matchId;
     const uri = `/pong/play/${matchId}`;
     const data = await fetchData(uri);
-    //console.log("Pong:" + data);
     return data;
   }
 
@@ -34,5 +43,6 @@ export default class extends AbstractView {
       await window.pongApp.destroy();
       window.pongApp = null;
     }
+    unregisterEventListenerSwitchPageResetState();
   }
 }

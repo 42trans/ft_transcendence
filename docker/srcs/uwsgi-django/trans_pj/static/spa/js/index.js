@@ -1,4 +1,4 @@
-// index.js
+// docker/srcs/uwsgi-django/trans_pj/static/spa/js/index.js
 
 import { routeTable } from "./routing/routeTable.js"
 import { switchPage, renderView } from "./routing/renderView.js";
