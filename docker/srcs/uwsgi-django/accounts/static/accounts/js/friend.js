@@ -10,8 +10,7 @@ export function sendFriendRequest(userId) {
     fetch(`/accounts/api/friend/send-request/${userId}/`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            'Content-Type': 'application/json'
         }
     }).then(response => {
         return response.json().then(data => {
@@ -36,8 +35,7 @@ export function cancelFriendRequest(userId) {
     fetch(`/accounts/api/friend/cancel-request/${userId}/`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            'Content-Type': 'application/json'
         }
     })
         .then(response => {
@@ -64,8 +62,7 @@ export function acceptFriendRequest(userId) {
     fetch(`/accounts/api/friend/accept-request/${userId}/`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            'Content-Type': 'application/json'
         }
     }).then(response => {
         return response.json().then(data => {
@@ -91,8 +88,7 @@ export function rejectFriendRequest(userId) {
         fetch(`/accounts/api/friend/reject-request/${userId}/`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                'Content-Type': 'application/json'
             }
         })
             .then(response => {
@@ -122,8 +118,7 @@ export function deleteFriend(userId) {
         fetch(`/accounts/api/friend/delete/${userId}/`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                'Content-Type': 'application/json'
             }
         })
             .then(response => {
@@ -194,8 +189,7 @@ export function setupFriendRequestListEventListeners() {
 export function fetchFriendList() {
     fetch('/accounts/api/friend/list/', {
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            'Content-Type': 'application/json'
         }
     })
         .then(response => response.json())
@@ -290,8 +284,7 @@ export function fetchFriendRequestList() {
     // フレンド申請リストの一覧
     fetch("/accounts/api/friend/requests/", {
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            'Content-Type': 'application/json'
         }
     })
         .then(response => response.json())

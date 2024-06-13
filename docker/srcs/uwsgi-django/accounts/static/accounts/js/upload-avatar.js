@@ -20,9 +20,6 @@ function uploadAvatar() {
 
     fetch('/accounts/api/change-avatar/', {
         method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        },
         body: formData,
     }).then(handleResponse)
         .then(showSuccess)

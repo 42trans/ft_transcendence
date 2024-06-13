@@ -8,7 +8,7 @@ export function fetchEnable2FA() {
 	fetch('/accounts/api/enable_2fa/', {
 		method: 'GET',
 		headers: {
-			'Content-Type': 'application/json',
+			'Content-Type': 'application/json'
 		}
 	})
 		.then(response => response.json())
@@ -42,7 +42,7 @@ function verifyToken() {
 	fetch('/accounts/api/enable_2fa/', {
 	method: 'POST',
 	headers: {
-		'Content-Type': 'application/json',
+		'Content-Type': 'application/json'
 	},
 	body: JSON.stringify({ token: token })
 	})
