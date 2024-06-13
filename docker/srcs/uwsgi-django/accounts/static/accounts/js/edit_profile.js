@@ -11,8 +11,7 @@ export function updateNickname(event) {
 	fetch('/accounts/api/user/edit-profile/', {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
 			nickname: nickname,
@@ -41,8 +40,7 @@ export function updatePassword(event) {
 	fetch('/accounts/api/user/edit-profile/', {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
 			current_password: currentPassword,

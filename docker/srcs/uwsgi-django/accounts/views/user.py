@@ -59,13 +59,10 @@ class UserProfileAPIView(APIView):
         return JsonResponse(params)
 
 
-class EditUserProfileTemplateView(TemplateView):
+class EditUserProfileTemplateView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/edit_profile.html"
 
     def get(self, request, *args, **kwargs):
-        if not is_valid_jwt(request):
-            return redirect('accounts:login')
-
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -109,7 +106,6 @@ class EditUserProfileAPIView(APIView):
         return Response(data, status=400)
 
     def _update_nickname(self, user, new_nickname):
-
         old_nickname = user.nickname
         if old_nickname == new_nickname:
             msg = "new nickname same as current"
@@ -119,11 +115,9 @@ class EditUserProfileAPIView(APIView):
         if is_ok is False:
             return False, err
 
-
         user.nickname = new_nickname
         user.save()
         return True, f"nickname updat successfully {old_nickname} -> {new_nickname}"
-
 
     def _update_password(self, request, input_current_password, new_password):
         user = request.user
