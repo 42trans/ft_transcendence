@@ -35,6 +35,10 @@ export const switchPage = (targePath) => {
   // console.log(` currentPath       :${window.location.pathname}`)
   // alert(`[debug] switchPage consolelog確認用`)
 
+  // renderView(currentPath).then(() => {
+  //   // resetState イベントを発行
+  //   window.dispatchEvent(new CustomEvent('switchPageResetState'));
+  // });
   renderView(targetPathName).then(() => {
     // resetState イベントを発行
     window.dispatchEvent(new CustomEvent('switchPageResetState'));
@@ -103,4 +107,6 @@ export const renderView = async (path) => {
   // スクリプトの読み込みと実行
   await view.executeScript();
   // console.log("    renderView 3")
+
+  window.dispatchEvent(new CustomEvent('switchPageResetState'));
 };
