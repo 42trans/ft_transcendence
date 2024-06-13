@@ -32,13 +32,10 @@ from accounts.views.jwt import is_valid_jwt
 logger = logging.getLogger(__name__)
 
 
-class UserProfileView(TemplateView):
+class UserProfileView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/user.html"
 
     def get(self, request, *args, **kwargs):
-        if not is_valid_jwt(request):
-            return redirect('accounts:login')
-
         return super().get(request, *args, **kwargs)
 
 
