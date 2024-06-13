@@ -1,6 +1,6 @@
 import RendererManager from "./RendererManager";
 
-const DEBUG_FLOW = 1;
+const DEBUG_FLOW = 0;
 /**
  * ブラウザのフレーム更新タイミングに合わせて自身を再帰的に呼び出し、連続したアニメーションフレームを生成
  * 次の画面描画タイミングで呼び出される。ループは非同期, ブロッキングしない
@@ -38,9 +38,7 @@ class RenderLoop
 	start() 
 	{
 		const animate = () => 
-		{
-						// if (DEBUG_FLOW) {	console.log('requestAnimationFrame');	}
-			
+		{			
 			this.requestID = requestAnimationFrame(animate);
 				if (DEBUG_FLOW) {	console.log('1 requestAnimationFrame');	}
 			this.pong.gameStateManager.update();

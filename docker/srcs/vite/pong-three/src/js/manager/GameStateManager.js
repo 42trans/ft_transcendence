@@ -2,12 +2,10 @@ import GamePlayState from '../state/GamePlayState'
 import EntryGameState from '../state/EntryGameState'
 import RendererManager from './RendererManager';
 
-const DEBUG_FLOW = 1;
-const DEBUG_DETAIL = 1;
+const DEBUG_FLOW = 0;
+const DEBUG_DETAIL = 0;
 
-/**
- * - シングルトン
- */
+/** シングルトン*/
 class GameStateManager 
 {
 	static instance = null;
@@ -23,10 +21,7 @@ class GameStateManager
 				gamePlay: new GamePlayState(pongApps)
 			};
 			this.currentState = this.states.entry;
-			// this.currentState = this.states.gamePlay;
 			this.currentState.enter();
-			// Dev用　resetButtonなどのUI設定
-			// this.devSetupUI();
 			GameStateManager.instance = this;
 		}
 		return GameStateManager.instance;
@@ -41,21 +36,14 @@ class GameStateManager
 		return GameStateManager.instance;
 	}
 
-	// dev用
-	// devSetupUI() 
-	// {
-		// const entryButton = document.getElementById('devEntryButton');
-		// entryButton.addEventListener('click', () => this.changeState('entry'));
-	// }
-
 	changeState(newState) 
 	{
 		if (this.currentState) 
 		{
-			// console.log(`currentState.exit(): ${this.currentState}`);
+						if(DEBUG_FLOW) {	console.log('currentState.exit(): ', this.currentState);	}
 			this.currentState.exit();
 		}
-		// console.log(`changeState(): ${newState}`);
+					if (DEBUG_FLOW) {	console.log('changeState():', newState);	}
 		this.currentState = this.states[newState];
 		this.currentState.enter();
 	}
