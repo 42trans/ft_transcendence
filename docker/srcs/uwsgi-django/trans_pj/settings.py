@@ -162,6 +162,10 @@ DATABASES = {
 }
 
 
+# ユーザー登録数の上限
+MAX_USER_COUNT = 10000
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
