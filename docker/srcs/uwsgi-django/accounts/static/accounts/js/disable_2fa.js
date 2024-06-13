@@ -9,8 +9,7 @@ export function disable2FA() {
 		fetch('/accounts/api/disable_2fa/', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+				'Content-Type': 'application/json'
 			}
 		}).then(response => {
 			if (!response.ok) {
