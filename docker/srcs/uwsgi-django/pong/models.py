@@ -41,7 +41,7 @@ class Tournament(models.Model):
 
 	def __is_valid_tournament_name(self) -> bool:
 		return (self.name is not None
-				and self.kTORNAMENT_NAME_MIN_LEN < len(self.name)
+				and self.kTORNAMENT_NAME_MIN_LEN <= len(self.name)
 				and self.__is_valid_name(self.name))
 
 	def __is_valid_date(self) -> bool:

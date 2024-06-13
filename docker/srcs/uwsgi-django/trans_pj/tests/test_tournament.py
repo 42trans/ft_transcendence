@@ -28,6 +28,31 @@ class TournamentTest(TestConfig):
         # self._screenshot("tournament4")
         self._is_tournament_top()
 
+    def test_valid_tournament_name(self):
+        self._is_tournament_top()
+
+        valid_tournament_names = [
+            "aaa",
+            "a a",
+            "1 a",
+            "abc",
+            f"{'a' * 29}",
+            f"{'a' * 30}",
+        ]
+
+        print(f"[Testing] valid tournament name")
+        for tournament_name in valid_tournament_names:
+            print(f" tournament name: [{tournament_name}]")
+
+            self._send_to_elem(By.CSS_SELECTOR, 'input[name="name"]', tournament_name)
+            # self._screenshot(f"valid_tournament-{tournament_name}-1")
+            self._submit_tournament()
+            # self._screenshot(f"valid_tournament-{tournament_name}-2")
+            self._is_progress()
+            # self._screenshot(f"valid_tournament-{tournament_name}-3")
+            self._delete_tournament()
+            self._is_tournament_top()
+
     def test_invalid_tournament_name(self):
         self._is_tournament_top()
 
@@ -41,7 +66,8 @@ class TournamentTest(TestConfig):
             {"name": ".",               "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
             {"name": "abc*012",         "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
             {"name": "abc_012",         "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": "abc\t012",        "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
+            {"name": "  abc",           "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
+            {"name": "abc  ",           "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
             {"name": "<script>alert('a')</script>",        "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
 
             # too short
