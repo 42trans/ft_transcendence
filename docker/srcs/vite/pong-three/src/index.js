@@ -35,11 +35,28 @@ import './css/3d.css';
 const DEBUG_FLOW = 1;
 // 'dev'= コントローラーGUI表示 
 // PongApp.main('dev');
-PongApp.main();
+// PongApp.main();
+
+// window.addEventListener('switchPageResetState', () => {
+// 				if (DEBUG_FLOW) {	console.log('switchPageResetState: event');	}
+// 	PongApp.main();
+// 				if (DEBUG_FLOW) {	console.log('PongApp.main(): called');	}
+// });
+
+let pongApp = null;
+
+async function initPongApp(env)
+{
+				if (DEBUG_FLOW) {	console.log('initPongApp(): start');	}
+	if (pongApp){
+		await pongApp.destroy();
+	}
+	pongApp = PongApp.getInstance(env)
+}
+
+initPongApp();
 
 window.addEventListener('switchPageResetState', () => {
-				if (DEBUG_FLOW) {	console.log('switchPageResetState: event');	}
-	PongApp.main();
-				if (DEBUG_FLOW) {	console.log('PongApp.main(): called');	}
-});
-
+			if (DEBUG_FLOW) {	console.log('switchPageResetState: event');	}
+	initPongApp();
+})

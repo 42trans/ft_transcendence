@@ -25,12 +25,22 @@ const DEBUG_DETAIL = 1;
  */
 class PongApp 
 {
+	static instance = null;
 	constructor(env) 
 	{
 		this.env = env;
 		this.init();
 		// this.boundInit = this.init.bind(this);
 		// window.addEventListener('switchPageResetState', this.boundInit);
+	}
+
+	static getInstance(env)
+	{
+		if (!PongApp.instance)
+		{
+			PongApp.instance = new PongApp(env);
+		}
+		return PongApp.instance;
 	}
 
 	static async loadRouteTable() 
@@ -56,6 +66,18 @@ class PongApp
 	 */
 	async init() 
 	{
+		const currentPath = window.location.pathname;
+		const routeTable = await PongApp.loadRouteTable();
+		const gameMatchPath = routeTable['gameMatch'].path;
+		const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
+
+					if (DEBUG_FLOW) {	console.log('pongApp.destroy()', currentPath, gameMatchRegex);	}
+
+		if (!gameMatchRegex.test(currentPath)) {
+						// if (DEBUG_FLOW) {	console.log('pongApp.main()', currentPath, gameMatchRegex);	}
+			return;
+		}
+
 					if (DEBUG_FLOW) {	console.log('init()');	}
 		const matchDataElement = document.getElementById('match-data');
 		if (matchDataElement) 
@@ -181,15 +203,15 @@ class PongApp
 			return;
 		}
 
-		if (window.pongApp) {
-						if (DEBUG_FLOW) {	console.log('window.pongApp is true');	}
+		// if (window.pongApp) {
+						// if (DEBUG_FLOW) {	console.log('window.pongApp is true');	}
 			// ブラウザのグローバルスコープ（windowオブジェクト）にpongAppというプロパティを追加
-			window.pongApp.destroy();
-		}
+			// window.pongApp.destroy();
+		// }
 
 		// const pongApp = new PongApp(env);
 	    // window.pongApp = pongApp;
-		window.pongApp = new PongApp(env);
+		// window.pongApp = new PongApp(env);
 					if (DEBUG_FLOW) {	console.log('main(): new PongApp();', window.pongApp);	}
 	}
 
