@@ -23,10 +23,7 @@
  * ## ディレクトリ/ファイル
  * - シーン（空間）毎にSceneConfig.jsに値を設定してください。scene設定はそこで全てです。
  * - Contorls.jsのパラメーターはスライダーの感度調整なので変更しなくても問題ないはずです。が、必要なら。
- * - 他の.jsファイルは js/ にまとめてます。 
- * - Pong.jsから全ての処理のフローが見通せるように書いてます
- * - 3Dmodel.gltfやtextureは assejs/にまとめてます。
- * - 説明資料+4/8~22進捗日記 => 3️⃣ three.js △ https://docs.google.com/presentation/d/e/2PACX-1kFAEPPUCHrODmv94oPZiLU1zN8VEWBE-sCt5eYDm5i-fJpl221U1rc8G4w9BB3-V30bUuLVMXRSp/pub?start=false&loop =false&遅延=10000
+ * - 3Dmodel.gltfやtextureは assejs/にまとめてます。自動でコピーされない拡張子があるので、その場合は手動でコピーしてください
 */
 
 import PongApp from './js/PongApp'
@@ -70,14 +67,3 @@ function registerEventListenerSwitchPageResetState()
 
 registerEventListenerSwitchPageResetState();
 
-
-
-// 'dev'= コントローラーGUI表示 
-// PongApp.main('dev');
-// PongApp.main();
-
-// window.addEventListener('switchPageResetState', () => {
-// 				if (DEBUG_FLOW) {	console.log('switchPageResetState: event');	}
-// 	PongApp.main();
-// 				if (DEBUG_FLOW) {	console.log('PongApp.main(): called');	}
-// });

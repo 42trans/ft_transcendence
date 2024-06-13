@@ -14,7 +14,7 @@ import RendererManager from './manager/RendererManager'
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
-import { thickness } from 'three/examples/jsm/nodes/core/PropertyNode.js';
+// import { thickness } from 'three/examples/jsm/nodes/core/PropertyNode.js';
 
 const DEBUG_FLOW = 1;
 const DEBUG_DETAIL = 0;
@@ -64,6 +64,8 @@ class PongApp
 	 */
 	async init() 
 	{
+					if (DEBUG_FLOW) {	console.log('init(): start');	}
+
 		// urlがtournametの試合かどうかを判定
 		const currentPath = window.location.pathname;
 		const routeTable = await PongApp.loadRouteTable();
@@ -75,7 +77,6 @@ class PongApp
 		}
 
 		// 試合が終了しているかを判定する処理
-					if (DEBUG_FLOW) {	console.log('init(): start');	}
 		const matchDataElement = document.getElementById('match-data');
 		if (matchDataElement) 
 		{
@@ -120,7 +121,7 @@ class PongApp
 		
 		this.boundHandleResize = this.allScenesManager.handleResize.bind(this.allScenesManager);
 		window.addEventListener('resize', this.boundHandleResize, false);
-				if (DEBUG_FLOW) {	console.log('init(): done');	}
+					if (DEBUG_FLOW) {	console.log('init(): done');	}
 	}
 	
 	stopRenderLoop() 
@@ -134,7 +135,7 @@ class PongApp
 	// spa/js/views/AbstractView.jsの dispose から呼び出される
 	async destroy() 
 	{
-					if (DEBUG_FLOW) {	console.log('destroy()');	}
+					if (DEBUG_FLOW) {	console.log('destroy(): start');	}
 
 		if (!this.allScenesManager || !this.renderer || !this.animationMixersManager){
 			if (DEBUG_DETAIL) {	console.log('allScenesManager, renderer, animationMixerManager is false');	}
@@ -163,6 +164,7 @@ class PongApp
 		this.allScenesManager = null;
 		this.gameStateManager = null;
 		this.renderLoop = null;
+					if (DEBUG_FLOW) {	console.log('destroy(): done');	}
 	}
 
 

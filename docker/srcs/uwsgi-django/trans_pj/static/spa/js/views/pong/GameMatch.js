@@ -13,6 +13,7 @@ const DEBUG_FLOW = 1;
 // let isEventListenerRegistered = false;
 // イベントリスナーの削除 
 function  unregisterEventListenerSwitchPageResetState() {
+        if (DEBUG_FLOW) {  console.log('GameMatch: unregisterEventListenerSwitchPageResetState(): start'); }
   window.removeEventListener('switchPageResetState', window.handleSwitchPageResetState);
   window.isEventListenerRegistered = false; 
 }
