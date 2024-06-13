@@ -5,11 +5,13 @@ from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from accounts.models import CustomUser
+from accounts.models import CustomUser, UserManager
 
 
 class Tournament(models.Model):
+	kTORNAMENT_NAME_MIN_LEN = 3
 	kTORNAMENT_NAME_MAX_LEN = 30
+	kMAX_TORNAMENT_COUNT = 10000
 
 	name = models.CharField(max_length=kTORNAMENT_NAME_MAX_LEN)
 	# settings.py で USE_TZ=True が設定されている。保存はUTC
@@ -24,28 +26,34 @@ class Tournament(models.Model):
 		return self.name
 
 	def clean(self):
+		if self.kMAX_TORNAMENT_COUNT <= Tournament.objects.count():
+			raise ValueError("Tournament registration limit exceeded.")
+
 		# トーナメント名が空でないことを確認
 		if not self.__is_valid_tournament_name():
-			raise ValidationError('Invalid tournament name: non-empty alnum name required.')
+			raise ValidationError({'tournament_name': 'non-empty alnum 3-30 length name required.'})
 
 		if not self.__is_valid_date():
-			raise ValidationError('Invalid data: ISO 8601 format required.')
+			raise ValidationError({'date': 'ISO 8601 format required.'})
 
 		if not self.__is_valid_player_nicknames():
-			raise ValidationError('Invalid player nicknames: '
-								  '8 unique, non-empty alnum nicknames required.')
+			raise ValidationError({'player_nicknames': '8 unique, non-empty alnum, 3-30 length nicknames required.'})
 
 	def __is_valid_tournament_name(self) -> bool:
 		return (self.name is not None
-				and 0 < len(self.name)
+				and self.kTORNAMENT_NAME_MIN_LEN <= len(self.name)
 				and self.__is_valid_name(self.name))
 
 	def __is_valid_date(self) -> bool:
 		return self.date is not None and self.date.tzinfo
 
 	def __is_valid_player_nicknames(self) -> bool:
-		# すべてのニックネームが1文字以上の英数字であることを確認
-		if not all(self.__is_valid_name(nickname) for nickname in self.player_nicknames):
+		"""
+		すべてのニックネームがuserのnickname要件を満たしていることを確認
+		 3-30文字、alnumのみ
+		 ただし、存在するnicknameとの重複チェックは除外
+		"""
+		if not all(UserManager._is_valid_nickname(nickname, is_check_exists=False)[0] for nickname in self.player_nicknames):
 			return False
 
 		# ニックネームが8つで全てユニークであることを確認

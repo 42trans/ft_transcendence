@@ -4,6 +4,7 @@ import logging
 from typing import List, Dict, Any
 
 from django.db import models
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.password_validation import validate_password
@@ -32,6 +33,10 @@ class UserManager(BaseUserManager):
         """
         Create and save a user with the given email, password, and nickname.
         """
+        # ユーザー数の上限チェック
+        if settings.MAX_USER_COUNT <= CustomUser.objects.count():
+            raise ValueError("User registration limit exceeded.")
+
         email = self.normalize_email(email)
         nickname = extra_fields.get("nickname")
         ok, err = self._is_valid_user_field(email, nickname, password)
@@ -88,7 +93,7 @@ class UserManager(BaseUserManager):
 
 
     @classmethod
-    def _is_valid_nickname(self, nickname):
+    def _is_valid_nickname(self, nickname, is_check_exists=True):
         if not nickname:
             return False, "The given nickname must be set"
         if len(nickname) < CustomUser.kNICKNAME_MIN_LENGTH:
@@ -102,7 +107,7 @@ class UserManager(BaseUserManager):
         if not nickname.isalnum():
             return False, "Invalid nickname format"
 
-        if CustomUser.objects.filter(nickname=nickname).exists():
+        if is_check_exists and CustomUser.objects.filter(nickname=nickname).exists():
             return False, "This nickname is already in use"
 
         return True, None
@@ -117,6 +122,8 @@ class UserManager(BaseUserManager):
         if CustomUser.kPASSWORD_MAX_LENGTH < len(password):
             err = f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less"
             return False, err
+        if not password.isascii():
+            return False, "The password can only contain ASCII characters"
         try:
             validate_password(password, user=tmp_user)
             return True, None

@@ -101,133 +101,179 @@ class BasicAuthTest(TestConfig):
                      wait_for_button_invisible=True)
         self._assert_current_url(self.top_url)
 
-    def test_signup_failure(self):
+    def test_signup_invalid_email(self):
+        """
+        不正なemailでsign up失敗を検証
+         - すでに存在するemail
+         - 不正なemail
+         - min lengthよりも短いemail
+         - max lengthよりも長いemail
+        ※ 空文字列はform送信不可のため除外
+        """
         self._move_top_to_signup()
 
-        # すでに存在するemail
-        user1_email = "user1@example.com"
+        invalid_emails_and_expected_messages = [
+            # すでに存在するemail
+            {"email": self.email,             "message": "This email is already in use"},
+
+            # 不正なemail
+            {"email": "invalid-email.com",    "message": "有効なメールアドレスを入力してください。"},
+            {"email": "invalid.@email.com",   "message": "有効なメールアドレスを入力してください。"},
+            {"email": "invalid@email",        "message": "有効なメールアドレスを入力してください。"},
+            {"email": "invalid@email..com",   "message": "有効なメールアドレスを入力してください。"},
+            {"email": "invalid@email@co.jp",  "message": "有効なメールアドレスを入力してください。"},
+            {"email": "<script>alert('hello')</script>",  "message": "有効なメールアドレスを入力してください。"},
+            {"email": "invalid @email.com",   "message": "有効なメールアドレスを入力してください。"},
+            {"email": "invalid\t@email.com",  "message": "有効なメールアドレスを入力してください。"},
+            {"email": "メール@email.com",      "message": "有効なメールアドレスを入力してください。"},
+            {"email": "メールアドレス",         "message": "有効なメールアドレスを入力してください。"},
+
+            # too short
+            {"email": "a@b",                  "message": f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters"},
+            {"email": "a@bc",                 "message": f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters"},
+            {"email": " ",                    "message": f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters"},
+            {"email": "\t",                   "message": f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters"},
+
+            # too long
+            {"email": f"a@{'b' * 64}.com",    "message": f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less"},
+            {"email": f"a@{'b' * 128}.com",   "message": f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less"},
+            {"email": f"a@{'b' * 256}.com",   "message": f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less"},
+            {"email": f"a@{'b' * 1024}.com",  "message": f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less"},
+            {"email": f"a@{'b' * 2048}.com",  "message": f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less"},
+            {"email": f"a@{'b' * 4096}.com",  "message": f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less"},
+            {"email": f"a@{'b' * 8192}.com",  "message": f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less"},
+        ]
+
+        print(f"[Testing] invalid email")
+        for invalid_data in invalid_emails_and_expected_messages:
+            invalid_email = invalid_data["email"]
+            expected_message = invalid_data["message"]
+            # print(f" email: [{invalid_email}]")
+
+            nickname = self._generate_random_string()
+            password1 = "pass0123"
+            password2 = "pass0123"
+
+            self._signup(invalid_email,
+                         nickname,
+                         password1,
+                         password2,
+                         wait_for_button_invisible=False)
+            self._assert_message(expected_message)
+            self._assert_current_url(self.signup_url)
+
+    def test_signup_invalid_nickname(self):
+        """
+        不正なnicknameでsign up失敗を検証
+         - すでに存在するnickname
+         - alnum以外が含まれるnickname
+         - min lengthよりも短いnickname
+         - max lengthよりも長いnickname
+        """
+        self._move_top_to_signup()
+
+        invalid_nicknames_and_expected_messages = [
+            # すでに存在するnickname
+            {"nickname": self.nickname,     "message": "This nickname is already in use"},
+
+            # 不正なnickname
+            {"nickname": "nick_name",       "message": "Invalid nickname format"},
+            {"nickname": "nick name",       "message": "Invalid nickname format"},
+            {"nickname": "***",             "message": "Invalid nickname format"},
+            {"nickname": "   aaa",          "message": "Invalid nickname format"},
+            {"nickname": "<script>alert('x')</script>",  "message": f"Invalid nickname format"},
+
+            # multi-byte
+            {"nickname": "ニックネーム",      "message": "The nickname can only contain ASCII characters"},
+
+            # too short
+            {"nickname": "n",               "message": f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"},
+            {"nickname": "ng",              "message": f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"},
+            {"nickname": " ",               "message": f"The nickname must be at least {CustomUser.kNICKNAME_MIN_LENGTH} characters"},
+
+            # too long
+            {"nickname": "<script>alert('hello')</script>",  "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{'a' * 31}",     "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{' ' * 31}",     "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{'a' * 1024}",   "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+            {"nickname": f"{'a' * 8096}",   "message": f"The nickname must be {CustomUser.kNICKNAME_MAX_LENGTH} characters or less"},
+        ]
+
+        print(f"[Testing] invalid nickname")
+        for invalid_data in invalid_nicknames_and_expected_messages:
+            invalid_nickname = invalid_data["nickname"]
+            expected_message = invalid_data["message"]
+            # print(f" nickname: [{invalid_nickname}]")
+
+            email = f"{self._generate_random_string()}@example.com"
+            password1 = "pass0123"
+            password2 = "pass0123"
+
+            self._signup(email,
+                         invalid_nickname,
+                         password1,
+                         password2,
+                         wait_for_button_invisible=False)
+            self._assert_message(expected_message)
+            self._assert_current_url(self.signup_url)
+
+    def test_signup_invalid_password(self):
+        """
+        不正なpasswordでsign up失敗を検証
+         - 不正な文字列
+         - too common
+         - too short
+         - too long
+        """
+        self._move_top_to_signup()
+
+        invalid_passwords_and_expected_messages = [
+            # 不正なpassword
+            {"password": "パスワード123",  "message": "The password can only contain ASCII characters"},
+            {"password": "パスワード",     "message": "The password can only contain ASCII characters"},
+
+            # too common
+            {"password": "password",     "message": "このパスワードは一般的すぎます。"},
+            {"password": "********",     "message": "このパスワードは一般的すぎます。"},
+
+            # too short
+            {"password": "***4567",      "message": "このパスワードは短すぎます。最低 8 文字以上必要です。"},
+            {"password": "a1",           "message": "このパスワードは短すぎます。最低 8 文字以上必要です。"},
+
+            # too long
+            {"password": f"{"pass0" + "0123456789" * 6}",   "message": f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less"},
+            {"password": f"{"pass0" + "0123456789" * 128}", "message": f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less"},
+        ]
+
+        print(f"[Testing] invalid password")
+        for invalid_data in invalid_passwords_and_expected_messages:
+            invalid_password = invalid_data["password"]
+            expected_message = invalid_data["message"]
+            print(f" passwords: [{invalid_password}]")
+
+            nickname = self._generate_random_string()
+            email = f"{nickname}@example.com"
+
+            self._signup(email,
+                         nickname,
+                         invalid_password,
+                         invalid_password,
+                         wait_for_button_invisible=False)
+            self._assert_message(expected_message)
+            self._assert_current_url(self.signup_url)
+
+        # password1,2が不一致
         nickname = self._generate_random_string()
-        password1 = "pass0123"
+        email = f"{nickname}@example.com"
+        password1 = "********"
         password2 = "pass0123"
 
-        self._signup(user1_email,
+        self._signup(email,
                      nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message("This email is already in use")
-        self._assert_current_url(self.signup_url)
-
-        # 不正なemail
-        user1_email = "invalid-email.com"
-        nickname = self._generate_random_string()
-        password1 = "pass0123"
-        password2 = "pass0123"
-
-        self._signup(user1_email,
-                     nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message("有効なメールアドレスを入力してください。")  # todo message
-        self._assert_current_url(self.signup_url)
-
-        # 不正なemail（too short）
-        user1_email = "a@b"
-        nickname = self._generate_random_string()
-        password1 = "pass0123"
-        password2 = "pass0123"
-
-        self._signup(user1_email,
-                     nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message(f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters")
-        self._assert_current_url(self.signup_url)
-
-        # 不正なemail（too long）
-        user1_email = f"a@{'b' * 64}.com"
-        nickname = self._generate_random_string()
-        password1 = "pass0123"
-        password2 = "pass0123"
-
-        self._signup(user1_email,
-                     nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message(f"The email must be {CustomUser.kEMAIL_MAX_LENGTH} characters or less")
-        self._assert_current_url(self.signup_url)
-
-        # すでに存在するnicknmae
-        new_email = "new_user@example.com"
-        user1_nickname = "user1"
-        password1 = "pass0123"
-        password2 = "pass0123"
-
-        self._signup(new_email,
-                     user1_nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message("This nickname is already in use")
-        self._assert_current_url(self.signup_url)
-
-        # 不正なニックネーム（alnum以外）
-        new_email = "new_user@example.com"
-        invalid_nickname = "nick_name"
-        password1 = "pass0123"
-        password2 = "pass0123"
-
-        self._signup(new_email,
-                     invalid_nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message("Invalid nickname format")
-        self._assert_current_url(self.signup_url)
-
-        # 不正なニックネーム（全角）
-        new_email = "new_user@example.com"
-        invalid_nickname = "ニックネーム"
-        password1 = "pass0123"
-        password2 = "pass0123"
-
-        self._signup(new_email,
-                     invalid_nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message("The nickname can only contain ASCII characters")
-        self._assert_current_url(self.signup_url)
-
-        # 不正なpassword
-        new_email = "new_user@example.com"
-        new_nickname = "newTestUser"
-        password1 = "pass0123"
-        password2 = "0123pass"
-
-        self._signup(new_email,
-                     new_nickname,
                      password1,
                      password2,
                      wait_for_button_invisible=False)
         self._assert_message("passwords don't match")
-        self._assert_current_url(self.signup_url)
-
-        # 不正なpassword（too long）
-        new_email = "new_user@example.com"
-        new_nickname = "newTestUser"
-        password1 = "pass0" + "0123456789" * 6
-        password2 = "pass0" + "0123456789" * 6
-
-        self._signup(new_email,
-                     new_nickname,
-                     password1,
-                     password2,
-                     wait_for_button_invisible=False)
-        self._assert_message(f"The password must be {CustomUser.kPASSWORD_MAX_LENGTH} characters or less")
         self._assert_current_url(self.signup_url)
 
     def _signup(self,
