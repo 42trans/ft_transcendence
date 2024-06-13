@@ -16,9 +16,7 @@ class UserManager
 		if (!this.userProfile) 
 		{
 			try {
-				let response = await fetch(config.API_URLS.userProfile, {
-					headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
-				});
+				let response = await fetch(config.API_URLS.userProfile);
 
 						if (TEST_TRY1){	
 							response = {

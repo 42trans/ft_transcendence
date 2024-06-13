@@ -65,8 +65,7 @@ function drawUserProfile(data) {
 export function fetchUserProfile() {
 	fetch("/accounts/api/user/profile/", {
 		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${localStorage.getItem('access')}`
+			'Content-Type': 'application/json'
 		}
 	})
 		.then(response => response.json())

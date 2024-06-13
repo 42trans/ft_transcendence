@@ -10,8 +10,6 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from accounts.views.jwt import is_valid_jwt
 
 
 logging.basicConfig(
@@ -26,8 +24,6 @@ class UserFriendsView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/friends.html"
 
     def get(self, request, *args, **kwargs):
-        if not is_valid_jwt(request):
-            return redirect('accounts:login')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

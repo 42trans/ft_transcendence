@@ -18,7 +18,7 @@ function verify2FA() {
 	fetch('/accounts/api/verify_2fa/', {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json',
+			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({ token: token , next: nextUrl})
 	})

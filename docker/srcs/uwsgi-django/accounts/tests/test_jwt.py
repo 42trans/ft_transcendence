@@ -51,14 +51,14 @@ class JWTTest(APITestCase):
 
     def test_refresh_token(self):
         response = self._basic_login()
-        refresh_token = response.cookies.get('Refresh-Token').value
-
-        response = self.client.post(self.token_refresh_api_url, {'refresh': refresh_token})
+        response = self.client.post(self.token_refresh_api_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self._assert_jwt_in_cookie(response)
+        self.assertEqual(response.json()['message'], 'Access token is still valid')
 
     def test_refresh_token_with_invalid_token(self):
-        response = self.client.post(self.token_refresh_api_url, {'refresh': 'invalidtoken1234567890'})
+        self.client.cookies['Refresh-Token'] = 'invalidtoken1234567890'
+
+        response = self.client.post(self.token_refresh_api_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertIn('error', response.json())
         self.assertEqual(response.json()['error'], 'Token is invalid or expired')

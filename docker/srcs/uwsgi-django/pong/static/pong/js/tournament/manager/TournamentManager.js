@@ -90,9 +90,7 @@ class TournamentManager
 		try {
 					if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 
-			const response = await fetch(this.API_URLS.ongoingLatestTour, {
-				headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
-			});
+			const response = await fetch(this.API_URLS.ongoingLatestTour);
 			// ongoingが見つからない場合は204が返ってくるので、ここではそれ以外のエラーを処理する。現状、APIにはそのような実装はないがハンドリングしておく
 			if (!response.ok) {
 				throw new Error(`Request failed with status ${response.status}`);
