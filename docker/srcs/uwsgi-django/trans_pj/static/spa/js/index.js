@@ -28,7 +28,7 @@ const setupPopStateListener = () => {
   window.addEventListener("popstate", (event) => {
     const path = window.location.pathname;
     refreshJWT()
-    stopGamePageAnimation()
+    // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     renderView(path);
     setOnlineStatus();  // WebSocket接続を再確立
@@ -40,7 +40,7 @@ const setupPopStateListener = () => {
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", () => {
     console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
-    stopGamePageAnimation()
+    // stopGamePageAnimation()
     refreshJWT()
 
     // 初期ビューを表示
@@ -97,7 +97,7 @@ async function getLoggedInUserRedirectUrl(url) {
 const setupBodyClickListener = () => {
   document.body.addEventListener("click", async (event) => {
   console.log('clickEvent: path: ' + window.location.pathname);
-  stopGamePageAnimation()
+  // stopGamePageAnimation()
   refreshJWT()
   setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
 
