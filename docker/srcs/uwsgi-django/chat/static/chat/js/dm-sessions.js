@@ -9,8 +9,7 @@ export function fetchDMList() {
     fetch('/chat/api/dm-sessions/', {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            'Content-Type': 'application/json'
         }
     })
         .then(response => {
