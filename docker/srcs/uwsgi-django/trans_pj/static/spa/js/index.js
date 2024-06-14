@@ -4,7 +4,6 @@ import { routeTable } from "./routing/routeTable.js"
 import { switchPage, renderView } from "./routing/renderView.js";
 import { isUserLoggedIn, isUserEnable2FA } from "./utility/isUser.js"
 import { refreshJWT } from "./utility/refreshJWT.js"
-import { setOnlineStatus } from "/static/accounts/js/online-status.js";
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
 
@@ -31,7 +30,7 @@ const setupPopStateListener = () => {
     // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     renderView(path);
-    await setOnlineStatus();  // WebSocket接続を再確立
+    setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 
@@ -51,8 +50,6 @@ const setupDOMContentLoadedListener = () => {
 
     // リンククリック時の遷移を設定
     setupBodyClickListener();
-
-    await setOnlineStatus();  // WebSocket接続を再確立
 
     // three-jsのEndGameボタン押下でSPA遷移するためのイベント
     // document.addEventListener('endGame', function() {
@@ -118,7 +115,6 @@ const setupBodyClickListener = () => {
     //   const url = event.target.href;
     //   switchPage(url);
     // }
-    // await setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 
@@ -131,7 +127,6 @@ const setupLoadListener = () => {
 
     // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
-    await setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 

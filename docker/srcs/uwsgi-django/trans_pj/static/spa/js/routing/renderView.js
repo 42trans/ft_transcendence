@@ -1,5 +1,6 @@
 import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
+import { setOnlineStatus } from "/static/accounts/js/online-status.js";
 
 const DEBUG_DETAIL = 0;
 
@@ -35,6 +36,7 @@ export const switchPage = (targePath) => {
   // }
   renderView(targetPathName).then(() => {
     window.dispatchEvent(new CustomEvent('switchPageResetState'));
+    setOnlineStatus();
   });
 };
 

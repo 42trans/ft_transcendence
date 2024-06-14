@@ -185,6 +185,38 @@ export function fetchUserId() {
 }
 
 
+function onPageLoad(userId) {
+    connectOnlineStatusWebSocket(userId);
+}
+
+function isEventListenerRegistered(element, eventName, listener) {
+    const eventListeners = getEventListeners(element);
+    return eventListeners[eventName] && eventListeners[eventName].some(l => l.listener === listener);
+}
+
+function getEventListeners(element) {
+    return element.eventListenerList || {};
+}
+
+function setOnlineStatusHandler(userId) {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        onPageLoad(userId);
+    } else {
+        if (!isEventListenerRegistered(window, 'load', onPageLoad)) {
+            window.addEventListener('load', onPageLoad, {
+                once: true,
+                passive: true
+            });
+        }
+    }
+
+    if (!isEventListenerRegistered(window, 'popstate', onPageLoad)) {
+        window.addEventListener('popstate', onPageLoad, {
+            passive: true
+        });
+    }
+}
+
 export async function setOnlineStatus() {
     // console.log('setOnlineStatus called');
     const isLoggedIn = await isUserLoggedIn();
@@ -192,24 +224,12 @@ export async function setOnlineStatus() {
         return;
     }
 
+    // login userの場合に onlineStatusを評価
     fetchUserId().then(userId => {
         if (!userId) {
             // console.log('GuestUser? UserID not found');
             return;
         }
-
-        function onPageLoad() {
-            connectOnlineStatusWebSocket(userId);
-        }
-
-        if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            onPageLoad();
-        } else {
-            window.addEventListener('load', onPageLoad);
-        }
-
-        window.addEventListener('popstate', function(event) {
-            onPageLoad();
-        });
+        setOnlineStatusHandler(userId);
     });
 }
