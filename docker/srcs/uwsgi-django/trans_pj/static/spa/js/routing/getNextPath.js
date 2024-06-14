@@ -5,7 +5,7 @@ import { isUserLoggedIn, isUserEnable2FA } from "../utility/isUser.js"
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
 
-const DEBUG = 1;
+const DEBUG = 0;
 
 // Guestのリダイレクトを制御
 //  top, home, game2d, signup, loginはそのまま表示
