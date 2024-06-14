@@ -106,12 +106,12 @@ class JWTRefreshAPIView(TokenRefreshView):
         if self.__is_valid_access_token(current_access_token):
             data = {'message': 'Access token is still valid'}
             response = JsonResponse(data, status=200)
-            if settings.DEBUG: logger.error(f"{data['message']}")
+            # if settings.DEBUG: logger.error(f"{data['message']}")
             return response
 
         if current_refresh_token is None:
             data = {'error': 'Refresh token not found'}
-            if settings.DEBUG: logger.error(f"{data['error']}")
+#             if settings.DEBUG: logger.error(f"{data['error']}")
             return JsonResponse(data, status=401)
 
         try:
@@ -139,7 +139,7 @@ class JWTRefreshAPIView(TokenRefreshView):
 
         except Exception as e:
             data = {'error': str(e)}
-            if settings.DEBUG: logger.error(f"error: {data['error']}")
+            # if settings.DEBUG: logger.error(f"error: {data['error']}")
             return JsonResponse(data, status=401)
 
     def __is_valid_access_token(self, current_access_token):

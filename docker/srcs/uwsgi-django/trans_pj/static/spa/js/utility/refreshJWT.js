@@ -2,6 +2,8 @@
 
 // APIでaccess-tokenを再発行しcookieに設定するため、APIを呼ぶだけ
 export function refreshJWT() {
+    const DEBUG = 0;
+
     fetch('/accounts/api/token/refresh/', {
         method: 'POST',
         headers: {
@@ -12,16 +14,22 @@ export function refreshJWT() {
             if (response.ok) {
                 return response.json();
             } else {
-                console.log('[refreshJWT]Token refresh failed');
+                if (DEBUG) {
+                    console.log('[refreshJWT]Token refresh failed');
+                }
                 return null;
             }
         })
         .then(data => {
             if (data) {
-                console.log('[refreshJWT]Token refresh successful:', data.message);
+                if (DEBUG) {
+                    console.log('[refreshJWT]Token refresh successful:', data.message);
+                }
             }
         })
         .catch(error => {
-            console.log('[refreshJWT]Error refreshing token:', error);
+            if (DEBUG) {
+                console.log('[refreshJWT]Error refreshing token:', error);
+            }
         });
 }
