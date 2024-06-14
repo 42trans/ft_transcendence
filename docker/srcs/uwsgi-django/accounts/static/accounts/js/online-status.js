@@ -4,7 +4,7 @@ import { deleteFriend, createActionButton } from "./friend.js"
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 
 
-let onlineStatusDebug = 1;
+let onlineStatusDebug = 0;
 let onlineStatusSocket = null;
 
 
