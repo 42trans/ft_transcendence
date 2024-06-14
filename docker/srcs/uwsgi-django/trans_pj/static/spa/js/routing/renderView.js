@@ -1,7 +1,7 @@
 import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
 
-const DEBUG_DETAIL = 1;
+const DEBUG_DETAIL = 0;
 
 // touteTable.jsの記述について
 // game3d: { path: "/app/game/game-3d/", view: Game3D }は、/app/game/game-3d/というパスに対してGame3Dという「クラス」を対応
