@@ -102,13 +102,14 @@ async function getView(path) {
 let currentView = null;
 export const renderView = async (path) => {
   if (currentView && typeof currentView.dispose === "function") {
-        if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
+        if (DEBUG_DETAIL) { console.log('renderView(): currentView.dispose(): currentView', currentView);  } 
     currentView.dispose();
   }
   const selectedRoute = getSelectedRoute(path, routeTable);
   const view = new selectedRoute.view(selectedRoute.params);
   currentView = view;
   const htmlSrc = await view.getHtml();
+        if (DEBUG_DETAIL) { console.log('renderView():htmlSrc', htmlSrc); }
   document.querySelector("#spa").innerHTML = htmlSrc;
   await view.executeScript();
         if (DEBUG_DETAIL) { console.log('renderView(): currentView', currentView); }

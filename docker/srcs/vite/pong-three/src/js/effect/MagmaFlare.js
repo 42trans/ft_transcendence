@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/effect/MagmaFlare.js
 import * as THREE from "three";
 import Aura from "./Aura";
 import FlareEmitter from "./FlareEmitter";

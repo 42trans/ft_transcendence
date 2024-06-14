@@ -46,7 +46,7 @@ class EntryGameState extends BaseGameState
 
 	update() 
 	{
-					if (DEBUG_FLOW) {	console.log("entryState.update(): start");	}
+					if (DEBUG_DETAIL1) {	console.log("entryState.update(): start");	}
 		this.magmaFlare.update();
 	}
 	

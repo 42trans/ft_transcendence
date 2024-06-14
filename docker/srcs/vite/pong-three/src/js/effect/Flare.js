@@ -1,6 +1,10 @@
+// docker/srcs/vite/pong-three/src/js/effect/Flare.js
+
 import * as THREE from "three";
 import flareTexture from '../../assets/img/bg.png';
 import textureCache from './TextureCache';
+
+
 
 class Flare extends THREE.Object3D 
 {
@@ -12,6 +16,7 @@ class Flare extends THREE.Object3D
 
 		textureCache.getTexture(flareTexture).then(texture => 
 		{
+			texture.needsUpdate = true;
 			this._map = texture;
 			const uniforms = {
 				map: { type: "t", value: texture },

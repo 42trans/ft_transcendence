@@ -21,6 +21,22 @@ class RendererManager
 		return RendererManager.instance;
 	}
 
+	reinitializeRenderer() 
+	{
+		const rendererOptions = new RendererConfig().rendererOptions;
+		this.renderer = new THREE.WebGLRenderer(rendererOptions);
+		this.initializeRenderer();
+	}
+	
+	static getInstance()
+	{
+		if (!RendererManager.instance) 
+		{
+			RendererManager.instance = new RendererManager();
+		}
+		return RendererManager.instance;
+	}
+
 	static getRenderer() 
 	{
 		if (!RendererManager.instance) 

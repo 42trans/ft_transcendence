@@ -34,10 +34,13 @@ class PongApp
 
 	static getInstance(env)
 	{
+				if (DEBUG_FLOW) {	console.log('getInstance(): start');	}
 		if (!PongApp.instance)
 		{
+					if (DEBUG_FLOW) {	console.log('new PongApp');	}
 			PongApp.instance = new PongApp(env);
 		}
+				if (DEBUG_FLOW) {	console.log('getInstance(): done');	}
 		return PongApp.instance;
 	}
 
@@ -69,15 +72,17 @@ class PongApp
 		// urlがtournametの試合かどうかを判定
 		const currentPath = window.location.pathname;
 		const routeTable = await PongApp.loadRouteTable();
+					if (DEBUG_DETAIL) {	console.log('routeTable:', routeTable);	}
 		const gameMatchPath = routeTable['gameMatch'].path;
 		const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
 		if (!gameMatchRegex.test(currentPath)) {
-						if (DEBUG_FLOW) {	console.log('pongApp.main()', currentPath, gameMatchRegex);	}
+						if (DEBUG_FLOW) {	console.log('init()', currentPath, gameMatchRegex);	}
 			return;
 		}
-
+		
 		// 試合が終了しているかを判定する処理
 		const matchDataElement = document.getElementById('match-data');
+					if (DEBUG_FLOW) {	console.log('init() matchDataElement: ', matchDataElement);	}
 		if (matchDataElement) 
 		{
 			this.matchData = JSON.parse(matchDataElement.textContent);
@@ -95,9 +100,12 @@ class PongApp
 			return;
 		}
 
+		// 後に移動
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
-		this.renderer = RendererManager.getRenderer();
-				if (DEBUG_DETAIL) {	console.log('this.renderer', this.renderer);	}
+		// RendererManager.getInstance().reinitializeRenderer();
+		// this.renderer = RendererManager.getRenderer();
+		// 		if (DEBUG_DETAIL) {	console.log('this.renderer', this.renderer);	}
+
 
 		// 全てのシーンのmixerを一元的に管理。シングルトン
 		this.animationMixersManager = AnimationMixersManager.getInstance();
@@ -110,8 +118,19 @@ class PongApp
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
 					if (DEBUG_DETAIL) {	console.log('this.gameStateManager', this.gameStateManager);	}
 		// 無限ループでアニメーションの更新を担当。シングルトン
-		this.renderLoop = LoopManager.getInstance(this);
-					if (DEBUG_DETAIL) {	console.log('this.renderLoop', this.renderLoop);	}
+		const renderLoop = LoopManager.getInstance(this);
+					if (DEBUG_DETAIL) {	console.log('renderLoop', renderLoop);	}
+					if (DEBUG_DETAIL) {	console.log('renderLoop.pong', renderLoop.pong);	}
+		this.renderLoop = renderLoop;
+
+		// -----------------------------------------------------------------------------
+		// 再描画のバグの根本原因の対策はこの行。再度コンストラクタから作り直すような処理。理由は不明
+		// -----------------------------------------------------------------------------
+		RendererManager.getInstance().reinitializeRenderer();
+		// -----------------------------------------------------------------------------
+		// 他のMgrが依存してるので、この位置でリセット。マネージャーが生成された後のタイミングで再初期化を行う
+		this.renderer = RendererManager.getRenderer();
+				if (DEBUG_DETAIL) {	console.log('this.renderer', this.renderer);	}
 		this.renderLoop.start();
 
 					//dev用　index.jsで`PongApp.main('dev');`で呼び出す
@@ -137,17 +156,28 @@ class PongApp
 	{
 					if (DEBUG_FLOW) {	console.log('destroy(): start');	}
 
-		if (!this.allScenesManager || !this.renderer || !this.animationMixersManager){
-			if (DEBUG_DETAIL) {	console.log('allScenesManager, renderer, animationMixerManager is false');	}
-
+		if (!window.pongApp){
+						if (DEBUG_FLOW) {	console.log('destroy(): window.pongApp is false');	window.pongApp}
 			return;
 		}
 		this.stopRenderLoop();
-
-		this.allScenesManager.dispose();
-		// THREE.WebGLRendererのメソッド
-		this.renderer.dispose();
-		this.animationMixersManager.dispose();
+		if (this.allScenesManager){
+			this.allScenesManager.dispose();
+		}
+		if (this.renderer){
+			// THREE.WebGLRendererのメソッド
+			// これだけでは不足のようで、init()でインスタンスの廃棄が必要
+			this.renderer.dispose();
+		}
+		if (this.animationMixersManager){
+			this.animationMixersManager.dispose();
+		}
+		if (this.renderLoop) {
+			this.renderLoop.dispose();
+		}
+		if (this.gameStateManager) {
+			this.gameStateManager.dispose();
+		}
 		// イベントリスナーを削除
 		window.removeEventListener('resize', this.boundHandleResize);
 		// lil-gui を破棄
@@ -164,7 +194,8 @@ class PongApp
 		this.allScenesManager = null;
 		this.gameStateManager = null;
 		this.renderLoop = null;
-					if (DEBUG_FLOW) {	console.log('destroy(): done');	}
+		PongApp.instance = null;
+					if (DEBUG_FLOW) {	console.log('destroy(): done');	window.pongApp}
 	}
 
 
