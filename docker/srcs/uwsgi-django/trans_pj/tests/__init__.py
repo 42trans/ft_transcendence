@@ -166,7 +166,10 @@ class TestConfig(LiveServerTestCase):
     def _assert_current_url(self, expected_url):
         self.assertEqual(self.driver.current_url, expected_url)
 
-    def _assert_page_url_and_title(self, expecter_url, expected_title):
+    def _assert_page_url_and_title(self, expecter_url, expected_title, timeout=10):
+        wait = WebDriverWait(self.driver, timeout=timeout)
+        wait.until(EC.title_is(expected_title))
+
         # ページのURLを検証
         self._assert_current_url(expecter_url)
         # ページのタイトルを検証
@@ -258,7 +261,7 @@ class TestConfig(LiveServerTestCase):
         self.driver.execute_script("arguments[0].click();", target)
         if wait_for_button_invisible:
             self._wait_invisible(target)
-            self.driver.refresh()
+            # self.driver.refresh()
 
     def _screenshot(self, img_name):
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -357,7 +360,6 @@ class TestConfig(LiveServerTestCase):
         self._send_to_elem(By.ID, "nickname", nickname)
         self._send_to_elem(By.ID, "password1", password)
         self._send_to_elem(By.ID, "password2", password)
-
         signup_button = self._element(By.ID, "sign-submit")
         self._click_button(signup_button, wait_for_button_invisible=True)
 

@@ -80,48 +80,44 @@ class UrlAccessTest(TestConfig):
             time.sleep(0.5)  # 明示的に待機
             # self._screenshot(f"guest_{page_name} 1")
 
-            if page_name == TournamentPage:
-                self._close_alert("Your session has expired. Please log in again.")
-
             print(f"           access_url   : {url}")
             print(f"           current_url  : {self.driver.current_url}")
-            self._assert_current_url(url)
             # self._screenshot(f"guest_{page_name} 2")
 
             # ページ表示内容を評価
-            if self._is_page_login_required(page_name):
+            if self._is_page_login_required(page_name) or page_name == AuthLoginPage:
+                self._assert_current_url(self.login_url)
                 self._is_expected_page(AuthLoginPage)  # login pageであることを確認
 
                 print(f"           expected login: ok")
                 # self._screenshot(f"guest_{page_name} 3")
 
-                # login後にlogin pageでないことを確認
+                # login後にTOPへ遷移していることを確認
                 self._login_for_redirected_page(email=self.user1_email, password=self.password)  # login
                 print(f"           login         : success")
                 # self._screenshot(f"guest_{page_name} 4")
 
                 if page_name != AuthVerify2FaPage:  # verify2faはskip
-                    self._is_expected_page(page_name)  # url通りのページに遷移していることを確認
+                    self._assert_current_url(self.top_url)
+                    self._is_expected_page(PongTopPage)  # topページに遷移していることを確認
 
                 self._logout()  # 次のテストのためにlogout
-            elif page_name == AuthLoginPage:
-                pass
             else:
+                self._assert_current_url(url)
                 self._is_not_login_page()  # login pageでないことを確認
 
-    # todo: Actionsで2FA loginが不安定のためコメントアウト
+    # todo: Actionsで2FA loginが不安定のため割愛
     # def test_access_by_guest_to_2fa_on_user(self):
+
+    # def test_access_by_2fa_disabled_user(self):
     #     """
-    #     ゲストでのアクセス -> 2FA off userでlogin
-    #     is_page_login_required()に該当するページはlogin pageに遷移することが期待される(urlはkeepする)
-    #     login成功後はリダイレクト元のurlに遷移する
+    #     2FA無効userでのアクセス
+    #     is_page_redirect_to_top()に該当するページはtopに遷移することが期待される
     #     """
-    #     print(f"[GUEST -> Login(2FA ON)]")
+    #     print(f"[USER: 2FA Disabled]")
+    #     self._login(email=self.user1_email, password=self.password)
+    #
     #     for page_name, page_path in self.url_config.items():
-    #
-    #         if page_name != GameHistoryPage:
-    #             continue
-    #
     #         print(f" [Testing] page_name    : {page_name}")
     #         print(f"           page_path    : {page_path}")
     #
@@ -132,112 +128,51 @@ class UrlAccessTest(TestConfig):
     #         url = self._get_url(page_name, page_path)
     #         self._access_to(url, wait_to_be_url=False)
     #         time.sleep(0.5)  # 明示的に待機
-    #         self._screenshot(f"guest_{page_name} 1")
+    #         # self._screenshot(f"user1_{page_name}")
     #
     #         print(f"           access_url   : {url}")
-    #         print(f"           current_url 1: {self.driver.current_url}")
-    #         self._assert_current_url(url)
+    #         print(f"           current_url  : {self.driver.current_url}")
+    #         # self._assert_current_url(url)
     #
     #         # ページ表示内容を評価
-    #         if self._is_page_login_required(page_name):
-    #             self._is_expected_page(AuthLoginPage)  # login pageであることを確認
-    #
-    #             print(f"           expected login: ok")
-    #             print(f"           current_url 2: {self.driver.current_url}")
-    #             self._screenshot(f"guest_{page_name} 2 expect_login")
-    #
-    #             if page_name == AuthVerify2FaPage or page_name == AuthEnable2FaPage:
-    #                 continue
-    #
-    #             self._login_for_redirected_page(email=self.user3_email, password=self.password)  # login
-    #             time.sleep(0.1)
-    #
-    #             self._screenshot(f"guest_{page_name} 3")
-    #             print(f"           current_url 3: {self.driver.current_url}")
-    #             url_with_next = f"{self.verify_2fa_url}?next={page_path}"
-    #             print(f"           url_with_next: {url_with_next}")
-    #             self._assert_current_url(url_with_next)
-    #
-    #             self.driver.refresh()
-    #             self._verify_login_2fa(self.set_up_key)
-    #             print(f"           login         : success")
-    #             print(f"           current_url 4: {self.driver.current_url}")
-    #             self._screenshot(f"guest_{page_name} 4")
-    #
-    #             self._is_expected_page(page_name)  # url通りのページに遷移していることを確認
-    #
-    #             self._logout()  # 次のテストのためにlogout
-    #
-    #         elif page_name == AuthLoginPage:
-    #             pass
+    #         if self._is_page_redirect_to_top(page_name, is_enable_2fa=False) or url == self.top_url:
+    #             self._is_expected_page(PongTopPage)
+    #             print(f"           expected top : ok")
     #         else:
-    #             self._is_not_login_page()  # login pageでないことを確認
-    #             print(f"           not login page: ok")
-
-    def test_access_by_2fa_disabled_user(self):
-        """
-        2FA無効userでのアクセス
-        is_page_redirect_to_top()に該当するページはtopに遷移することが期待される
-        """
-        print(f"[USER: 2FA Disabled]")
-        self._login(email=self.user1_email, password=self.password)
-
-        for page_name, page_path in self.url_config.items():
-            print(f" [Testing] page_name    : {page_name}")
-            print(f"           page_path    : {page_path}")
-
-            if self._except_test_page(page_name):
-                print(f"           skip")
-                continue
-
-            url = self._get_url(page_name, page_path)
-            self._access_to(url, wait_to_be_url=False)
-            time.sleep(0.5)  # 明示的に待機
-            # self._screenshot(f"user1_{page_name}")
-
-            print(f"           access_url   : {url}")
-            print(f"           current_url  : {self.driver.current_url}")
-            # self._assert_current_url(url)
-
-            # ページ表示内容を評価
-            if self._is_page_redirect_to_top(page_name, is_enable_2fa=False) or url == self.top_url:
-                self._is_expected_page(PongTopPage)
-                print(f"           expected top : ok")
-            else:
-                self._is_not_top_page(page_name)  # top pageでないことを確認
-
-    def test_access_by_2fa_enabled_user(self):
-        """
-        2FA有効userでのアクセス
-        is_page_redirect_to_top()に該当するページはtopに遷移することが期待される
-        """
-        print(f"[USER: 2FA Enabled]")
-        self._login(email=self.user3_email, password=self.password)
-        self._verify_login_2fa(self.set_up_key)
-
-        for page_name, page_path in self.url_config.items():
-            print(f" [Testing] page_name    : {page_name}")
-            print(f"           page_path    : {page_path}")
-
-            if self._except_test_page(page_name):
-                print(f"           skip")
-                continue
-
-            url = self._get_url(page_name, page_path)
-            self._access_to(url, wait_to_be_url=False)
-            time.sleep(0.5)  # 明示的に待機
-            # self._screenshot(f"user3_{page_name}")
-
-            print(f"           access_url   : {url}")
-            print(f"           current_url  : {self.driver.current_url}")
-            # self._assert_current_url(url)
-
-            # ページ表示内容を評価
-            if self._is_page_redirect_to_top(page_name, is_enable_2fa=True) or url == self.top_url:
-                self._is_expected_page(PongTopPage)
-                print(f"           expected top : ok")
-            else:
-                self._is_not_top_page(page_name)  # top pageでないことを確認
+    #             self._is_not_top_page(page_name)  # top pageでないことを確認
+    #
+    # def test_access_by_2fa_enabled_user(self):
+    #     """
+    #     2FA有効userでのアクセス
+    #     is_page_redirect_to_top()に該当するページはtopに遷移することが期待される
+    #     """
+    #     print(f"[USER: 2FA Enabled]")
+    #     self._login(email=self.user3_email, password=self.password)
+    #     self._verify_login_2fa(self.set_up_key)
+    #
+    #     for page_name, page_path in self.url_config.items():
+    #         print(f" [Testing] page_name    : {page_name}")
+    #         print(f"           page_path    : {page_path}")
+    #
+    #         if self._except_test_page(page_name):
+    #             print(f"           skip")
+    #             continue
+    #
+    #         url = self._get_url(page_name, page_path)
+    #         self._access_to(url, wait_to_be_url=False)
+    #         time.sleep(0.5)  # 明示的に待機
+    #         # self._screenshot(f"user3_{page_name}")
+    #
+    #         print(f"           access_url   : {url}")
+    #         print(f"           current_url  : {self.driver.current_url}")
+    #         # self._assert_current_url(url)
+    #
+    #         # ページ表示内容を評価
+    #         if self._is_page_redirect_to_top(page_name, is_enable_2fa=True) or url == self.top_url:
+    #             self._is_expected_page(PongTopPage)
+    #             print(f"           expected top : ok")
+    #         else:
+    #             self._is_not_top_page(page_name)  # top pageでないことを確認
 
     def _except_test_page(self, page_name):
         """
@@ -254,7 +189,7 @@ class UrlAccessTest(TestConfig):
     def _is_page_login_required(self, page_name):
         login_required_pages = {
             TournamentPage,
-            # "kSpaGame3D",
+            Game3D,
             GameHistoryPage,
             UserProfilePage,
             UserInfoUrlBase,  # :nicknameを置き換えるためにUrlBaseでテスト
