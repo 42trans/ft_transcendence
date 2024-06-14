@@ -23,7 +23,7 @@ function getNextUrl(redirectTo) {
 	return currentBrowserUrl;
 }
 
-export function loginUser(event) {
+export function loginUser() {
 	const email = document.getElementById('email').value;
 	const password = document.getElementById('password').value;
 
@@ -78,7 +78,7 @@ export function setupLoginEventListener() {
 		} else {
 			form.addEventListener('submit', (event) => {
 				event.preventDefault();
-				loginUser(event);
+				loginUser();
 			});
 			form.classList.add('listener-added');
 			// console.log('Form event listener added');
