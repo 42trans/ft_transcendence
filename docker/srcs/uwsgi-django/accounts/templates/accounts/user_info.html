@@ -9,19 +9,13 @@
 	<li>xxx: xxx</li>
 	<li>xxx: xxx</li>
 	<li><a href="{{ url_config.kSpaDmWithUrlBase }}{{ user_data.info_user_nickname }}" data-link>DM with {{ user_data.info_user_nickname }}</a></li>
-	<br>
-	{% if not user_data.isBlockingUser %}
-		<button class="hth-btn blockUserButton" data-nickname="{{ user_data.info_user_nickname }}">block</button>
-	{% else %}
-		<button class="hth-btn unBlockUserButton" data-nickname="{{ user_data.info_user_nickname }}">unblock</button>
-	{% endif %}
 	{% comment %} <li><a href="#" onclick="sendSystemMessage('{{ user_data.info_user_nickname }}');">[test] send system message to {{ user_data.info_user_nickname }}</a></li> {% endcomment %}
 	{% comment %} <li><a href="#" onclick="sendSystemMessage('user1');">[test] send system message to user1</a></li> {% endcomment %}
 </ul>
 
 <hr>
 
-{% comment %} フレンド関係の表示  {% endcomment %}
+{% comment %} フレンド関係の表示 {% endcomment %}
 <ul>
 	<h4>friendship</h4>
 	{% if user_data.is_friend %}
@@ -37,6 +31,21 @@
 		<button class="hth-btn sendFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Send Friend Reques</button>
 	{% endif %}
 </ul>
+
+<hr>
+
+{% comment %} Block {% endcomment %}
+<ul>
+	<h4>blocking</h4>
+	{% if not user_data.isBlockingUser %}
+		Unblocking
+		<button class="hth-btn blockUserButton" data-nickname="{{ user_data.info_user_nickname }}">block user</button>
+	{% else %}
+		Blocking
+		<button class="hth-btn unBlockUserButton" data-nickname="{{ user_data.info_user_nickname }}">unblock user</button>
+	{% endif %}
+</ul>
+
 
 {% comment %} <script src="{% static 'accounts/js/block-user.js' %}"></script> {% endcomment %}
 {% comment %} <script src="{% static 'accounts/js/unblock-user.js' %}"></script> {% endcomment %}
