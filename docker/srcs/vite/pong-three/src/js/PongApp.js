@@ -124,6 +124,7 @@ class PongApp
 
 		// webGLのリセット　マネージャーが生成された後のタイミングで再初期化を行う
 		RendererManager.getInstance().reinitializeRenderer();
+
 		this.renderer = RendererManager.getRenderer();
 				if (DEBUG_DETAIL) {	console.log('this.renderer', this.renderer);	}
 
