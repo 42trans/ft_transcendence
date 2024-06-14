@@ -22,7 +22,7 @@ export function connectOnlineStatusWebSocket(userId) {
     socket = new WebSocket(websocketUrl);
     socket.onmessage = handleMessage;
     socket.onopen = () => handleOpen(socket, userId);
-    socket.onclose = () => handleClose(socket, userId);
+    socket.onclose = () => disconnectOnlineStatusWebSocket(userId);
     socket.onerror = handleError;
 
     // alert('connectOnlineStatusWebSocket completed')
