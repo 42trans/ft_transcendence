@@ -25,13 +25,16 @@
 <ul>
 	<h4>friendship</h4>
 	{% if user_data.is_friend %}
-		<li>Friend -> <a href="#" class="deleteFriendButton" data-userid="{{ user_data.info_user_id }}">Delete</a></li>
+		Friend with You
+		<button class="hth-btn deleteFriendButton" data-userid="{{ user_data.info_user_id }}">Delete friendship</button>
 	{% elif user_data.friend_request_sent_status == "pending" %}
-		<li>Request sent (pending) -> <a href="#" class="cancelFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Cancel</a></li>
+		Request sent (pending)
+		<button class="hth-btn cancelFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Cancel</button>
 	{% elif user_data.friend_request_received_status == "pending" %}
-		<li>Request received (pending)</li>
+		Request received (pending)
 	{% else %}
-		<li><a href="#" class="sendFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Send Friend Reques</a></li>
+		Not Friend Yet
+		<button class="hth-btn sendFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Send Friend Reques</button>
 	{% endif %}
 </ul>
 
