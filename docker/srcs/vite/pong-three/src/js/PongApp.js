@@ -101,8 +101,10 @@ class PongApp
 		}
 
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
-		this.renderer = RendererManager.getRenderer();
-				if (DEBUG_DETAIL) {	console.log('this.renderer', this.renderer);	}
+		// RendererManager.getInstance().reinitializeRenderer();
+		// this.renderer = RendererManager.getRenderer();
+		// 		if (DEBUG_DETAIL) {	console.log('this.renderer', this.renderer);	}
+
 
 		// 全てのシーンのmixerを一元的に管理。シングルトン
 		this.animationMixersManager = AnimationMixersManager.getInstance();
@@ -119,6 +121,12 @@ class PongApp
 					if (DEBUG_DETAIL) {	console.log('renderLoop', renderLoop);	}
 					if (DEBUG_DETAIL) {	console.log('renderLoop.pong', renderLoop.pong);	}
 		this.renderLoop = renderLoop;
+
+		// webGLのリセット　マネージャーが生成された後のタイミングで再初期化を行う
+		RendererManager.getInstance().reinitializeRenderer();
+		this.renderer = RendererManager.getRenderer();
+				if (DEBUG_DETAIL) {	console.log('this.renderer', this.renderer);	}
+
 		this.renderLoop.start();
 
 					//dev用　index.jsで`PongApp.main('dev');`で呼び出す
