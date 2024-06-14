@@ -18,7 +18,7 @@ class RenderLoop
 
 	constructor(pong) 
 	{
-		
+		// console.log('LoopManager constructor called with pong:', pong);
 		if (!RenderLoop.instance) {
 			this.pong = pong;
 			RenderLoop.instance = this;
@@ -28,9 +28,13 @@ class RenderLoop
 
 	static getInstance(pong) 
 	{
+		// console.log('LoopManager.getInstance called');
 		if (!RenderLoop.instance) 
 		{
+			// console.log('Creating new LoopManager instance');
 			RenderLoop.instance = new RenderLoop(pong);
+		} else {
+			RenderLoop.instance.pong = pong;
 		}
 		return RenderLoop.instance;
 	}
@@ -38,19 +42,46 @@ class RenderLoop
 	start() 
 	{
 		const animate = () => 
-		{			
+		{
 			this.requestID = requestAnimationFrame(animate);
-				if (DEBUG_FLOW) {	console.log('1 requestAnimationFrame');	}
-			this.pong.gameStateManager.update();
+			if (DEBUG_FLOW) {	console.log('1 requestAnimationFrame');	}
+			
+			if (this.pong && this.pong.gameStateManager) {
+				this.pong.gameStateManager.update();
 				if (DEBUG_FLOW) {	console.log('2 requestAnimationFrame');	}
-			this.pong.allScenesManager.updateAllScenes();
+			}
+			
+			if (this.pong && this.pong.allScenesManager) {
+				this.pong.allScenesManager.updateAllScenes();
 				if (DEBUG_FLOW) {	console.log('3 requestAnimationFrame');	}
-			this.pong.animationMixersManager.update(); 
+			}
+			
+			if (this.pong && this.pong.animationMixersManager) {
+				this.pong.animationMixersManager.update(); 
 				if (DEBUG_FLOW) {	console.log('4 requestAnimationFrame');	}
-			this.pong.allScenesManager.renderAllScenes(RendererManager.getRenderer())
+			}
+			
+			if (this.pong && this.pong.allScenesManager) {
+				this.pong.allScenesManager.renderAllScenes(RendererManager.getRenderer());
 				if (DEBUG_FLOW) {	console.log('5 requestAnimationFrame');	}
+			}
 		};
 		animate();
+
+		// const animate = () => 
+		// {			
+		// 	this.requestID = requestAnimationFrame(animate);
+		// 		if (DEBUG_FLOW) {	console.log('1 requestAnimationFrame');	}
+		// 	this.pong.gameStateManager.update();
+		// 		if (DEBUG_FLOW) {	console.log('2 requestAnimationFrame');	}
+		// 	this.pong.allScenesManager.updateAllScenes();
+		// 		if (DEBUG_FLOW) {	console.log('3 requestAnimationFrame');	}
+		// 	this.pong.animationMixersManager.update(); 
+		// 		if (DEBUG_FLOW) {	console.log('4 requestAnimationFrame');	}
+		// 	this.pong.allScenesManager.renderAllScenes(RendererManager.getRenderer())
+		// 		if (DEBUG_FLOW) {	console.log('5 requestAnimationFrame');	}
+		// };
+		// animate();
 	}
 
 	stop()
@@ -60,6 +91,13 @@ class RenderLoop
 			cancelAnimationFrame(this.requestID);
 			this.requestID = null;
 		}
+	}
+
+	dispose() 
+	{
+		this.stop();
+		this.pong = null;
+		RenderLoop.instance = null;
 	}
 }
 

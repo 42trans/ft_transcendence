@@ -36,7 +36,6 @@ class AnimationMixersManager
 	addMixer(object, mixer) 
 	{
 		this.mixersMap.set(object.uuid, mixer);
-		// console.log(` UUID: ${object.uuid}`);
 	}
 
 	dispose() {
@@ -55,25 +54,28 @@ class AnimationMixersManager
 	{
 		if (!object || !object.uuid) 
 		{
-			// console.error("Invalid object or missing UUID.");
+			console.error("Invalid object or missing UUID.");
 			return;
 		}
 	
 		if (this.mixersMap.has(object.uuid)) 
 		{
 			this.mixersMap.delete(object.uuid);
-			// console.log(`Mixer removed for object UUID: ${object.uuid}`);
 		} 
 		else 
 		{
-			// console.log(`Mixer not found for UUID: ${object.uuid}`);
+						if (DEBUG_DETAIL){
+							console.log(`Mixer not found for UUID: ${object.uuid}`);
+						}
 		}
 	}
 
 	update() 
 	{
+		if (!this.clock){
+			this.clock = new THREE.Clock();
+		}
 		const delta = this.clock.getDelta();
-		// console.log(`Delta time for updates: ${delta}`);
 		this.mixersMap.forEach((mixer, uuid) => 
 		{
 			if (mixer && typeof mixer.update === 'function') 
@@ -81,7 +83,6 @@ class AnimationMixersManager
 				try 
 				{
 					mixer.update(delta);
-					// console.log(`Mixer updated for UUID: ${uuid}`);
 				} catch (error) 
 				{
 					console.error(`Error updating mixer for UUID: ${uuid}:`, error);
