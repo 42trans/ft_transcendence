@@ -27,6 +27,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from accounts.forms import UserEditForm, CustomPasswordChangeForm
 from accounts.models import CustomUser, UserManager, Friend
 
+from pong.models import Tournament
+
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +104,10 @@ class EditUserProfileAPIView(APIView):
         return Response(data, status=400)
 
     def _update_nickname(self, user, new_nickname):
+        if self._is_progress_tournament_organizer(user):
+            msg = "cannot change nickname while organizing an ongoing tournament"
+            return False, msg
+
         old_nickname = user.nickname
         if old_nickname == new_nickname:
             msg = "new nickname same as current"
@@ -132,6 +138,12 @@ class EditUserProfileAPIView(APIView):
         update_session_auth_hash(request, user)  # password更新によるsessionを継続
         user.save()
         return True, "password updat successfully"
+
+    def _is_progress_tournament_organizer(self, user):
+        """
+        進行中のtournament organizerの場合は、終了するまでnickname変更不可
+        """
+        return Tournament.objects.filter(organizer=user, is_finished=False).exists()
 
 
 # todo: tmp, API and FBV -> CBV

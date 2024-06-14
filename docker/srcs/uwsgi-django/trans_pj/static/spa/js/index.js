@@ -4,7 +4,6 @@ import { routeTable } from "./routing/routeTable.js"
 import { switchPage, renderView } from "./routing/renderView.js";
 import { isUserLoggedIn, isUserEnable2FA } from "./utility/isUser.js"
 import { refreshJWT } from "./utility/refreshJWT.js"
-import { setOnlineStatus } from "/static/accounts/js/online-status.js";
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
 const DEBUG_DETAIL = 1;
@@ -25,23 +24,20 @@ const DEBUG_DETAIL = 1;
 const setupPopStateListener = () => {
   // console.log('popState: path: ' + window.location.pathname);
 
-  window.addEventListener("popstate", (event) => {
+  window.addEventListener("popstate", async (event) => {
     const path = window.location.pathname;
     refreshJWT()
     // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     renderView(path);
-    setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 
 
 // spa.htmlの読み込みと解析が完了した時点で発火
 const setupDOMContentLoadedListener = () => {
-  document.addEventListener("DOMContentLoaded", () => {
-          if (DEBUG_DETAIL) {
-            console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
-          }
+  document.addEventListener("DOMContentLoaded", async () => {
+    console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
     // stopGamePageAnimation()
     refreshJWT()
 
@@ -53,8 +49,6 @@ const setupDOMContentLoadedListener = () => {
 
     // リンククリック時の遷移を設定
     setupBodyClickListener();
-
-    setOnlineStatus();  // WebSocket接続を再確立
 
     // three-jsのEndGameボタン押下でSPA遷移するためのイベント
     // document.addEventListener('endGame', function() {
@@ -120,20 +114,18 @@ const setupBodyClickListener = () => {
     //   const url = event.target.href;
     //   switchPage(url);
     // }
-    // setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 
 
 // ページリロード時に発火
 const setupLoadListener = () => {
-  window.addEventListener("load", () => {
-    // console.log('loadEvent: path: ' + window.location.pathname);
+  window.addEventListener("load", async () => {
+    console.log('loadEvent: path: ' + window.location.pathname);
     refreshJWT()
 
     // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
-    setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 

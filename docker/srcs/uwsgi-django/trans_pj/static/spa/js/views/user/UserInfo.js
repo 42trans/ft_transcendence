@@ -30,5 +30,6 @@ export default class extends AbstractView {
 
       const friendModule = await import("/static/accounts/js/friend.js");
       friendModule.setupFriendRequestListEventListeners();
+      friendModule.setupDeleteFriendEventListener();
     }
 }
