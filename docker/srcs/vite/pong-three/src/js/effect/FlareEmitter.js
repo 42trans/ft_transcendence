@@ -1,5 +1,7 @@
+// docker/srcs/vite/pong-three/src/js/effect/FlareEmitter.js
 import * as THREE from "three";
 import Flare from "./Flare";
+
 
 class FlareEmitter extends THREE.Object3D 
 {
@@ -19,7 +21,6 @@ class FlareEmitter extends THREE.Object3D
 			this.add(flare);
 			this._flareList.push(flare);
 		}
-		// console.log("FlareEmitter initialized");
 	}
 
 	update() 
@@ -28,7 +29,6 @@ class FlareEmitter extends THREE.Object3D
 		{
 			flare.update();
 		});
-		// console.log("FlareEmitter updated");
 	}
 }
 

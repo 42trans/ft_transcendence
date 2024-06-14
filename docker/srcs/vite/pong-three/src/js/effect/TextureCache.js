@@ -1,4 +1,4 @@
-// TextureCache.js
+// docker/srcs/vite/pong-three/src/js/effect/TextureCache.js
 import * as THREE from 'three';
 
 class TextureCache 

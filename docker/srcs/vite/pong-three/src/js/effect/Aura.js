@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/effect/Aura.js
 import * as THREE from "three";
 import auraTexture from '../../assets/img/bg.png';
 import textureCache from './TextureCache'; 
@@ -9,7 +10,9 @@ class Aura extends THREE.Object3D
 		super();
 		this.textureLoaded = false;
 		const geometry = new THREE.SphereGeometry(2.02, 40, 40);
+
 		textureCache.getTexture(auraTexture).then(texture => {
+			texture.needsUpdate = true;
 			const material = new THREE.MeshBasicMaterial(
 				{
 					map: texture,
