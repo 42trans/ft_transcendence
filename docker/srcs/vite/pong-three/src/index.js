@@ -29,7 +29,7 @@
 import PongApp from './js/PongApp'
 import './css/3d.css';
 
-const DEBUG_FLOW = 0;
+const DEBUG_FLOW = 1;
 
 window.pongApp = null;
 let isEventListenerRegistered = false; 
@@ -38,11 +38,13 @@ async function initPongApp(env)
 {
 				if (DEBUG_FLOW) {	console.log('initPongApp(): start');	}
 	if (window.pongApp){
-		return;
-		// await window.pongApp.destroy();
+		// return;
+		await window.pongApp.destroy();
+		window.pongApp = null;
 	}
 			if (DEBUG_FLOW) {	console.log('initPongApp(): PongApp.getInstance');	}
 	window.pongApp = PongApp.getInstance(env)
+			if (DEBUG_FLOW) {	console.log('initPongApp(): done');	}
 }
 
 initPongApp();

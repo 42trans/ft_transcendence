@@ -7,7 +7,7 @@ import { refreshJWT } from "./utility/refreshJWT.js"
 import { setOnlineStatus } from "/static/accounts/js/online-status.js";
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
-
+const DEBUG_DETAIL = 1;
 // function isRenderByThreeJsPage(path) {
 //   return (window.location.pathname === routeTable['game3d'].path)
 // }
@@ -39,7 +39,9 @@ const setupPopStateListener = () => {
 // spa.htmlの読み込みと解析が完了した時点で発火
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", () => {
-    console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
+          if (DEBUG_DETAIL) {
+            console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
+          }
     // stopGamePageAnimation()
     refreshJWT()
 
@@ -126,7 +128,7 @@ const setupBodyClickListener = () => {
 // ページリロード時に発火
 const setupLoadListener = () => {
   window.addEventListener("load", () => {
-    console.log('loadEvent: path: ' + window.location.pathname);
+    // console.log('loadEvent: path: ' + window.location.pathname);
     refreshJWT()
 
     // stopGamePageAnimation()

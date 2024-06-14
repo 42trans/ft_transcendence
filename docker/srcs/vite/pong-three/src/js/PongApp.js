@@ -16,8 +16,8 @@ import * as lil from 'lil-gui';
 import ControlsGUI from './ControlsGUI';
 // import { thickness } from 'three/examples/jsm/nodes/core/PropertyNode.js';
 
-const DEBUG_FLOW = 0;
-const DEBUG_DETAIL = 0;
+const DEBUG_FLOW = 1;
+const DEBUG_DETAIL = 1;
 
 /**
  * -コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
@@ -34,10 +34,13 @@ class PongApp
 
 	static getInstance(env)
 	{
+				if (DEBUG_FLOW) {	console.log('getInstance(): start');	}
 		if (!PongApp.instance)
 		{
+					if (DEBUG_FLOW) {	console.log('new PongApp');	}
 			PongApp.instance = new PongApp(env);
 		}
+				if (DEBUG_FLOW) {	console.log('getInstance(): done');	}
 		return PongApp.instance;
 	}
 
@@ -67,17 +70,19 @@ class PongApp
 					if (DEBUG_FLOW) {	console.log('init(): start');	}
 
 		// urlがtournametの試合かどうかを判定
-		const currentPath = window.location.pathname;
-		const routeTable = await PongApp.loadRouteTable();
-		const gameMatchPath = routeTable['gameMatch'].path;
-		const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
-		if (!gameMatchRegex.test(currentPath)) {
-						if (DEBUG_FLOW) {	console.log('pongApp.main()', currentPath, gameMatchRegex);	}
-			return;
-		}
-
+		// const currentPath = window.location.pathname;
+		// const routeTable = await PongApp.loadRouteTable();
+		// 			if (DEBUG_DETAIL) {	console.log('routeTable:', routeTable);	}
+		// const gameMatchPath = routeTable['gameMatch'].path;
+		// const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
+		// if (!gameMatchRegex.test(currentPath)) {
+		// 				if (DEBUG_FLOW) {	console.log('pongApp.main()', currentPath, gameMatchRegex);	}
+		// 	return;
+		// }
+		
 		// 試合が終了しているかを判定する処理
 		const matchDataElement = document.getElementById('match-data');
+					if (DEBUG_FLOW) {	console.log('init() matchDataElement: ', matchDataElement);	}
 		if (matchDataElement) 
 		{
 			this.matchData = JSON.parse(matchDataElement.textContent);
@@ -137,17 +142,26 @@ class PongApp
 	{
 					if (DEBUG_FLOW) {	console.log('destroy(): start');	}
 
-		if (!this.allScenesManager || !this.renderer || !this.animationMixersManager){
-			if (DEBUG_DETAIL) {	console.log('allScenesManager, renderer, animationMixerManager is false');	}
-
+		if (!window.pongApp){
+						if (DEBUG_FLOW) {	console.log('destroy(): window.pongApp is false');	window.pongApp}
 			return;
 		}
-		this.stopRenderLoop();
+		// if (!this.allScenesManager || !this.renderer || !this.animationMixersManager){
+		// 	if (DEBUG_DETAIL) {	console.log('allScenesManager, renderer, animationMixerManager is false');	}
 
-		this.allScenesManager.dispose();
-		// THREE.WebGLRendererのメソッド
-		this.renderer.dispose();
-		this.animationMixersManager.dispose();
+		// 	return;
+		// }
+		this.stopRenderLoop();
+		if (this.allScenesManager){
+			this.allScenesManager.dispose();
+		}
+		if (this.renderer){
+			// THREE.WebGLRendererのメソッド
+			this.renderer.dispose();
+		}
+		if (this.animationMixersManager){
+			this.animationMixersManager.dispose();
+		}
 		// イベントリスナーを削除
 		window.removeEventListener('resize', this.boundHandleResize);
 		// lil-gui を破棄
@@ -164,7 +178,8 @@ class PongApp
 		this.allScenesManager = null;
 		this.gameStateManager = null;
 		this.renderLoop = null;
-					if (DEBUG_FLOW) {	console.log('destroy(): done');	}
+		PongApp.instance = null;
+					if (DEBUG_FLOW) {	console.log('destroy(): done');	window.pongApp}
 	}
 
 
