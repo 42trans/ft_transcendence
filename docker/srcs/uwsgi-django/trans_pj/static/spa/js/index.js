@@ -30,7 +30,6 @@ const setupPopStateListener = () => {
     // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     renderView(path);
-    setOnlineStatus();  // WebSocket接続を再確立
   });
 };
 
