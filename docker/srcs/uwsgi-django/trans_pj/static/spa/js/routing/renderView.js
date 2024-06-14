@@ -1,5 +1,6 @@
 import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
+import { setOnlineStatus } from "/static/accounts/js/setOnlineStatus.js";
 
 const DEBUG_DETAIL = 0;
 
@@ -21,6 +22,7 @@ export const switchPage = (targetPath) => {
   // }
   renderView(targetPathName).then(() => {
     window.dispatchEvent(new CustomEvent('switchPageResetState'));
+    // setOnlineStatus();
   });
 };
 
@@ -111,6 +113,8 @@ export const renderView = async (path) => {
   await view.executeScript();
         if (DEBUG_DETAIL) { console.log('renderView(): currentView', currentView); }
         if (DEBUG_DETAIL) { console.log('renderView(): selectedRoute.params', selectedRoute.params); }
+
+  setOnlineStatus();
 };
 
 // export const renderView = async (path) => {

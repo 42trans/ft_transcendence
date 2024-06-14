@@ -9,33 +9,37 @@
 	<li>xxx: xxx</li>
 	<li>xxx: xxx</li>
 	<li><a href="{{ url_config.kSpaDmWithUrlBase }}{{ user_data.info_user_nickname }}" data-link>DM with {{ user_data.info_user_nickname }}</a></li>
-	<br>
-	{% if not user_data.isBlockingUser %}
-		<button class="hth-btn blockUserButton" data-nickname="{{ user_data.info_user_nickname }}">block</button>
-	{% else %}
-		<button class="hth-btn unBlockUserButton" data-nickname="{{ user_data.info_user_nickname }}">unblock</button>
-	{% endif %}
-	{% comment %} <li><a href="#" onclick="sendSystemMessage('{{ user_data.info_user_nickname }}');">[test] send system message to {{ user_data.info_user_nickname }}</a></li> {% endcomment %}
-	{% comment %} <li><a href="#" onclick="sendSystemMessage('user1');">[test] send system message to user1</a></li> {% endcomment %}
 </ul>
 
 <hr>
 
-{% comment %} フレンド関係の表示  {% endcomment %}
+{% comment %} フレンド関係の表示 {% endcomment %}
 <ul>
 	<h4>friendship</h4>
 	{% if user_data.is_friend %}
-		<li>Friend -> <a href="#" class="deleteFriendButton" data-userid="{{ user_data.info_user_id }}">Delete</a></li>
+		Friend with You
+		<button class="hth-btn deleteFriendButton" data-userid="{{ user_data.info_user_id }}">Delete friendship</button>
 	{% elif user_data.friend_request_sent_status == "pending" %}
-		<li>Request sent (pending) -> <a href="#" class="cancelFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Cancel</a></li>
+		Request sent (pending)
+		<button class="hth-btn cancelFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Cancel</button>
 	{% elif user_data.friend_request_received_status == "pending" %}
-		<li>Request received (pending)</li>
+		Request received (pending)
 	{% else %}
-		<li><a href="#" class="sendFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Send Friend Reques</a></li>
+		Not Friend Yet
+		<button class="hth-btn sendFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Send Friend Reques</button>
 	{% endif %}
 </ul>
 
-{% comment %} <script src="{% static 'accounts/js/block-user.js' %}"></script> {% endcomment %}
-{% comment %} <script src="{% static 'accounts/js/unblock-user.js' %}"></script> {% endcomment %}
-{% comment %} <script type="module" src="{% static 'accounts/js/friend.js' %}"></script> {% endcomment %}
-{% comment %} <script src="{% static 'chat/js/test-system-message.js' %}"></script> {% endcomment %}
+<hr>
+
+{% comment %} Block {% endcomment %}
+<ul>
+	<h4>blocking</h4>
+	{% if not user_data.isBlockingUser %}
+		Unblocking
+		<button class="hth-btn blockUserButton" data-nickname="{{ user_data.info_user_nickname }}">block user</button>
+	{% else %}
+		Blocking
+		<button class="hth-btn unBlockUserButton" data-nickname="{{ user_data.info_user_nickname }}">unblock user</button>
+	{% endif %}
+</ul>
