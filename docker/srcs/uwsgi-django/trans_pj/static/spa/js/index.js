@@ -6,7 +6,7 @@ import { isUserLoggedIn, isUserEnable2FA } from "./utility/isUser.js"
 import { refreshJWT } from "./utility/refreshJWT.js"
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
-const DEBUG_DETAIL = 1;
+const DEBUG_DETAIL = 0;
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
@@ -23,7 +23,7 @@ const setupPopStateListener = () => {
 // spa.htmlの読み込みと解析が完了した時点で発火
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", async () => {
-    console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
+    // console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
     refreshJWT()
 
     // 初期ビューを表示
@@ -70,7 +70,7 @@ async function getLoggedInUserRedirectUrl(url) {
 // リンクのクリックイベントで発火
 const setupBodyClickListener = () => {
   document.body.addEventListener("click", async (event) => {
-  console.log('clickEvent: path: ' + window.location.pathname);
+  // console.log('clickEvent: path: ' + window.location.pathname);
   refreshJWT()
   setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
 
@@ -90,7 +90,7 @@ const setupBodyClickListener = () => {
 // ページリロード時に発火
 const setupLoadListener = () => {
   window.addEventListener("load", async () => {
-    console.log('loadEvent: path: ' + window.location.pathname);
+    // console.log('loadEvent: path: ' + window.location.pathname);
     refreshJWT()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
   });

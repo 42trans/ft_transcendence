@@ -2,7 +2,7 @@ import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
 import { setOnlineStatus } from "/static/accounts/js/setOnlineStatus.js";
 
-const DEBUG_DETAIL = 1;
+const DEBUG_DETAIL = 0;
 
 const getPathAndQueryString = (targetPath) => {
   const targetUrl = new URL(targetPath, window.location.origin);

@@ -29,7 +29,7 @@
 import PongApp from './js/PongApp'
 import './css/3d.css';
 
-const DEBUG_FLOW = 1;
+const DEBUG_FLOW = 0;
 
 window.pongApp = null;
 let isEventListenerRegistered = false; 
