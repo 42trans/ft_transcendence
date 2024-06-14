@@ -2,10 +2,11 @@
 
 import { routeTable } from "./routing/routeTable.js"
 import { switchPage, renderView } from "./routing/renderView.js";
-import { getNextUrl } from "./routing/getNextUrl.js"
+import { getNextPath } from "./routing/getNextPath.js"
 import { isUserLoggedIn, isUserEnable2FA } from "./utility/isUser.js"
 import { refreshJWT } from "./utility/refreshJWT.js"
 import { setOnlineStatus } from "/static/accounts/js/online-status.js";
+import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
 
 // function isRenderByThreeJsPage(path) {
@@ -43,14 +44,12 @@ const setupDOMContentLoadedListener = () => {
     refreshJWT()
 
     // 初期ビューを表示
-    const pathName = window.location.pathname;
-    const queryString =  window.location.search;
-    const currentPath = pathName + queryString;
+    const currentPath = window.location.pathname;
     switchPage(currentPath);
 
     // リンククリック時の遷移を設定
     setupBodyClickListener();
-
+    // setupLoginEventListener();  // 直接アクセス & loginリダイレクト用
     setOnlineStatus();  // WebSocket接続を再確立
 
     // three-jsのEndGameボタン押下でSPA遷移するためのイベント
@@ -67,16 +66,16 @@ const setupBodyClickListener = () => {
   document.body.addEventListener("click", async (event) => {
   console.log('clickEvent: path: ' + window.location.pathname);
   // stopGamePageAnimation()
-  refreshJWT()
 
     const linkElement = event.target.closest("[data-link]");
     if (linkElement) {
       // console.log('clickEvent: taga-link');
       event.preventDefault();
+      refreshJWT()
 
       const linkUrl = linkElement.href;
-      const url = await getNextUrl(linkUrl)  // guest, userのredirectを加味したnextUrlを取得
-      switchPage(url);
+      const nextPath = await getNextPath(linkUrl)  // guest, userのredirectを加味したnextUrlを取得
+      switchPage(nextPath);
     }
 
     // if (event.target.matches("[data-link]")) {

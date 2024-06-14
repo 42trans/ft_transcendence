@@ -4,23 +4,15 @@ import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
 
-function getNextUrl() {
-	const urlParams = new URLSearchParams(window.location.search);
-	return urlParams.get('next') || '';
-}
-
 function verify2FA() {
 	const token = document.getElementById('token').value;
-	const nextUrl = getNextUrl()
-
-	console.log('verify2fa nextUrl:' + nextUrl)
 
 	fetch('/accounts/api/verify_2fa/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ token: token , next: nextUrl})
+		body: JSON.stringify({ token: token})
 	})
 		.then(response => response.json())
 		.then(data => {

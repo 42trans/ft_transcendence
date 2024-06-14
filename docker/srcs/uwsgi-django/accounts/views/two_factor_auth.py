@@ -160,7 +160,6 @@ class Enable2FaAPIView(APIView):
         user.save()
 
 
-# @method_decorator(csrf_exempt, name='dispatch')  # todo: 一時的に無効化
 class Disable2FaView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -205,9 +204,6 @@ class Verify2FaTepmlateView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        next_url = self.request.GET.get('next')
-        context['next_url'] = next_url
-        logger.error(f'verify get: next {next_url}')
         return context
 
 
@@ -224,16 +220,13 @@ class Verify2FaAPIView(APIView):
             return Response(data, status=401)
 
         token = request.data.get('token')
-        next_url = request.data.get('next')
-        logger.error(f'verify post: next {next_url}')
 
         for device in devices:
             if device.verify_token(token):
-                # login(request, user)  # JWT auth -> login() unused
                 del request.session['tmp_auth_user_id']
                 data = {
-                    'message'   : '2FA verification successful',
-                    'redirect': next_url if next_url else settings.URL_CONFIG['kSpaPongTopUrl'],
+                    'message' : '2FA verification successful',
+                    'redirect': settings.URL_CONFIG['kSpaPongTopUrl'],
                 }
                 return get_jwt_response(user, data)
 
