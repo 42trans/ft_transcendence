@@ -21,35 +21,11 @@ class RendererManager
 		return RendererManager.instance;
 	}
 
-	// setCanvas(canvas) {
-	// 	this.renderer.domElement = canvas; 
-	// 	this.renderer.setSize(canvas.clientWidth, canvas.clientHeight); 
-	// }
-
 	reinitializeRenderer() 
 	{
-		// 既存のレンダラーを破棄
-		if (this.renderer) {
-			// this.renderer.forceContextLoss();
-			this.renderer.dispose();
-		}
-
-		// const canvas = document.getElementById('threejs-canvas-container');
-        // canvas.addEventListener('webglcontextrestored', () => {
-            // 新しいレンダラーを作成
-            const rendererOptions = new RendererConfig().rendererOptions;
-            this.renderer = new THREE.WebGLRenderer(rendererOptions);
-
-            // レンダラーの初期化
-            this.initializeRenderer();
-        // }, { once: true });
-
-		// // 新しいレンダラーを作成
-		// const rendererOptions = new RendererConfig().rendererOptions;
-		// this.renderer = new THREE.WebGLRenderer(rendererOptions);
-
-		// // レンダラーの初期化
-		// this.initializeRenderer();
+		const rendererOptions = new RendererConfig().rendererOptions;
+		this.renderer = new THREE.WebGLRenderer(rendererOptions);
+		this.initializeRenderer();
 	}
 	
 	static getInstance()

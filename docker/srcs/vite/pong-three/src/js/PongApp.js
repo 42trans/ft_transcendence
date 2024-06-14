@@ -70,15 +70,15 @@ class PongApp
 					if (DEBUG_FLOW) {	console.log('init(): start');	}
 
 		// urlがtournametの試合かどうかを判定
-		// const currentPath = window.location.pathname;
-		// const routeTable = await PongApp.loadRouteTable();
-		// 			if (DEBUG_DETAIL) {	console.log('routeTable:', routeTable);	}
-		// const gameMatchPath = routeTable['gameMatch'].path;
-		// const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
-		// if (!gameMatchRegex.test(currentPath)) {
-		// 				if (DEBUG_FLOW) {	console.log('pongApp.main()', currentPath, gameMatchRegex);	}
-		// 	return;
-		// }
+		const currentPath = window.location.pathname;
+		const routeTable = await PongApp.loadRouteTable();
+					if (DEBUG_DETAIL) {	console.log('routeTable:', routeTable);	}
+		const gameMatchPath = routeTable['gameMatch'].path;
+		const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
+		if (!gameMatchRegex.test(currentPath)) {
+						if (DEBUG_FLOW) {	console.log('init()', currentPath, gameMatchRegex);	}
+			return;
+		}
 		
 		// 試合が終了しているかを判定する処理
 		const matchDataElement = document.getElementById('match-data');
@@ -100,6 +100,7 @@ class PongApp
 			return;
 		}
 
+		// 後に移動
 		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
 		// RendererManager.getInstance().reinitializeRenderer();
 		// this.renderer = RendererManager.getRenderer();
@@ -122,12 +123,14 @@ class PongApp
 					if (DEBUG_DETAIL) {	console.log('renderLoop.pong', renderLoop.pong);	}
 		this.renderLoop = renderLoop;
 
-		// webGLのリセット　マネージャーが生成された後のタイミングで再初期化を行う
+		// -----------------------------------------------------------------------------
+		// 再描画のバグの根本原因の対策はこの行。再度コンストラクタから作り直すような処理。理由は不明
+		// -----------------------------------------------------------------------------
 		RendererManager.getInstance().reinitializeRenderer();
-
+		// -----------------------------------------------------------------------------
+		// 他のMgrが依存してるので、この位置でリセット。マネージャーが生成された後のタイミングで再初期化を行う
 		this.renderer = RendererManager.getRenderer();
 				if (DEBUG_DETAIL) {	console.log('this.renderer', this.renderer);	}
-
 		this.renderLoop.start();
 
 					//dev用　index.jsで`PongApp.main('dev');`で呼び出す
@@ -157,17 +160,13 @@ class PongApp
 						if (DEBUG_FLOW) {	console.log('destroy(): window.pongApp is false');	window.pongApp}
 			return;
 		}
-		// if (!this.allScenesManager || !this.renderer || !this.animationMixersManager){
-		// 	if (DEBUG_DETAIL) {	console.log('allScenesManager, renderer, animationMixerManager is false');	}
-
-		// 	return;
-		// }
 		this.stopRenderLoop();
 		if (this.allScenesManager){
 			this.allScenesManager.dispose();
 		}
 		if (this.renderer){
 			// THREE.WebGLRendererのメソッド
+			// これだけでは不足のようで、init()でインスタンスの廃棄が必要
 			this.renderer.dispose();
 		}
 		if (this.animationMixersManager){
