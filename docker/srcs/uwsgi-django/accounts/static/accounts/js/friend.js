@@ -144,7 +144,7 @@ export function deleteFriend(userId) {
 }
 
 
-function setupFriendListEventListener() {
+export function setupDeleteFriendEventListener() {
     console.log("Setup friend event listeners");
     document.querySelectorAll('.deleteFriendButton').forEach(button => {
         button.addEventListener('click', () => {
@@ -195,7 +195,7 @@ export function fetchFriendList() {
         .then(response => response.json())
         .then(data => {
             createFriendsList(data);
-            setupFriendListEventListener()
+            setupDeleteFriendEventListener()
         })
         .catch(error => console.error('Error:', error));
 }

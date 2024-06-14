@@ -45,8 +45,8 @@ class FriendTest(TestConfig):
         self._access_to(f"{self.user_info_base_url}{self.test_user2_nickname}/")
         # self._screenshot("friend2")
 
-        request_link = self._text_link("Send Friend Reques")
-        self._click_link(request_link, wait_for_link_invisible=True)
+        request_button = self._button(By.CSS_SELECTOR, ".sendFriendRequestButton")
+        self._click_button(request_button, wait_for_button_invisible=True)
 
         # test_user2のinfoでcancelFriendRequestButtonの存在を確認
         self._assert_element_exists(By.CSS_SELECTOR, ".cancelFriendRequestButton")
@@ -126,8 +126,8 @@ class FriendTest(TestConfig):
         self._access_to(f"{self.user_info_base_url}{self.test_user2_nickname}/")
 
         # requestを送信
-        request_link = self._text_link("Send Friend Reques")
-        self._click_link(request_link, wait_for_link_invisible=True)
+        request_button = self._button(By.CSS_SELECTOR, ".sendFriendRequestButton")
+        self._click_button(request_button, wait_for_button_invisible=True)
 
         self.driver.refresh()
         time.sleep(0.5)
@@ -141,8 +141,8 @@ class FriendTest(TestConfig):
         time.sleep(0.5)
 
         # requestを再送信
-        request_link = self._text_link("Send Friend Reques")
-        self._click_link(request_link, wait_for_link_invisible=True)
+        request_button = self._button(By.CSS_SELECTOR, ".sendFriendRequestButton")
+        self._click_button(request_button, wait_for_button_invisible=True)
 
         # test_user1 friend page ###############################################
         self._move_top_to_friend()
@@ -169,8 +169,8 @@ class FriendTest(TestConfig):
         self._access_to(f"{self.user_info_base_url}{self.test_user2_nickname}/")
         # self._screenshot("friend2")
 
-        request_link = self._text_link("Send Friend Reques")
-        self._click_link(request_link, wait_for_link_invisible=True)
+        request_button = self._button(By.CSS_SELECTOR, ".sendFriendRequestButton")
+        self._click_button(request_button, wait_for_button_invisible=True)
 
         # test_user1のSent Friend Requestsに追加されていることを確認
         self._move_top_to_friend()
