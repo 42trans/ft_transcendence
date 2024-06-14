@@ -5,6 +5,7 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
+const DEBUG = 0;
 
 function handleLogout() {
 	fetch('/accounts/api/logout/', {
@@ -21,7 +22,7 @@ function handleLogout() {
 	.then(data => {
 		if (data.message) {
 			alert(data.message);
-			// console.log("redirect to " + data.redirect);
+			if (DEBUG) { console.log("redirect to " + data.redirect); }
 			disconnectOnlineStatusWebSocket(data.user_id)
 
 			// alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
@@ -39,7 +40,7 @@ function handleLogout() {
 
 
 export function setupLogoutEventListener() {
-	console.log("Setup logout event listeners");
+	if (DEBUG) { console.log("Setup logout event listeners"); }
 	const button = document.querySelector('.logoutButton');
 	if (button) {
 		button.addEventListener('click', function(event) {

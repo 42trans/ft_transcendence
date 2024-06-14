@@ -3,7 +3,7 @@ import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
 
-function signupUser(event) {
+function signupUser() {
 	// event.preventDefault();
 	const email = document.getElementById('email').value;
 	const nickname = document.getElementById('nickname').value;
@@ -44,7 +44,7 @@ export function setupSignupEventListener() {
 	if (form) {
 		form.addEventListener('submit', (event) => {
 			event.preventDefault();
-			signupUser(event);
+			signupUser();
 		});
 		console.log('Form event listener added');
 	}

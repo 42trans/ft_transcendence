@@ -4,31 +4,17 @@ import { setOnlineStatus } from "/static/accounts/js/setOnlineStatus.js";
 
 const DEBUG_DETAIL = 0;
 
-const getPathAndQueryString = (targetPath) => {
-  const targetUrl = new URL(targetPath, window.location.origin);
-  const targetPathName = targetUrl.pathname;
-  let targetQueryString = targetUrl.search;
-
-  // query stringのnextの要素がpathNameと一致している場合、query stringを空文字列に置き換える
-  const params = new URLSearchParams(targetQueryString);
-  const nextParam = params.get('next');
-  if (nextParam === targetPathName) {
-    targetQueryString = '';
-  }
-  return { targetPathName, targetQueryString };
-};
-
-
-
 // touteTable.jsの記述について
 // game3d: { path: "/app/game/game-3d/", view: Game3D }は、/app/game/game-3d/というパスに対してGame3Dという「クラス」を対応
 
 // ページ遷移が発生した場合のメソッド
-export const switchPage = (targePath) => {
-        if (DEBUG_DETAIL) { console.log('switchPage(): start');  } 
+export const switchPage = (targetPath) => {
+        if (DEBUG_DETAIL) { console.log('switchPage(): start');  }
 
-  const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
-  history.pushState(null, null, targetPathName + targetQueryString);
+  const targetUrl = new URL(targetPath, window.location.origin);
+  const targetPathName = targetUrl.pathname;
+
+  history.pushState(null, null, targetPathName );
   // currentViewにdisposeメソッドが存在するかどうかをチェック。オペランドの型がfunctionなら関数
   // if (currentView && typeof currentView.dispose === "function") {
   //         if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
