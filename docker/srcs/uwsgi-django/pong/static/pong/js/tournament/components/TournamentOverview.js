@@ -35,7 +35,7 @@ class TournamentOverview
 	{
 		try {
 			const url = `${config.API_URLS.tournamentData}${tournamentId}/`;
-			console.log(`fetchTournamentDetails fetch: ${url}`);
+			// console.log(`fetchTournamentDetails fetch: ${url}`);
 
 			const response = await fetch(url,
 			{
@@ -44,8 +44,8 @@ class TournamentOverview
 				}
 			});
 
-			console.log(`Response status: ${response.status}`);
-			console.log(`Response status text: ${response.statusText}`);
+			// console.log(`Response status: ${response.status}`);
+			// console.log(`Response status text: ${response.statusText}`);
 
 			if (!response.ok)
 			{
@@ -53,7 +53,7 @@ class TournamentOverview
 			}
 
 			const jsonData = await response.json();
-			console.log(`jsonData: ${JSON.stringify(jsonData)}`);
+			// console.log(`jsonData: ${JSON.stringify(jsonData)}`);
 
 			return jsonData
 		} catch (error) {

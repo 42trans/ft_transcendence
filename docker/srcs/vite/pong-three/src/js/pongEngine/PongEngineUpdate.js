@@ -54,7 +54,7 @@ class PongEngineUpdate
 		if (this.physics.isCollidingWithSideWalls(ballX, r, this.field)) 
 		{
 			const scorer = ballX < 0 ? 2 : 1;
-			this.match.updateScore(scorer);
+			await this.match.updateScore(scorer);
 			await this.resetBall(scorer);
 		}
 		// 上下の壁との衝突を検出

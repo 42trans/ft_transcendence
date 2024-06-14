@@ -1,6 +1,7 @@
 import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
 
+const DEBUG_DETAIL = 0;
 
 const getPathAndQueryString = (targetPath) => {
   const targetUrl = new URL(targetPath, window.location.origin);
@@ -17,33 +18,49 @@ const getPathAndQueryString = (targetPath) => {
 };
 
 
+
+// touteTable.jsの記述について
+// game3d: { path: "/app/game/game-3d/", view: Game3D }は、/app/game/game-3d/というパスに対してGame3Dという「クラス」を対応
+
+// ページ遷移が発生した場合のメソッド
 export const switchPage = (targePath) => {
-  // const currentUrl = new URL(window.location.href);
+        if (DEBUG_DETAIL) { console.log('switchPage(): start');  } 
+
   const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
-
-  // console.log('path:', targetPathName);
-  // console.log('queryString:', targetQueryString);
-
-  // query string込みでURLをpush
   history.pushState(null, null, targetPathName + targetQueryString);
-
-  // DEBUG console log
-  // console.log(`switchPage`)
-  // console.log(` currentUrl        :${currentUrl}`)
-  // console.log(` targetPathName    :${targetPathName}`)
-  // console.log(` targetQueryString :${targetQueryString}`)
-  // console.log(` currentPath       :${window.location.pathname}`)
-  // alert(`[debug] switchPage consolelog確認用`)
-
-  // renderView(currentPath).then(() => {
-  //   // resetState イベントを発行
-  //   window.dispatchEvent(new CustomEvent('switchPageResetState'));
-  // });
+  // currentViewにdisposeメソッドが存在するかどうかをチェック。オペランドの型がfunctionなら関数
+  // if (currentView && typeof currentView.dispose === "function") {
+  //         if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
+  //   currentView.dispose();
+  // }
   renderView(targetPathName).then(() => {
-    // resetState イベントを発行
     window.dispatchEvent(new CustomEvent('switchPageResetState'));
   });
 };
+
+// export const switchPage = (targePath) => {
+//   // const currentUrl = new URL(window.location.href);
+//   const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
+
+//   // console.log('path:', targetPathName);
+//   // console.log('queryString:', targetQueryString);
+
+//   // query string込みでURLをpush
+//   history.pushState(null, null, targetPathName + targetQueryString);
+
+//   // DEBUG console log
+//   // console.log(`switchPage`)
+//   // console.log(` currentUrl        :${currentUrl}`)
+//   // console.log(` targetPathName    :${targetPathName}`)
+//   // console.log(` targetQueryString :${targetQueryString}`)
+//   // console.log(` currentPath       :${window.location.pathname}`)
+//   // alert(`[debug] switchPage consolelog確認用`)
+
+//   renderView(targetPathName).then(() => {
+//     // resetState イベントを発行
+//     window.dispatchEvent(new CustomEvent('switchPageResetState'));
+//   });
+// };
 
 
 const getSelectedRoute = (currentPath, routeTable) => {
@@ -94,19 +111,32 @@ async function getView(path) {
   return view
 }
 
-
+let currentView = null;
 export const renderView = async (path) => {
-  // console.log("    renderView 1: path: " + path)
-  const view = await getView(path)
-
-  // HTMLの描画 <div id="app">
+  if (currentView && typeof currentView.dispose === "function") {
+        if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
+    currentView.dispose();
+  }
+  const selectedRoute = getSelectedRoute(path, routeTable);
+  const view = new selectedRoute.view(selectedRoute.params);
+  currentView = view;
   const htmlSrc = await view.getHtml();
   document.querySelector("#spa").innerHTML = htmlSrc;
-  // console.log("    renderView 2")
-
-  // スクリプトの読み込みと実行
   await view.executeScript();
-  // console.log("    renderView 3")
-
-  window.dispatchEvent(new CustomEvent('switchPageResetState'));
+        if (DEBUG_DETAIL) { console.log('renderView(): currentView', currentView); }
+        if (DEBUG_DETAIL) { console.log('renderView(): selectedRoute.params', selectedRoute.params); }
 };
+
+// export const renderView = async (path) => {
+//   // console.log("    renderView 1: path: " + path)
+//   const view = await getView(path)
+
+//   // HTMLの描画 <div id="app">
+//   const htmlSrc = await view.getHtml();
+//   document.querySelector("#spa").innerHTML = htmlSrc;
+//   // console.log("    renderView 2")
+
+//   // スクリプトの読み込みと実行
+//   await view.executeScript();
+//   // console.log("    renderView 3")
+// };

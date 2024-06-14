@@ -1,4 +1,4 @@
-// index.js
+// docker/srcs/uwsgi-django/trans_pj/static/spa/js/index.js
 
 import { routeTable } from "./routing/routeTable.js"
 import { switchPage, renderView } from "./routing/renderView.js";
@@ -8,27 +8,27 @@ import { setOnlineStatus } from "/static/accounts/js/online-status.js";
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
 
-function isRenderByThreeJsPage(path) {
-  return (window.location.pathname === routeTable['game3d'].path)
-}
+// function isRenderByThreeJsPage(path) {
+//   return (window.location.pathname === routeTable['game3d'].path)
+// }
 
 // three-jsのレンダリングを停止
-const stopGamePageAnimation = () => {
-  if (isRenderByThreeJsPage(window.location.pathname)
-      && window.controlThreeAnimation
-      && typeof window.controlThreeAnimation.stopAnimation === "function") {
-    window.controlThreeAnimation.stopAnimation();
-  }
-};
+// const stopGamePageAnimation = () => {
+//   if (isRenderByThreeJsPage(window.location.pathname)
+//       && window.controlThreeAnimation
+//       && typeof window.controlThreeAnimation.stopAnimation === "function") {
+//     window.controlThreeAnimation.stopAnimation();
+//   }
+// };
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
-  console.log('popState: path: ' + window.location.pathname);
+  // console.log('popState: path: ' + window.location.pathname);
 
   window.addEventListener("popstate", (event) => {
     const path = window.location.pathname;
     refreshJWT()
-    stopGamePageAnimation()
+    // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     renderView(path);
     setOnlineStatus();  // WebSocket接続を再確立
@@ -40,7 +40,7 @@ const setupPopStateListener = () => {
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", () => {
     console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
-    stopGamePageAnimation()
+    // stopGamePageAnimation()
     refreshJWT()
 
     // 初期ビューを表示
@@ -55,10 +55,10 @@ const setupDOMContentLoadedListener = () => {
     setOnlineStatus();  // WebSocket接続を再確立
 
     // three-jsのEndGameボタン押下でSPA遷移するためのイベント
-    document.addEventListener('endGame', function() {
-      console.log('endGame event');
-      switchPage(routeTable['tournament'].path);
-    });
+    // document.addEventListener('endGame', function() {
+    //   console.log('endGame event');
+    //   switchPage(routeTable['tournament'].path);
+    // });
   });
 };
 
@@ -97,13 +97,13 @@ async function getLoggedInUserRedirectUrl(url) {
 const setupBodyClickListener = () => {
   document.body.addEventListener("click", async (event) => {
   console.log('clickEvent: path: ' + window.location.pathname);
-  stopGamePageAnimation()
+  // stopGamePageAnimation()
   refreshJWT()
   setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
 
     const linkElement = event.target.closest("[data-link]");
     if (linkElement) {
-      console.log('clickEvent: taga-link');
+      // console.log('clickEvent: taga-link');
       event.preventDefault();
 
       const linkUrl = linkElement.href;
@@ -129,7 +129,7 @@ const setupLoadListener = () => {
     console.log('loadEvent: path: ' + window.location.pathname);
     refreshJWT()
 
-    stopGamePageAnimation()
+    // stopGamePageAnimation()
     setupLoginEventListener()  // loginリダイレクト時にlogin buttonを設定
     setOnlineStatus();  // WebSocket接続を再確立
   });

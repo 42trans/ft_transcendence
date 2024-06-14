@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+const DEBUG_FLOW = 0;
+const DEBUG_DETAIL = 0;
 /**
  * AnimationMixersManager:
  * - シングルトン
@@ -37,6 +39,18 @@ class AnimationMixersManager
 		// console.log(` UUID: ${object.uuid}`);
 	}
 
+	dispose() {
+		// 各ミキサーを停止し、キャッシュをクリア
+		this.mixersMap.forEach((mixer) => {
+			mixer.stopAllAction();
+			// ループ参照を解除
+			// アニメーションが適用されるオブジェクトツリーの最上位にあるオブジェクトに関連するすべてのアニメーションデータをキャッシュから削除
+			mixer.uncacheRoot(mixer.getRoot()); 
+		});
+		this.mixersMap.clear(); 
+		this.clock = null; 
+	}
+	
 	removeMixer(object) 
 	{
 		if (!object || !object.uuid) 
@@ -60,7 +74,8 @@ class AnimationMixersManager
 	{
 		const delta = this.clock.getDelta();
 		// console.log(`Delta time for updates: ${delta}`);
-		this.mixersMap.forEach((mixer, uuid) => {
+		this.mixersMap.forEach((mixer, uuid) => 
+		{
 			if (mixer && typeof mixer.update === 'function') 
 			{
 				try 
@@ -77,7 +92,7 @@ class AnimationMixersManager
 			else 
 			{
 				console.error(`Invalid mixer for UUID: ${uuid}`);
-				this.mixersMap.delete(uuid);  // 不正なエントリを削除
+				this.mixersMap.delete(uuid);
 			}
 		});
 	}

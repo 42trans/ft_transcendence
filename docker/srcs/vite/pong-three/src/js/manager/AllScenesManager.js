@@ -109,7 +109,7 @@ class AllScenesManager
 		}
 		const table = sceneUnit.scene.getObjectByName('table');
 		if (!table){
-			console.error('!table');
+			console.error('hth: table is not found');
 			return;
 		}
 		const tableSize = new THREE.Box3().setFromObject(table).getSize(new THREE.Vector3());
@@ -132,6 +132,18 @@ class AllScenesManager
 		return Math.max(distanceHeight, distanceWidth, camera.near + 1);
 	}
 	
+	dispose() {
+		// 各 SceneUnit の dispose メソッドを呼び出す
+		this.sceneUnits.forEach(sceneUnit => {
+			// sceneUnit が存在し、dispose メソッドを持っているか確認
+			if (sceneUnit && sceneUnit.dispose) { 
+				sceneUnit.dispose();
+			}
+		});
+		this.sceneUnits = [];
+				if (DEBUG_FLOW) {	 console.log('AllSceneManager.dispose(): done', this.sceneUnits);	}
+
+	}
 
 }
 

@@ -16,6 +16,7 @@ class PongEngine
 {
 	constructor(PongApp) 
 	{
+		this.pongApp	= PongApp
 		this.env		= PongApp.env;
 		this.matchData	= PongApp.matchData;
 		
@@ -47,7 +48,7 @@ class PongEngine
 	initGameLogic() 
 	{
 		this.physics	= new PongEnginePhysics(this.data);
-		this.match		= new PongEngineMatch(this, this.scene, this.data);
+		this.match		= new PongEngineMatch(this.pongApp, this, this.scene, this.data);
 		this.update		= new PongEngineUpdate(this, this.data, this.physics, this.match);
 	}
 
@@ -56,6 +57,10 @@ class PongEngine
 		if (this.isRunning)
 		{
 			requestAnimationFrame(this.animate);
+			// ここで描画ループを止めると終了後のアスペクト比がバグる
+		// } else {
+		// 	// ゲームが終了した場合は、描画ループを停止
+		// 	this.pongApp.stopRenderLoop();
 		}
 		await this.update.updateGame();
 	}

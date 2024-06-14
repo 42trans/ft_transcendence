@@ -31,9 +31,9 @@ import Login        from "../views/auth/Login.js";
 // import Accounts from "../views/Accounts.js";
 // import Admin from "../views/Admin.js";
 
-import Lang from "../views/Lang.js";
-import Script1 from "../views/Script1.js";
-import Script2 from "../views/Script2.js";
+// import Lang from "../views/Lang.js";
+// import Script1 from "../views/Script1.js";
+// import Script2 from "../views/Script2.js";
 
 
 export const routeTable = {
@@ -70,7 +70,7 @@ export const routeTable = {
   login         : { path: "/app/auth/login/",        view: Login },
 
   // 開発用テストリンク
-  lang    : { path: "/lang/",         view: Lang },
-  script1 : { path: "/script1/",      view: Script1 },  // SPA用 ≠ django urls
-  script2 : { path: "/script2/",      view: Script2 },
+  // lang    : { path: "/lang/",         view: Lang },
+  // script1 : { path: "/script1/",      view: Script1 },  // SPA用 ≠ django urls
+  // script2 : { path: "/script2/",      view: Script2 },
 };

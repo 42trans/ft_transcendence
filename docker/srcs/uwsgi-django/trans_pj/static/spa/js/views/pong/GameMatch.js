@@ -1,11 +1,23 @@
-// Game1vs1.js
+// docker/srcs/uwsgi-django/trans_pj/static/spa/js/views/pong/GameMatch.js
 
 import AbstractView from "../AbstractView.js";
 import fetchData from "../../utility/fetch.js";
 import { getUrl } from "../../utility/url.js";
 import { loadAndExecuteScript } from "../../utility/script.js";
 
+const DEBUG_FLOW = 0;
 
+// --------------------------------------
+// グローバルスコープ
+// --------------------------------------
+// let isEventListenerRegistered = false;
+// イベントリスナーの削除 
+function  unregisterEventListenerSwitchPageResetState() {
+        if (DEBUG_FLOW) {  console.log('GameMatch: unregisterEventListenerSwitchPageResetState(): start'); }
+  window.removeEventListener('switchPageResetState', window.handleSwitchPageResetState);
+  window.isEventListenerRegistered = false; 
+}
+// --------------------------------------
 export default class extends AbstractView {
   constructor(params) {
     super(params);
@@ -17,7 +29,6 @@ export default class extends AbstractView {
     const matchId = this.params.matchId;
     const uri = `/pong/play/${matchId}`;
     const data = await fetchData(uri);
-    //console.log("Pong:" + data);
     return data;
   }
 
@@ -25,4 +36,14 @@ export default class extends AbstractView {
     loadAndExecuteScript("/static/pong/three/assets/index.js", true);
   }
 
+  async dispose() {
+        if (DEBUG_FLOW) {  console.log('GameMatch: disopose(): start'); }
+    // Three.jsのインスタンスを破棄
+    if (window.pongApp) {
+          if (DEBUG_FLOW) {  console.log('GameMatch: disopose(): window.pongApp is true'); }
+      await window.pongApp.destroy();
+      window.pongApp = null;
+    }
+    unregisterEventListenerSwitchPageResetState();
+  }
 }

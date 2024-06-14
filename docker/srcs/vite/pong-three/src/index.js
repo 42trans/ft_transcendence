@@ -1,4 +1,4 @@
-// docker/srcs/webpack2/ft_trans/src/index.js
+// docker/srcs/vite/pong-three/src/index.js
 
 /**
  * @file エントリーポイント
@@ -23,15 +23,47 @@
  * ## ディレクトリ/ファイル
  * - シーン（空間）毎にSceneConfig.jsに値を設定してください。scene設定はそこで全てです。
  * - Contorls.jsのパラメーターはスライダーの感度調整なので変更しなくても問題ないはずです。が、必要なら。
- * - 他の.jsファイルは js/ にまとめてます。 
- * - Pong.jsから全ての処理のフローが見通せるように書いてます
- * - 3Dmodel.gltfやtextureは assejs/にまとめてます。
- * - 説明資料+4/8~22進捗日記 => 3️⃣ three.js △ https://docs.google.com/presentation/d/e/2PACX-1kFAEPPUCHrODmv94oPZiLU1zN8VEWBE-sCt5eYDm5i-fJpl221U1rc8G4w9BB3-V30bUuLVMXRSp/pub?start=false&loop =false&遅延=10000
+ * - 3Dmodel.gltfやtextureは assejs/にまとめてます。自動でコピーされない拡張子があるので、その場合は手動でコピーしてください
 */
 
 import PongApp from './js/PongApp'
 import './css/3d.css';
 
-// 'dev'= コントローラーGUI表示 
-// PongApp.main('dev');
-PongApp.main();
+const DEBUG_FLOW = 0;
+
+window.pongApp = null;
+let isEventListenerRegistered = false; 
+
+async function initPongApp(env)
+{
+				if (DEBUG_FLOW) {	console.log('initPongApp(): start');	}
+	if (window.pongApp){
+		return;
+		// await window.pongApp.destroy();
+	}
+			if (DEBUG_FLOW) {	console.log('initPongApp(): PongApp.getInstance');	}
+	window.pongApp = PongApp.getInstance(env)
+}
+
+initPongApp();
+
+
+// switchPageResetStateイベントハンドラ
+async function handleSwitchPageResetState() 
+{
+	if (DEBUG_FLOW) { console.log('switchPageResetState: event'); }
+	await initPongApp();
+}
+
+function registerEventListenerSwitchPageResetState() 
+{
+	if (isEventListenerRegistered) {
+		return; 
+	}
+	window.addEventListener('switchPageResetState', handleSwitchPageResetState);
+	// 登録済みフラグを立てる
+	isEventListenerRegistered = true;
+}
+
+registerEventListenerSwitchPageResetState();
+

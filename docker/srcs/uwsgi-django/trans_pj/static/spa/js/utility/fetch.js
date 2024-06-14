@@ -8,7 +8,7 @@ function makeRequest(method, url) {
 }
 
 export default async function fetchData(url) {
-  console.log("fetch url:", url); // レスポンスのテキストをコンソールに出力
+  // console.log("fetch url:", url); // レスポンスのテキストをコンソールに出力
   try {
     const response_text = await makeRequest("GET", url);
     // console.log("Response Text:", response_text); // レスポンスのテキストをコンソールに出力

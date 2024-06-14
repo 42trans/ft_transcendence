@@ -14,4 +14,8 @@ export default class {
   async executeScript() {
     return "";
   }
+
+  async dispose() {
+    // 必要に応じてオーバーライド
+  }
 }
