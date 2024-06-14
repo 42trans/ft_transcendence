@@ -14,6 +14,7 @@ const DEBUG_FLOW = 0;
 // イベントリスナーの削除 
 function  unregisterEventListenerSwitchPageResetState() {
         if (DEBUG_FLOW) {  console.log('GameMatch: unregisterEventListenerSwitchPageResetState(): start'); }
+  // handleSwitchPageResetState(): docker/srcs/vite/pong-three/src/index.jsに実装
   window.removeEventListener('switchPageResetState', window.handleSwitchPageResetState);
   window.isEventListenerRegistered = false; 
 }
@@ -28,6 +29,7 @@ export default class extends AbstractView {
   async getHtml() {
     const matchId = this.params.matchId;
     const uri = `/pong/play/${matchId}`;
+          if (DEBUG_FLOW) {  console.log('uri: ', uri); }
     const data = await fetchData(uri);
     return data;
   }
