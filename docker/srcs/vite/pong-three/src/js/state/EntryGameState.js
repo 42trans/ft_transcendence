@@ -27,6 +27,7 @@ class EntryGameState extends BaseGameState
 		this.handleButtonClick	= this.changeStateGamePlay.bind(this);
 		this.boundHandleButtonClick = this.handleButtonClick.bind(this);
 		this.registerStartButtonEventListener();
+		this.isStartButtonListenerRegistered = false;
 	}
 
 	enter() 
@@ -87,16 +88,20 @@ class EntryGameState extends BaseGameState
 
 	registerStartButtonEventListener() 
 	{
-		// !onclick: 登録されていない場合
-		if (this.startGameButton && !this.startGameButton.onclick) {
+		// リスナーが既に登録されているかどうかをフラグで確認 onclickはパフォの問題あり
+		if (this.startGameButton && !this.isStartButtonListenerRegistered) {
 			this.startGameButton.addEventListener('click', this.boundHandleButtonClick);
+			// コンストラクタでフラグ変数を設定しておく
+			this.isStartButtonListenerRegistered = true;
 		}
 	}
 	
 	unregisterStartButtonEventListener() 
 	{
-		if (this.startGameButton) {
+		// フラグがtrueなら削除
+		if (this.startGameButton && this.isStartButtonListenerRegistered) {
 			this.startGameButton.removeEventListener('click', this.boundHandleButtonClick);
+			this.isStartButtonListenerRegistered = false;
 		}
 	}
 
