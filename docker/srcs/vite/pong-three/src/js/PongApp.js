@@ -17,7 +17,7 @@ import ControlsGUI from './ControlsGUI';
 // import { thickness } from 'three/examples/jsm/nodes/core/PropertyNode.js';
 
 const DEBUG_FLOW = 1;
-const DEBUG_DETAIL = 1;
+const DEBUG_DETAIL = 0;
 
 /**
  * -コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
@@ -115,8 +115,10 @@ class PongApp
 		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
 					if (DEBUG_DETAIL) {	console.log('this.gameStateManager', this.gameStateManager);	}
 		// 無限ループでアニメーションの更新を担当。シングルトン
-		this.renderLoop = LoopManager.getInstance(this);
-					if (DEBUG_DETAIL) {	console.log('this.renderLoop', this.renderLoop);	}
+		const renderLoop = LoopManager.getInstance(this);
+					if (DEBUG_DETAIL) {	console.log('renderLoop', renderLoop);	}
+					if (DEBUG_DETAIL) {	console.log('renderLoop.pong', renderLoop.pong);	}
+		this.renderLoop = renderLoop;
 		this.renderLoop.start();
 
 					//dev用　index.jsで`PongApp.main('dev');`で呼び出す
@@ -161,6 +163,12 @@ class PongApp
 		}
 		if (this.animationMixersManager){
 			this.animationMixersManager.dispose();
+		}
+		if (this.renderLoop) {
+			this.renderLoop.dispose();
+		}
+		if (this.gameStateManager) {
+			this.gameStateManager.dispose();
 		}
 		// イベントリスナーを削除
 		window.removeEventListener('resize', this.boundHandleResize);

@@ -65,6 +65,19 @@ class GameStateManager
 			this.currentState.render();
 		}
 	}
+
+	dispose() 
+	{
+		if (this.currentState) 
+		{
+			this.currentState.exit();
+		}
+		this.pongApps = null;
+		this.allScenesManager = null;
+		this.states = null;
+		this.currentState = null;
+		GameStateManager.instance = null;
+	}
 }
 
 export default GameStateManager;
