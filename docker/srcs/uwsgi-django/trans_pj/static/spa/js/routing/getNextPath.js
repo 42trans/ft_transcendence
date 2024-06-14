@@ -34,7 +34,7 @@ function getGuestRedirectPath(url) {
 
 
 // Userのリダイレクトを制御
-//  login関係（signup, login, verify2fa, enable2fa) はtopにせんい
+//  login関係（signup, login, verify2fa, enable2fa) はtopに遷移
 //  それ以外はそのまま表示
 function getUserRedirectPath(url, isEnable2FA) {
   const urlObject = new URL(url);

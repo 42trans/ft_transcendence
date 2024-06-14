@@ -38,18 +38,19 @@ const setupPopStateListener = () => {
 
 // spa.htmlの読み込みと解析が完了した時点で発火
 const setupDOMContentLoadedListener = () => {
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
     // stopGamePageAnimation()
     refreshJWT()
 
     // 初期ビューを表示
-    const currentPath = window.location.pathname;
-    switchPage(currentPath);
+    // const currentPath = window.location.pathname;
+    const currentPath = window.location.href;
+    const renderPath = await getNextPath(currentPath)  // guest, userのredirectを加味したPathを取得
+    switchPage(renderPath);
 
     // リンククリック時の遷移を設定
     setupBodyClickListener();
-    // setupLoginEventListener();  // 直接アクセス & loginリダイレクト用
     setOnlineStatus();  // WebSocket接続を再確立
 
     // three-jsのEndGameボタン押下でSPA遷移するためのイベント
@@ -74,7 +75,7 @@ const setupBodyClickListener = () => {
       refreshJWT()
 
       const linkUrl = linkElement.href;
-      const nextPath = await getNextPath(linkUrl)  // guest, userのredirectを加味したnextUrlを取得
+      const nextPath = await getNextPath(linkUrl)  // guest, userのredirectを加味したnextPathを取得
       switchPage(nextPath);
     }
 
