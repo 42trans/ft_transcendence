@@ -4,37 +4,38 @@ import { deleteFriend, createActionButton } from "./friend.js"
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 
 
-let socket = null;
+let onlineStatusDebug = 0;
+let onlineStatusSocket = null;
 
 
 export function connectOnlineStatusWebSocket(userId) {
-    // console.log('Connecting WebSocket: userId: ' + userId);
+    if (onlineStatusDebug) { console.log('Connecting WebSocket: userId: ' + userId); }
 
-    if (socket && socket.readyState === WebSocket.OPEN) {
-        // console.log('WebSocket already connected');
+    if (onlineStatusSocket && onlineStatusSocket.readyState === WebSocket.OPEN) {
+        if (onlineStatusDebug) { console.log('WebSocket already connected'); }
         return;
     }
 
     const websocketUrl = 'wss://' + window.location.host + '/ws/online/';
-    // console.log(`connectOnlineStatusWebSocket websocketUrl:${websocketUrl}`);
+    if (onlineStatusDebug) { console.log(`connectOnlineStatusWebSocket websocketUrl:${websocketUrl}`); }
 
-    socket = new WebSocket(websocketUrl);
-    socket.onmessage = handleMessage;
-    socket.onopen = () => handleOpen(socket, userId);
-    socket.onclose = () => handleClose(socket, userId);
-    socket.onerror = handleError;
+    onlineStatusSocket = new WebSocket(websocketUrl);
+    onlineStatusSocket.onmessage = handleMessage;
+    onlineStatusSocket.onopen = () => handleOpen(onlineStatusSocket, userId);
+    onlineStatusSocket.onclose = () => disconnectOnlineStatusWebSocket(userId);
+    onlineStatusSocket.onerror = handleError;
 
     // alert('connectOnlineStatusWebSocket completed')
 }
 
 
 export function disconnectOnlineStatusWebSocket(userId) {
-    // console.log('Disconnecting WebSocket: userId: ' + userId);
-    if (socket) {
-        // console.log(' socket exist -> disconnect');
-        sendStatusUpdate(socket, false, userId);
-        socket.close();
-        socket = null;
+    if (onlineStatusDebug) { console.log('Disconnecting WebSocket: userId: ' + userId); }
+    if (onlineStatusSocket) {
+        if (onlineStatusDebug) { console.log(' onlineStatusSocket exist -> disconnect'); }
+        sendStatusUpdate(onlineStatusSocket, false, userId);
+        onlineStatusSocket.close();
+        onlineStatusSocket = null;
     }
 }
 
@@ -44,29 +45,29 @@ function handleMessage(event) {
 }
 
 
-async function handleOpen(socket, userId) {
-    // console.log('WebSocket connection established');
-    socket.userId = userId;
-    await sendStatusUpdate(socket, true, userId);
+async function handleOpen(onlineStatusSocket, userId) {
+    if (onlineStatusDebug) { console.log('WebSocket connection established'); }
+    onlineStatusSocket.userId = userId;
+    await sendStatusUpdate(onlineStatusSocket, true, userId);
 }
 
 
-async function sendStatusUpdate(socket, status, userId) {
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
-    } else if (socket.readyState === WebSocket.CONNECTING) {
-        await waitForWebSocketOpen(socket);
-        socket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
+async function sendStatusUpdate(onlineStatusSocket, status, userId) {
+    if (onlineStatusSocket.readyState === WebSocket.OPEN) {
+        onlineStatusSocket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
+    } else if (onlineStatusSocket.readyState === WebSocket.CONNECTING) {
+        await waitForWebSocketOpen(onlineStatusSocket);
+        onlineStatusSocket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
     } else {
-        console.error('WebSocket is not open. readyState: ' + socket.readyState);
+        console.error('WebSocket is not open. readyState: ' + onlineStatusSocket.readyState);
     }
 }
 
 
-function waitForWebSocketOpen(socket) {
+function waitForWebSocketOpen(onlineStatusSocket) {
     return new Promise((resolve) => {
-        socket.addEventListener('open', function onOpen() {
-            socket.removeEventListener('open', onOpen);
+        onlineStatusSocket.addEventListener('open', function onOpen() {
+            onlineStatusSocket.removeEventListener('open', onOpen);
             resolve();
         });
     });
@@ -83,7 +84,7 @@ function updateFriendStatus(event) {
     const userId = data.user_id;
     const status = data.status;
 
-    // console.log(`Received status update: userId=${userId}, status=${status}`);
+    if (onlineStatusDebug) { console.log(`Received status update: userId=${userId}, status=${status}`); }
 
     // 変更があったフレンドのみ更新
     var statusElement = document.getElementById('friend-status-' + userId);
@@ -158,53 +159,4 @@ function updateOrCreateFriendListItem(friend) {
     listItem.appendChild(deleteButton);
 
     return listItem;
-}
-
-
-export function fetchUserId() {
-    return fetch("/accounts/api/user/profile/")
-        .then(response => {
-            if (!response.ok) {
-                // console.log('GuestUser? UserID not found');
-                return null;
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (!data.id) {
-                // console.log('GuestUser? UserID not found');
-                return null;
-            }
-            return data.id;
-        })
-        .catch(error => {
-            // console.log('Error:', error);
-            return null;
-        });
-}
-
-
-export function setOnlineStatus() {
-    // console.log('setOnlineStatus called');
-
-    fetchUserId().then(userId => {
-        if (!userId) {
-            // console.log('GuestUser? UserID not found');
-            return;
-        }
-
-        function onPageLoad() {
-            connectOnlineStatusWebSocket(userId);
-        }
-
-        if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            onPageLoad();
-        } else {
-            window.addEventListener('load', onPageLoad);
-        }
-
-        window.addEventListener('popstate', function(event) {
-            onPageLoad();
-        });
-    });
 }

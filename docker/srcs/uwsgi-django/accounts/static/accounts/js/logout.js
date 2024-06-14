@@ -21,7 +21,7 @@ function handleLogout() {
 	.then(data => {
 		if (data.message) {
 			alert(data.message);
-			console.log("redirect to " + data.redirect);
+			// console.log("redirect to " + data.redirect);
 			disconnectOnlineStatusWebSocket(data.user_id)
 
 			// alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
