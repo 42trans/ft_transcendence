@@ -2,6 +2,7 @@
 
 import { deleteFriend, createActionButton } from "./friend.js"
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { isUserLoggedIn } from "/static/spa/js/utility/isUser.js"
 
 
 let socket = null;
@@ -184,8 +185,12 @@ export function fetchUserId() {
 }
 
 
-export function setOnlineStatus() {
+export async function setOnlineStatus() {
     // console.log('setOnlineStatus called');
+    const isLoggedIn = await isUserLoggedIn();
+    if (!isLoggedIn) {
+        return;
+    }
 
     fetchUserId().then(userId => {
         if (!userId) {
