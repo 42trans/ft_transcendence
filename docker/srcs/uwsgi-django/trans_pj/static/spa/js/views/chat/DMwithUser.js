@@ -21,7 +21,7 @@ export default class extends AbstractView {
     return data;
   }
 
-  async executeScript() {
+  async executeScript(spaElement) {
     // loadAndExecuteScript("/static/chat/js/dm-with-user.js", true);
     const dmWithUserModule = await import("/static/chat/js/dm-with-user.js");
     dmWithUserModule.initDM();

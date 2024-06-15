@@ -21,7 +21,7 @@ export default class extends AbstractView {
         return data;
     }
 
-    async executeScript() {
+    async executeScript(spaElement) {
       const blockUserModule = await import("/static/accounts/js/block-user.js");
       blockUserModule.setupBlockUserEventListener();
 
