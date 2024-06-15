@@ -19,11 +19,14 @@ export default class extends AbstractView {
   }
 
   async executeScript() {
-    loadAndExecuteScript("/static/accounts/js/enable_2fa.js", true);
-
     const enable2FaModule = await import("/static/accounts/js/enable_2fa.js");
     enable2FaModule.fetchEnable2FA();
     enable2FaModule.setupVerifyTokenEventListener();
+  }
+
+  async dispose() {
+    const signupModule = await import("/static/accounts/js/enable_2fa.js");
+    signupModule.removeVerifyTokenEventListener();
   }
 
 }

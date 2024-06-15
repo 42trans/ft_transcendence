@@ -3,6 +3,7 @@
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 
+const DEBUG = 1;
 
 export function fetchEnable2FA() {
 	fetch('/accounts/api/enable_2fa/', {
@@ -21,11 +22,11 @@ export function fetchEnable2FA() {
 			}
 			else {
 				const qrCodeHtml = `
-		<p>Scan this QR Code with your authenticator app:</p>
-		<p><img src="data:image/png;base64,${data.qr_code_data}" alt="2FA QR Code"></p>
-		<p>Or enter this setup key: </p>
-		<p class="pb-1">${data.setup_key}</p>
-	`;
+					<p>Scan this QR Code with your authenticator app:</p>
+					<p><img src="data:image/png;base64,${data.qr_code_data}" alt="2FA QR Code"></p>
+					<p>Or enter this setup key: </p>
+					<p class="pb-1">${data.setup_key}</p>
+				`;
 				document.getElementById('qrCodeContainer').innerHTML = qrCodeHtml;
 			}
 		})
@@ -36,7 +37,7 @@ export function fetchEnable2FA() {
 }
 
 
-function verifyToken() {
+function enable2FaVerifyToken() {
 	const token = document.getElementById('token').value;
 
 	fetch('/accounts/api/enable_2fa/', {
@@ -66,13 +67,33 @@ function verifyToken() {
 }
 
 
+let verifyTokenButtonHandler = null;
+
 export function setupVerifyTokenEventListener() {
-	console.log("Setup logout event listeners");
-	const verifyTokenButton = document.querySelector('.hth-btn.verifyTokenButton');
-	if (verifyTokenButton) {
-		verifyTokenButton.addEventListener('click', (event) => {
+	if (DEBUG) { console.log("[Setup verify-token event listeners]"); }
+
+	const button = document.querySelector('.hth-btn.verifyTokenButton');
+	if (button && !verifyTokenButtonHandler) {
+		verifyTokenButtonHandler = (event) => {
 			event.preventDefault();
-			verifyToken();
-		});
+			enable2FaVerifyToken();
+		};
+		button.addEventListener('click', verifyTokenButtonHandler);
+		button.classList.add('listener-added');
+
+		if (DEBUG) { console.log(' Verify-token event listener added'); }
+	}
+}
+
+export function removeVerifyTokenEventListener() {
+	if (DEBUG) { console.log("[Cleanup verify-token event listener]"); }
+
+	const button = document.querySelector('.hth-btn.verifyTokenButton');
+	if (button && verifyTokenButtonHandler) {
+		button.removeEventListener('click', verifyTokenButtonHandler);
+		button.classList.remove('listener-added');
+		verifyTokenButtonHandler = null;
+
+		if (DEBUG) { console.log(' Verify-token event listener removed'); }
 	}
 }
