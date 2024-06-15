@@ -7,10 +7,12 @@ import { scrollToBottom } from './ui-util.js';
 export { setupDmWebsocket };
 
 
+let dmSocket = null;
+
 // WebSocketの接続確立とメッセージの送受信ロジック
 function setupDmWebsocket(dmTargetNickname) {
     const websocketUrl = 'wss://' + window.location.host + '/ws/dm-with/' + dmTargetNickname + '/';
-    const dmSocket = new WebSocket(websocketUrl);
+    dmSocket = new WebSocket(websocketUrl);
 
     dmSocket.onmessage = (event) => handleReceiveMessage(event, dmTargetNickname);
     dmSocket.onopen = () => handleOpen(dmSocket, dmTargetNickname);
@@ -27,7 +29,7 @@ function handleOpen(dmTargetNickname) {
 
 
 function handleClose(event) {
-    console.error('Chat socket closed unexpectedly:', event);
+    console.log('Chat socket closed:', event);
 }
 
 function handleError(event) {
@@ -51,4 +53,12 @@ function handleSendMessage(dmSocket) {
     }));
     messageInputDom.value = '';
     scrollToBottom();  // dm-logのスクロール位置を調整
+}
+
+
+export function closeDmSocket() {
+    if (dmSocket && dmSocket.readyState === WebSocket.OPEN) {
+        dmSocket.close();
+        dmSocket = null;
+    }
 }
