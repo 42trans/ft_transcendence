@@ -68,3 +68,4 @@ function registerEventListenerSwitchPageResetState()
 
 registerEventListenerSwitchPageResetState();
 
+// TODO_ft: 戻る進むのバグ再発
