@@ -160,6 +160,31 @@ class PongOnlineGameStateManager
 		return this.gameState;
 	}
 
+	dispose() {
+		window.removeEventListener('resize', this.resizeHandler);
+
+		if (this.renderer) {
+			this.renderer.dispose();
+			this.renderer = null;
+		}
+		if (this.loopManager) {
+			this.loopManager.dispose();
+			this.loopManager = null;
+		}
+	
+		this.clientApp = null;
+		this.ctx = null;
+		this.canvas = null;
+		this.field = null;
+		this.socket = null;
+		this.finalGameState = null;
+		this.gameState = {
+			game_settings: {},
+			objects: {},
+			state: {},
+			is_running: false
+		};
+	}
 }
 
 export default PongOnlineGameStateManager;

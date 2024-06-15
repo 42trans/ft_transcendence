@@ -23,17 +23,14 @@ class PongOnlineClientApp
 				if (DEBUG_FLOW){	console.log('PongOnlineClientApp constructor begin');	}
 		this.socket = null;
 		this.init();
-		// window.addEventListener('switchPageResetState', this.init.bind(this));
 		this.boundInit = this.init.bind(this);
  		window.addEventListener('switchPageResetState', this.boundInit);
-
+		this.isStartButtonListenerRegistered = false;
 	}
 	
 	init()
 	{
 		try {
-			// window.removeEventListener('switchPageResetState', this.boundInit);
-
 			if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 				console.log('init(): this.socket.close()');
 				this.socket.close();
@@ -50,6 +47,10 @@ class PongOnlineClientApp
 
 	initWebSocket()
 	{
+		this.startGameButton = document.getElementById('hth-pong-online-start-game-btn');
+		if (!this.startGameButton) {
+			return;
+		}
 		this.socketUrl			= 'wss://localhost/ws/pong/online/';
 		// 毎回新しいインスタンスを生成。SPA遷移（ renderView() ）が実行された場合、ゲームはリセットする
 		this.gameStateManager	= new PongOnlineGameStateManager(this);
@@ -68,17 +69,40 @@ class PongOnlineClientApp
 				return;
 			}
 			this.startGameButton.style.display = 'block' 
+			this.registerStartButtonEventListener();
+			// const startGameButtonClickHandler = () => {
+			// 	console.log('this.socket', this.socket);
 
-			const startGameButtonClickHandler = () => {
-				console.log('this.socket', this.socket);
-
-				this.setupWebSocketConnection();
-				this.startGameButton.remove();  
-			};
-			this.startGameButton.addEventListener('click', startGameButtonClickHandler);
+			// 	this.setupWebSocketConnection();
+			// 	this.startGameButton.remove();  
+			// };
+			// this.startGameButton.addEventListener('click', startGameButtonClickHandler);
 		} catch (error) {
 			console.error('hth: initStartButton() failed: ', error);
 		}
+	}
+	
+	registerStartButtonEventListener() 
+	{
+		if (!this.isStartButtonListenerRegistered) {
+			this.startGameButton.addEventListener('click', this.handleStartButtonClick.bind(this));
+			this.isStartButtonListenerRegistered = true;
+		}
+	}
+	
+	unregisterStartButtonEventListener() 
+	{
+		if (this.isStartButtonListenerRegistered) {
+			this.startGameButton.removeEventListener('click', this.handleStartButtonClick);
+			this.isStartButtonListenerRegistered = false;
+		}
+	}
+	
+	handleStartButtonClick()
+	{
+		// console.log('this.socket', this.socket);
+		this.setupWebSocketConnection();
+		this.startGameButton.style.display = 'none';
 	}
 	
 	initEndButton() {
@@ -117,10 +141,36 @@ class PongOnlineClientApp
 		}
 	}
 
-	static main(env) {
-		new PongOnlineClientApp(env);
-	}
+	// static main(env) {
+	// 	new PongOnlineClientApp(env);
+	// }
 
+	dispose() {
+		// eventlistenerの削除
+		window.removeEventListener('switchPageResetState', this.boundInit);
+		this.unregisterStartButtonEventListener();
+		PongEngineKey.removeListeners();
+
+		// WebSocketの切断
+		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+			this.socket.onclose = null;
+			this.socket.close();
+			this.socket = null;
+		}
+		
+		// インスタンス・プロパティの破棄
+		if (this.syncWS) {
+			this.syncWS.dispose();
+			this.syncWS = null;
+		}
+		if (this.gameStateManager) {
+			this.gameStateManager.dispose();
+			this.gameStateManager = null;
+		}
+		this.socketUrl = null;
+		this.startGameButton = null;
+		this.isStartButtonListenerRegistered = false;
+	}
 }
 
 export default PongOnlineClientApp;

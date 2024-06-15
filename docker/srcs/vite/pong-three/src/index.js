@@ -38,7 +38,6 @@ async function initPongApp(env)
 {
 				if (DEBUG_FLOW) {	console.log('initPongApp(): start');	}
 	if (window.pongApp){
-		// return;
 		await window.pongApp.destroy();
 		window.pongApp = null;
 	}

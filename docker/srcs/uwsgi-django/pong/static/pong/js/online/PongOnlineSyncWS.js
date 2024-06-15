@@ -177,25 +177,6 @@ class PongOnlineSyncWS
 		console.error("hth: WebSocket error:", event);
 		alert('WebSocketの接続でエラーが起きました');
 	}
-
-
-
-	// createButton(text, id, onClickHandler) 
-	// {
-	// 	try {
-	// 				if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
-
-	// 		const button		= document.createElement('button');
-	// 		button.textContent	= text;
-	// 		button.id			= id;
-	// 		button.classList.add('hth-btn');
-	// 		document.getElementById('hth-main').appendChild(button);
-	// 		button.addEventListener('click', onClickHandler);
-	// 	} catch (error) {
-	// 		console.error('hth:: createButton() failed: ', error);
-	// 	}
-	// }
-
 	
 	/** dev用 再接続チェック用 */
 	// devTestCloseButton()
@@ -204,6 +185,15 @@ class PongOnlineSyncWS
 	// 		this.socket.close();
 	// 	});
 	// }
+
+	dispose() {
+		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+			this.socket.close();
+			this.socket = null;
+		}
+		this.clientApp = null;
+		this.gameStateManager = null;
+	}
 }
 
 export default PongOnlineSyncWS;
