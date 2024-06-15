@@ -20,8 +20,8 @@ export default class extends AbstractView {
     return data;
   }
 
-  async executeScript() {
-    loadAndExecuteScript("/static/pong/three/assets/index.js", true);
+  async executeScript(spaElement) {
+    loadAndExecuteScript(spaElement, "/static/pong/three/assets/index.js", true);
   }
 
   // dispose() {

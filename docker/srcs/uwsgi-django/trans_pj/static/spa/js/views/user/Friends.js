@@ -18,7 +18,7 @@ export default class extends AbstractView {
     return data;
   }
 
-  async executeScript() {
+  async executeScript(spaElement) {
     // loadAndExecuteScript("/static/accounts/js/friend.js", true);
     const friendModule = await import("/static/accounts/js/friend.js");
     friendModule.fetchFriendList();

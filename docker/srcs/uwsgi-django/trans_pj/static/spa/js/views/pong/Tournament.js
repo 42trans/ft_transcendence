@@ -19,7 +19,7 @@ export default class extends AbstractView {
     return data;
   }
 
-  async executeScript() {
+  async executeScript(spaElement) {
     // await loadAndExecuteScript("/static/pong/js/tournament/TournamentMain.js", true);
 
     const tournamentModule = await import("/static/pong/js/tournament/TournamentMain.js");

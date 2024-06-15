@@ -14,7 +14,7 @@ export default class extends AbstractView {
     const data = await fetchData(uri);
     return data;
   }
-  async executeScript() {
+  async executeScript(spaElement) {
     //executeScriptTab("");
   }
 }
