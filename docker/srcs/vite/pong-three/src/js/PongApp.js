@@ -10,6 +10,7 @@ import AnimationMixersManager from './manager/AnimationMixersManager'
 import GameStateManager from './manager/GameStateManager'
 import LoopManager from './manager/LoopManager'
 import RendererManager from './manager/RendererManager'
+import PongEngineKey from './pongEngine/PongEngineKey'
 
 //dev用GUI
 import * as lil from 'lil-gui'; 
@@ -30,6 +31,7 @@ class PongApp
 	{
 		this.env = env;
 		this.init();
+		this.boundHandleResize = null;
 	}
 
 	static getInstance(env)
@@ -122,7 +124,6 @@ class PongApp
 					if (DEBUG_DETAIL) {	console.log('renderLoop', renderLoop);	}
 					if (DEBUG_DETAIL) {	console.log('renderLoop.pong', renderLoop.pong);	}
 		this.renderLoop = renderLoop;
-
 		// -----------------------------------------------------------------------------
 		// 再描画のバグの根本原因の対策はこの行。再度コンストラクタから作り直すような処理。理由は不明
 		// -----------------------------------------------------------------------------
@@ -137,10 +138,11 @@ class PongApp
 					if (this.env === 'dev'){
 						this.setupDevEnv();
 					} 
-		
+
 		this.boundHandleResize = this.allScenesManager.handleResize.bind(this.allScenesManager);
 		window.addEventListener('resize', this.boundHandleResize, false);
-					if (DEBUG_FLOW) {	console.log('init(): done');	}
+			
+					if (DEBUG_FLOW) {	console.log('init(): done');	}	
 	}
 	
 	stopRenderLoop() 
@@ -160,15 +162,23 @@ class PongApp
 						if (DEBUG_FLOW) {	console.log('destroy(): window.pongApp is false');	window.pongApp}
 			return;
 		}
+		// eventlistenerの削除
+		if (typeof handleSwitchPageResetState === 'function') {
+			window.removeEventListener('switchPageResetState', handleSwitchPageResetState);
+			isEventListenerRegistered = false; 
+		}
+
 		this.stopRenderLoop();
 		if (this.allScenesManager){
 			this.allScenesManager.dispose();
 		}
-		if (this.renderer){
+		if (this.renderer)
+			{
 			// THREE.WebGLRendererのメソッド
 			// これだけでは不足のようで、init()でインスタンスの廃棄が必要
 			this.renderer.dispose();
 		}
+
 		if (this.animationMixersManager){
 			this.animationMixersManager.dispose();
 		}
@@ -178,20 +188,13 @@ class PongApp
 		if (this.gameStateManager) {
 			this.gameStateManager.dispose();
 		}
-		// イベントリスナーを削除
-		window.removeEventListener('resize', this.boundHandleResize);
-		PongEngineKey.removeListeners();
 
-		// DOM書き換えと同時に削除されるので冗長だが、一応Buttonの設定も削除
-		// removeメソッドを使用するにはインスタンスが必要なのでボタンに対して行う
-		const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
-		if (endGameButton) {
-			endGameButton.removeEventListener('click', this.handleEndGameButtonClick);
+		if (this.boundHandleResize) 
+		{
+			window.removeEventListener('resize', this.boundHandleResize);
+			this.boundHandleResize = null;
 		}
-		const startGameButton = document.getElementById('hth-threejs-start-game-btn');
-		if (startGameButton) {
-			this.startGameButton.removeEventListener('click', this.boundHandleButtonClick);
-		}
+		PongEngineKey.removeListeners();
 
 		// lil-gui を破棄
 		if (this.gui) {

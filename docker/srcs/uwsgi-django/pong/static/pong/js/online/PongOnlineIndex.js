@@ -4,12 +4,11 @@ import PongOnlineClientApp from './PongOnlineClientApp.js';
 /**
  * 2D-Pong entry point
  */
-
-// PongOnlineClientApp.main();
-
 let pongOnlineClientApp = null;
 let isEventListenerRegistered = false;
-
+// ---------------------------------------
+// init
+// ---------------------------------------
 async function initPongOnlineClientApp() 
 {
 	if (pongOnlineClientApp) {
@@ -18,16 +17,10 @@ async function initPongOnlineClientApp()
 	}
 	pongOnlineClientApp = new PongOnlineClientApp();
 }
-
-async function disposePongOnlineClientApp() 
-{
-	if (pongOnlineClientApp) 
-	{
-		pongOnlineClientApp.dispose();
-		pongOnlineClientApp = null;
-	}
-}
-
+initPongOnlineClientApp();
+// ---------------------------------------
+// switchPageResetState
+// ---------------------------------------
 async function handleSwitchPageResetState() {
 	await initPongOnlineClientApp();
 }
@@ -41,8 +34,17 @@ function registerEventListenerSwitchPageResetState() {
 }
 
 registerEventListenerSwitchPageResetState();
-
-initPongOnlineClientApp();
+// ---------------------------------------
+// dispose
+// ---------------------------------------
+async function disposePongOnlineClientApp() 
+{
+	if (pongOnlineClientApp) 
+	{
+		pongOnlineClientApp.dispose();
+		pongOnlineClientApp = null;
+	}
+}
 
 if (!window.disposePongOnlineClientApp) {
 	window.disposePongOnlineClientApp = disposePongOnlineClientApp;

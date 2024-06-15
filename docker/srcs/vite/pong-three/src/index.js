@@ -29,11 +29,13 @@
 import PongApp from './js/PongApp'
 import './css/3d.css';
 
-const DEBUG_FLOW = 0;
+const DEBUG_FLOW = 1;
 
 window.pongApp = null;
 let isEventListenerRegistered = false; 
-
+// ---------------------------------------
+// init
+// ---------------------------------------
 async function initPongApp(env)
 {
 				if (DEBUG_FLOW) {	console.log('initPongApp(): start');	}
@@ -47,12 +49,13 @@ async function initPongApp(env)
 }
 
 initPongApp();
-
-
+// ---------------------------------------
+// switchPageResetState
+// ---------------------------------------
 // switchPageResetStateイベントハンドラ
 async function handleSwitchPageResetState() 
 {
-	if (DEBUG_FLOW) { console.log('switchPageResetState: event'); }
+				if (DEBUG_FLOW) { console.log('switchPageResetState: event'); }
 	await initPongApp();
 }
 
@@ -62,10 +65,22 @@ function registerEventListenerSwitchPageResetState()
 		return; 
 	}
 	window.addEventListener('switchPageResetState', handleSwitchPageResetState);
-	// 登録済みフラグを立てる
 	isEventListenerRegistered = true;
 }
 
 registerEventListenerSwitchPageResetState();
+// ---------------------------------------
+// dispose
+// ---------------------------------------
+async function disposePongApp() 
+{
+	if (window.pongApp) 
+	{
+		window.pongApp.destroy();
+		window.pongApp = null;
+	}
+}
 
-// TODO_ft: 戻る進むのバグ再発
+if (!window.disposePongApp) {
+	window.disposePongApp = disposePongApp;
+}
