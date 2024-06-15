@@ -2,7 +2,6 @@
 
 import { routeTable } from "./routeTable.js"
 import { isUserLoggedIn, isUserEnable2FA } from "../utility/isUser.js"
-import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
 
 const DEBUG = 0;
@@ -26,7 +25,6 @@ function getGuestRedirectPath(url) {
   } else {
     // loginを表示 & LoginEventListenerを設定
     nextPath = routeTable['login'].path;
-    setupLoginEventListener();
     if (DEBUG) { console.log('guest redirect to: ' + nextPath); }
   }
   return nextPath;

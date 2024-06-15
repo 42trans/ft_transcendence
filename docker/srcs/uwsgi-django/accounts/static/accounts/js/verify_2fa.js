@@ -3,6 +3,7 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
+const DEBUG = 0;
 
 function verify2FA() {
 	const token = document.getElementById('token').value;
@@ -44,16 +45,34 @@ export function clearForm() {
 }
 
 
-// グローバルスコープに公開
-// window.verify2FA = verify2FA;
+
+let verify2FaButtonHandler = null;
 
 export function setupVerify2FaEventListener() {
-	console.log("Setup verify2fa event listeners");
-	const verify2FaButton = document.querySelector('.hth-btn.verify2FaButton');
-	if (verify2FaButton) {
-		verify2FaButton.addEventListener('click', (event) => {
+	if (DEBUG) { console.log("[Setup verify2fa event listeners]"); }
+
+	const button = document.querySelector('.hth-btn.verify2FaButton');
+	if (button && !verify2FaButtonHandler) {
+		verify2FaButtonHandler = (event) => {
 			event.preventDefault();
 			verify2FA();
-		});
+		};
+		button.addEventListener('click', verify2FaButtonHandler);
+		button.classList.add('listener-added');
+
+		if (DEBUG) { console.log(' Verify2fa event listener added'); }
+	}
+}
+
+export function removeVerify2FaEventListener() {
+	if (DEBUG) { console.log("[Cleanup verify2fa event listener]"); }
+
+	const button = document.querySelector('.hth-btn.verify2FaButton');
+	if (button && verify2FaButtonHandler) {
+		button.removeEventListener('click', verify2FaButtonHandler);
+		button.classList.remove('listener-added');
+		verify2FaButtonHandler = null;
+
+		if (DEBUG) { console.log(' Verify2fa event listener removed'); }
 	}
 }

@@ -49,20 +49,33 @@ function clearForm() {
 }
 
 
+let loginFormSubmitHandler = null;
+
 export function setupLoginEventListener() {
-	if (DEBUG) { console.log("Setup login event listeners"); }
+	if (DEBUG) { console.log("[Setup login event listeners]"); }
+
 	const form = document.querySelector('.hth-sign-form');
-	if (form) {
-		// Check if the event listener has already been added
-		if (form.classList.contains('listener-added')) {
-			if (DEBUG) { console.log('Login event listener already exists'); }
-		} else {
-			form.addEventListener('submit', (event) => {
-				event.preventDefault();
-				loginUser();
-			});
-			form.classList.add('listener-added');
-			if (DEBUG) { console.log('Login event listener added'); }
-		}
+	if (form && !loginFormSubmitHandler) {
+		loginFormSubmitHandler = (event) => {
+			event.preventDefault();
+			loginUser();
+		};
+		form.addEventListener('submit', loginFormSubmitHandler);
+		form.classList.add('listener-added');
+
+		if (DEBUG) { console.log(' Login event listener added'); }
+	}
+}
+
+export function removeLoginEventListener() {
+	if (DEBUG) { console.log("[Cleanup login event listener]"); }
+
+	const form = document.querySelector('.hth-sign-form');
+	if (form && loginFormSubmitHandler) {
+		form.removeEventListener('submit', loginFormSubmitHandler);
+		form.classList.remove('listener-added');
+		loginFormSubmitHandler = null;
+
+		if (DEBUG) { console.log(' Login event listener removed'); }
 	}
 }

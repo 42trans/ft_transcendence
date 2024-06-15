@@ -21,6 +21,10 @@ export default class extends AbstractView {
   async executeScript() {
     const signupModule = await import("/static/accounts/js/signup.js");
     signupModule.setupSignupEventListener();
-    // loadAndExecuteScript("/static/accounts/js/signup.js");
+  }
+
+  async dispose() {
+    const signupModule = await import("/static/accounts/js/signup.js");
+    signupModule.removeSignupEventListener();
   }
 }

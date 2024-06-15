@@ -21,6 +21,10 @@ export default class extends AbstractView {
   async executeScript() {
     const loginModule = await import("/static/accounts/js/login.js");
     loginModule.setupLoginEventListener();
-    // loginModule.setupOAuthCallbackListener();  // todo: うまく動作しない
+  }
+
+  async dispose() {
+    const loginModule = await import("/static/accounts/js/login.js");
+    loginModule.removeLoginEventListener();
   }
 }
