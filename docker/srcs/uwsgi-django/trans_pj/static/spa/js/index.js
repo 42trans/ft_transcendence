@@ -11,7 +11,7 @@ const DEBUG_DETAIL = 0;
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
-  // console.log('popState: path: ' + window.location.pathname);
+  if (DEBUG_DETAIL) { console.log('popState: path: ' + window.location.pathname); }
   window.addEventListener("popstate", async (event) => {
     const path = window.location.pathname;
     refreshJWT()

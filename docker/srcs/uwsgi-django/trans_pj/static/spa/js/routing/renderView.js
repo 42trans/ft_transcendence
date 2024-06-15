@@ -20,10 +20,15 @@ export const switchPage = (targetPath) => {
   //         if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
   //   currentView.dispose();
   // }
-  renderView(targetPathName).then(() => {
-    window.dispatchEvent(new CustomEvent('switchPageResetState'));
-    // setOnlineStatus();
-  });
+
+  // 戻る、進むでも対応するために、event発行はrenderView内部に移動
+  renderView(targetPathName);
+  
+  // renderView(targetPathName).then(() => {
+  //   if (DEBUG_DETAIL) { console.log('event: switchPageResetState');  }
+  //   window.dispatchEvent(new CustomEvent('switchPageResetState'));
+  //   // setOnlineStatus();
+  // });
 };
 
 // export const switchPage = (targePath) => {
@@ -99,22 +104,33 @@ async function getView(path) {
   return view
 }
 
+// 現在表示しているviewを格納しておく変数: 次回の冒頭でdispose()が呼ばれる
 let currentView = null;
+// 全ての遷移で呼ばれるメソッド。とりあえずここに共通のものを設定
 export const renderView = async (path) => {
+  // viewクラスのdespose()を呼び出す
   if (currentView && typeof currentView.dispose === "function") {
         if (DEBUG_DETAIL) { console.log('renderView(): currentView.dispose(): currentView', currentView);  } 
     currentView.dispose();
   }
+  // ここまで前回のviewに対する処理
+  // --------------------------
+  // ここから今回のviewに対する処理
+  // viewクラスの指定とメソッド呼び出し
   const selectedRoute = getSelectedRoute(path, routeTable);
   const view = new selectedRoute.view(selectedRoute.params);
   currentView = view;
   const htmlSrc = await view.getHtml();
-        if (DEBUG_DETAIL) { console.log('renderView():htmlSrc', htmlSrc); }
   document.querySelector("#spa").innerHTML = htmlSrc;
   await view.executeScript();
+        // DEBUG
+        if (DEBUG_DETAIL) { console.log('renderView():htmlSrc', htmlSrc); }
         if (DEBUG_DETAIL) { console.log('renderView(): currentView', currentView); }
         if (DEBUG_DETAIL) { console.log('renderView(): selectedRoute.params', selectedRoute.params); }
-
+        if (DEBUG_DETAIL) { console.log('event: switchPageResetState');  }
+  // イベントを発行: 3Dのインスタンス更新に使用
+  window.dispatchEvent(new CustomEvent('switchPageResetState'));
+  // 
   setOnlineStatus();
 };
 
