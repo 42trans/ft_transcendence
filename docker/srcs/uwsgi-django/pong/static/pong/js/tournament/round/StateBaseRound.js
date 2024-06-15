@@ -127,6 +127,10 @@ class StateBaseRound
 			const newRound = Math.min(3, roundNumber + 1);
 			this.roundManager.changeStateToRound(newRound);
 		};
+		// roundNumber が"3"の場合、 next ボタンを非表示
+		if (roundNumber === 3) {
+			naviButton.style.display = 'none';
+		}
 		return naviButton;
 	}
 }

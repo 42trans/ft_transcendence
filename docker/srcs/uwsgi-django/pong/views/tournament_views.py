@@ -101,6 +101,8 @@ def save_game_result(request):
 		if winner:
 			assign_winner_to_next_match(match, winner)
 
+			# トーナメントの is_Finisjed を立てる処理は未実装 全試合終了チェック が必要
+
 		return JsonResponse({"status": "success", "message": "Game result saved successfully."})
 	except Exception as e:
 		import traceback
