@@ -12,12 +12,12 @@ const DEBUG_FLOW = 0;
 // --------------------------------------
 // let isEventListenerRegistered = false;
 // イベントリスナーの削除 
-function  unregisterEventListenerSwitchPageResetState() {
-        if (DEBUG_FLOW) {  console.log('GameMatch: unregisterEventListenerSwitchPageResetState(): start'); }
-  // handleSwitchPageResetState(): docker/srcs/vite/pong-three/src/index.jsに実装
-  window.removeEventListener('switchPageResetState', window.handleSwitchPageResetState);
-  window.isEventListenerRegistered = false; 
-}
+// function  unregisterEventListenerSwitchPageResetState() {
+//         if (DEBUG_FLOW) {  console.log('GameMatch: unregisterEventListenerSwitchPageResetState(): start'); }
+//   // handleSwitchPageResetState(): docker/srcs/vite/pong-three/src/index.jsに実装
+//   window.removeEventListener('switchPageResetState', window.handleSwitchPageResetState);
+//   window.isEventListenerRegistered = false; 
+// }
 // --------------------------------------
 export default class extends AbstractView {
   constructor(params) {
@@ -41,11 +41,13 @@ export default class extends AbstractView {
   async dispose() {
         if (DEBUG_FLOW) {  console.log('GameMatch: disopose(): start'); }
     // Three.jsのインスタンスを破棄
-    if (window.pongApp) {
-          if (DEBUG_FLOW) {  console.log('GameMatch: disopose(): window.pongApp is true'); }
-      await window.pongApp.destroy();
-      window.pongApp = null;
+    if (typeof window.disposePongApp === 'function') {
+      window.disposePongApp();
     }
-    unregisterEventListenerSwitchPageResetState();
+    // if (window.pongApp) {
+    //       if (DEBUG_FLOW) {  console.log('GameMatch: disopose(): window.pongApp is true'); }
+    //   await window.pongApp.destroy();
+    //   window.pongApp = null;
+    // }
   }
 }
