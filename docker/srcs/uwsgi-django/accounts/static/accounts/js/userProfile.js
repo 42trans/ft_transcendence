@@ -3,7 +3,9 @@
 import { disable2FA } from "./disable_2fa.js"
 import { createActionButton } from "./friend.js"
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { isUserEnable2FA } from "/static/spa/js/utility/isUser.js"
 
+const DEBUG = 1;
 
 function drawUserProfile(data) {
 	const userInfo = document.getElementById("user-info");
@@ -71,21 +73,6 @@ export function fetchUserProfile() {
 		.then(response => response.json())
 		.then(data => {
 			drawUserProfile(data);
-			setupDisable2FAEventListener()  		// disable2FA Buttonのイベントリスナーを設定
 		})
 		.catch(error => console.error("Error:", error));
-}
-
-
-function setupDisable2FAEventListener() {
-	document.querySelectorAll('.disable2FAButton').forEach(button => {
-		button.replaceWith(button.cloneNode(true));
-	});
-
-	document.querySelectorAll('.disable2FAButton').forEach(button => {
-		button.addEventListener('click', () => {
-			console.log('disable2FAButton clicked');
-			disable2FA()
-		});
-	});
 }
