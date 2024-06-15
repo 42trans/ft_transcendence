@@ -175,5 +175,5 @@ class DMConsumer(Consumer):
             message_instance.save()
             return message_instance
         except Exception as e:
-            logger.debug(f'[DMConsumer]: Error: storing message: {str(e)}')
+            logger.debug(f'[DMConsumer]: Error: store message: {str(e)}')
             raise e

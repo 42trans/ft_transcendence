@@ -26,4 +26,9 @@ export default class extends AbstractView {
     const dmWithUserModule = await import("/static/chat/js/dm-with-user.js");
     dmWithUserModule.initDM();
   }
+
+  async dispose() {
+    const dmWithUserModule = await import("/static/chat/js/dm-with-user.js");
+    dmWithUserModule.disposeDM();
+  }
 }

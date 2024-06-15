@@ -1,6 +1,6 @@
 // chat/js/dm-with-user.js
 import { applyStylesToInitialLoadMessages } from './module/apply-message-style.js';
-import { setupDmWebsocket } from './module/setup-dm-websocket.js';
+import { setupDmWebsocket, closeDmSocket } from './module/setup-dm-websocket.js';
 import { setupSendKeyEventListener, scrollToBottom } from './module/ui-util.js';
 
 
@@ -26,5 +26,6 @@ export function initDM() {
 }
 
 
-// ページが完全に読み込まれた後にDM画面を初期化し、初期スクロール位置を設定
-// document.addEventListener('DOMContentLoaded', initDM);
+export function disposeDM() {
+    closeDmSocket();
+}
