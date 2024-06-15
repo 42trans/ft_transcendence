@@ -3,6 +3,9 @@ import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
 
+const DEBUG = 1;
+
+
 function signupUser() {
 	// event.preventDefault();
 	const email = document.getElementById('email').value;
@@ -38,14 +41,32 @@ function signupUser() {
 }
 
 
+let signupFormSubmitHandler = null;
+
 export function setupSignupEventListener() {
-	console.log("Setup signup event listeners");
+	if (DEBUG) { console.log("[Setup signup event listeners]"); }
 	const form = document.getElementById('signup-form-container')
-	if (form) {
-		form.addEventListener('submit', (event) => {
+	if (form && !signupFormSubmitHandler) {
+		signupFormSubmitHandler = (event) => {
 			event.preventDefault();
 			signupUser();
-		});
-		console.log('Form event listener added');
+		};
+		form.addEventListener('submit', signupFormSubmitHandler);
+		form.classList.add('listener-added');
+
+		if (DEBUG) { console.log(' Signup event listener added'); }
+	}
+}
+
+export function removeSignupEventListener() {
+	if (DEBUG) { console.log("[Cleanup signup event listener]"); }
+
+	const form = document.querySelector('.hth-sign-form');
+	if (form && signupFormSubmitHandler) {
+		form.removeEventListener('submit', signupFormSubmitHandler);
+		form.classList.remove('listener-added');
+		signupFormSubmitHandler = null;
+
+		if (DEBUG) { console.log(' Signup event listener removed'); }
 	}
 }
