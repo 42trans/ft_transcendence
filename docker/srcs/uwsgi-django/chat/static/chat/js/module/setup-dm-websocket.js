@@ -44,18 +44,26 @@ function handleError(event) {
 function handleSendMessage(dmSocket) {
     const messageInputDom = document.querySelector('#message-input');
     const message = messageInputDom.value;
+    const errorMessageDom = document.querySelector('#error-message');
 
     // console.log('message: ' + message)
     // 空文字列、空白のみのメッセージの送信はしない
     if (message.trim() === '') {
-        // console.log(' smessage is empty')
+        errorMessageDom.textContent = 'Message can not be empty';
+        return;
+    }
+    // メッセージの長さが128文字を超える場合は送信せず、エラーメッセージを表示（Message modelsでMax128に制限）
+    if (128 < message.length) {
+        errorMessageDom.textContent = 'Message must be less than 128 characters';
         return;
     }
 
     dmSocket.send(JSON.stringify({
         'message': message
     }));
+
     messageInputDom.value = '';
+    errorMessageDom.textContent = '';
     scrollToBottom();  // dm-logのスクロール位置を調整
 }
 
