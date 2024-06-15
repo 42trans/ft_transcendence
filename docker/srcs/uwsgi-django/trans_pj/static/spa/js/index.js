@@ -39,20 +39,43 @@ const setupDOMContentLoadedListener = () => {
 
 // リンクのクリックイベントで発火
 const setupBodyClickListener = () => {
-  document.body.addEventListener("click", async (event) => {
+  document.body.addEventListener("click", async (event) => 
+  {
   // console.log('clickEvent: path: ' + window.location.pathname);
-
     const linkElement = event.target.closest("[data-link]");
-    if (linkElement) {
+    if (linkElement) 
+    {
       // console.log('clickEvent: taga-link');
       event.preventDefault();
       refreshJWT()
-
       const linkUrl = linkElement.href;
       const nextPath = await getNextPath(linkUrl)  // guest, userのredirectを加味したnextPathを取得
       switchPage(nextPath);
+      // ヘッダーナビメニューを閉じる
+      closeToggleMenu();
     }
   });
+};
+
+// ----------------------------
+// bootstrapの機能で滑らかにメニューを閉じる
+// ----------------------------
+const closeToggleMenu = () => {
+const toggleMenu = document.getElementById("hth-toggle-menu");
+  // bootstrap.Collapseは、Bootstrapの提供するJavaScriptのクラスで、折りたたみ要素の動作を制御
+  // 新しいCollapseインスタンスを作成
+  new bootstrap.Collapse(toggleMenu, 
+  {
+    // toggle: false
+    // 要素が表示されている状態であっても、非表示
+    // Collapseコンストラクタに渡されるオプション: false: toggle()メソッドは要素の表示状態を切り替えない
+    // 参考:【折りたたむ · Bootstrap v5.3】 <https://getbootstrap.com/docs/5.3/components/collapse/#options>
+    toggle: false
+
+    // .hide(): 折りたたみ要素を非表示
+    // Collapseインスタンスのメソッド
+    // 参考:【折りたたむ · Bootstrap v5.3】 <https://getbootstrap.com/docs/5.3/components/collapse/#methods>
+  }).hide();
 };
 
 
