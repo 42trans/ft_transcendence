@@ -11,7 +11,7 @@ export default class {
     return "";
   }
 
-  async executeScript() {
+  async executeScript(spaElement) {
     return "";
   }
 

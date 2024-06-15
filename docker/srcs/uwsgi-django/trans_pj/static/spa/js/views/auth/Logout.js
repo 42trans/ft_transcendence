@@ -18,7 +18,7 @@ export default class extends AbstractView {
     return data;
   }
 
-  async executeScript() {
+  async executeScript(spaElement) {
     const logoutModule = await import("/static/accounts/js/logout.js");
     logoutModule.setupLogoutEventListener();
   }

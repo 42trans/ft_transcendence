@@ -19,7 +19,7 @@ export default class extends AbstractView {
     return data;
   }
 
-  async executeScript() {
+  async executeScript(spaElement) {
     // loadAndExecuteScript("/static/accounts/js/edit_profile.js", true);
 
     const loginModule = await import("/static/accounts/js/edit_profile.js");

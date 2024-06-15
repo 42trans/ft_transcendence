@@ -18,7 +18,7 @@ export default class extends AbstractView {
     return data;
   }
 
-  async executeScript() {
+  async executeScript(spaElement) {
     const enable2FaModule = await import("/static/accounts/js/enable_2fa.js");
     enable2FaModule.fetchEnable2FA();
     enable2FaModule.setupVerifyTokenEventListener();
