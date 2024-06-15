@@ -29,7 +29,14 @@
 import PongApp from './js/PongApp'
 import './css/3d.css';
 
-const DEBUG_FLOW = 1;
+// DEBUG TEST FLAG
+const DEBUG_FLOW	= 0;
+const DEBUG_DETAIL1	= 0;
+const DEBUG_DETAIL2	= 0;
+const TEST_TRY1		= 0;
+const TEST_TRY2		= 0;
+const TEST_TRY3		= 0;
+const TEST_TRY4		= 0;
 
 window.pongApp = null;
 let isEventListenerRegistered = false; 
@@ -38,14 +45,20 @@ let isEventListenerRegistered = false;
 // ---------------------------------------
 async function initPongApp(env)
 {
-				if (DEBUG_FLOW) {	console.log('initPongApp(): start');	}
-	if (window.pongApp){
-		await window.pongApp.destroy();
-		window.pongApp = null;
-	}
-			if (DEBUG_FLOW) {	console.log('initPongApp(): PongApp.getInstance');	}
-	window.pongApp = PongApp.getInstance(env)
-			if (DEBUG_FLOW) {	console.log('initPongApp(): done');	}
+	try {
+					if (DEBUG_FLOW) {	console.log('initPongApp(): start');	}
+					if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+		if (window.pongApp){
+			await window.pongApp.destroy();
+			window.pongApp = null;
+		}
+					if (DEBUG_FLOW) {	console.log('initPongApp(): PongApp.getInstance');	}
+		window.pongApp = PongApp.getInstance(env)
+					if (DEBUG_FLOW) {	console.log('initPongApp(): done');	}
+	} catch (error) {
+		console.error('hth: initPongApp() faled', error);
+		handleCatchError(error);
+	}	
 }
 
 initPongApp();
@@ -55,17 +68,29 @@ initPongApp();
 // switchPageResetStateイベントハンドラ
 async function handleSwitchPageResetState() 
 {
-				if (DEBUG_FLOW) { console.log('switchPageResetState: event'); }
-	await initPongApp();
+	try {
+					if (DEBUG_FLOW) { console.log('switchPageResetState: event'); }
+		await initPongApp();
+	} catch (error) {
+		console.error('hth: handleSwitchPageResetState() faled', error);
+		handleCatchError(error);
+	}	
+
 }
 
 function registerEventListenerSwitchPageResetState() 
 {
-	if (isEventListenerRegistered) {
-		return; 
+	try {
+					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
+		if (isEventListenerRegistered) {
+			return; 
+		}
+		window.addEventListener('switchPageResetState', handleSwitchPageResetState);
+		isEventListenerRegistered = true;
+	} catch (error) {
+		console.error('hth: registerEventListenerSwitchPageResetState() faled', error);
+		handleCatchError(error);
 	}
-	window.addEventListener('switchPageResetState', handleSwitchPageResetState);
-	isEventListenerRegistered = true;
 }
 
 registerEventListenerSwitchPageResetState();
@@ -74,13 +99,64 @@ registerEventListenerSwitchPageResetState();
 // ---------------------------------------
 async function disposePongApp() 
 {
-	if (window.pongApp) 
-	{
-		window.pongApp.destroy();
-		window.pongApp = null;
-	}
+	try {
+					if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
+		if (window.pongApp) 
+		{
+			window.pongApp.destroy();
+			window.pongApp = null;
+		}
+	} catch (error) {
+		console.error('hth: disposePongApp() faled', error);
+		handleCatchError(error);
+	}	
 }
 
 if (!window.disposePongApp) {
 	window.disposePongApp = disposePongApp;
 }
+// ---------------------------------------
+// handle error
+// ---------------------------------------
+// vite コンテナから Django static/ のファイルをimportするための処理
+async function loadRouteTable() {
+	if (import.meta.env.MODE === 'development') {
+		// 開発環境用のパス
+		const devUrl = new URL('../../static/spa/js/routing/routeTable.js', import.meta.url);
+		const module = await import(devUrl.href);
+		return module.routeTable;
+	} else {
+		// 本番環境用のパス
+		const prodUrl = new URL('../../../spa/js/routing/routeTable.js', import.meta.url);
+		const module = await import(prodUrl.href);
+		return module.routeTable;
+	}
+}
+
+async function handleCatchError(error) 
+{
+	// SPAの状態をリセットしない場合
+	// const switchPage = await loadSwitchPage();
+	// const redirectTo = routeTable['top'].path;
+	// switchPage(redirectTo);
+
+	// ゲームでのエラーは深刻なので、location.hrefでSPAの状態を完全にリセットする
+	const routeTable = await loadRouteTable();
+	alert("エラーが発生しました。トップページに遷移します。 error: " + error); 
+	window.location.href = routeTable['top'].path;
+}
+
+// SPAの状態をリセットしない場合
+// async function loadSwitchPage() {
+// 	if (import.meta.env.MODE === 'development') {
+// 		// 開発環境用のパス
+// 		const devUrl = new URL('../../static/spa/js/routing/renderView.js', import.meta.url);
+// 		const module = await import(devUrl.href);
+// 		return module.switchPage;
+// 	} else {
+// 		// 本番環境用のパス
+// 		const prodUrl = new URL('../../../spa/js/routing/renderView.js', import.meta.url);
+// 		const module = await import(prodUrl.href);
+// 		return module.switchPage;
+// 	}
+// }

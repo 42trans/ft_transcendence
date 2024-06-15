@@ -11,14 +11,18 @@ import GameStateManager from './manager/GameStateManager'
 import LoopManager from './manager/LoopManager'
 import RendererManager from './manager/RendererManager'
 import PongEngineKey from './pongEngine/PongEngineKey'
-
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
 // import { thickness } from 'three/examples/jsm/nodes/core/PropertyNode.js';
 
-const DEBUG_FLOW = 0;
-const DEBUG_DETAIL = 0;
+const DEBUG_FLOW	= 0;
+const DEBUG_DETAIL1	= 0;
+const DEBUG_DETAIL2	= 0;
+const TEST_TRY1		= 0;
+const TEST_TRY2		= 0;
+const TEST_TRY3		= 0;
+const TEST_TRY4		= 0;
 
 /**
  * -コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
@@ -98,6 +102,7 @@ class PongApp
 		{
 				if (DEBUG_FLOW) {	console.log('matchData.is_finished is true');	}
 			// ゲームが終了状態の場合リダイレクト
+			// TODO_ft:window.location.href => switchPage()
 			window.location.href = this.routeTable['top'].path;
 			return;
 		}
