@@ -121,8 +121,12 @@ export const renderView = async (path) => {
   const view = new selectedRoute.view(selectedRoute.params);
   currentView = view;
   const htmlSrc = await view.getHtml();
-  document.querySelector("#spa").innerHTML = htmlSrc;
-  await view.executeScript();
+
+  let spaElement = document.querySelector("#spa");
+  spaElement.innerHTML = htmlSrc;
+
+  // document.querySelector("#spa").innerHTML = htmlSrc;
+  await view.executeScript(spaElement);
         // DEBUG
         if (DEBUG_DETAIL) { console.log('renderView():htmlSrc', htmlSrc); }
         if (DEBUG_DETAIL) { console.log('renderView(): currentView', currentView); }

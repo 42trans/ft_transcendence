@@ -30,12 +30,12 @@ function loadScript(scriptElement) {
  * @param {string} path - スクリプトファイルのパス
  * @param {boolean} [isModule=false] - スクリプトをモジュールとして読み込むかどうか
  */
-export async function loadAndExecuteScript(path, isModule = false) {
+export async function loadAndExecuteScript(spaElement, path, isModule = false) {
   // console.log("loadAndExecuteScript: path: " + path);
 
   // <script src="path"></script>
   const scriptElement = getScriptElement(path, isModule)
-  document.body.appendChild(scriptElement);
+  spaElement.appendChild(scriptElement);
   await loadScript(scriptElement)
 }
 
