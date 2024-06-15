@@ -54,7 +54,6 @@ function handleSendMessage(dmSocket) {
     }
     // メッセージの長さが128文字を超える場合は送信せず、エラーメッセージを表示（Message modelsでMax128に制限）
     if (128 < message.length) {
-
         const over = message.length - 128;
         const overCharaMessage = `${over === 1 ? `${over} character over` :  `${over} characters over`}`
         errorMessageDom.textContent = `Message must be less than 128 characters, ${overCharaMessage}`;
