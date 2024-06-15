@@ -201,6 +201,14 @@ class PongOnlineRenderer
 		}
 	}
 
+	dispose() {
+		this.gameStateManager = null;
+		this.field = null;
+		this.ctx = null;
+		this.canvas = null;
+		this.gameState = null;
+	}
+	
 }
 
 export default PongOnlineRenderer;
