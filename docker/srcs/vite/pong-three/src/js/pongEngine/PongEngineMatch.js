@@ -64,6 +64,8 @@ class PongEngineMatch
 					console.error('An error happened');
 				}
 		);
+
+		this.isEndGameButtonListenerRegistered = false;
 	}
 
 	// 参考:【TextGeometry – three.js ドキュメント】 <https://threejs.org/docs/#examples/en/geometries/TextGeometry>
@@ -164,11 +166,12 @@ class PongEngineMatch
 			{
 				endGameButton.style.display = 'block';
 				const switchPage = await this.loadSwitchPage();
-				endGameButton.addEventListener('click', () => 
-				{
-					const redirectTo = this.pongApp.routeTable['top'].path;
-					switchPage(redirectTo);
-				});
+				this.registerEndGameButtonClickListener(endGameButton, switchPage);
+				// endGameButton.addEventListener('click', () => 
+				// {
+				// 	const redirectTo = this.pongApp.routeTable['top'].path;
+				// 	switchPage(redirectTo);
+				// });
 			} else {
 				console.error('hth: End Game button not found');
 			}
@@ -177,19 +180,28 @@ class PongEngineMatch
 		}
 	}
 
-	// displayEndGameButton() 
-	// {
-	// 	// buttonタグを追加
-	// 	const button = document.createElement('button');
-	// 	button.textContent = 'End Game';
-	// 	button.className = 'game-button';
-	// 	button.setAttribute('data-link', '');
-	// 	button.onclick = function() {
-	// 		window.location.href = '/app/';
-	// 	};
-	// 	// ボタンをページに追加
-	// 	document.body.appendChild(button);
-	// }
+
+	handleEndGameButtonClick(switchPage) 
+	{
+		const redirectTo = this.pongApp.routeTable['top'].path;
+		switchPage(redirectTo);
+	}
+
+	registerEndGameButtonClickListener(endGameButton, switchPage) 
+	{
+		if (!this.isEndGameButtonListenerRegistered) {
+			endGameButton.addEventListener('click', this.handleEndGameButtonClick.bind(this, switchPage));
+			this.isEndGameButtonListenerRegistered = true;
+		}
+	}
+
+	removeEndGameButtonClickListener(endGameButton) 
+	{
+		if (this.isEndGameButtonListenerRegistered) {
+			endGameButton.removeEventListener('click', this.handleEndGameButtonClick);
+			this.isEndGameButtonListenerRegistered = false;
+		}
+	}
 
 	sendMatchResult() 
 	{

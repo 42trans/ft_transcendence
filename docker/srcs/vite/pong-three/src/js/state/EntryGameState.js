@@ -80,7 +80,7 @@ class EntryGameState extends BaseGameState
 				return;
 			}
 			this.startGameButton.style.display = 'block' 
-			this.startGameButton.addEventListener('click', this.handleButtonClick);
+			this.registerStartButtonEventListener();
 		} catch (error) {
 			console.error('hth: initStartButton() failed: ', error);
 		}
