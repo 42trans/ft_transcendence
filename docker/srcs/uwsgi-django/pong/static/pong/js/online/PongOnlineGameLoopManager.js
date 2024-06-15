@@ -144,6 +144,26 @@ class PongOnlineGameLoopManager
 			console.error('hth: updateEndGameBtn() failed: ', error);
 		}
 	}
+
+	dispose() {
+		// アニメーションループの停止
+		if (this.animationFrameId) {
+			cancelAnimationFrame(this.animationFrameId);
+			this.animationFrameId = null;
+		}
+	
+		const endGameButton = document.getElementById('hth-pong-online-back-to-home-btn');
+		if (endGameButton) {
+			endGameButton.removeEventListener('click', this.endGameButtonClickHandler);
+		}
+
+		this.renderer = null;
+		this.clientApp = null;
+		this.gameStateManager = null;
+		this.field = null;
+		this.ctx = null;
+		this.canvas = null;
+	}
 }
 
 export default PongOnlineGameLoopManager;

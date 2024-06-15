@@ -33,6 +33,7 @@ class TournamentCreator
 		// UTC ISO8601:"YYYY-MM-DDTHH:MM:SS.sssZ"
 		this.form.elements['date'].value = new Date().toISOString();
 		// ボタンクリックでhandleSubmit()を呼び出す
+		// removeについて: tournamentForm 要素が DOM から削除 > その子要素であるフォームも一緒に削除 > フォームに登録されていたイベントリスナーも自動で削除
 		this.form.addEventListener('submit', e => this._saveTournament(e));
 	}
 

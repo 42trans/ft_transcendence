@@ -180,10 +180,23 @@ class PongApp
 		}
 		// イベントリスナーを削除
 		window.removeEventListener('resize', this.boundHandleResize);
+		PongEngineKey.removeListeners();
+
+		// DOM書き換えと同時に削除されるので冗長だが、一応Buttonの設定も削除
+		// removeメソッドを使用するにはインスタンスが必要なのでボタンに対して行う
+		const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
+		if (endGameButton) {
+			endGameButton.removeEventListener('click', this.handleEndGameButtonClick);
+		}
+		const startGameButton = document.getElementById('hth-threejs-start-game-btn');
+		if (startGameButton) {
+			this.startGameButton.removeEventListener('click', this.boundHandleButtonClick);
+		}
+
 		// lil-gui を破棄
 		if (this.gui) {
 			this.gui.destroy();
-			this.gui = null; // 参照を削除
+			this.gui = null;
 		}
 
 		this.env = null;
