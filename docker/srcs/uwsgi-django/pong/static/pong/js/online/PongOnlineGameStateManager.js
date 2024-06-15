@@ -64,10 +64,11 @@ class PongOnlineGameStateManager
 			{
 				try {
 							if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
-					
-					this.renderer.resizeForAllDevices();
+					if (this.renderer){
+						this.renderer.resizeForAllDevices();
+					}
 				} catch(resizeError) {
-					console.error("Error during resize:", resizeError);
+					console.error("hth: Error during resize:", resizeError);
 				}
 			});
 

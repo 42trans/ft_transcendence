@@ -109,7 +109,10 @@ class AllScenesManager
 		}
 		const table = sceneUnit.scene.getObjectByName('table');
 		if (!table){
-			console.error('hth: table is not found');
+			if (DEBUG_DETAIL){
+				// game scene登録前はtableが存在しない
+				console.log('hth: table is not found');
+			}
 			return;
 		}
 		const tableSize = new THREE.Box3().setFromObject(table).getSize(new THREE.Vector3());
