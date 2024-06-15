@@ -3,7 +3,7 @@
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 
-const DEBUG = 1;
+const DEBUG = 0;
 
 export function fetchEnable2FA() {
 	fetch('/accounts/api/enable_2fa/', {

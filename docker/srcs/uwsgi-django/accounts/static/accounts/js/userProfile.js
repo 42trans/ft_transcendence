@@ -5,7 +5,7 @@ import { createActionButton } from "./friend.js"
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { isUserEnable2FA } from "/static/spa/js/utility/isUser.js"
 
-const DEBUG = 1;
+const DEBUG = 0;
 
 function drawUserProfile(data) {
 	const userInfo = document.getElementById("user-info");

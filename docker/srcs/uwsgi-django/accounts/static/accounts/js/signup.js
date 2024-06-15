@@ -3,7 +3,7 @@ import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
 
-const DEBUG = 1;
+const DEBUG = 0;
 
 
 function signupUser() {

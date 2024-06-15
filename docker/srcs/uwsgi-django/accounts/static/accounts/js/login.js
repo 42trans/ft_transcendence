@@ -4,7 +4,7 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
-const DEBUG = 1;
+const DEBUG = 0;
 
 export function loginUser() {
 	const email = document.getElementById('email').value;
