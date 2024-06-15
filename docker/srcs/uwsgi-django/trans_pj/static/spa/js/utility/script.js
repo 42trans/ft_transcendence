@@ -12,6 +12,8 @@ function getScriptElement(path, isModule) {
 
 function loadScript(scriptElement) {
   return new Promise((resolve, reject) => {
+
+    // DOM要素のscriptElementに対し、ブラウザが読み込んでonload, onerrorイベントを発生
     scriptElement.onload = () => {
       // console.log(`Script loaded successfully: ${scriptElement.src}`);
       resolve();
@@ -35,30 +37,8 @@ export async function loadAndExecuteScript(spaElement, path, isModule = false) {
 
   // <script src="path"></script>
   const scriptElement = getScriptElement(path, isModule)
+
+  // DOMツリーに追加
   spaElement.appendChild(scriptElement);
   await loadScript(scriptElement)
-}
-
-
-// todo: setupEventListeners 使えないかも
-/**
- * モジュールを非同期にインポートし、指定されたセットアップ関数を呼び出す
- *
- * @param {string} modulePath - モジュールのパス
- * @param {string} setupFunctionName - セットアップ関数の名前
- */
-export async function setupEventListeners(modulePath, setupFunctionName) {
-  // console.log("setupEventListeners: modulePath: " + modulePath);
-  try {
-    const module = await import(modulePath);
-    // console.log(`setupEventListeners: Module loaded: ${module}`);
-    if (setupFunctionName in module) {
-      // console.log(`setupEventListeners: Calling setup function: ${setupFunctionName}`);
-      module[setupFunctionName]();
-    } else {
-      console.error(`setupEventListeners: Setup function ${setupFunctionName} not found in module ${modulePath}`);
-    }
-  } catch (error) {
-    console.error(`setupEventListeners: Failed to import module: ${modulePath}`, error);
-  }
 }
