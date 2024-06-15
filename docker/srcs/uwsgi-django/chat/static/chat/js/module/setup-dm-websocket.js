@@ -11,6 +11,10 @@ let dmSocket = null;
 
 // WebSocketの接続確立とメッセージの送受信ロジック
 function setupDmWebsocket(dmTargetNickname) {
+    if (dmSocket) {
+        closeDmSocket();
+    }
+
     const websocketUrl = 'wss://' + window.location.host + '/ws/dm-with/' + dmTargetNickname + '/';
     dmSocket = new WebSocket(websocketUrl);
 
@@ -57,8 +61,14 @@ function handleSendMessage(dmSocket) {
 
 
 export function closeDmSocket() {
-    if (dmSocket && dmSocket.readyState === WebSocket.OPEN) {
-        dmSocket.close();
+    if (dmSocket) {
+        if (dmSocket.readyState === WebSocket.CONNECTING) {
+            dmSocket.onopen = () => {
+                dmSocket.close();
+            };
+        } else if (dmSocket.readyState === WebSocket.OPEN) {
+            dmSocket.close();
+        }
         dmSocket = null;
     }
 }
