@@ -4,22 +4,22 @@ class PongEngineKey
 	static keys = {/** empty */};
 	static isListenerRegistered = false;
 
-	static listenForEvents() 
-	{
-		window.addEventListener('keydown', (event) => 
-		{
-			const key = event.key.toUpperCase();
-			PongEngineKey.keys[key] = true;
-			// console.log(`Key down: ${key}`);
-		});
+	// static listenForEvents() 
+	// {
+	// 	window.addEventListener('keydown', (event) => 
+	// 	{
+	// 		const key = event.key.toUpperCase();
+	// 		PongEngineKey.keys[key] = true;
+	// 		// console.log(`Key down: ${key}`);
+	// 	});
 
-		window.addEventListener('keyup', (event) => 
-		{
-			const key = event.key.toUpperCase();
-			PongEngineKey.keys[key] = false;
-			// console.log(`Key down: ${key}`);
-		});
-	}
+	// 	window.addEventListener('keyup', (event) => 
+	// 	{
+	// 		const key = event.key.toUpperCase();
+	// 		PongEngineKey.keys[key] = false;
+	// 		// console.log(`Key down: ${key}`);
+	// 	});
+	// }
 
 	static listenForEvents() 
 	{
@@ -36,6 +36,7 @@ class PongEngineKey
 			window.removeEventListener('keydown', PongEngineKey.handleKeyDown);
 			window.removeEventListener('keyup', PongEngineKey.handleKeyUp);
 			PongEngineKey.isListenerRegistered = false;
+			PongEngineKey.keys = {/** empty */};
 		}
 	}
 	
@@ -44,6 +45,13 @@ class PongEngineKey
 		const key = event.key.toUpperCase();
 		PongEngineKey.keys[key] = true;
 	}
+
+	static handleKeyUp(event) 
+	{
+		const key = event.key.toUpperCase();
+		PongEngineKey.keys[key] = false;
+	}
+
 	static isDown(key) 
 	{
 		return PongEngineKey.keys[key.toUpperCase()];

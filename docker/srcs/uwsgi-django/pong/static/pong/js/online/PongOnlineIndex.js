@@ -52,10 +52,10 @@ if (!window.disposePongOnlineClientApp) {
 	window.disposePongOnlineClientApp = disposePongOnlineClientApp;
 }
 
-endGameButton.addEventListener('click', () => {
-	const redirectTo = routeTable['top'].path;
-	switchPage(redirectTo);
-});
+// endGameButton.addEventListener('click', () => {
+// 	const redirectTo = routeTable['top'].path;
+// 	switchPage(redirectTo);
+// });
 
 export async function pongOnlineHandleCatchError(error = null) 
 {
