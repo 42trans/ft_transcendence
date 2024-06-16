@@ -11,22 +11,22 @@ import GameStateManager from './manager/GameStateManager'
 import LoopManager from './manager/LoopManager'
 import RendererManager from './manager/RendererManager'
 import PongEngineKey from './pongEngine/PongEngineKey'
+import { handleCatchError } from '../index.js';
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
 // import { thickness } from 'three/examples/jsm/nodes/core/PropertyNode.js';
 
 const DEBUG_FLOW	= 0;
-const DEBUG_DETAIL1	= 0;
-const DEBUG_DETAIL2	= 0;
+const DEBUG_DETAIL	= 0;
 const TEST_TRY1		= 0;
 const TEST_TRY2		= 0;
 const TEST_TRY3		= 0;
 const TEST_TRY4		= 0;
 
 /**
- * -コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
- * setupScenes: オーバーレイするシーンの数だけインスタンスを作成してください。
+ * - コンストラクタの呼び出しは即座に完了(次の行に進む)するが、ループはアプリケーションのライフサイクルに沿って終了まで継続
+ * - setupScenes: オーバーレイするシーンの数だけインスタンスを作成してください。
  */
 class PongApp 
 {
@@ -38,6 +38,7 @@ class PongApp
 		this.boundHandleResize = null;
 	}
 
+	/** シングルトンパターン */
 	static getInstance(env)
 	{
 				if (DEBUG_FLOW) {	console.log('getInstance(): start');	}
@@ -50,6 +51,173 @@ class PongApp
 		return PongApp.instance;
 	}
 
+	/**
+	 * - SPAによるreloard時に対応するためコンストラクタでキャッチし、initで最初から全て処理し直す
+	 * - キャッシュ機能をON
+	 * - manager/内のクラスのシングルトンのインスタンスを生成
+	 * - Sceneの基礎(camera,lightなど)をあらかじめ設定
+	 */
+	async init() 
+	{
+		try
+		{
+						if (DEBUG_FLOW) {	console.log('init(): start');	}
+						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+			// ----------------------------------
+			// urlがtournametの試合かどうかを判定
+			// ----------------------------------
+			const currentPath = window.location.pathname;
+			const routeTable = await PongApp.loadRouteTable();
+						if (DEBUG_DETAIL) {	console.log('routeTable:', routeTable);	}
+			const gameMatchPath = routeTable['gameMatch'].path;
+			const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
+			if (!gameMatchRegex.test(currentPath)) {
+							if (DEBUG_FLOW) {	console.log('init()', currentPath, gameMatchRegex);	}
+				return;
+			}
+			// ----------------------------------
+			// 試合が終了しているか判定
+			// ----------------------------------
+			const matchDataElement = document.getElementById('match-data');
+						if (DEBUG_FLOW) {	console.log('init() matchDataElement: ', matchDataElement);	}
+			if (matchDataElement) 
+			{
+				this.matchData = JSON.parse(matchDataElement.textContent);
+							if (DEBUG_DETAIL) {	console.log('Match Data:', this.matchData);	}
+			} else {
+							if (DEBUG_FLOW) {	console.log('matchDataElement not found');	}
+				return;
+			}
+			// this.routeTable = await PongApp.loadRouteTable();
+			if (this.matchData && this.matchData.is_finished) 
+			{
+							if (DEBUG_FLOW) {	console.log('matchData.is_finished is true');	}
+				// ゲームが終了状態の場合リダイレクト
+				const switchPage = await PongApp.loadSwitchPage();
+				const redirectTo = routeTable['top'].path;
+				switchPage(redirectTo);
+				return;
+			}
+			// ----------------------------------
+			// インスタンスの作成
+			// ----------------------------------
+			// 全てのシーンのmixerを一元的に管理。シングルトン
+			this.animationMixersManager = AnimationMixersManager.getInstance();
+			// 複数のSceneを一元的に管理。シングルトン
+			this.allScenesManager = AllScenesManager.getInstance(this.animationMixersManager);
+			// 3D空間（カメラ、照明、オブジェクト）を担当
+			await this.allScenesManager.setupScenes();
+			// ゲームの状態（待機、Play、終了）を担当。シングルトン
+			this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
+			// 無限ループでアニメーションの更新を担当。シングルトン
+			const renderLoop = LoopManager.getInstance(this);
+			this.renderLoop = renderLoop;
+			// -----------------------------------------------------------------------------
+			// 再描画のバグの根本原因の対策はこの行。再度コンストラクタから作り直すような処理。理由は不明
+			// -----------------------------------------------------------------------------
+			RendererManager.getInstance().reinitializeRenderer();
+			// -----------------------------------------------------------------------------
+			// 他のMgrが依存するので、この位置でリセット。マネージャーが生成された後のタイミングで再初期化を行う
+			this.renderer = RendererManager.getRenderer();
+			this.renderLoop.start();
+
+						//dev用　index.jsで`PongApp.main('dev');`で呼び出す
+						if (this.env === 'dev'){
+							this.setupDevEnv();
+						} 
+
+			this.boundHandleResize = this.allScenesManager.handleResize.bind(this.allScenesManager);
+			window.addEventListener('resize', this.boundHandleResize, false);
+						if (DEBUG_FLOW) {	console.log('init(): done');	}	
+						if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
+		} catch (error) {
+			console.error('hth: init() failed', error);
+			handleCatchError(error);
+		}	
+	}
+	
+
+	/**
+	 * ページから抜ける（アウト）時にspa/js/views/AbstractView.jsの dispose() から呼び出される
+	 */
+	async destroy() 
+	{
+		try
+		{
+						if (DEBUG_FLOW) {	console.log('destroy(): start');	}
+						if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
+			if (!window.pongApp){
+							if (DEBUG_FLOW) {	console.log('destroy(): window.pongApp is false');	window.pongApp}
+				return;
+			}
+			// eventlistenerの削除
+			if (typeof handleSwitchPageResetState === 'function') {
+				window.removeEventListener('switchPageResetState', handleSwitchPageResetState);
+				isEventListenerRegistered = false; 
+			}
+
+			this.stopRenderLoop();
+			if (this.allScenesManager){
+				this.allScenesManager.dispose();
+			}
+			if (this.renderer)
+				{
+				// THREE.WebGLRendererのメソッド
+				// これだけでは不足で、init()でインスタンスの廃棄が必要
+				this.renderer.dispose();
+			}
+			if (this.animationMixersManager){
+				this.animationMixersManager.dispose();
+			}
+			if (this.renderLoop) {
+				this.renderLoop.dispose();
+			}
+			if (this.gameStateManager) {
+				this.gameStateManager.dispose();
+			}
+
+			if (this.boundHandleResize) 
+			{
+				window.removeEventListener('resize', this.boundHandleResize);
+				this.boundHandleResize = null;
+			}
+			PongEngineKey.removeListeners();
+
+			// lil-gui を破棄
+			if (this.gui) {
+				this.gui.destroy();
+				this.gui = null;
+			}
+
+			this.env = null;
+			this.matchData = null;
+			this.routeTable = null;
+			this.renderer = null;
+			this.animationMixersManager = null;
+			this.allScenesManager = null;
+			this.gameStateManager = null;
+			this.renderLoop = null;
+			PongApp.instance = null;
+						if (DEBUG_FLOW) {	console.log('destroy(): done');	window.pongApp}
+						if (TEST_TRY4){	throw new Error('TEST_TRY4');	}
+		} catch (error) {
+			console.error('hth: destroy() failed', error);
+			handleCatchError(error);
+		}	
+	}
+
+
+	/** ブラウザの再描画タイミングで描画を実行する処理の停止 */
+	stopRenderLoop() 
+	{
+		if (this.renderLoop) {
+			this.renderLoop.stop();
+			this.renderLoop = null;
+		}
+	}
+
+
+	/** vite での Django コンテナの module import処理(パスの解決) */
 	static async loadRouteTable() 
 	{
 		if (import.meta.env.MODE === 'development') {
@@ -65,160 +233,20 @@ class PongApp
 		}
 	}
 	
-	/**
-	 * - SPAによるreloard時に対応するためコンストラクタでキャッチし、initで最初から全て処理し直す
-	 * - キャッシュ機能をON
-	 * - manager/内のクラスのシングルトンのインスタンスを生成
-	 * - Sceneの基礎(camera,lightなど)をあらかじめ設定
-	 */
-	async init() 
+	static async loadSwitchPage() 
 	{
-					if (DEBUG_FLOW) {	console.log('init(): start');	}
-
-		// urlがtournametの試合かどうかを判定
-		const currentPath = window.location.pathname;
-		const routeTable = await PongApp.loadRouteTable();
-					if (DEBUG_DETAIL) {	console.log('routeTable:', routeTable);	}
-		const gameMatchPath = routeTable['gameMatch'].path;
-		const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
-		if (!gameMatchRegex.test(currentPath)) {
-						if (DEBUG_FLOW) {	console.log('init()', currentPath, gameMatchRegex);	}
-			return;
-		}
-		
-		// 試合が終了しているかを判定する処理
-		const matchDataElement = document.getElementById('match-data');
-					if (DEBUG_FLOW) {	console.log('init() matchDataElement: ', matchDataElement);	}
-		if (matchDataElement) 
-		{
-			this.matchData = JSON.parse(matchDataElement.textContent);
-						if (DEBUG_DETAIL) {	console.log('Match Data:', this.matchData);	}
+		if (import.meta.env.MODE === 'development') {
+			// 開発環境用のパス
+			const devUrl = new URL('../../static/spa/js/routing/renderView.js', import.meta.url);
+			const module = await import(devUrl.href);
+			return module.switchPage;
 		} else {
-						if (DEBUG_FLOW) {	console.log('matchDataElement not found');	}
-			return;
-		}
-		this.routeTable = await PongApp.loadRouteTable();
-		if (this.matchData && this.matchData.is_finished) 
-		{
-				if (DEBUG_FLOW) {	console.log('matchData.is_finished is true');	}
-			// ゲームが終了状態の場合リダイレクト
-			// TODO_ft:window.location.href => switchPage()
-			window.location.href = this.routeTable['top'].path;
-			return;
-		}
-
-		// 後に移動
-		// ピクセルへの描画を担当。処理が重いので一つに制限。シングルトン
-		// RendererManager.getInstance().reinitializeRenderer();
-		// this.renderer = RendererManager.getRenderer();
-		// 		if (DEBUG_DETAIL) {	console.log('this.renderer', this.renderer);	}
-
-
-		// 全てのシーンのmixerを一元的に管理。シングルトン
-		this.animationMixersManager = AnimationMixersManager.getInstance();
-		// 複数のSceneを一元的に管理。シングルトン
-		this.allScenesManager = AllScenesManager.getInstance(this.animationMixersManager);
-		// 3D空間（カメラ、照明、オブジェクト）を担当
-		await this.allScenesManager.setupScenes();
-					if (DEBUG_DETAIL) {	console.log('this.allScenesManager', this.allScenesManager);	}
-		// ゲームの状態（待機、Play、終了）を担当。シングルトン
-		this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
-					if (DEBUG_DETAIL) {	console.log('this.gameStateManager', this.gameStateManager);	}
-		// 無限ループでアニメーションの更新を担当。シングルトン
-		const renderLoop = LoopManager.getInstance(this);
-					if (DEBUG_DETAIL) {	console.log('renderLoop', renderLoop);	}
-					if (DEBUG_DETAIL) {	console.log('renderLoop.pong', renderLoop.pong);	}
-		this.renderLoop = renderLoop;
-		// -----------------------------------------------------------------------------
-		// 再描画のバグの根本原因の対策はこの行。再度コンストラクタから作り直すような処理。理由は不明
-		// -----------------------------------------------------------------------------
-		RendererManager.getInstance().reinitializeRenderer();
-		// -----------------------------------------------------------------------------
-		// 他のMgrが依存してるので、この位置でリセット。マネージャーが生成された後のタイミングで再初期化を行う
-		this.renderer = RendererManager.getRenderer();
-				if (DEBUG_DETAIL) {	console.log('this.renderer', this.renderer);	}
-		this.renderLoop.start();
-
-					//dev用　index.jsで`PongApp.main('dev');`で呼び出す
-					if (this.env === 'dev'){
-						this.setupDevEnv();
-					} 
-
-		this.boundHandleResize = this.allScenesManager.handleResize.bind(this.allScenesManager);
-		window.addEventListener('resize', this.boundHandleResize, false);
-			
-					if (DEBUG_FLOW) {	console.log('init(): done');	}	
-	}
-	
-	stopRenderLoop() 
-	{
-		if (this.renderLoop) {
-			this.renderLoop.stop();
-			this.renderLoop = null;
+			// 本番環境用のパス
+			const prodUrl = new URL('../../../spa/js/routing/renderView.js', import.meta.url);
+			const module = await import(prodUrl.href);
+			return module.switchPage;
 		}
 	}
-
-	// spa/js/views/AbstractView.jsの dispose から呼び出される
-	async destroy() 
-	{
-					if (DEBUG_FLOW) {	console.log('destroy(): start');	}
-
-		if (!window.pongApp){
-						if (DEBUG_FLOW) {	console.log('destroy(): window.pongApp is false');	window.pongApp}
-			return;
-		}
-		// eventlistenerの削除
-		if (typeof handleSwitchPageResetState === 'function') {
-			window.removeEventListener('switchPageResetState', handleSwitchPageResetState);
-			isEventListenerRegistered = false; 
-		}
-
-		this.stopRenderLoop();
-		if (this.allScenesManager){
-			this.allScenesManager.dispose();
-		}
-		if (this.renderer)
-			{
-			// THREE.WebGLRendererのメソッド
-			// これだけでは不足のようで、init()でインスタンスの廃棄が必要
-			this.renderer.dispose();
-		}
-
-		if (this.animationMixersManager){
-			this.animationMixersManager.dispose();
-		}
-		if (this.renderLoop) {
-			this.renderLoop.dispose();
-		}
-		if (this.gameStateManager) {
-			this.gameStateManager.dispose();
-		}
-
-		if (this.boundHandleResize) 
-		{
-			window.removeEventListener('resize', this.boundHandleResize);
-			this.boundHandleResize = null;
-		}
-		PongEngineKey.removeListeners();
-
-		// lil-gui を破棄
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = null;
-		}
-
-		this.env = null;
-		this.matchData = null;
-		this.routeTable = null;
-		this.renderer = null;
-		this.animationMixersManager = null;
-		this.allScenesManager = null;
-		this.gameStateManager = null;
-		this.renderLoop = null;
-		PongApp.instance = null;
-					if (DEBUG_FLOW) {	console.log('destroy(): done');	window.pongApp}
-	}
-
 
 				setupDevEnv()
 				{

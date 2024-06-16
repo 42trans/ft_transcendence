@@ -67,27 +67,17 @@ class RenderLoop
 			}
 		};
 		animate();
-
-		// const animate = () => 
-		// {			
-		// 	this.requestID = requestAnimationFrame(animate);
-		// 		if (DEBUG_FLOW) {	console.log('1 requestAnimationFrame');	}
-		// 	this.pong.gameStateManager.update();
-		// 		if (DEBUG_FLOW) {	console.log('2 requestAnimationFrame');	}
-		// 	this.pong.allScenesManager.updateAllScenes();
-		// 		if (DEBUG_FLOW) {	console.log('3 requestAnimationFrame');	}
-		// 	this.pong.animationMixersManager.update(); 
-		// 		if (DEBUG_FLOW) {	console.log('4 requestAnimationFrame');	}
-		// 	this.pong.allScenesManager.renderAllScenes(RendererManager.getRenderer())
-		// 		if (DEBUG_FLOW) {	console.log('5 requestAnimationFrame');	}
-		// };
-		// animate();
 	}
 
+	/**
+	 * this.requestID: requestAnimationFrame を呼び出したときに返されたIDが格納
+	 * requestAnimationFrame: ブラウザの再描画タイミングに合わせて関数を実行するためのAPI
+	 */
 	stop()
 	{
 		if (this.requestID)
 		{
+			// 指定されたIDのアニメーションフレームリクエストをキャンセル
 			cancelAnimationFrame(this.requestID);
 			this.requestID = null;
 		}

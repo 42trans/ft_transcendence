@@ -56,7 +56,7 @@ async function initPongApp(env)
 		window.pongApp = PongApp.getInstance(env)
 					if (DEBUG_FLOW) {	console.log('initPongApp(): done');	}
 	} catch (error) {
-		console.error('hth: initPongApp() faled', error);
+		console.error('hth: initPongApp() failed', error);
 		handleCatchError(error);
 	}	
 }
@@ -72,7 +72,7 @@ async function handleSwitchPageResetState()
 					if (DEBUG_FLOW) { console.log('switchPageResetState: event'); }
 		await initPongApp();
 	} catch (error) {
-		console.error('hth: handleSwitchPageResetState() faled', error);
+		console.error('hth: handleSwitchPageResetState() failed', error);
 		handleCatchError(error);
 	}	
 
@@ -88,7 +88,7 @@ function registerEventListenerSwitchPageResetState()
 		window.addEventListener('switchPageResetState', handleSwitchPageResetState);
 		isEventListenerRegistered = true;
 	} catch (error) {
-		console.error('hth: registerEventListenerSwitchPageResetState() faled', error);
+		console.error('hth: registerEventListenerSwitchPageResetState() failed', error);
 		handleCatchError(error);
 	}
 }
@@ -107,7 +107,7 @@ async function disposePongApp()
 			window.pongApp = null;
 		}
 	} catch (error) {
-		console.error('hth: disposePongApp() faled', error);
+		console.error('hth: disposePongApp() failed', error);
 		handleCatchError(error);
 	}	
 }
@@ -133,7 +133,7 @@ async function loadRouteTable() {
 	}
 }
 
-async function handleCatchError(error) 
+export async function handleCatchError(error) 
 {
 	// SPAの状態をリセットしない場合
 	// const switchPage = await loadSwitchPage();

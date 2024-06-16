@@ -229,7 +229,7 @@ class PongEngineMatch
 			.then(response => 
 				{
 					if (!response.ok) {
-						throw new Error('response faled');
+						throw new Error('response failed');
 					}
 					return response.json();
 				})
