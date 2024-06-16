@@ -41,7 +41,7 @@ class TournamentManager
 				this._handleGuestUser();
 			}
 		} catch (error) {
-			console.error("TournamentManager.main() failed", error);
+			console.error("hth: TournamentManager.main() failed", error);
 			this.tournamentContainer.textContent = "Error loading your information. Try again later.";
 		}
 	}
@@ -72,7 +72,7 @@ class TournamentManager
 				this.tournamentCreator.createForm(this.userProfile);
 			}
 		} catch (error) {
-			console.error('_handleLoggedInUser() failed: ', error);
+			console.error('hth: _handleLoggedInUser() failed: ', error);
 			this.tournamentContainer.textContent = 'Error loading tournaments.';
 		}
 	}
@@ -110,7 +110,7 @@ class TournamentManager
 				return null;
 			}
 		} catch (error) {
-			console.error('_getFilteredUserTournaments() failed:', error);
+			console.error('hth: _getFilteredUserTournaments() failed:', error);
 			// null: createForm()による新規作成画面の表示
 			return null;
 		}

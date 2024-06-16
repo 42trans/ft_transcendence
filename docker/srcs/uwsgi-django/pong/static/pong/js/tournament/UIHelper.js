@@ -45,7 +45,7 @@ class UIHelper
 	static putError(message, container) 
 	{
 		if (!container) {
-			console.error(`UIHelper error: Error message container not found (${container})`);
+			console.error(`hth: UIHelper error: Error message container not found (${container})`);
 			return;
 		}
 		container.textContent = message;

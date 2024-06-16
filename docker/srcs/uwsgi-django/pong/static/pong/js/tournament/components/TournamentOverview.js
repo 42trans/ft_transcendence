@@ -57,7 +57,7 @@ class TournamentOverview
 
 			return jsonData
 		} catch (error) {
-			console.error('Failed to load tournament details:', error);
+			console.error('hth: Failed to load tournament details:', error);
 			return null;
 		}
 	}

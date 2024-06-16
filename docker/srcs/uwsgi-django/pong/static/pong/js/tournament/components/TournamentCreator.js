@@ -127,7 +127,6 @@ class TournamentCreator
 				
 			}
 		} catch (error) {
-			console.error('Error checking ongoing tournaments or processing form:', error);
 			UIHelper.putError('Error processing your request. Please try again.', this.errorMessage);
 		}
 	}
@@ -161,7 +160,7 @@ class TournamentCreator
 			// 見つからない場合でも、viewは204を返す。ここはそれ以外のエラーの場合の判定
 			// 見つからない場合のviewの戻り値: return JsonResponse({'status': 'success', 'message': 'No ongoing tournaments found'}, status=200)
 			if (!response.ok) {
-				throw new Error(`Failed to fetch ongoing tournaments with status: ${response.status}`);
+				throw new Error(`hth: Failed to fetch ongoing tournaments with status: ${response.status}`);
 			}
 			if (response.status === 204) {
 				console.log('No ongoing tournaments found, received 204 No Content');
@@ -171,7 +170,7 @@ class TournamentCreator
 			// result.tournamentが存在する場合はtrueを、それ以外の場合はfalseを返す
 			return !!result.tournament;
 		} catch (error) {
-			console.error('Error checking ongoing tournaments:', error);
+			console.error('hth: Error checking ongoing tournaments:', error);
 			return false;
 		}
 	}

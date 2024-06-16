@@ -45,7 +45,6 @@ class TournamentDeleter
 				UIHelper.putError("No data returned. Please try again later.", this.errorMessage);
 			}
 		} catch (error) {
-			console.error('Error deleting tournament:', error);
 			UIHelper.putError("Failed to delete the tournament. Please try again.", this.errorMessage);
 		}
 	}

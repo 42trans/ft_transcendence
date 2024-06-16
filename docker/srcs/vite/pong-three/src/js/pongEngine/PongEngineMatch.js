@@ -205,41 +205,48 @@ class PongEngineMatch
 
 	sendMatchResult() 
 	{
-		const result = 
+		try
 		{
-			match_id: this.matchData.id, 
-			player1_score: this.score1,
-			player2_score: this.score2,
-		};
-		
-		// viteが開発環境ならば、this.env == 'dev'
-		// Djangoがdev server(:8002)ならば、window.isDevServer == true
-		if (this.env === 'dev'|| window.isDevServer) {
-			this.saveURL = 'http://localhost:8002/pong/api/tournament/save_game_result/';
-		} else {
-			this.saveURL = 'https://localhost/pong/api/tournament/save_game_result/';
-		}
-		fetch(this.saveURL, 
+			const result = 
 			{
-				method: 'POST',
-				headers: {'Content-Type': 'application/json',},
-				// result オブジェクトをJSON文字列に変換してボディにセット
-				body: JSON.stringify(result)
-			})
-			.then(response => 
+				match_id: this.matchData.id, 
+				player1_score: this.score1,
+				player2_score: this.score2,
+			};
+			
+			// viteが開発環境ならば、this.env == 'dev'
+			// Djangoがdev server(:8002)ならば、window.isDevServer == true
+			if (this.env === 'dev'|| window.isDevServer) {
+				this.saveURL = 'http://localhost:8002/pong/api/tournament/save_game_result/';
+			} else {
+				this.saveURL = 'https://localhost/pong/api/tournament/save_game_result/';
+			}
+			fetch(this.saveURL, 
 				{
-					if (!response.ok) {
-						throw new Error('response faled');
-					}
-					return response.json();
+					method: 'POST',
+					headers: {'Content-Type': 'application/json',},
+					// result オブジェクトをJSON文字列に変換してボディにセット
+					body: JSON.stringify(result)
 				})
-		.then(data => 
-			{
-							if (DEBUG_DETAIL){
-								console.log('The Results have been saved to the DB: match.id:', this.matchData.id, data);
-							}
-			})
-		.catch((error) => console.error('Error:', error));
+				.then(response => 
+					{
+						if (!response.ok) {
+							throw new Error('response failed');
+						}
+						return response.json();
+					})
+			.then(data => 
+				{
+								if (DEBUG_DETAIL){
+									console.log('The Results have been saved to the DB: match.id:', this.matchData.id, data);
+								}
+				})
+			.catch((error) => console.error('Error:', error));
+		} catch (error) {
+			console.error('Error:', error);
+			 // 非同期なので明示的にthrow
+			throw error;
+		}
 	}
 
 }
