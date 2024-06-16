@@ -59,7 +59,7 @@ class PongOnlineGameStateManager
 					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 
 			this.initCanvas();
-			
+			// TODO_ft:削除は？
 			window.addEventListener('resize', () => 
 			{
 				try {

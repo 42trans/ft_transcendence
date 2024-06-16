@@ -10,7 +10,7 @@ const DEBUG_FLOW = 1;
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Game2D");
+    this.setTitle("Free Play 2D-Game");
   }
 
   async getHtml() {

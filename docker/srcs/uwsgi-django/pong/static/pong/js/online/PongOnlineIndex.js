@@ -3,6 +3,8 @@ import PongOnlineClientApp from './PongOnlineClientApp.js';
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 
+const DEBUG_FLOW = 1;
+
 /**
  * 2D-Pong entry point
  */
@@ -13,6 +15,17 @@ let isEventListenerRegistered = false;
 // ---------------------------------------
 async function initPongOnlineClientApp() 
 {
+	// ----------------------------------
+	// urlが FreePlay かどうかを判定
+	// ----------------------------------
+	const currentPath = window.location.pathname;
+				if (DEBUG_FLOW) {	console.log('routeTable:', routeTable);	}
+	const game2dPath = routeTable['game2d'].path;
+	if (currentPath !== game2dPath) {
+					if (DEBUG_FLOW) {	console.log('initPongOnlineClientApp: currentPath !== game2dPath');	}
+		return;
+	}
+	
 	if (pongOnlineClientApp) {
 		pongOnlineClientApp.dispose();
 		pongOnlineClientApp = null;
@@ -48,6 +61,7 @@ async function disposePongOnlineClientApp()
 	}
 }
 
+// このメソッドを呼び出すファイル: static/spa/js/views/pong/Game2D.js
 if (!window.disposePongOnlineClientApp) {
 	window.disposePongOnlineClientApp = disposePongOnlineClientApp;
 }
