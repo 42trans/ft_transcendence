@@ -76,8 +76,8 @@ def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
 
 
 @csrf_exempt
-@login_required
-@require_http_methods(["POST"])
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def save_game_result(request):
 	try:
 		data = json.loads(request.body)

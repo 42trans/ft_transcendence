@@ -49,4 +49,3 @@ urlpatterns = [
 		# 「ユーザーが主催する && 未終了のトーナメント」 に関する「全7試合」のデータを全て取得する
 		path("tournament/user/ongoing/matches/all", get_matches_of_latest_tournament_user_ongoing, name="get_matches_of_latest_tournament_user_ongoing"),
 ]
-
