@@ -27,66 +27,96 @@ class PongOnlineGameLoopManager
 
 	startGameLoop(gameFPS) 
 	{
-				if (DEBUG_FLOW){	console.log("startGameLoop(): begin")	}
-		
+					if (DEBUG_FLOW){	console.log("startGameLoop(): begin")	}
 		// すでにゲームループが起動していれば、先に停止
 		if (this.gameStateManager.isGameLoopStarted) {
 			this.stopGameLoop();
 		}
-		
 		this.gameStateManager.isGameLoopStarted = true;
 		// 目標フレーム時間（ミリ秒）
 		this.desiredFrameTimeMs = 1000 / gameFPS;
 		this.lastFrameTimeMs	= performance.now(); 
+					if (DEBUG_FLOW){	console.log("gameLoop(): begin")	}
+		// 一度テーブルを描画してボールサーブまで待機
+		this.renderer.render(this.gameStateManager.ctx, this.gameStateManager.gameState.game_settings.field, this.gameStateManager.gameState);
+		// プログレスバーを表示
+		this.showProgressBar();
+		// 2秒待機してボールサーブ（ループ開始）
+		this.startGameLoopAfterDelay(2000);
+	}
 
-				if (DEBUG_FLOW){	console.log("gameLoop(): begin")	}
-		
-		const gameLoop = () => 
-		{
-			try {
-				const gameState	= this.gameStateManager.gameState;
-				this.field		= this.gameStateManager.gameState.game_settings.field
-				this.ctx		= this.gameStateManager.ctx
-				this.canvas		= this.gameStateManager.canvas
-
-				
-				// ループ終了条件
-				if (!this.gameStateManager.isGameLoopStarted) {
-					return;
-				}
-				
-				const currentTime = performance.now();
-				const elapsed = currentTime - this.lastFrameTimeMs;
-				// 目標フレーム時間よりも経過時間が短い場合は、次のフレームを待つ
-				if (elapsed >= this.desiredFrameTimeMs) 
-				{
-					if (!gameState) {
-						console.error("hth: gameState is null.");
-						return;
-					} 
-					
-					if (gameState.is_running) {
-						PongOnlinePaddleMover.handlePaddleMovement(this.field, gameState);
-						this.gameStateManager.sendClientState(gameState);
-						this.renderer.render(this.ctx, this.field, gameState);
-						// 描画した時点の時刻を登録
-						this.lastFrameTimeMs = currentTime;
-					} else {
-						// 終了時
-						if (DEBUG_DETAIL) {	console.log("gameLoop(): gameState", gameState);	}
-						this.stopGameLoop(gameState);
-					}
-				}
-				// 次のフレームを要求
-				this.animationFrameId = requestAnimationFrame(gameLoop);
-
-						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
-			} catch(error) {
-				console.error("hth: gameLoop error:", error);
+	/**
+	 * 参考:【プログレス · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/components/progress/>
+	 */
+	showProgressBar() {
+		let progressBar = document.querySelector('.progress-bar');
+		let width = 0;
+		const progress = setInterval(() => {
+			if (width >= 100) {
+				clearInterval(progress);
+				setTimeout(() => {
+					progressBar.parentElement.style.display = 'none';
+				}, 1000);
+			} else {
+				width += 10;
+				progressBar.style.width = width + '%';
+				progressBar.setAttribute('aria-valuenow', width);
 			}
-		};
-		// 最初のフレームを要求
-		this.animationFrameId = requestAnimationFrame(gameLoop);
+		}, 130);
+	}
+	
+
+	startGameLoopAfterDelay(delay) 
+	{
+		setTimeout(() => 
+		{
+			const gameLoop = () => 
+			{
+				try {
+					const gameState	= this.gameStateManager.gameState;
+					this.field		= this.gameStateManager.gameState.game_settings.field
+					this.ctx		= this.gameStateManager.ctx
+					this.canvas		= this.gameStateManager.canvas
+
+					
+					// ループ終了条件
+					if (!this.gameStateManager.isGameLoopStarted) {
+						return;
+					}
+					
+					const currentTime = performance.now();
+					const elapsed = currentTime - this.lastFrameTimeMs;
+					// 目標フレーム時間よりも経過時間が短い場合は、次のフレームを待つ
+					if (elapsed >= this.desiredFrameTimeMs) 
+					{
+						if (!gameState) {
+							console.error("hth: gameState is null.");
+							return;
+						} 
+						
+						if (gameState.is_running) {
+							PongOnlinePaddleMover.handlePaddleMovement(this.field, gameState);
+							this.gameStateManager.sendClientState(gameState);
+							this.renderer.render(this.ctx, this.field, gameState);
+							// 描画した時点の時刻を登録
+							this.lastFrameTimeMs = currentTime;
+						} else {
+							// 終了時
+							if (DEBUG_DETAIL) {	console.log("gameLoop(): gameState", gameState);	}
+							this.stopGameLoop(gameState);
+						}
+					}
+					// 次のフレームを要求
+					this.animationFrameId = requestAnimationFrame(gameLoop);
+
+							if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+				} catch(error) {
+					console.error("hth: gameLoop error:", error);
+				}
+			}
+			// 最初のフレームを要求
+			this.animationFrameId = requestAnimationFrame(gameLoop);
+		}, delay);
 	}
 
 
