@@ -45,7 +45,9 @@ class PongOnlineGameLoopManager
 		this.startGameLoopAfterDelay(2000);
 	}
 
-
+	/**
+	 * 参考:【プログレス · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/components/progress/>
+	 */
 	showProgressBar() {
 		let progressBar = document.querySelector('.progress-bar');
 		let width = 0;
