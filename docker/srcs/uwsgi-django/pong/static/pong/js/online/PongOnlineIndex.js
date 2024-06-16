@@ -15,39 +15,46 @@ let isEventListenerRegistered = false;
 // ---------------------------------------
 async function initPongOnlineClientApp() 
 {
-	// ----------------------------------
-	// urlが FreePlay かどうかを判定
-	// ----------------------------------
-	const currentPath = window.location.pathname;
-				if (DEBUG_FLOW) {	console.log('routeTable:', routeTable);	}
-	const game2dPath = routeTable['game2d'].path;
-	if (currentPath !== game2dPath) {
-					if (DEBUG_FLOW) {	console.log('initPongOnlineClientApp: currentPath !== game2dPath');	}
+				if (DEBUG_FLOW) {	console.log('initPongOnlineClientApp: start');	}
+	// urlが FreePlayリンク(view: game2d) かどうかを判定し、早期リターン
+	if (!_isGame2dUrl()) {
+					if (DEBUG_FLOW) {	console.log('initPongOnlineClientApp(): not game2d url');	}
 		return;
 	}
-	
+	// 重複対策: 削除してから新規作成
 	if (pongOnlineClientApp) {
 		pongOnlineClientApp.dispose();
 		pongOnlineClientApp = null;
 	}
 	pongOnlineClientApp = new PongOnlineClientApp();
 }
+
+function _isGame2dUrl() {
+	const currentPath = window.location.pathname;
+				if (DEBUG_FLOW) {	console.log('currentPath:', currentPath);	}
+	const game2dPath = routeTable['game2d'].path;
+	return currentPath === game2dPath;
+}
+
+// PongOnlineClientAppインスタンスの作成
 initPongOnlineClientApp();
 // ---------------------------------------
 // switchPageResetState
 // ---------------------------------------
 async function handleSwitchPageResetState() {
+	// 常にinitする。
 	await initPongOnlineClientApp();
 }
 
 function registerEventListenerSwitchPageResetState() {
-	if (isEventListenerRegistered) {
-		return;
+	if (!isEventListenerRegistered) {
+		window.addEventListener('switchPageResetState', handleSwitchPageResetState);
+		isEventListenerRegistered = true;
+					if (DEBUG_FLOW) {	console.log('registerEventListenerSwitchPageResetState: done');	}
 	}
-	window.addEventListener('switchPageResetState', handleSwitchPageResetState);
-	isEventListenerRegistered = true;
 }
-
+// イベントリスナー削除はしない
+// 重複登録対策: flagで管理
 registerEventListenerSwitchPageResetState();
 // ---------------------------------------
 // dispose
@@ -56,6 +63,7 @@ async function disposePongOnlineClientApp()
 {
 	if (pongOnlineClientApp) 
 	{
+					if (DEBUG_FLOW) {	console.log('disposePongOnlineClientApp: start');	}
 		pongOnlineClientApp.dispose();
 		pongOnlineClientApp = null;
 	}
@@ -65,12 +73,9 @@ async function disposePongOnlineClientApp()
 if (!window.disposePongOnlineClientApp) {
 	window.disposePongOnlineClientApp = disposePongOnlineClientApp;
 }
-
-// endGameButton.addEventListener('click', () => {
-// 	const redirectTo = routeTable['top'].path;
-// 	switchPage(redirectTo);
-// });
-
+// ---------------------------------------
+// error
+// ---------------------------------------
 export async function pongOnlineHandleCatchError(error = null) 
 {
 	// SPAの状態をリセットしない場合

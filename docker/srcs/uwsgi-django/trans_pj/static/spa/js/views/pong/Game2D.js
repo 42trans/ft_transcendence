@@ -25,7 +25,7 @@ export default class extends AbstractView {
   }
 
   async dispose() {
-          if (DEBUG_FLOW) {  console.log('FreePlay: disopose(): start'); }
+          if (DEBUG_FLOW) {  console.log('views: game2d: disopose(): start'); }
     // disposePongOnlineClientApp()の定義: static/pong/js/online/PongOnlineIndex.js
     if (typeof window.disposePongOnlineClientApp === 'function') {
       window.disposePongOnlineClientApp();
