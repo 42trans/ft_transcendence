@@ -17,7 +17,7 @@ import * as lil from 'lil-gui';
 import ControlsGUI from './ControlsGUI';
 // import { thickness } from 'three/examples/jsm/nodes/core/PropertyNode.js';
 
-const DEBUG_FLOW	= 0;
+const DEBUG_FLOW	= 1;
 const DEBUG_DETAIL	= 0;
 const TEST_TRY1		= 0;
 const TEST_TRY2		= 0;
@@ -64,18 +64,18 @@ class PongApp
 		{
 						if (DEBUG_FLOW) {	console.log('init(): start');	}
 						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
-			this.routeTable = await PongApp.loadRouteTable();
-			// ----------------------------------
-			// urlがtournametの試合かどうかを判定
-			// ----------------------------------
-			const currentPath = window.location.pathname;
-						if (DEBUG_DETAIL) {	console.log('this.routeTable:', this.routeTable);	}
-			const gameMatchPath = this.routeTable['gameMatch'].path;
-			const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
-			if (!gameMatchRegex.test(currentPath)) {
-							if (DEBUG_FLOW) {	console.log('init()', currentPath, gameMatchRegex);	}
-				return;
-			}
+			// this.routeTable = await PongApp.loadRouteTable();
+			// // ----------------------------------
+			// // urlがtournametの試合かどうかを判定
+			// // ----------------------------------
+			// const currentPath = window.location.pathname;
+			// 			if (DEBUG_DETAIL) {	console.log('this.routeTable:', this.routeTable);	}
+			// const gameMatchPath = this.routeTable['gameMatch'].path;
+			// const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
+			// if (!gameMatchRegex.test(currentPath)) {
+			// 				if (DEBUG_FLOW) {	console.log('init()', currentPath, gameMatchRegex);	}
+			// 	return;
+			// }
 			// ----------------------------------
 			// 試合が終了しているか判定
 			// ----------------------------------

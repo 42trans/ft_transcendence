@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+import { loadRouteTable } from '../../index.js';
 
 const DEBUG_FLOW = 0;
 const DEBUG_DETAIL = 0;
@@ -165,13 +166,7 @@ class PongEngineMatch
 			if (endGameButton) 
 			{
 				endGameButton.style.display = 'block';
-				const switchPage = await this.loadSwitchPage();
-				this.registerEndGameButtonClickListener(endGameButton, switchPage);
-				// endGameButton.addEventListener('click', () => 
-				// {
-				// 	const redirectTo = this.pongApp.routeTable['top'].path;
-				// 	switchPage(redirectTo);
-				// });
+				this.registerEndGameButtonClickListener(endGameButton);
 			} else {
 				console.error('hth: End Game button not found');
 			}
@@ -181,16 +176,18 @@ class PongEngineMatch
 	}
 
 
-	handleEndGameButtonClick(switchPage) 
+	async handleEndGameButtonClick() 
 	{
-		const redirectTo = this.pongApp.routeTable['top'].path;
+		const routeTable = await loadRouteTable();
+		const switchPage = await this.loadSwitchPage();
+		const redirectTo = routeTable['top'].path;
 		switchPage(redirectTo);
 	}
 
-	registerEndGameButtonClickListener(endGameButton, switchPage) 
+	registerEndGameButtonClickListener(endGameButton) 
 	{
 		if (!this.isEndGameButtonListenerRegistered) {
-			endGameButton.addEventListener('click', this.handleEndGameButtonClick.bind(this, switchPage));
+			endGameButton.addEventListener('click', this.handleEndGameButtonClick.bind(this));
 			this.isEndGameButtonListenerRegistered = true;
 		}
 	}
