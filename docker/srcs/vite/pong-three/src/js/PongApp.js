@@ -182,7 +182,7 @@ class PongApp
 				window.removeEventListener('resize', this.boundHandleResize);
 				this.boundHandleResize = null;
 			}
-			PongEngineKey.removeListeners();
+			PongEngineKey.unregisterListenersKeyUpDown();
 
 			// lil-gui を破棄
 			if (this.gui) {
