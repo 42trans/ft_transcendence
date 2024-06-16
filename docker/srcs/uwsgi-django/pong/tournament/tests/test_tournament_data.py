@@ -86,11 +86,12 @@ class TestTournamentData(TestCase):
 		self.__logout()  # ユーザーをログアウト
 		response = self.client.get(reverse('get_tournament_data_by_id', kwargs={'tournament_id': self.tournament1.id}))
 		response_data = response.json()
-		self.assertEqual(response_data['id'], self.tournament1.id)
-		self.assertEqual(response_data['name'], self.t1_name)
-		self.assertEqual(response_data['player_nicknames'], self.t1_players)
-		self.assertEqual(response_data['organizer'], self.user1.id)
-		self.assertEqual(response.status_code, 200) 
+		# self.assertEqual(response_data['id'], self.tournament1.id)
+		# self.assertEqual(response_data['name'], self.t1_name)
+		# self.assertEqual(response_data['player_nicknames'], self.t1_players)
+		# self.assertEqual(response_data['organizer'], self.user1.id)
+		# self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.status_code, 401)
 
 	def test_access_by_other_user(self):
 		"""他のユーザーがトーナメントデータにアクセスした際に適切にアクセスを制限するか"""

@@ -102,7 +102,6 @@ class PongAPITestCase(TestCase):
         exclude_urls = {
             "save_testnet/<str:testnet_name>/",
             "fetch_testnet/<str:testnet_name>/",
-            "tournament/data/<int:tournament_id>/",  # guestも取得可能
         }
         api_urls = []
         for url in pong_api_urls:
