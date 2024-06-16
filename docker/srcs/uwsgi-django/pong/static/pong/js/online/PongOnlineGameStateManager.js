@@ -146,7 +146,7 @@ class PongOnlineGameStateManager
 				console.error("hth: sendClientState() failed: ", error);
 			}
 		} else {
-			// 通信の遅延もあるのでエラー出力ではない。大量に出力されて負荷が高いのでコメントアウト
+			// 通信の遅延もあるのでエラーではない。大量に出力されて負荷が高いのでコメントアウト
 			// console.log("sendClientState() failed: WebSocket not ready or previous message pending.");
 
 					if (DEBUG_DETAIL2)

@@ -3,7 +3,7 @@ import PongOnlineClientApp from './PongOnlineClientApp.js';
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 
-const DEBUG_FLOW = 1;
+const DEBUG_FLOW = 0;
 
 /**
  * 2D-Pong entry point

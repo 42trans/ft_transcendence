@@ -1,16 +1,16 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineRenderer.js
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-let DEBUG_FLOW 		= 0;
-let DEBUG_DETAIL	= 0;
-let DEBUG_DETAIL2 	= 0;
-let TEST_TRY1 = 0;
-let TEST_TRY2 = 0;
-let TEST_TRY3 = 0;
-let TEST_TRY4 = 0;
-let TEST_TRY5 = 0;
-let TEST_TRY6 = 0;
-let TEST_TRY7 = 0;
+const DEBUG_FLOW 		= 0;
+const DEBUG_DETAIL		= 0;
+const DEBUG_DETAIL2		= 0;
+const TEST_TRY1			= 0;
+const TEST_TRY2			= 0;
+const TEST_TRY3			= 0;
+const TEST_TRY4			= 0;
+const TEST_TRY5			= 0;
+const TEST_TRY6			= 0;
+const TEST_TRY7			= 0;
 /**
  * <canvas>への描画（ピクセルに色を出力）を担当する
  * 

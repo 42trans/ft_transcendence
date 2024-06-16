@@ -4,7 +4,7 @@ import PongOnlineSyncWS from "./PongOnlineSyncWS.js";
 import PongOnlineGameStateManager from "./PongOnlineGameStateManager.js"
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-const DEBUG_FLOW		= 1;
+const DEBUG_FLOW		= 0;
 const DEBUG_DETAIL1		= 0;
 const DEBUG_DETAIL2		= 0;
 const TEST_TRY1			= 0;
