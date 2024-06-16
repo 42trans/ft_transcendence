@@ -3,6 +3,7 @@ import { getUrl } from "../utility/url.js";
 import { setOnlineStatus } from "/static/accounts/js/setOnlineStatus.js";
 
 const DEBUG_DETAIL = 0;
+const DEBUG_LOG = 0;
 
 // touteTable.jsの記述について
 // game3d: { path: "/app/game/game-3d/", view: Game3D }は、/app/game/game-3d/というパスに対してGame3Dという「クラス」を対応
@@ -15,6 +16,8 @@ export const switchPage = (targetPath) => {
   const targetPathName = targetUrl.pathname;
 
   history.pushState(null, null, targetPathName );
+  if (DEBUG_LOG) { console.log(` history.push: ${targetPathName}`); }
+
   // currentViewにdisposeメソッドが存在するかどうかをチェック。オペランドの型がfunctionなら関数
   // if (currentView && typeof currentView.dispose === "function") {
   //         if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
@@ -106,11 +109,13 @@ async function getView(path) {
 
 // 現在表示しているviewを格納しておく変数: 次回の冒頭でdispose()が呼ばれる
 let currentView = null;
+
 // 全ての遷移で呼ばれるメソッド。とりあえずここに共通のものを設定
 export const renderView = async (path) => {
+  if (DEBUG_LOG) { console.log(` renderView: ${path}`); }
   // viewクラスのdespose()を呼び出す
   if (currentView && typeof currentView.dispose === "function") {
-        if (DEBUG_DETAIL) { console.log('renderView(): currentView.dispose(): currentView', currentView);  } 
+        if (DEBUG_DETAIL) { console.log('renderView(): currentView.dispose(): currentView', currentView);  }
     currentView.dispose();
   }
   // ここまで前回のviewに対する処理

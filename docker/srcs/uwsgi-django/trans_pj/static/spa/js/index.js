@@ -11,11 +11,16 @@ const DEBUG_DETAIL = 0;
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
-  if (DEBUG_DETAIL) { console.log('popState: path: ' + window.location.pathname); }
   window.addEventListener("popstate", async (event) => {
-    const path = window.location.pathname;
     refreshJWT()
-    renderView(path);
+
+    const currentPath = window.location.href;
+    const renderPath = await getNextPath(currentPath)  // guest, userのredirectを加味したPathを取得
+
+    if (DEBUG_DETAIL) { console.log(`popState: currentPath: ${currentPath} -> renderPath: ${renderPath}`); }
+
+    history.replaceState(null, null, renderPath);  // historyは変更せず、guest, userに応じたURLに変更
+    renderView(renderPath);
   });
 };
 
@@ -23,7 +28,7 @@ const setupPopStateListener = () => {
 // spa.htmlの読み込みと解析が完了した時点で発火
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", async () => {
-    // console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
+    if (DEBUG_DETAIL) { console.log('DOMContentLoaded: path: ' + window.location.pathname); }
     refreshJWT()
 
     // 初期ビューを表示
@@ -41,10 +46,10 @@ const setupDOMContentLoadedListener = () => {
 const setupBodyClickListener = () => {
   document.body.addEventListener("click", async (event) => 
   {
-  // console.log('clickEvent: path: ' + window.location.pathname);
     const linkElement = event.target.closest("[data-link]");
-    if (linkElement) 
+    if (linkElement)
     {
+      if (DEBUG_DETAIL) { console.log('clickEvent: path: ' + window.location.pathname); }
       // console.log('clickEvent: taga-link');
       event.preventDefault();
       refreshJWT()
@@ -80,18 +85,18 @@ const toggleMenu = document.getElementById("hth-toggle-menu");
 
 
 // ページリロード時に発火
-const setupLoadListener = () => {
-  window.addEventListener("load", async () => {
-    // console.log('loadEvent: path: ' + window.location.pathname);
-    refreshJWT()
-  });
-};
+// const setupLoadListener = () => {
+//   window.addEventListener("load", async () => {
+//     if (DEBUG_DETAIL) { console.log('loadEvent: path: ' + window.location.pathname); }
+//     refreshJWT()
+//   });
+// };
 
 
 function initSpaEventListeners() {
   setupPopStateListener();
   setupDOMContentLoadedListener();
-  setupLoadListener()
+  // setupLoadListener()
 }
 
 
