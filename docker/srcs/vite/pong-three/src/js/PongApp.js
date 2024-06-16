@@ -36,6 +36,7 @@ class PongApp
 		this.env = env;
 		this.init();
 		this.boundHandleResize = null;
+		this.routeTable = null;
 	}
 
 	/** シングルトンパターン */
@@ -63,13 +64,13 @@ class PongApp
 		{
 						if (DEBUG_FLOW) {	console.log('init(): start');	}
 						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+			this.routeTable = await PongApp.loadRouteTable();
 			// ----------------------------------
 			// urlがtournametの試合かどうかを判定
 			// ----------------------------------
 			const currentPath = window.location.pathname;
-			const routeTable = await PongApp.loadRouteTable();
-						if (DEBUG_DETAIL) {	console.log('routeTable:', routeTable);	}
-			const gameMatchPath = routeTable['gameMatch'].path;
+						if (DEBUG_DETAIL) {	console.log('this.routeTable:', this.routeTable);	}
+			const gameMatchPath = this.routeTable['gameMatch'].path;
 			const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
 			if (!gameMatchRegex.test(currentPath)) {
 							if (DEBUG_FLOW) {	console.log('init()', currentPath, gameMatchRegex);	}
@@ -94,7 +95,7 @@ class PongApp
 							if (DEBUG_FLOW) {	console.log('matchData.is_finished is true');	}
 				// ゲームが終了状態の場合リダイレクト
 				const switchPage = await PongApp.loadSwitchPage();
-				const redirectTo = routeTable['top'].path;
+				const redirectTo = this.routeTable['top'].path;
 				switchPage(redirectTo);
 				return;
 			}
@@ -119,7 +120,7 @@ class PongApp
 			// -----------------------------------------------------------------------------
 			// 他のMgrが依存するので、この位置でリセット。マネージャーが生成された後のタイミングで再初期化を行う
 			this.renderer = RendererManager.getRenderer();
-			this.renderLoop.start();
+			this.renderLoop.loopStart();
 
 						//dev用　index.jsで`PongApp.main('dev');`で呼び出す
 						if (this.env === 'dev'){
@@ -210,10 +211,15 @@ class PongApp
 	/** ブラウザの再描画タイミングで描画を実行する処理の停止 */
 	stopRenderLoop() 
 	{
-		if (this.renderLoop) {
-			this.renderLoop.stop();
-			this.renderLoop = null;
-		}
+		try{
+			if (this.renderLoop) {
+				this.renderLoop.loopStop();
+				this.renderLoop = null;
+			}
+		} catch (error) {
+			console.error('hth: stopRenderLoop() failed', error);
+			handleCatchError(error);
+		}	
 	}
 
 

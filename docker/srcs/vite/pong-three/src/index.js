@@ -133,7 +133,7 @@ async function loadRouteTable() {
 	}
 }
 
-export async function handleCatchError(error) 
+export async function handleCatchError(error = null) 
 {
 	// SPAの状態をリセットしない場合
 	// const switchPage = await loadSwitchPage();
@@ -141,8 +141,13 @@ export async function handleCatchError(error)
 	// switchPage(redirectTo);
 
 	// ゲームでのエラーは深刻なので、location.hrefでSPAの状態を完全にリセットする
+	
 	const routeTable = await loadRouteTable();
-	alert("エラーが発生しました。トップページに遷移します。 error: " + error); 
+	if (error) {
+		alert("エラーが発生しました。トップページに遷移します。 error: " + error);
+	} else {
+		alert("エラーが発生しました。トップページに遷移します。");
+    }
 	window.location.href = routeTable['top'].path;
 }
 
