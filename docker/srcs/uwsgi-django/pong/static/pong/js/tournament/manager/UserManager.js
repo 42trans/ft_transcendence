@@ -32,18 +32,18 @@ class UserManager
 					error.code = 401; 
 					throw error;
 				} else if (!response.ok) {
-					throw new Error(`Request failed with status ${response.status}`);
+					throw new Error(`hth: Request failed with status ${response.status}`);
 				}
 
 				this.userProfile = await response.json();
 				return this.userProfile;
 			} catch (error) {
 				if (error.code === 401) {
-					console.error('Authentication failed');
+					console.error('hth: Authentication failed');
 					// 401 Unauthorized エラーの場合UIに表示
 					alert('Your session has expired. Please log in again.');
 				} else {
-					console.error('Failed to fetch user profile:', error);
+					console.error('hth: Failed to fetch user profile:', error);
 				}
 			}
 		}

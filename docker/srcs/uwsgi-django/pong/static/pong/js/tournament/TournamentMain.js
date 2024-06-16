@@ -6,6 +6,9 @@ import TournamentCreator	from './components/TournamentCreator.js';
 
 // TODO_ft: サブコンテナの名称をcontainerとわかるものに変更・統一 ex. errMsgContainer
 
+const DEBUG_FLOW	= 0;
+const DEBUG_DETAIL	= 0;
+const TEST_TRY1		= 0;
 
 export function setupTournament() {
 	try {
@@ -19,8 +22,9 @@ export function setupTournament() {
 
 		// main関数を呼び出す
 		tournamentManager.main();
+				if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
 	} catch(error) {
-		console.log("setupTournament: ", error);
+		console.error("hth: setupTournament: ", error);
 	}
 
 }

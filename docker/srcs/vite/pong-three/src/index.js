@@ -147,7 +147,7 @@ export async function handleCatchError(error = null)
 		alert("エラーが発生しました。トップページに遷移します。 error: " + error);
 	} else {
 		alert("エラーが発生しました。トップページに遷移します。");
-    }
+	}
 	window.location.href = routeTable['top'].path;
 }
 
