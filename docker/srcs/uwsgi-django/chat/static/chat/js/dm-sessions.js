@@ -59,13 +59,14 @@ export function startDMwithUser() {
                         throw new Error(data.error);
                     } else {
                         // 検証が成功した場合にdiWithUserに遷移
-                        const routePath = routeTable['dmWithUserBase'].path + dmTargetNickname + '/'
+                        const targetId = data.target_id;
+                        console.log("target_id: " + targetId)
+                        const routePath = routeTable['dmWithUserBase'].path + targetId + '/'
                         switchPage(routePath);
                     }
                 });
             })
             .catch(error => {
-                console.log('startDMwithUser 6');
                 if (error.message.includes('<!doctype')) {
                     // <script></script>入力された場合。APIにたどり着く前にエラー判定されている
                     messageArea.textContent = "The specified user does not exist";
@@ -87,7 +88,7 @@ function createDMSessionLinks(data) {
         const link = document.createElement('a');
 
         // リンクの設定
-        link.href = `${routeTable['dmSessions'].path}${dmSession.target_nickname}/`;
+        link.href = `${routeTable['dmSessions'].path}${dmSession.target_id}/`;
         link.setAttribute('data-link', '');
 
         // システムメッセージの場合は表示を変更

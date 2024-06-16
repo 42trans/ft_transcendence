@@ -29,15 +29,16 @@ class GetDMSessionsAPI(APIView):
         for session in sessions:
             other_user = session.member.exclude(id=user.id).first()
             if other_user:
-                dm_set.add((other_user.nickname, session.is_system_message))
+                dm_set.add((other_user.nickname, other_user.id, session.is_system_message))
         return dm_set
 
 
     def _get_dm_session_list(self, dm_set):
         dm_session_list = []
-        for target_nickname, is_system_message in dm_set:
+        for target_nickname, target_id, is_system_message in dm_set:
             data = {
                 'target_nickname'   : target_nickname,
+                'target_id'         : target_id,
                 'is_system_message' : is_system_message  # Maybe unused
             }
             dm_session_list.append(data)

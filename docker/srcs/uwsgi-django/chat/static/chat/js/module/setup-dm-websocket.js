@@ -10,16 +10,16 @@ export { setupDmWebsocket };
 let dmSocket = null;
 
 // WebSocketの接続確立とメッセージの送受信ロジック
-function setupDmWebsocket(dmTargetNickname) {
+function setupDmWebsocket(userInfo, targetInfo) {
     if (dmSocket) {
         closeDmSocket();
     }
 
-    const websocketUrl = 'wss://' + window.location.host + '/ws/dm-with/' + dmTargetNickname + '/';
+    const websocketUrl = 'wss://' + window.location.host + '/ws/dm-with/' + targetInfo.id + '/';
     dmSocket = new WebSocket(websocketUrl);
 
-    dmSocket.onmessage = (event) => handleReceiveMessage(event, dmTargetNickname);
-    dmSocket.onopen = () => handleOpen(dmSocket, dmTargetNickname);
+    dmSocket.onmessage = (event) => handleReceiveMessage(event, userInfo, targetInfo);
+    dmSocket.onopen = () => handleOpen(dmSocket, targetInfo.nickname);
     dmSocket.onclose = handleClose;
     dmSocket.onerror = handleError;
 
