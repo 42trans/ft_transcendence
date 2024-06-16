@@ -28,7 +28,7 @@ urlpatterns = [
 	# ----------------------------------------
 	# 「最新」のトーナメントの情報を取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
 	path("tournament/user/ongoing/latest/", get_latest_user_ongoing_tournament, name="get_latest_user_ongoing_tournament"),
-	#  ゲストも「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。
+	#  「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。
 	path("tournament/data/<int:tournament_id>/", get_tournament_data_by_id, name="get_tournament_data_by_id"),
 	# 「round_number」のデータを全て取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
 	path("tournament/user/ongoing/matches/<int:round_number>/", get_matches_by_round_latest_user_ongoing_tournament, name="get_matches_by_round_latest_user_ongoing_tournament"),
@@ -49,4 +49,3 @@ urlpatterns = [
 		# 「ユーザーが主催する && 未終了のトーナメント」 に関する「全7試合」のデータを全て取得する
 		path("tournament/user/ongoing/matches/all", get_matches_of_latest_tournament_user_ongoing, name="get_matches_of_latest_tournament_user_ongoing"),
 ]
-
