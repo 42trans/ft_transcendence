@@ -17,12 +17,16 @@ from accounts.forms import SignupForm, LoginForm
 from accounts.models import CustomUser, UserManager
 from accounts.views.jwt import get_jwt_response
 
+import logging
+logger = logging.getLogger('accounts')
+
 
 class SignupTemplateView(View):
     template_name = "accounts/signup.html"
     authenticated_redirect_to = "/pong/"  # djangoで/pong/にrender -> SPA /app/
 
     def get(self, request, *args, **kwargs):
+        # logger.error("signup view called")
         if request.user.is_authenticated:
             return redirect(to=self.authenticated_redirect_to)
 
@@ -39,6 +43,7 @@ class SignupAPIView(APIView):
     # authenticated_redirect_to = url_config['kSpaPongTopUrl']  # SPA /app/にリダイレクト
 
     def post(self, request, *args, **kwargs):
+        # logger.error("signup api called")
         if request.user.is_authenticated:
             data = {
                 'message': "Already logged in",
