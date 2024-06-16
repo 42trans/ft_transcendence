@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/state/EntryGameState.js
 import BaseGameState from './BaseGameState'
 import MagmaFlare from '../effect/MagmaFlare'
 import * as THREE from 'three';
@@ -8,6 +9,9 @@ import AllScenesManager from '../manager/AllScenesManager';
 let DEBUG_FLOW		= 0;
 let DEBUG_DETAIL1	= 0;
 let TEST_TRY1		= 0;
+let TEST_TRY2		= 0;
+let TEST_TRY3		= 0;
+let TEST_TRY4		= 0;
 
 class EntryGameState extends BaseGameState 
 {
@@ -24,69 +28,84 @@ class EntryGameState extends BaseGameState
 
 		this.startGameButton	= null;
 
-		this.handleButtonClick	= this.changeStateGamePlay.bind(this);
+		this.handleButtonClick	= this._changeStateGamePlay.bind(this);
 		this.boundHandleButtonClick = this.handleButtonClick.bind(this);
-		this.registerStartButtonEventListener();
+		this._registerStartButtonEventListener();
 		this.isStartButtonListenerRegistered = false;
 	}
 
 	enter() 
 	{
-					if (DEBUG_FLOW) {	console.log("enter(): EntryGameState");	}
-		this.scenesMgr.effectsScene.refreshScene(new EffectsSceneConfig());
-		this.magmaFlare.name = "MagmaFlare";
-		this.scenesMgr.effectsScene.scene.add(this.magmaFlare);
-		
-		this.displayEnterGameButton(); 
-		this.initEndButton();
-		this.registerStartButtonEventListener();
-		this.camera		= this.scenesMgr.effectsScene.camera;
-		this.controls	= this.scenesMgr.effectsScene.controls;
-		this.zoomBall	= new ZoomBall(this.camera, this.controls);
+		try {
+						if (DEBUG_FLOW) {	console.log("enter(): EntryGameState");	}
+			this.scenesMgr.effectsScene.refreshScene(new EffectsSceneConfig());
+			this.magmaFlare.name = "MagmaFlare";
+			this.scenesMgr.effectsScene.scene.add(this.magmaFlare);
+			
+			this._displayEnterGameButton(); 
+			this._initEndButton();
+			this._registerStartButtonEventListener();
+			this.camera		= this.scenesMgr.effectsScene.camera;
+			this.controls	= this.scenesMgr.effectsScene.controls;
+			this.zoomBall	= new ZoomBall(this.camera, this.controls);
+						if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
+		} catch (error) {
+			console.error('hth: EntryGameState.enter() failed', error);
+		}
 	}
 
 	update() 
 	{
-					if (DEBUG_DETAIL1) {	console.log("entryState.update(): start");	}
-		this.magmaFlare.update();
+		try {
+						if (DEBUG_DETAIL1) {	console.log("entryState.update(): start");	}
+			this.magmaFlare.update();
+						if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
+		} catch (error) {
+			console.error('hth: EntryGameState.update() failed', error);
+		}
 	}
 	
 	render() {/** empty */}
 	
 	exit() 
 	{
-					if (DEBUG_FLOW) {	console.log("exit(): EntryGameState");	}
-		this.unregisterStartButtonEventListener();
-		const targetPosition = new THREE.Vector3();
-		this.magmaFlare.getWorldPosition(targetPosition);
-		this.startDistance = this.camera.position.distanceTo(targetPosition);
-		this.zoomBall.zoomToBall(
-			targetPosition, 
-			this.startDistance, 
-			EntryGameState.zoomInDistance, 
-			EntryGameState.zoomOutDistance, 
-			EntryGameState.duration, 
-			EntryGameState.pauseDuration,
-		);
-		this.scenesMgr.backgroundScene.clearScene();
+		try {
+						if (DEBUG_FLOW) {	console.log("exit(): EntryGameState");	}
+			this._unregisterStartButtonEventListener();
+			const targetPosition = new THREE.Vector3();
+			this.magmaFlare.getWorldPosition(targetPosition);
+			this.startDistance = this.camera.position.distanceTo(targetPosition);
+			this.zoomBall.zoomToBall(
+				targetPosition, 
+				this.startDistance, 
+				EntryGameState.zoomInDistance, 
+				EntryGameState.zoomOutDistance, 
+				EntryGameState.duration, 
+				EntryGameState.pauseDuration,
+			);
+			this.scenesMgr.backgroundScene.clearScene();
+						if (TEST_TRY3) {	throw new Error('TEST_TRY3');	}
+		} catch (error) {
+			console.error('hth: EntryGameState.exit() failed', error);
+		}
 	}
 
-	displayEnterGameButton()
+	_displayEnterGameButton()
 	{
 		try {
-						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 			this.startGameButton = document.getElementById('hth-threejs-start-game-btn');
 			if (!this.startGameButton) {
 				return;
 			}
 			this.startGameButton.style.display = 'block' 
-			this.registerStartButtonEventListener();
+			this._registerStartButtonEventListener();
+						if (TEST_TRY4){	throw new Error('TEST_TRY4');	}
 		} catch (error) {
 			console.error('hth: initStartButton() failed: ', error);
 		}
 	}
 
-	registerStartButtonEventListener() 
+	_registerStartButtonEventListener() 
 	{
 		// リスナーが既に登録されているかどうかをフラグで確認 onclickはパフォの問題あり
 		if (this.startGameButton && !this.isStartButtonListenerRegistered) {
@@ -96,7 +115,7 @@ class EntryGameState extends BaseGameState
 		}
 	}
 	
-	unregisterStartButtonEventListener() 
+	_unregisterStartButtonEventListener() 
 	{
 		// フラグがtrueなら削除
 		if (this.startGameButton && this.isStartButtonListenerRegistered) {
@@ -105,7 +124,7 @@ class EntryGameState extends BaseGameState
 		}
 	}
 
-	changeStateGamePlay() 
+	_changeStateGamePlay() 
 	{
 		this.PongApp.gameStateManager.changeState('gamePlay');
 		if (this.startGameButton) {
@@ -113,7 +132,7 @@ class EntryGameState extends BaseGameState
 		}
 	}
 
-	initEndButton() 
+	_initEndButton() 
 	{
 		const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
 		if (!endGameButton) {

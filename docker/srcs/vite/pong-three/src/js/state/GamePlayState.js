@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/state/GamePlayState.js
 import PongApp from '../PongApp'
 import BackgroundSceneConfig from '../config/BackgroundSceneConfig';
 import GameSceneConfig from '../config/GameSceneConfig';
@@ -6,14 +7,16 @@ import PongEngine from '../pongEngine/PongEngine';
 import AllScenesManager from '../manager/AllScenesManager';
 import * as THREE from "three";
 import ZoomTable from '../effect/ZoomTable';
+import { handleCatchError } from '../../index.js';
 
-let DEBUG_FLOW 		= 0;
-let DEBUG_DETAIL 	= 0;
-let TEST_TRY1 		= 0;
+const DEBUG_FLOW 		= 0;
+const DEBUG_DETAIL		= 0;
+const TEST_TRY1			= 0;
+const TEST_TRY2			= 0;
 
 const ZOOM_IN_FACTOR = 1.5;
 const ZOOM_OUT_FACTOR = 0.5;
-const SCENE_CHANGE_DELAY = 4500; // milliseconds
+const SCENE_CHANGE_DELAY_MS = 4500;
 
 class GameplayState extends BaseGameState 
 {
@@ -35,55 +38,66 @@ class GameplayState extends BaseGameState
 
 	enter() 
 	{
-					if (DEBUG_FLOW){	console.log("Entering GamePlay state");	 };
-		this.scenesMgr.gameScene.refreshScene(new GameSceneConfig());
-		this.pongEngine	= new PongEngine(this.PongApp);
-		this.camera 	= this.scenesMgr.getGameSceneCamera()
-					if (DEBUG_DETAIL)
-					{
-						console.log('this.camera.z', this.camera.position.z);
-						console.log('this.camera', this.camera);
-					}
-		this.scenesMgr.handleResize();
-					if (DEBUG_DETAIL)
-					{
-						console.log('this.camera.z', this.camera.position.z);
-						console.log('this.camera', this.camera);
-					}
-		const targetPosition = new THREE.Vector3();
-		// テーブルの中心位置を取得　実際は0,0,0
-		this.pongEngine.data.objects.plane.getWorldPosition(targetPosition); 
-		// 初期距離を計算
-		this.initialDistance = this.camera.position.distanceTo(targetPosition);
-
-		const zoomParams = 
+		try
 		{
-			...GameplayState.zoomParams,
-			zoomInDistance: this.initialDistance * ZOOM_IN_FACTOR,
-			zoomOutDistance: this.initialDistance * ZOOM_OUT_FACTOR,
-			targetPosition: targetPosition,
-			initialDistance: this.initialDistance,
-		};
+						if (DEBUG_FLOW){	console.log("Entering GamePlay state");	 };
+			this.scenesMgr.gameScene.refreshScene(new GameSceneConfig());
+			this.pongEngine	= new PongEngine(this.PongApp);
+						if (TEST_TRY1) {	this.pongEngine = null;	}
+			if (!this.pongEngine){
+				throw new Error('Failed to create PongEngine instance.');
+			}
+			this.camera 	= this.scenesMgr.getGameSceneCamera()
+						if (DEBUG_DETAIL)
+						{
+							console.log('this.camera', this.camera);
+							console.log('this.camera.z', this.camera.position.z);
+						}
+			this.scenesMgr.handleResize();
+						if (DEBUG_DETAIL)
+						{
+							console.log('this.camera', this.camera);
+							console.log('this.camera.z', this.camera.position.z);
+						}
+			const targetPosition = new THREE.Vector3();
+			// テーブルの中心位置を取得　実際は0,0,0
+			this.pongEngine.data.objects.plane.getWorldPosition(targetPosition); 
+			// 初期距離を計算
+			this.initialDistance = this.camera.position.distanceTo(targetPosition);
 
-		const zoomController = new ZoomTable
-		(
-			this.pongEngine,
-			this.camera,
-			this.controls
-		);
-		
-		zoomController.zoomToTable(
-			zoomParams
-		);
+			const zoomParams = 
+			{
+				...GameplayState.zoomParams,
+				zoomInDistance: this.initialDistance * ZOOM_IN_FACTOR,
+				zoomOutDistance: this.initialDistance * ZOOM_OUT_FACTOR,
+				targetPosition: targetPosition,
+				initialDistance: this.initialDistance,
+			};
 
-		// this.scenesMgr.disableAllControls();
-		// this.pongEngine.update.initMouseControl();
+			const zoomController = new ZoomTable
+			(
+				this.pongEngine,
+				this.camera,
+				this.controls
+			);
+			
+			zoomController.zoomToTable(
+				zoomParams
+			);
 
-		setTimeout(() => 
-		{
-			this.scenesMgr.effectsScene.clearScene();
-			this.scenesMgr.backgroundScene.refreshScene(new BackgroundSceneConfig());
-		}, SCENE_CHANGE_DELAY);
+			// this.scenesMgr.disableAllControls();
+			// this.pongEngine.update.initMouseControl();
+
+			setTimeout(() => 
+			{
+				this.scenesMgr.effectsScene.clearScene();
+				this.scenesMgr.backgroundScene.refreshScene(new BackgroundSceneConfig());
+			}, SCENE_CHANGE_DELAY_MS);
+		} catch (error) {
+			console.error('hth: GameplayState.enter() failed', error);
+			// 描画がないまま試合結果が決まらないように進行を止める
+			handleCatchError(error);
+		}
 	}
 
 	update() {/** empty */}
@@ -92,8 +106,13 @@ class GameplayState extends BaseGameState
 
 	exit() 
 	{
-					if (DEBUG_FLOW){	console.log("Exiting GamePlay state");	 };
-		this.PongApp.allScenesManager.gameScene.clearScene();
+		try {
+						if (DEBUG_FLOW){	console.log("Exiting GamePlay state");	 };
+			this.PongApp.allScenesManager.gameScene.clearScene();
+						if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
+		} catch (error) {
+			console.error("Error in GamePlayState.exit():", error);
+		}
 	}
 
 }
