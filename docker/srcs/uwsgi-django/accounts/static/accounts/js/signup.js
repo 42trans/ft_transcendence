@@ -4,6 +4,7 @@ import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
 
 const DEBUG = 0;
+const DEBUG_LOG = 0;
 
 
 function signupUser() {
@@ -26,18 +27,20 @@ function signupUser() {
 			// Error
 			document.getElementById('message-area').textContent = data.error;
 			if (data.redirect) {
-				switchPage(data.redirect)
+				if (DEBUG_LOG) { console.log('signup error: next: ' + data.redirect); };
+				switchPage(data.redirect);
 			} else {
 				console.error('Error:', data.error);
 			}
 		} else if (data.message) {
 			// Verified
-			console.log(data.message);
-			switchPage(data.redirect)  // Redirect on successful verification
+			if (DEBUG_LOG) { console.log(data.message); };
+			switchPage(data.redirect);  // Redirect on successful verification
 			updateHeader();
 		}
 	})
 	.catch(error => console.error('Error:', error));
+	if (DEBUG_LOG) { console.log('signup 3'); };
 }
 
 
@@ -48,6 +51,7 @@ export function setupSignupEventListener() {
 	const form = document.getElementById('signup-form-container')
 	if (form && !signupFormSubmitHandler) {
 		signupFormSubmitHandler = (event) => {
+			if (DEBUG_LOG) { console.log("signup submit"); }
 			event.preventDefault();
 			signupUser();
 		};
