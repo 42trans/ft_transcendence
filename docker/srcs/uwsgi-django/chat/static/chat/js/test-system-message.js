@@ -1,5 +1,6 @@
 // test-system-message.js
 
+// unused
 function sendSystemMessage(targetNickname) {
     const url = 'https://localhost/chat/api/system-message/';
     const now = new Date();
@@ -24,6 +25,6 @@ function sendSystemMessage(targetNickname) {
             }
         })
         .catch(error => {
-            console.error('システムメッセージの送信に失敗しました。', error);
+            console.error('hth: システムメッセージの送信に失敗しました。', error);
         });
 }

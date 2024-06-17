@@ -6,7 +6,7 @@ import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 
 export function sendFriendRequest(userId) {
-    console.log(`sendFriendRequest for user ${userId}`);
+    // console.log(`sendFriendRequest for user ${userId}`);
     fetch(`/accounts/api/friend/send-request/${userId}/`, {
         method: 'POST',
         headers: {
@@ -57,7 +57,7 @@ export function cancelFriendRequest(userId) {
 
 
 export function acceptFriendRequest(userId) {
-    console.log(`acceptFriendRequest for user ${userId}`);
+    // console.log(`acceptFriendRequest for user ${userId}`);
     fetch(`/accounts/api/friend/accept-request/${userId}/`, {
         method: 'POST',
         headers: {
@@ -144,10 +144,10 @@ export function deleteFriend(userId) {
 
 
 export function setupDeleteFriendEventListener() {
-    console.log("Setup friend event listeners");
+    // console.log("Setup friend event listeners");
     document.querySelectorAll('.deleteFriendButton').forEach(button => {
         button.addEventListener('click', () => {
-            console.log('deleteFriendButton clicked', button.dataset.userid);
+            // console.log('deleteFriendButton clicked', button.dataset.userid);
             deleteFriend(button.dataset.userid);
         });
     });
@@ -155,29 +155,29 @@ export function setupDeleteFriendEventListener() {
 
 
 export function setupFriendRequestListEventListeners() {
-    console.log("Setup friend event listeners");
+    // console.log("Setup friend event listeners");
 
     document.querySelectorAll('.sendFriendRequestButton').forEach(button => {
         button.addEventListener('click', () => {
-            console.log('sendFriendRequestButton clicked', button.dataset.userid);
+            // console.log('sendFriendRequestButton clicked', button.dataset.userid);
             sendFriendRequest(button.dataset.userid);
         });
     });
     document.querySelectorAll('.cancelFriendRequestButton').forEach(button => {
         button.addEventListener('click', () => {
-            console.log('cancelFriendRequestButton clicked', button.dataset.userid);
+            // console.log('cancelFriendRequestButton clicked', button.dataset.userid);
             cancelFriendRequest(button.dataset.userid);
         });
     });
     document.querySelectorAll('.acceptFriendRequestButton').forEach(button => {
         button.addEventListener('click', () => {
-            console.log('acceptFriendRequestButton clicked', button.dataset.userid);
+            // console.log('acceptFriendRequestButton clicked', button.dataset.userid);
             acceptFriendRequest(button.dataset.userid);
         });
     });
     document.querySelectorAll('.rejectFriendRequestButton').forEach(button => {
         button.addEventListener('click', () => {
-            console.log('rejectFriendRequestButton clicked', button.dataset.userid);
+            // console.log('rejectFriendRequestButton clicked', button.dataset.userid);
             rejectFriendRequest(button.dataset.userid);
         });
     });

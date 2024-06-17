@@ -29,7 +29,7 @@ function verify2FA() {
 				}
 			} else if (data.message) {
 				// Verified
-				console.log(data.message);
+				// console.log(data.message);
 				// alert('[tmp] varify2fa success, redirect:' + data.redirect)
 				switchPage(data.redirect)  // Redirect on successful verification
                 updateHeader();

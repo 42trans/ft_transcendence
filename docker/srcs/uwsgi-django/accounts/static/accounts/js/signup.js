@@ -32,7 +32,7 @@ function signupUser() {
 			}
 		} else if (data.message) {
 			// Verified
-			console.log(data.message);
+			// console.log(data.message);
 			switchPage(data.redirect)  // Redirect on successful verification
 			updateHeader();
 		}

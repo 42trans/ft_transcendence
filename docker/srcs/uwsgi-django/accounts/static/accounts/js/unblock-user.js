@@ -30,14 +30,14 @@ function unblockUser(nickname) {
 
 
 export function setupUnBlockUserEventListener() {
-    console.log("Setup block event listeners");
+    // console.log("Setup block event listeners");
     const unBlockUserButton = document.querySelector('.hth-btn.unBlockUserButton');
     if (unBlockUserButton) {
         unBlockUserButton.addEventListener('click', (event) => {
             event.preventDefault();
 
             const nickname = unBlockUserButton.dataset.nickname;
-            console.log('unblockUser clicked', nickname);
+            // console.log('unblockUser clicked', nickname);
             unblockUser(nickname);
         });
     }

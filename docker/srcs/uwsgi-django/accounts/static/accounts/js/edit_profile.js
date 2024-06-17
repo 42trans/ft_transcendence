@@ -23,7 +23,7 @@ export function updateNickname(event) {
 				document.getElementById('message-area').textContent = data.error;
 			} else {
 				document.getElementById('message-area').textContent = data.message;
-				console.log('Success:', data.message);
+				// console.log('Success:', data.message);
 				const redirectTo = routeTable['userProfile'].path;
 				switchPage(redirectTo)
 			}
@@ -53,7 +53,7 @@ export function updatePassword(event) {
 				document.getElementById('message-area').textContent = data.error;
 			} else {
 				document.getElementById('message-area').textContent = data.message;
-				console.log('Success:', data.message);
+				// console.log('Success:', data.message);
 				const redirectTo = routeTable['userProfile'].path;
 				switchPage(redirectTo)
 			}
