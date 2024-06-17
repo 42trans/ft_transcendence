@@ -54,7 +54,8 @@ class DMTest(TestConfig):
 
         # test_user2が受信したDM #################################################
         self._login(email=self.test_user2_email, password=self.password)
-        self._access_to(f"{self.dm_with_base_url}{self.test_user1_nickname}/")
+        self._move_top_to_dm()
+        self._send_dm_with_form(self.test_user1_nickname)
         received_message = self._element(By.CSS_SELECTOR, "#dm-log li.dm-to .message-content span:first-child")
         self.assertEqual(received_message.text, message)
         # self._screenshot("dm3")
@@ -89,11 +90,6 @@ class DMTest(TestConfig):
         self._assert_message("The specified user does not exist")
         self._assert_current_url(self.dm_url)
         # self._screenshot("dm4")
-
-        valid_nickname = "user2"
-        self._send_nickname(valid_nickname, wait_for_button_invisible=True)
-        self._assert_current_url(f"{self.dm_with_base_url}{valid_nickname}/")
-        # self._screenshot("dm5")
 
     def _send_message(self, message):
         self._send_to_elem(By.ID, "message-input", message)

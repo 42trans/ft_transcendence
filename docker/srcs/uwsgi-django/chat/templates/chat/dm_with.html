@@ -3,28 +3,29 @@
 {% load static %}
 
 {% if not isSystemUser %}
-    <h2>DM with <a href="{{ url_config.kSpaUserInfoUrlBase }}{{ target_nickname }}/" data-link>{{ target_nickname }}</a></h2>
+    <h2>DM with <a href="{{ url_config.kSpaUserInfoUrlBase }}{{ target_nickname }}/" data-link>{{ target_info.nickname }}</a></h2>
 {% else %}
     <h2>System Message</h2>
 {% endif %}
 
 
-{% if not isBlockingUser %}
+{% if not target_info.isBlockingUser %}
     <p id="error-message"></p>
 
     <div id="dm-container">
     
-        {% comment %} DM logを表示  {% endcomment %}
+        {% comment %} DBから読み込んだmessage_logを表示  {% endcomment %}
         <ul id="dm-log" style="list-style: none;">
-            {% for message in messages %}
-            <li class="{{ message.sender.nickname|slugify }}" data-sender-name="{{ message.sender.nickname }}">
+            {% for message in message_log %}
+            <li class="{{ message.sender.id|slugify }}" data-sender-id="{{ message.sender.id }}">
                 <div class="avatar-and-sender">
-                    {% if message.sender.nickname == target_nickname %}
-                        <img src="{{ other_avatar_url }}" alt="Avatar" class="avatar">
+                    {% if message.sender.id == target_info.id %}
+                        <img src="{{ target_info.avatar_url }}" alt="Avatar" class="avatar">
+                        <span class="sender-name">{{ target_info.nickname }}</span>
                     {% else %}
-                        <img src="{{ user_avatar_url }}" alt="Avatar" class="avatar">
+                        <img src="{{ user_info.avatar_url }}" alt="Avatar" class="avatar">
+                        <span class="sender-name">{{ user_info.nickname }}</span>
                     {% endif %}
-                    <span class="sender-name">{{ message.sender.nickname }}</span>
                 </div>
                 <div class="message-content">
                     <span>{{ message.message|escape }}</span>
@@ -35,7 +36,7 @@
         </ul>
 
 
-        {% if not isSystemUser %}
+        {% if not target_info.isSystemUser %}
         <div class="message-container">
             <input id="message-input" type="text">
             <input id="message-submit" type="button" value="Send">
@@ -48,4 +49,5 @@
 {% endif %}
 
 
-{{ target_nickname|json_script:"target_nickname" }}
+{{ user_info|json_script:"user_info" }}
+{{ target_info|json_script:"target_info" }}

@@ -83,7 +83,7 @@
 }
 
 .timestamp {
-	font-size: 0.8em;               /* 小さめのフォントサイズ */
+	font-size: 0.6em;               /* 小さめのフォントサイズ */
 	/* color: #666;                    色は暗めに設定 */
 	/* color: #131313; */
 	align-self: flex-end;     /* タイムスタンプを右揃え */

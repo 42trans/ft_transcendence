@@ -3,8 +3,7 @@
 import {classifyMessageSender} from "./apply-message-style.js";
 import {scrollToBottom} from "./ui-util.js";
 
-export { handleReceiveMessage };
-
+const DEBUG_LOG = 0;
 
 export function escapeHtml(unsafe) {
     return unsafe
@@ -59,34 +58,46 @@ function createMessageElement(senderName, message, timestamp, avatarUrl) {
 }
 
 
-function classifyMessage(messageElement, isSystemMessage, senderName, dmTargetNickname) {
+function classifyMessage(messageElement, isSystemMessage, senderId, targetId) {
     // todo: isSystemMessageは未使用, system message実装で使う可能性あり
     if (isSystemMessage) {
         messageElement.classList.add('system-message');
     } else {
-        classifyMessageSender(messageElement, senderName, dmTargetNickname);
+        classifyMessageSender(messageElement, senderId, targetId);
     }
 }
 
 
-function handleReceiveMessage(event, dmTargetNickname) {
+export function handleReceiveMessage(event, userInfo, targetInfo) {
     const data = JSON.parse(event.data);
     const message_data = JSON.parse(data.data);
-    console.log('Received WebSocket data:', data);
-    console.log('Received WebSocket message_data:', message_data);
+
+    if (DEBUG_LOG) { console.log('Received WebSocket data        :', data); }
+    if (DEBUG_LOG) { console.log('Received WebSocket message_data:', message_data); }
+
+    const senderInfo = getSenderInfo(message_data.sender_id, userInfo, targetInfo);
 
     let messageElement = createMessageElement(
-        message_data.sender,
+        senderInfo.nickname,
         message_data.message,
         message_data.timestamp,
-        message_data.avatar_url
+        senderInfo.avatar_url
     );
     const isSystemMessage = message_data.is_system_message;
 
     // メッセージに適切なクラスを適用
-    classifyMessage(messageElement, isSystemMessage, message_data.sender, dmTargetNickname);
+    classifyMessage(messageElement, isSystemMessage, message_data.sender_id, targetInfo.id);
 
     document.querySelector('#dm-log').appendChild(messageElement);
 
     scrollToBottom();  // dm-logのスクロール位置を調整
+}
+
+
+function getSenderInfo(senderId, userInfo, targetInfo) {
+    if (senderId === userInfo.id) {
+        return userInfo;
+    } else {
+        return targetInfo;
+    }
 }
