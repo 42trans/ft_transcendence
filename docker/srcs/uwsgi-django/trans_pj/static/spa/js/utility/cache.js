@@ -1,6 +1,6 @@
 // static/spa/js/utility/cache.js
 
-const DEBUG_LOG = 1;
+const DEBUG_LOG = 0;
 
 export function setNoCache() {
     if (DEBUG_LOG) { console.log("set no cache"); }

@@ -6,7 +6,7 @@ import { setNoCache, clearNoCache } from "/static/spa/js/utility/cache.js"
 
 
 const DEBUG_DETAIL = 0;
-const DEBUG_LOG = 1;
+const DEBUG_LOG = 0;
 
 // login, signin, 42loginはcacheを保存しない
 function controlCache(targetPathName) {
