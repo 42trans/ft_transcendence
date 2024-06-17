@@ -14,16 +14,16 @@
 
     <div id="dm-container">
     
-        {% comment %} DM logを表示  {% endcomment %}
+        {% comment %} DBから読み込んだmessage_logを表示  {% endcomment %}
         <ul id="dm-log" style="list-style: none;">
-            {% for message in messages %}
+            {% for message in message_log %}
             <li class="{{ message.sender.id|slugify }}" data-sender-id="{{ message.sender.id }}">
                 <div class="avatar-and-sender">
                     {% if message.sender.id == target_info.id %}
-                        <img src="{{ target_avatar_url }}" alt="Avatar" class="avatar">
+                        <img src="{{ target_info.avatar_url }}" alt="Avatar" class="avatar">
                         <span class="sender-name">{{ target_info.nickname }}</span>
                     {% else %}
-                        <img src="{{ user_avatar_url }}" alt="Avatar" class="avatar">
+                        <img src="{{ user_info.avatar_url }}" alt="Avatar" class="avatar">
                         <span class="sender-name">{{ user_info.nickname }}</span>
                     {% endif %}
                 </div>

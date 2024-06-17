@@ -59,12 +59,12 @@ function createMessageElement(senderName, message, timestamp, avatarUrl) {
 }
 
 
-function classifyMessage(messageElement, isSystemMessage, senderId, userId, targetId) {
+function classifyMessage(messageElement, isSystemMessage, senderId, targetId) {
     // todo: isSystemMessageは未使用, system message実装で使う可能性あり
     if (isSystemMessage) {
         messageElement.classList.add('system-message');
     } else {
-        classifyMessageSender(messageElement, senderId, userId, targetId);
+        classifyMessageSender(messageElement, senderId, targetId);
     }
 }
 
@@ -87,7 +87,7 @@ function handleReceiveMessage(event, userInfo, targetInfo) {
     const isSystemMessage = message_data.is_system_message;
 
     // メッセージに適切なクラスを適用
-    classifyMessage(messageElement, isSystemMessage, message_data.sender_id, userInfo.id, targetInfo.id);
+    classifyMessage(messageElement, isSystemMessage, message_data.sender_id, targetInfo.id);
 
     document.querySelector('#dm-log').appendChild(messageElement);
 

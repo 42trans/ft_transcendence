@@ -92,6 +92,7 @@ class DMView(LoginRequiredMixin, TemplateView):
             (models.Q(sender=user) & models.Q(receiver=dm_target)) |
             (models.Q(sender=dm_target) & models.Q(receiver=user))
         ).order_by('timestamp')
+
         is_blocking_user = user.blocking_users.filter(id=dm_target.id).exists()
 
         user_info = {
@@ -110,7 +111,7 @@ class DMView(LoginRequiredMixin, TemplateView):
         data = {
             'user_info'         : user_info,
             'target_info'       : target_info,
-            'messages'          : message_log,
+            'message_log'       : message_log,
             'url_config'        : settings.URL_CONFIG,
         }
         # logging.error(f'dm_room: user: {user.nickname}, dm_to: {nickname}, blocking: {is_blocking_user}')

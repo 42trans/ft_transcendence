@@ -17,7 +17,7 @@ export function initDM() {
     const userInfo = JSON.parse(document.getElementById('user_info').textContent);
     const targetInfo = JSON.parse(document.getElementById('target_info').textContent);
 
-    applyStylesToInitialLoadMessages(userInfo, targetInfo);
+    applyStylesToInitialLoadMessages(targetInfo);
     scrollToBottom();  // 受信時にスクロール位置を調整
 
     setupDmWebsocket(userInfo, targetInfo);
