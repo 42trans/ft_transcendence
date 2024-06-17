@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/pongEngine/PongEngineData.js
 import PongEngine from "./PongEngine";
 import PongEngineInit from "./PongEngineInit";
 
@@ -31,6 +32,19 @@ class PongEngineData
 			this.state.score2 += score;
 		}
 	}
+
+	dispose() 
+	{
+		this.pongEngine	= null; 
+		this.config		= null;
+		this.scene		= null;
+		this.objects	= null;
+		this.settings	= null;
+		this.env		= null;
+		this.matchData	= null;
+		this.state		= null; 
+	}
+	
 }
 
 export default PongEngineData;

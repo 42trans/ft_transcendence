@@ -1,7 +1,9 @@
+// docker/srcs/vite/pong-three/src/js/pongEngine/PongEngineMatch.js
 import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { loadRouteTable } from '../../index.js';
+import { handleCatchError } from '../../index.js';
 
 const DEBUG_FLOW = 0;
 const DEBUG_DETAIL = 0;
@@ -34,14 +36,14 @@ class PongEngineMatch
 			opacity: 0.7,
 		});
 		// 180度回転
-		this.rotationZ = Math.PI; 
-		this.pos = new THREE.Vector3(0, -90, -7);
+		this.rotationZ	= Math.PI; 
+		this.pos		= new THREE.Vector3(0, -90, -7);
 		
 		if (import.meta.env.MODE === 'development') {
-			this.fontURL = '../assets/fonts/droid_sans_bold.typeface.json';
+			this.fontURL	= '../assets/fonts/droid_sans_bold.typeface.json';
 		} else {
-			const baseURL = new URL('.', import.meta.url).href;
-			this.fontURL = new URL('../../fonts/droid_sans_bold.typeface.json', baseURL).href;
+			const baseURL	= new URL('.', import.meta.url).href;
+			this.fontURL	= new URL('../../fonts/droid_sans_bold.typeface.json', baseURL).href;
 		}
 
 		// フォントファイルのパスと3つのコールバック関数（成功、進行中、エラー）を引数として受け取り
@@ -60,9 +62,10 @@ class PongEngineMatch
 				{
 								if (DEBUG_DETAIL) {	console.log((xhr.loaded / xhr.total * 100) + '% font loaded');	}
 				},
-			(err) => 
+			(error) => 
 				{
 					console.error('An error happened');
+					handleCatchError(error);
 				}
 		);
 
@@ -201,14 +204,6 @@ class PongEngineMatch
 		}
 	}
 
-	dispose() 
-	{
-		const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
-		if (endGameButton) {
-			this.removeEndGameButtonClickListener(endGameButton);
-		}
-	}
-
 	sendMatchResult() 
 	{
 		try
@@ -253,6 +248,42 @@ class PongEngineMatch
 			 // 非同期なので明示的にthrow
 			throw error;
 		}
+	}
+
+
+	dispose() 
+	{
+		// イベントハンドラの削除
+		const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
+		if (endGameButton) {
+			this.removeEndGameButtonClickListener(endGameButton);
+		}
+
+		// シーンからオブジェクトを廃棄　リーク防止
+		if (this.scoreMesh) {
+			this.scene.remove(this.scoreMesh);
+			this.scoreMesh.geometry.dispose();
+			this.scoreMesh = null;
+		}
+		if (this.font) {
+			this.font = null;
+		}
+			if (this.textMaterial) {
+			this.textMaterial.dispose();
+			this.textMaterial = null;
+		}
+	
+		// 他のプロパティをnullに設定
+		this.pongApp	= null;
+		this.pongEngine	= null;
+		this.scene		= null;
+		this.score1		= null;
+		this.score2		= null;
+		this.maxScore	= null;
+		this.matchData	= null;
+		this.env		= null;
+		this.ball		= null;
+
 	}
 
 }

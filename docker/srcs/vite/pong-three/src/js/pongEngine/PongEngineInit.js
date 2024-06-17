@@ -1,10 +1,11 @@
+// docker/srcs/vite/pong-three/src/js/pongEngine/PongEngineInit.js
 import * as THREE from 'three';
 
 class PongEngineInit 
 {
 	constructor(scene, config) 
 	{
-		this.scene = scene;
+		this.scene	= scene;
 		this.config = config;
 	}
 
@@ -93,9 +94,9 @@ class PongEngineInit
 
 	addSceneObjects(data) 
 	{
-		this.objects = data.objects;
-		Object.keys(this.objects).forEach(key => {
-			this.scene.add(this.objects[key]);
+		const objects = data.objects;
+		Object.keys(objects).forEach(key => {
+			this.scene.add(objects[key]);
 		});
 		// this.scene.traverse(obj => {
 		// 	if (obj instanceof THREE.Mesh) {
@@ -176,6 +177,12 @@ class PongEngineInit
 			opacity: config.MATERIAL.opacity,
 		});
 		return new THREE.Mesh(geometry, material);
+	}
+
+	dispose() 
+	{
+		this.scene	= null;
+		this.config	= null;
 	}
 }
 

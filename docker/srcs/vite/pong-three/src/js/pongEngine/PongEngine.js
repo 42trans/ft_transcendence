@@ -11,7 +11,7 @@ import AllScenesManager from '../manager/AllScenesManager';
 import { handleCatchError } from '../../index.js';
 
 
-const DEBUG_FLOW 		= 0;
+const DEBUG_FLOW 		= 1;
 const TEST_TRY1			= 0;
 const TEST_TRY2			= 0;
 
@@ -65,11 +65,38 @@ class PongEngine
 
 	dispose() 
 	{
-		// PongEngineMatchクラスのdispose()呼び出し　※ボタンに登録されたリスナーを念の為明示的に廃棄
+					if (DEBUG_FLOW){	console.log("Exiting GamePlay state");	 };
+		this.isRunning = false;
+
 		if (this.match) {
 			this.match.dispose();
 			this.match = null;
 		}
+		if (this.update) {
+			this.update.dispose();
+			this.update = null;
+		}
+		if (this.physics) {
+			this.physics.dispose();
+			this.physics = null;
+		}
+		if (this.data) {
+			this.data.dispose();
+			this.data = null;
+		}
+		if (this.init) {
+			this.init.dispose();
+			this.init = null;
+		}
+
+		// その他のプロパティをnullに設定
+		this.pongApp	= null;
+		this.env		= null;
+		this.matchData	= null;
+		this.scene		= null;
+		this.camera		= null;
+		this.renderer	= null;
+		this.config		= null;
 	}
 	
 	async animate() 
@@ -83,11 +110,13 @@ class PongEngine
 			// 	// ゲームが終了した場合は、描画ループを停止
 			// 	this.pongApp.stopRenderLoop();
 			}
-			await this.update.updateGame();
+			if (this.update) {
+				await this.update.updateGame();
+			}
 			if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
 		} catch (error) {
 			console.error('hth: GameplayState.enter() failed', error);
-			// handleCatchError(error);
+			handleCatchError(error);
 		}
 	}
 }
