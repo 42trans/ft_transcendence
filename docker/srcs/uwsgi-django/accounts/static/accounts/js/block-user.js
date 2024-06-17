@@ -23,21 +23,21 @@ function blockUser(nickname) {
             switchPage(redirectTo)
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('hth: Error:', error);
             alert('Failed to block the user.');
         });
 }
 
 
 export function setupBlockUserEventListener() {
-    console.log("Setup block event listeners");
+    // console.log("Setup block event listeners");
     const blockUserButton = document.querySelector('.hth-btn.blockUserButton');
     if (blockUserButton) {
         blockUserButton.addEventListener('click', (event) => {
             event.preventDefault();
 
             const nickname = blockUserButton.dataset.nickname;
-            console.log('blockUserButton clicked', nickname);
+            // console.log('blockUserButton clicked', nickname);
             blockUser(nickname);
         });
     }

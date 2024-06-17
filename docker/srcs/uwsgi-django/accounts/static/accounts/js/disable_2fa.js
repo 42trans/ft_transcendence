@@ -20,14 +20,14 @@ export function disable2FA() {
 			.then(data => {
 				if (data.message) {
 					alert(data.message);
-					console.log("redirect to " + data.redirect);
+					// console.log("redirect to " + data.redirect);
 					switchPage(data.redirect)
 				} else {
 					throw new Error('No message in response');
 				}
 			})
 			.catch(error => {
-				console.error('Disable token failed:', error);
+				console.error('hth: Disable token failed:', error);
 				alert('Disable token failed. Please try again.');
 			});
 	} else {

@@ -42,7 +42,7 @@ function handleResponse(response) {
 
 
 function showSuccess(data) {
-    console.log('Success:', data);
+    // console.log('Success:', data);
     alert('Avatar updated successfully');
     const redirectTo = routeTable['userProfile'].path;
     switchPage(redirectTo)
@@ -50,7 +50,7 @@ function showSuccess(data) {
 
 
 function handleError(error) {
-    console.error('Error:', error);
+    console.error('hth: Error:', error);
     alert(error.message);
 }
 

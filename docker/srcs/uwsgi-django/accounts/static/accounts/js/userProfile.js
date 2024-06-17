@@ -74,5 +74,5 @@ export function fetchUserProfile() {
 		.then(data => {
 			drawUserProfile(data);
 		})
-		.catch(error => console.error("Error:", error));
+		.catch(error => console.error("hth: Error:", error));
 }

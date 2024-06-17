@@ -33,7 +33,7 @@ function handleLogout() {
 		}
 	})
 	.catch(error => {
-		console.error('Logout failed:', error);
+		console.error('hth: Logout failed:', error);
 		alert('Logout failed. Please try again.');
 	});
 }

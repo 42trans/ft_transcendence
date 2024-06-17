@@ -17,7 +17,7 @@ export function fetchEnable2FA() {
 			if (data.error) {
 				document.getElementById('error-message').textContent = "Error retrieving 2FA setup: " + data.error;
 			} else if (data.redirect) {
-				console.log(data.message);
+				// console.log(data.message);
 				switchPage(data.redirect)
 			}
 			else {
@@ -32,7 +32,7 @@ export function fetchEnable2FA() {
 		})
 		.catch(error => {
 			document.getElementById('error-message').textContent = "Network error or server is down.";
-			console.error("Fetch error:", error);
+			console.error("hth: Fetch error:", error);
 		});
 }
 
@@ -52,17 +52,17 @@ function enable2FaVerifyToken() {
 		if (data.error) {
 			document.getElementById('error-message').textContent = "Verification failed: " + data.error;
 		} else if (data.redirect) {
-			console.log(data.message);
+			// console.log(data.message);
 			switchPage(data.redirect)
 		} else if (data.success) {
-			console.log(data.message);
+			// console.log(data.message);
 			alert(data.message);
 			switchPage(data.redirect)
 		}
 		})
 		.catch(error => {
 		document.getElementById('error-message').textContent = "Network error or server is down.";
-		console.error("Fetch error:", error);
+		console.error("hth: Fetch error:", error);
 		});
 }
 

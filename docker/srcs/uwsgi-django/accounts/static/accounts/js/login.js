@@ -28,7 +28,7 @@ export function loginUser() {
 					switchPage(data.redirect);
 				} else {
 					// alert('[tmp] error: ' + data.error)
-					console.error('Error:', data.error);
+					throw new Error(data.error);
 				}
 			} else if (data.message) {
 				// Verified
@@ -39,7 +39,7 @@ export function loginUser() {
                 updateHeader();
 			}
 		})
-		.catch(error => console.error('Error:', error));
+		.catch(error => console.error('hth: Error:', error));
 	clearForm()
 }
 
