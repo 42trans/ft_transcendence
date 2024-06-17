@@ -234,7 +234,7 @@ class PongEngineMatch
 				.then(response => 
 					{
 						if (!response.ok) {
-							throw new Error('response failed');
+							throw new Error('hth: response failed');
 						}
 						return response.json();
 					})

@@ -113,7 +113,7 @@ class SceneUnit
 	{
 		if (!newConfig || !newConfig.cameraConfig) 
 		{
-			throw new Error("Invalid or incomplete configuration provided");
+			throw new Error("hth: Invalid or incomplete configuration provided");
 		}
 
 		// console.log("リフレッシュ時のconfigファイル:", newConfig);
@@ -141,7 +141,7 @@ class SceneUnit
 	{
 		if (!cameraConfig) 
 		{
-			throw new Error("No camera configuration provided");
+			throw new Error("hth: No camera configuration provided");
 		}
 		const config = cameraConfig;
 		const cam = new THREE.PerspectiveCamera(
@@ -165,7 +165,7 @@ class SceneUnit
 	{
 		if (!controlsConfig) 
 		{
-			throw new Error("No controlsConfig provided");
+			throw new Error("hth: No controlsConfig provided");
 		}
 		const config = controlsConfig;
 		const controls = new OrbitControls(camera, renderer.domElement);

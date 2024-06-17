@@ -45,7 +45,7 @@ class GameplayState extends BaseGameState
 			this.pongEngine	= new PongEngine(this.PongApp);
 						if (TEST_TRY1) {	this.pongEngine = null;	}
 			if (!this.pongEngine){
-				throw new Error('Failed to create PongEngine instance.');
+				throw new Error('hth: Failed to create PongEngine instance.');
 			}
 			this.camera 	= this.scenesMgr.getGameSceneCamera()
 						if (DEBUG_DETAIL)

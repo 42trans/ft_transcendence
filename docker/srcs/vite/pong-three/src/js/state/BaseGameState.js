@@ -8,22 +8,22 @@ class BaseGameState
 	
 	enter() 
 	{
-		throw new Error("Enter method must be implemented");
+		throw new Error("hth: Enter method must be implemented");
 	}
 
 	update() 
 	{
-		throw new Error("Update method must be implemented");
+		throw new Error("hth: Update method must be implemented");
 	}
 
 	render() 
 	{
-		throw new Error("Render method must be implemented");
+		throw new Error("hth: Render method must be implemented");
 	}
 
 	exit() 
 	{
-		throw new Error("Exit method must be implemented");
+		throw new Error("hth: Exit method must be implemented");
 	}
 }
 
