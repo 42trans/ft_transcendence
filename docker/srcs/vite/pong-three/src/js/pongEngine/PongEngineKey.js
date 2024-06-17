@@ -42,6 +42,6 @@ class PongEngineKey
 }
 
 // モジュールインポート時にキーイベントのリスニングを開始
-PongEngineKey.registerListenersKeyUpDown();
+// PongEngineKey.registerListenersKeyUpDown();
 
 export default PongEngineKey;

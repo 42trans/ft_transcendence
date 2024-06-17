@@ -99,6 +99,7 @@ class PongApp
 			await this.allScenesManager.setupScenes();
 			// ゲームの状態（待機、Play、終了）を担当。シングルトン
 			this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
+			PongEngineKey.registerListenersKeyUpDown()
 			// 無限ループでアニメーションの更新を担当。シングルトン
 			const renderLoop = LoopManager.getInstance(this);
 			this.renderLoop = renderLoop;
