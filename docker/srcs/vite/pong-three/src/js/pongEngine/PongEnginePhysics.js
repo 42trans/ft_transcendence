@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/pongEngine/PongEnginePhysics.js
 /**
  * 物理演算に関する処理を担当。壁やパドルとの衝突判定、ボールの方向や速度の調整を行う。
  */
@@ -5,8 +6,8 @@ class PongEnginePhysics
 {
 	constructor(pongEngineData) 
 	{
-		this.field = pongEngineData.settings.field;
-		this.maxBallSpeed = pongEngineData.settings.maxBallSpeed;
+		this.field			= pongEngineData.settings.field;
+		this.maxBallSpeed	= pongEngineData.settings.maxBallSpeed;
 	}
 
 	// 左右の壁と衝突しているか？
@@ -52,6 +53,13 @@ class PongEnginePhysics
 			ball.speed	= Math.min(ball.speed * 1.1, this.maxBallSpeed);  // 速度を最大速度を超えないように10%増加
 		}
 	}
+
+	dispose() 
+	{
+		this.field			= null;
+		this.maxBallSpeed	= null;
+	}
+
 }
 
 export default PongEnginePhysics;

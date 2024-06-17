@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import EffectsSceneConfig from '../config/EffectsSceneConfig';
 import ZoomBall from '../effect/ZoomBall';
 import AllScenesManager from '../manager/AllScenesManager';
+import { handleCatchError } from '../../index.js';
 
 let DEBUG_FLOW		= 0;
 let DEBUG_DETAIL1	= 0;
@@ -51,17 +52,19 @@ class EntryGameState extends BaseGameState
 						if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
 		} catch (error) {
 			console.error('hth: EntryGameState.enter() failed', error);
+			handleCatchError(error);
 		}
 	}
 
 	update() 
 	{
 		try {
-						if (DEBUG_DETAIL1) {	console.log("entryState.update(): start");	}
+						if (DEBUG_DETAIL1) {	console.log("EntryState.update(): start");	}
 			this.magmaFlare.update();
 						if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
 		} catch (error) {
 			console.error('hth: EntryGameState.update() failed', error);
+			handleCatchError(error);
 		}
 	}
 	
@@ -71,7 +74,9 @@ class EntryGameState extends BaseGameState
 	{
 		try {
 						if (DEBUG_FLOW) {	console.log("exit(): EntryGameState");	}
+			// イベントリスナーの削除
 			this._unregisterStartButtonEventListener();
+			
 			const targetPosition = new THREE.Vector3();
 			this.magmaFlare.getWorldPosition(targetPosition);
 			this.startDistance = this.camera.position.distanceTo(targetPosition);
@@ -87,6 +92,7 @@ class EntryGameState extends BaseGameState
 						if (TEST_TRY3) {	throw new Error('TEST_TRY3');	}
 		} catch (error) {
 			console.error('hth: EntryGameState.exit() failed', error);
+			handleCatchError(error);
 		}
 	}
 
@@ -102,6 +108,7 @@ class EntryGameState extends BaseGameState
 						if (TEST_TRY4){	throw new Error('TEST_TRY4');	}
 		} catch (error) {
 			console.error('hth: initStartButton() failed: ', error);
+			handleCatchError(error);
 		}
 	}
 

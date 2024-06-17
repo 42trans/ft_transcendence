@@ -4,8 +4,6 @@ import UserManager			from './manager/UserManager.js';
 import RoundManager			from './manager/RoundManager.js';
 import TournamentCreator	from './components/TournamentCreator.js';
 
-// TODO_ft: サブコンテナの名称をcontainerとわかるものに変更・統一 ex. errMsgContainer
-
 const DEBUG_FLOW	= 0;
 const DEBUG_DETAIL	= 0;
 const TEST_TRY1		= 0;

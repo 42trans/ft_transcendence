@@ -72,6 +72,7 @@ class RenderLoop
 							if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 			} catch (error) {
 				console.error('hth: RenderLoop.loopStart() failed', error);
+				handleCatchError(error);
 			}
 		};
 		animate();
@@ -108,6 +109,7 @@ class RenderLoop
 						if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 		} catch (error) {
 			console.error('hth: dispose() failed', error);
+			handleCatchError(error);
 		}
 	}
 }
