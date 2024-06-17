@@ -1,9 +1,24 @@
 import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
 import { setOnlineStatus } from "/static/accounts/js/setOnlineStatus.js";
+import { updateHeader } from "/static/spa/js/views/updateHeader.js"
+import { setNoCache, clearNoCache } from "/static/spa/js/utility/cache.js"
+
 
 const DEBUG_DETAIL = 0;
-const DEBUG_LOG = 0;
+const DEBUG_LOG = 1;
+
+// login, signin, 42loginはcacheを保存しない
+function controlCache(targetPathName) {
+  if (targetPathName === routeTable['oAuthLogin'].path
+      || targetPathName === routeTable['login'].path
+      || targetPathName === routeTable['signup'].path) {
+    setNoCache();
+  } else {
+    clearNoCache();
+  }
+}
+
 
 // touteTable.jsの記述について
 // game3d: { path: "/app/game/game-3d/", view: Game3D }は、/app/game/game-3d/というパスに対してGame3Dという「クラス」を対応
@@ -16,14 +31,9 @@ export const switchPage = (targetPath) => {
   const targetPathName = targetUrl.pathname;
 
   history.pushState(null, null, targetPathName );
+  controlCache()
+
   if (DEBUG_LOG) { console.log(` history.push: ${targetPathName}`); }
-
-  // currentViewにdisposeメソッドが存在するかどうかをチェック。オペランドの型がfunctionなら関数
-  // if (currentView && typeof currentView.dispose === "function") {
-  //         if (DEBUG_DETAIL) { console.log('switchPage(): dispose', currentView);  } 
-  //   currentView.dispose();
-  // }
-
   // 戻る、進むでも対応するために、event発行はrenderView内部に移動
   renderView(targetPathName);
   
@@ -118,6 +128,14 @@ export const renderView = async (path) => {
         if (DEBUG_DETAIL) { console.log('renderView(): currentView.dispose(): currentView', currentView);  }
     currentView.dispose();
   }
+
+  if (path === routeTable['oAuthLogin'].path) {
+    if (DEBUG_DETAIL) { console.log('oauth');  }
+    window.location = routeTable['oAuthLogin'].path;  // oauth loginの場合はwindow切り替え
+    // alert("oauth");
+    return;
+  }
+
   // ここまで前回のviewに対する処理
   // --------------------------
   // ここから今回のviewに対する処理

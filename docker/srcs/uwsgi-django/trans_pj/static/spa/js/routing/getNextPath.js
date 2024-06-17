@@ -18,8 +18,8 @@ function getGuestRedirectPath(url) {
       || pathName === routeTable['home'].path
       || pathName === routeTable['game2d'].path
       || pathName === routeTable['signup'].path
-      || pathName === routeTable['login'].path) {
       || pathName === routeTable['login'].path
+      || pathName === routeTable['veryfy2fa'].path
       || pathName === routeTable['oAuthLogin'].path) {
     // nextPath = url;
     nextPath = pathName;  // queryStringなどを排除しpathNameに整形
