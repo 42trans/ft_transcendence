@@ -54,10 +54,9 @@ services:
       - ${VOLUME_PATH:?}/grafana/:/var/lib/grafana
       # 上記/var/lib/grafanaの中でもdashboradの設定ファイルは、別枠でコンテナイメージに入れたい。方法がわからないのでマウントで対応
       - ./grafana/dashboards/1860-node-exporter-full.json:/var/lib/grafana/dashboards/ft_trans/1860-node-exporter-full.json
-      # TODO-ft: レビュー前に.gitignoreする
+      # TODO_ft_2: レビュー前に.gitignoreする
       - ./grafana/ssl/grafana.crt:/etc/grafana/grafana.crt
       - ./grafana/ssl/grafana.key:/etc/grafana/grafana.key
-      # TODO_ft:本番環境ではimageに埋め込む？開発スピードのために即時反映させたいのでマウント
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
     env_file:
       - .env
@@ -75,31 +74,3 @@ services:
       - monitor_transcendence
     profiles:
       - monitor
-
-  # grafana-dev:
-  #   container_name: grafana-dev
-  #   build: ./grafana-dev
-  #   image: grafana-dev
-  #   restart: unless-stopped
-  #   ports:
-  #     - "3309:3000"
-  #   volumes:
-  #     - ${VOLUME_PATH:?}/grafana-dev/:/var/lib/grafana
-  #     - ./grafana-dev/dashboards/1860-node-exporter-full.json:/var/lib/grafana/dashboards/ft_trans/1860-node-exporter-full.json
-  #     # TODO-ft: レビュー前に.gitignoreする
-  #     - ./grafana/ssl/grafana.crt:/etc/grafana/grafana.crt
-  #     - ./grafana/ssl/grafana.key:/etc/grafana/grafana.key
-  #     # TODO_ft:本番環境ではimageに埋め込む？開発スピードのために即時反映させたいのでマウント
-  #     - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - GF_INSTALL_PLUGINS=grafana-clock-panel
-  #     - GF_LOG_LEVEL=debug
-  #     - GF_PLUGIN_GRAFANA_IMAGE_RENDERER_RENDERING_IGNORE_HTTPS_ERRORS=true
-  #     - GF_SERVER_ROOT_URL=https://localhost:3309/
-  #   networks:
-  #     - web_transcendence
-  #     - monitor_transcendence
-  #   profiles:
-  #     - monitor
