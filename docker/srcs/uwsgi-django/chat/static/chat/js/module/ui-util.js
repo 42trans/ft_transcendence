@@ -1,10 +1,7 @@
 // chat/js/ui-util.js
 
-export { setupSendKeyEventListener, scrollToBottom };
-
-
 // メッセージ送信のイベントを制御
-function setupSendKeyEventListener() {
+export function setupSendKeyEventListener() {
     const input = document.getElementById('message-input');
     const submitButton = document.getElementById('message-submit');
 
@@ -18,7 +15,7 @@ function setupSendKeyEventListener() {
 
 
 // dm-logのスクロール位置を調整
-function scrollToBottom() {
+export function scrollToBottom() {
     const dmLog = document.getElementById('dm-log');
     dmLog.scrollTop = dmLog.scrollHeight;
 }

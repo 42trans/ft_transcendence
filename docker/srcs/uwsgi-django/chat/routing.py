@@ -4,5 +4,5 @@ from chat.dm_consumers import DMConsumer
 
 
 websocket_urlpatterns = [
-    re_path(r'ws/dm-with/(?P<nickname>\w+)/$', DMConsumer.as_asgi()),
+    re_path(r'ws/dm-with/(?P<id>\w+)/$', DMConsumer.as_asgi()),
 ]
