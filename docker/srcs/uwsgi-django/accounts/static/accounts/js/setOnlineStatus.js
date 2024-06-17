@@ -21,7 +21,7 @@ function fetchUserId() {
             return data.id;
         })
         .catch(error => {
-            // console.log('Error:', error);
+            console.error('hth: Error:', error);
             return null;
         });
 }

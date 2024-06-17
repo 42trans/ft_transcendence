@@ -23,21 +23,21 @@ function unblockUser(nickname) {
             switchPage(redirectTo)
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('hth: Error:', error);
             alert('Failed to unblock the user');
         });
 }
 
 
 export function setupUnBlockUserEventListener() {
-    console.log("Setup block event listeners");
+    // console.log("Setup block event listeners");
     const unBlockUserButton = document.querySelector('.hth-btn.unBlockUserButton');
     if (unBlockUserButton) {
         unBlockUserButton.addEventListener('click', (event) => {
             event.preventDefault();
 
             const nickname = unBlockUserButton.dataset.nickname;
-            console.log('unblockUser clicked', nickname);
+            // console.log('unblockUser clicked', nickname);
             unblockUser(nickname);
         });
     }
