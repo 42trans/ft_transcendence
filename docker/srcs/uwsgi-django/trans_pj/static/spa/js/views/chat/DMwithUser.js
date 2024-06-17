@@ -14,15 +14,14 @@ export default class extends AbstractView {
   }
 
   async getHtml() {
-    const nickname = this.params.nickname;
-    const uri = `/chat/dm-with/${nickname}/`;
+    const userId = this.params.userId;
+    const uri = `/chat/dm-with/${userId}/`;
     const data = await fetchData(uri);
     //console.log("Pong:" + data);
     return data;
   }
 
   async executeScript(spaElement) {
-    // loadAndExecuteScript("/static/chat/js/dm-with-user.js", true);
     const dmWithUserModule = await import("/static/chat/js/dm-with-user.js");
     dmWithUserModule.initDM();
   }
