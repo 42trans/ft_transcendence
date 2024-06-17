@@ -68,7 +68,7 @@ class AnimationMixersManager
 		{
 			if (!object || !object.uuid) 
 			{
-				console.error("Invalid object or missing UUID.");
+				console.error("hth: Invalid object or missing UUID.");
 				return;
 			}
 		
@@ -99,13 +99,13 @@ class AnimationMixersManager
 						mixer.update(delta);
 					} catch (error) {
 						// ミキサーの更新に失敗した場合
-						console.error(`Error updating mixer for UUID: ${uuid}:`, error);
+						console.error(`hth: Error updating mixer for UUID: ${uuid}:`, error);
 						// 不正なミキサーをマップから削除
 						this.mixersMap.delete(uuid);
 						// 他のミキサーの更新処理を継続
 					}
 				} else {
-					console.error(`Invalid mixer for UUID: ${uuid}`);
+					console.error(`hth: Invalid mixer for UUID: ${uuid}`);
 					this.mixersMap.delete(uuid);
 					// 他のミキサーの更新処理を継続
 				}

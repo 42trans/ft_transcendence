@@ -64,7 +64,7 @@ class PongEngineMatch
 				},
 			(error) => 
 				{
-					console.error('An error happened');
+					console.error('hth: An error happened');
 					handleCatchError(error);
 				}
 		);
@@ -246,7 +246,7 @@ class PongEngineMatch
 				})
 			.catch((error) => console.error('Error:', error));
 		} catch (error) {
-			console.error('Error:', error);
+			console.error('hth: sendMatchResult() failed:', error);
 			handleCatchError(error);
 		}
 	}

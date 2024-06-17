@@ -9,7 +9,7 @@ import * as THREE from "three";
 import ZoomTable from '../effect/ZoomTable';
 import { handleCatchError } from '../../index.js';
 
-const DEBUG_FLOW 		= 1;
+const DEBUG_FLOW 		= 0;
 const DEBUG_DETAIL		= 0;
 const TEST_TRY1			= 0;
 const TEST_TRY2			= 0;
@@ -40,7 +40,7 @@ class GameplayState extends BaseGameState
 	{
 		try
 		{
-						if (DEBUG_FLOW){	console.log("Entering GamePlay state: start");	 };
+						if (DEBUG_FLOW){	console.log("GamePlayState.enter(): start");	 };
 			this.scenesMgr.gameScene.refreshScene(new GameSceneConfig());
 			this.pongEngine	= new PongEngine(this.PongApp);
 						if (TEST_TRY1) {	this.pongEngine = null;	}
@@ -64,7 +64,6 @@ class GameplayState extends BaseGameState
 			this.pongEngine.data.objects.plane.getWorldPosition(targetPosition); 
 			// 初期距離を計算
 			this.initialDistance = this.camera.position.distanceTo(targetPosition);
-						if (DEBUG_FLOW){	console.log("Entering GamePlay state: 2");	 };
 
 			const zoomParams = 
 			{
@@ -88,7 +87,6 @@ class GameplayState extends BaseGameState
 
 			// this.scenesMgr.disableAllControls();
 			// this.pongEngine.update.initMouseControl();
-						if (DEBUG_FLOW){	console.log("Entering GamePlay state: 3");	 };
 
 			setTimeout(() => 
 			{
@@ -119,7 +117,7 @@ class GameplayState extends BaseGameState
 			}
 						if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
 		} catch (error) {
-			console.error("Error in GamePlayState.exit():", error);
+			console.error("hth: GameplayState.exit() failed", error);
 			handleCatchError(error);
 		}
 	}

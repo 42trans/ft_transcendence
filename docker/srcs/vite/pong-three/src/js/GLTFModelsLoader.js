@@ -111,7 +111,7 @@ class GLTFModelsLoader
 			// モデルにアニメーションを設定
 			this.setupAnimation(model, gltf, defaultAnimation, true);
 		}, undefined, function (error) {
-			console.error(error);
+			console.error('hth: loadModel() failed', error);
 			handleCatchError(error);
 		});
 	}
