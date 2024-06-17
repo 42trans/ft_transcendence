@@ -40,6 +40,7 @@ class TournamentCreator
 	/** form部分のhtml*/
 	_generateFormHTML(csrfToken, organizerNickname)
 	{
+		// TODO_ft:onsubmit="signupUser(event)"削除する
 		return `
 		<div class="form-sign m-auto" id="tournament-create-form">
 				<form class="hth-sign-form" onsubmit="signupUser(event)">
