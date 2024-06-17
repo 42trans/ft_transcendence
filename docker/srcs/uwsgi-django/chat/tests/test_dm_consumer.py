@@ -61,7 +61,7 @@ class DMConsumerTestCase(TransactionTestCase):
         token_header = f'Bearer {user1_jwt}'.encode()
         headers = [(b'authorization', token_header)]
         communicator = WebsocketCommunicator(application,
-                                             f"ws/dm-with/{self.user2.nickname}/",
+                                             f"ws/dm-with/{self.user2.id}/",
                                              headers)
         return communicator
 
@@ -106,7 +106,7 @@ class DMConsumerTestCase(TransactionTestCase):
             response_data = json.loads(response['data'])
 
             # messageの各要素を評価
-            self.assertEqual(response_data['sender'], self.user1.nickname)
+            self.assertEqual(response_data['sender_id'], self.user1.id)
             self.assertEqual(response_data['message'], 'Hello, user2!')
             self.assertIsInstance(response_data['timestamp'], str)
             self.assertFalse(response_data['is_system_message'])
@@ -145,7 +145,7 @@ class DMConsumerTestCase(TransactionTestCase):
             response_data = json.loads(response['data'])
 
             # messageの各要素を評価
-            self.assertEqual(response_data['sender'], self.user1.nickname)
+            self.assertEqual(response_data['sender_id'], self.user1.id)
             self.assertEqual(response_data['message'], '')
             self.assertIsInstance(response_data['timestamp'], str)
             self.assertFalse(response_data['is_system_message'])
@@ -185,7 +185,7 @@ class DMConsumerTestCase(TransactionTestCase):
             response_data = json.loads(response['data'])
 
             # messageの各要素を評価
-            self.assertEqual(response_data['sender'], self.user1.nickname)
+            self.assertEqual(response_data['sender_id'], self.user1.id)
             self.assertEqual(response_data['message'], message_text)
             self.assertIsInstance(response_data['timestamp'], str)
             self.assertFalse(response_data['is_system_message'])
@@ -253,7 +253,7 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
         token_header = f'Bearer {self.user1_jwt}'.encode()
         headers = [(b'authorization', token_header)]
         communicator = WebsocketCommunicator(application,
-                                             f"ws/dm-with/nothing/",
+                                             f"ws/dm-with/9999/",
                                              headers)
         connected, subprotocol = await communicator.connect()
         self.assertFalse(connected)
@@ -267,7 +267,7 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
         token_header = f'Bearer invalid'.encode()
         headers = [(b'authorization', token_header)]
         communicator = WebsocketCommunicator(application,
-                                             f"ws/dm-with/{self.user2.nickname}/",
+                                             f"ws/dm-with/{self.user2.id}/",
                                              headers)
         connected, subprotocol = await communicator.connect()
         self.assertFalse(connected)
@@ -281,7 +281,7 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
         token_header = f'Bearer {self.user1_jwt}'.encode()
         headers = [(b'authorization', token_header)]
         communicator = WebsocketCommunicator(application,
-                                             f"ws/dm-with/{self.user1.nickname}/",
+                                             f"ws/dm-with/{self.user1.id}/",
                                              headers)
         connected, subprotocol = await communicator.connect()
 
@@ -294,7 +294,7 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
             token_header = f'Bearer {self.user1_jwt}'.encode()
             headers = [(b'authorization', token_header)]
             communicator = WebsocketCommunicator(application,
-                                                 f"ws/dm-with/{self.user2.nickname}/",
+                                                 f"ws/dm-with/{self.user2.id}/",
                                                  headers)
             connected, subprotocol = await communicator.connect()
             self.assertTrue(connected, f"WebSocket connection failed, code: {subprotocol}")
@@ -319,7 +319,7 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
         token_header = f'Bearer {self.user1_jwt}'.encode()
         headers = [(b'authorization', token_header)]
         communicator = WebsocketCommunicator(application,
-                                             f"ws/dm-with/{self.user2.nickname}/",
+                                             f"ws/dm-with/{self.user2.id}/",
                                              headers)
         connected, subprotocol = await communicator.connect()
 
@@ -349,7 +349,7 @@ class DMConsumerInvalidTestCase(TransactionTestCase):
         token_header = f'Bearer {self.user1_jwt}'.encode()
         headers = [(b'authorization', token_header)]
         communicator = WebsocketCommunicator(application,
-                                             f"ws/dm-with/{self.user2.nickname}/",
+                                             f"ws/dm-with/{self.user2.id}/",
                                              headers)
         connected, subprotocol = await communicator.connect()
 
