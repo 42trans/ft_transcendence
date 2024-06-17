@@ -144,6 +144,7 @@ class PongEngineMatch
 		await this.displayEndGameButton();
 	}
 
+	// TODO_ft:共通化
 	async loadSwitchPage() {
 		if (import.meta.env.MODE === 'development') {
 			// 開発環境用のパス
