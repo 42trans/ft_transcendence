@@ -147,13 +147,7 @@ export async function loadRouteTable() {
 
 export async function handleCatchError(error = null) 
 {
-	// SPAの状態をリセットしない場合
-	// const switchPage = await loadSwitchPage();
-	// const redirectTo = routeTable['top'].path;
-	// switchPage(redirectTo);
-
 	// ゲームでのエラーは深刻なので、location.hrefでSPAの状態を完全にリセットする
-	
 	const routeTable = await loadRouteTable();
 	if (error) {
 		alert("エラーが発生しました。トップページに遷移します。 error: " + error);

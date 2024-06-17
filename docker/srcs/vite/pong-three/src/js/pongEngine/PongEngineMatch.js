@@ -3,7 +3,9 @@ import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { loadRouteTable } from '../../index.js';
+// import { loadSwitchPage } from '../PongApp.js';
 import { handleCatchError } from '../../index.js';
+import PongApp from '../PongApp.js';
 
 const DEBUG_FLOW = 0;
 const DEBUG_DETAIL = 0;
@@ -147,21 +149,6 @@ class PongEngineMatch
 		await this.displayEndGameButton();
 	}
 
-	// TODO_ft:共通化
-	async loadSwitchPage() {
-		if (import.meta.env.MODE === 'development') {
-			// 開発環境用のパス
-			const devUrl = new URL('../../static/spa/js/routing/renderView.js', import.meta.url);
-			const module = await import(devUrl.href);
-			return module.switchPage;
-		} else {
-			// 本番環境用のパス
-			const prodUrl = new URL('../../../spa/js/routing/renderView.js', import.meta.url);
-			const module = await import(prodUrl.href);
-			return module.switchPage;
-		}
-	}
-
 	// ゲーム終了時に Back to Home ボタンリンクを表示する	
 	async displayEndGameButton() 
 	{
@@ -185,7 +172,7 @@ class PongEngineMatch
 	async handleEndGameButtonClick() 
 	{
 		const routeTable = await loadRouteTable();
-		const switchPage = await this.loadSwitchPage();
+		const switchPage = await PongApp.loadSwitchPage();
 		const redirectTo = routeTable['top'].path;
 		switchPage(redirectTo);
 	}
