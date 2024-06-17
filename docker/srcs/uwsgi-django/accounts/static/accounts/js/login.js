@@ -5,6 +5,7 @@ import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
 const DEBUG = 0;
+const DEBUG_LOGIN = 0;
 
 export function loginUser() {
 	const email = document.getElementById('email').value;
@@ -24,17 +25,17 @@ export function loginUser() {
 				document.getElementById('message-area').textContent = data.error;
 				if (data.redirect) {
                     // alert('[tmp] login failure')
-					switchPage(data.redirect)
+					switchPage(data.redirect);
 				} else {
 					// alert('[tmp] error: ' + data.error)
 					throw new Error(data.error);
 				}
 			} else if (data.message) {
 				// Verified
-				if (DEBUG) { console.log(data.message); }
+				if (DEBUG_LOGIN) { console.log(data.message); }
 				const nextUrl = data.redirect;
-				if (DEBUG) { console.log('login: nextUrl:' + nextUrl); }
-				switchPage(nextUrl)  // Redirect on successful verification
+				if (DEBUG_LOGIN) { console.log('login: nextUrl:' + nextUrl); }
+				switchPage(nextUrl);  // Redirect on successful verification
                 updateHeader();
 			}
 		})

@@ -28,17 +28,21 @@ class RoundManager
 
 	changeStateToRound(roundNumber) 
 	{
-		const newState = this.states[roundNumber];
-		if (!newState || this.currentRound === roundNumber) {
-			return;
-		} else {
-			this.currentRound = roundNumber;
-			if (this.currentState) {
-				this.currentState.exit();
+		try {
+			const newState = this.states[roundNumber];
+			if (!newState || this.currentRound === roundNumber) {
+				return;
+			} else {
+				this.currentRound = roundNumber;
+				if (this.currentState) {
+					this.currentState.exit();
+				}
+				// console.log('currentRound', this.currentRound);
+				this.currentState = newState;
+				this.currentState.enter();
 			}
-			// console.log('currentRound', this.currentRound);
-			this.currentState = newState;
-			this.currentState.enter();
+		} catch(error) {
+			console.error("hth: changeStateToRound() failed: ", error);
 		}
 	}
 }

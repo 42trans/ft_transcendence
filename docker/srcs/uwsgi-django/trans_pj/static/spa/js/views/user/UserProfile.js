@@ -18,7 +18,7 @@ export default class extends AbstractView {
         return data;
     }
 
-    async executeScript() {
+    async executeScript(spaElement) {
         const userProfileModule = await import("/static/accounts/js/userProfile.js");
         userProfileModule.fetchUserProfile();
     }

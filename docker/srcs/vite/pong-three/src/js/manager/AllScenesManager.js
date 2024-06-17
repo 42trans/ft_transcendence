@@ -5,9 +5,17 @@ import RendererManager from './RendererManager'
 import SceneUnit from '../SceneUnit';
 import * as THREE from 'three';
 
-let DEBUG_FLOW 		= 0;
-let DEBUG_DETAIL 	= 0;
-let TEST_TRY1 		= 0;
+const DEBUG_FLOW 		= 0;
+const DEBUG_DETAIL		= 0;
+const TEST_TRY1 		= 0;
+const TEST_TRY2 		= 0;
+const TEST_TRY3 		= 0;
+const TEST_TRY4			= 0;
+const TEST_TRY5			= 0;
+const TEST_TRY6			= 0;
+const TEST_TRY7			= 0;
+const TEST_TRY8			= 0;
+const TEST_TRY9			= 0;
 
 /**
  * - シングルトン
@@ -38,31 +46,42 @@ class AllScenesManager
 		return AllScenesManager.instance;
 	}
 
-	disableAllControls() 
-	{
-		this.sceneUnits.forEach(sceneUnit => {
-			if (sceneUnit.controls) {
-				sceneUnit.controls.dispose();
-				sceneUnit.controls = null;
-			}
-		});
-					if (DEBUG_FLOW) {	 console.log('全てのOrbitControlsが無効化されました。');	}
-	}
+	/** コントロールの無効化 */
+	// disableAllControls() 
+	// {
+	// 	this.sceneUnits.forEach(sceneUnit => {
+	// 		if (sceneUnit.controls) {
+	// 			sceneUnit.controls.dispose();
+	// 			sceneUnit.controls = null;
+	// 		}
+	// 	});
+	// 				if (DEBUG_FLOW) {	 console.log('disableAllControls(): done');	}
+	// 				if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
+	// }
 
 	async setupScenes() 
 	{
-		this.backgroundScene = new SceneUnit(new BackgroundSceneConfig(), RendererManager.getRenderer(), 'background', this.animationMixersManager);
-		this.addSceneUnit(this.backgroundScene);
-		this.gameScene = new SceneUnit(new GameSceneConfig(), RendererManager.getRenderer(), 'game', this.animationMixersManager);
-		this.addSceneUnit(this.gameScene);
-		this.effectsScene = new SceneUnit(new EffectsSceneConfig(), RendererManager.getRenderer(), 'effects', this.animationMixersManager);
-		this.addSceneUnit(this.effectsScene);
-					if (DEBUG_FLOW) {	 console.log('setupScenes()');	}
-		return Promise.resolve();
+		try {
+			this.backgroundScene = new SceneUnit(new BackgroundSceneConfig(), RendererManager.getRenderer(), 'background', this.animationMixersManager);
+			this.addSceneUnit(this.backgroundScene);
+			this.gameScene = new SceneUnit(new GameSceneConfig(), RendererManager.getRenderer(), 'game', this.animationMixersManager);
+			this.addSceneUnit(this.gameScene);
+			this.effectsScene = new SceneUnit(new EffectsSceneConfig(), RendererManager.getRenderer(), 'effects', this.animationMixersManager);
+			this.addSceneUnit(this.effectsScene);
+						if (DEBUG_FLOW) {	 console.log('setupScenes()');	}
+						if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
+			return Promise.resolve();
+		} catch (error) {
+			console.error('hth: setupScenes() failed', error);
+			// エラーを上位に伝播させ、pongAppでcatchしてSPAリセット
+			throw error;
+		}
 	}
 
+	/** シーンユニットを追加 */
 	addSceneUnit(sceneUnit) 
 	{
+					if (TEST_TRY3) {	throw new Error('TEST_TRY3');	}
 		this.sceneUnits.push(sceneUnit);
 	}
 
@@ -72,6 +91,7 @@ class AllScenesManager
 	{
 		this.sceneUnits.forEach(sceneUnit => 
 		{
+					if (TEST_TRY4) {	throw new Error('TEST_TRY4');	}
 			sceneUnit.update();
 		});
 	}
@@ -83,6 +103,7 @@ class AllScenesManager
 		{
 			renderer.clearDepth();
 			renderer.render(manager.scene, manager.camera);
+					if (TEST_TRY5) {	throw new Error('TEST_TRY5');	}
 		});
 	}
 
@@ -90,38 +111,53 @@ class AllScenesManager
 		return this.gameScene.camera;
 	}
 
-	handleResize() {
-		const newWidth = window.innerWidth;
-		const newHeight = window.innerHeight;
-		RendererManager.getRenderer().setSize(newWidth, newHeight);
-		this.sceneUnits.forEach(sceneUnit => {
-			if (sceneUnit.camera) {
-				sceneUnit.camera.aspect = newWidth / newHeight;
-				sceneUnit.camera.updateProjectionMatrix();
-				this.adjustCameraForScene(sceneUnit);
-			}
-		});
+	/** 描画サイズをウインドウに合わせる */
+	handleResize() 
+	{
+		try {
+						if (TEST_TRY6) {	throw new Error('TEST_TRY6');	}
+			const newWidth = window.innerWidth;
+			const newHeight = window.innerHeight;
+			RendererManager.getRenderer().setSize(newWidth, newHeight);
+			this.sceneUnits.forEach(sceneUnit => {
+				if (sceneUnit.camera) {
+					sceneUnit.camera.aspect = newWidth / newHeight;
+					sceneUnit.camera.updateProjectionMatrix();
+					// gameSheneだけ特別な処理
+					this._adjustCameraForGameScene(sceneUnit);
+				}
+			});
+		} catch (error) {
+			console.error('hth: handleResize() failed', error);
+		}
 	}
 
-	adjustCameraForScene(sceneUnit) {
-		if (sceneUnit !== this.gameScene) {
-			return;
-		}
-		const table = sceneUnit.scene.getObjectByName('table');
-		if (!table){
-			if (DEBUG_DETAIL){
-				// game scene登録前はtableが存在しない
-				console.log('hth: table is not found');
+	/** gameScene は、テーブルのサイズを基準に調整する */
+	_adjustCameraForGameScene(sceneUnit) 
+	{
+		try {
+			if (sceneUnit !== this.gameScene) {
+				return;
 			}
-			return;
+			const table = sceneUnit.scene.getObjectByName('table');
+			if (!table){
+				if (DEBUG_DETAIL){
+					// game scene登録前はtableが存在しない
+					console.log('hth: table is not found');
+				}
+				return;
+			}
+			const tableSize = new THREE.Box3().setFromObject(table).getSize(new THREE.Vector3());
+			const distance = this._calculateCameraDistance(tableSize, sceneUnit.camera);
+			sceneUnit.camera.position.z = distance;
+			sceneUnit.camera.updateProjectionMatrix();
+						if (TEST_TRY7) {	throw new Error('TEST_TRY7');	}
+		} catch (error) {
+			console.error('hth: _adjustCameraForGameScene() failed', error);
 		}
-		const tableSize = new THREE.Box3().setFromObject(table).getSize(new THREE.Vector3());
-		const distance = this.calculateCameraDistance(tableSize, sceneUnit.camera);
-		sceneUnit.camera.position.z = distance;
-		sceneUnit.camera.updateProjectionMatrix();
 	}
 	
-	calculateCameraDistance(tableSize, camera) 
+	_calculateCameraDistance(tableSize, camera) 
 	{
 		// 垂直fovをラジアンに変換
 		const fovRad = THREE.MathUtils.degToRad(camera.fov);
@@ -132,20 +168,26 @@ class AllScenesManager
 		// カメラからテーブルまでの必要距離を計算
 		const distanceHeight = tableSize.y / (2 * halfFovHeight);
 		const distanceWidth = tableSize.x / (2 * halfFovWidth);
+					if (TEST_TRY8) {	throw new Error('TEST_TRY8');	}
 		return Math.max(distanceHeight, distanceWidth, camera.near + 1);
 	}
 	
-	dispose() {
-		// 各 SceneUnit の dispose メソッドを呼び出す
-		this.sceneUnits.forEach(sceneUnit => {
-			// sceneUnit が存在し、dispose メソッドを持っているか確認
-			if (sceneUnit && sceneUnit.dispose) { 
-				sceneUnit.dispose();
-			}
-		});
-		this.sceneUnits = [];
-				if (DEBUG_FLOW) {	 console.log('AllSceneManager.dispose(): done', this.sceneUnits);	}
-
+	dispose() 
+	{
+		try {
+			// 各 SceneUnit の dispose メソッドを呼び出す
+			this.sceneUnits.forEach(sceneUnit => {
+				// sceneUnit が存在し、dispose メソッドを持っているか確認
+				if (sceneUnit && sceneUnit.dispose) { 
+					sceneUnit.dispose();
+				}
+			});
+			this.sceneUnits = [];
+					if (DEBUG_FLOW) {	 console.log('AllSceneManager.dispose(): done', this.sceneUnits);	}
+					if (TEST_TRY9) {	throw new Error('TEST_TRY9');	}
+		} catch (error) {
+			console.error('hth: dispose() failed', error);
+		}
 	}
 
 }

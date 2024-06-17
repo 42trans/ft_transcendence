@@ -1,5 +1,7 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineIndex.js
 import PongOnlineClientApp from './PongOnlineClientApp.js';
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 /**
  * 2D-Pong entry point
@@ -48,4 +50,25 @@ async function disposePongOnlineClientApp()
 
 if (!window.disposePongOnlineClientApp) {
 	window.disposePongOnlineClientApp = disposePongOnlineClientApp;
+}
+
+endGameButton.addEventListener('click', () => {
+	const redirectTo = routeTable['top'].path;
+	switchPage(redirectTo);
+});
+
+export async function pongOnlineHandleCatchError(error = null) 
+{
+	// SPAの状態をリセットしない場合
+	// const switchPage = await loadSwitchPage();
+	// const redirectTo = routeTable['top'].path;
+	// switchPage(redirectTo);
+
+	// ゲームでのエラーは深刻なので、location.hrefでSPAの状態を完全にリセットする
+	if (error) {
+		alert("エラーが発生しました。トップページに遷移します。 error: " + error);
+	} else {
+		alert("エラーが発生しました。トップページに遷移します。");
+	}
+	window.location.href = routeTable['top'].path;
 }

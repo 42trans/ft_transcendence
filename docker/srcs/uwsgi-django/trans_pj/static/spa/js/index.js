@@ -11,11 +11,16 @@ const DEBUG_DETAIL = 0;
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
-  if (DEBUG_DETAIL) { console.log('popState: path: ' + window.location.pathname); }
   window.addEventListener("popstate", async (event) => {
-    const path = window.location.pathname;
     refreshJWT()
-    renderView(path);
+
+    const currentPath = window.location.href;
+    const renderPath = await getNextPath(currentPath)  // guest, userのredirectを加味したPathを取得
+
+    if (DEBUG_DETAIL) { console.log(`popState: currentPath: ${currentPath} -> renderPath: ${renderPath}`); }
+
+    history.replaceState(null, null, renderPath);  // historyは変更せず、guest, userに応じたURLに変更
+    renderView(renderPath);
   });
 };
 
@@ -23,7 +28,7 @@ const setupPopStateListener = () => {
 // spa.htmlの読み込みと解析が完了した時点で発火
 const setupDOMContentLoadedListener = () => {
   document.addEventListener("DOMContentLoaded", async () => {
-    // console.log('DOMContentLoaded: path: ' + window.location.pathname + window.location.search);
+    if (DEBUG_DETAIL) { console.log('DOMContentLoaded: path: ' + window.location.pathname); }
     refreshJWT()
 
     // 初期ビューを表示
@@ -39,36 +44,59 @@ const setupDOMContentLoadedListener = () => {
 
 // リンクのクリックイベントで発火
 const setupBodyClickListener = () => {
-  document.body.addEventListener("click", async (event) => {
-  // console.log('clickEvent: path: ' + window.location.pathname);
-
+  document.body.addEventListener("click", async (event) => 
+  {
     const linkElement = event.target.closest("[data-link]");
-    if (linkElement) {
+    if (linkElement)
+    {
+      if (DEBUG_DETAIL) { console.log('clickEvent: path: ' + window.location.pathname); }
       // console.log('clickEvent: taga-link');
       event.preventDefault();
       refreshJWT()
-
       const linkUrl = linkElement.href;
       const nextPath = await getNextPath(linkUrl)  // guest, userのredirectを加味したnextPathを取得
       switchPage(nextPath);
+      // ヘッダーナビメニューを閉じる
+      closeToggleMenu();
     }
   });
 };
 
+// ----------------------------
+// bootstrapの機能で滑らかにメニューを閉じる
+// ----------------------------
+const closeToggleMenu = () => {
+const toggleMenu = document.getElementById("hth-toggle-menu");
+  // bootstrap.Collapseは、Bootstrapの提供するJavaScriptのクラスで、折りたたみ要素の動作を制御
+  // 新しいCollapseインスタンスを作成
+  new bootstrap.Collapse(toggleMenu, 
+  {
+    // toggle: false
+    // 要素が表示されている状態であっても、非表示
+    // Collapseコンストラクタに渡されるオプション: false: toggle()メソッドは要素の表示状態を切り替えない
+    // 参考:【折りたたむ · Bootstrap v5.3】 <https://getbootstrap.com/docs/5.3/components/collapse/#options>
+    toggle: false
+
+    // .hide(): 折りたたみ要素を非表示
+    // Collapseインスタンスのメソッド
+    // 参考:【折りたたむ · Bootstrap v5.3】 <https://getbootstrap.com/docs/5.3/components/collapse/#methods>
+  }).hide();
+};
+
 
 // ページリロード時に発火
-const setupLoadListener = () => {
-  window.addEventListener("load", async () => {
-    // console.log('loadEvent: path: ' + window.location.pathname);
-    refreshJWT()
-  });
-};
+// const setupLoadListener = () => {
+//   window.addEventListener("load", async () => {
+//     if (DEBUG_DETAIL) { console.log('loadEvent: path: ' + window.location.pathname); }
+//     refreshJWT()
+//   });
+// };
 
 
 function initSpaEventListeners() {
   setupPopStateListener();
   setupDOMContentLoadedListener();
-  setupLoadListener()
+  // setupLoadListener()
 }
 
 
