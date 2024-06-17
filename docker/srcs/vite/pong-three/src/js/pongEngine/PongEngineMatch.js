@@ -173,9 +173,11 @@ class PongEngineMatch
 				this.registerEndGameButtonClickListener(endGameButton);
 			} else {
 				console.error('hth: End Game button not found');
+				handleCatchError(error);
 			}
 		} catch (error){
 			console.error('hth: updateEndGameBtn() failed: ', error);
+			handleCatchError(error);
 		}
 	}
 
@@ -245,8 +247,7 @@ class PongEngineMatch
 			.catch((error) => console.error('Error:', error));
 		} catch (error) {
 			console.error('Error:', error);
-			 // 非同期なので明示的にthrow
-			throw error;
+			handleCatchError(error);
 		}
 	}
 

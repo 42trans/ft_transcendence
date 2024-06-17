@@ -26,6 +26,7 @@ class Aura extends THREE.Object3D
 		}).catch(error => {
 			console.error('Texture load failed:', error);
 			this.textureLoaded = false;
+			// オーラが見えない描画のままゲームに進む
 		});
 	}
 

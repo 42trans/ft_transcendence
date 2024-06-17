@@ -97,7 +97,6 @@ class GameplayState extends BaseGameState
 			}, SCENE_CHANGE_DELAY_MS);
 		} catch (error) {
 			console.error('hth: GameplayState.enter() failed', error);
-			// 描画がないまま試合結果が決まらないように進行を止める
 			handleCatchError(error);
 		}
 	}
@@ -121,6 +120,7 @@ class GameplayState extends BaseGameState
 						if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
 		} catch (error) {
 			console.error("Error in GamePlayState.exit():", error);
+			handleCatchError(error);
 		}
 	}
 

@@ -30,8 +30,8 @@ import PongApp from './js/PongApp'
 import './css/3d.css';
 
 // DEBUG TEST FLAG
-const DEBUG_FLOW	= 0;
-const DEBUG_DETAIL1	= 0;
+const DEBUG_FLOW	= 1;
+const DEBUG_DETAIL1	= 1;
 const TEST_TRY1		= 0;
 const TEST_TRY2		= 0;
 const TEST_TRY3		= 0;

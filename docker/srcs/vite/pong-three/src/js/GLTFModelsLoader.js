@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 // GLTFフォーマットの3Dモデルをロードするための特定のローダーをインポート。
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { handleCatchError } from '../index.js';
 
 /**
  * GLTFModelsLoader クラス:
@@ -111,6 +112,7 @@ class GLTFModelsLoader
 			this.setupAnimation(model, gltf, defaultAnimation, true);
 		}, undefined, function (error) {
 			console.error(error);
+			handleCatchError(error);
 		});
 	}
 
