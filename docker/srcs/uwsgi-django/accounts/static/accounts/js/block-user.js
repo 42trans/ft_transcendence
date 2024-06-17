@@ -23,7 +23,7 @@ function blockUser(nickname) {
             switchPage(redirectTo)
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('hth: Error:', error);
             alert('Failed to block the user.');
         });
 }

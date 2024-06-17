@@ -23,7 +23,7 @@ function unblockUser(nickname) {
             switchPage(redirectTo)
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('hth: Error:', error);
             alert('Failed to unblock the user');
         });
 }

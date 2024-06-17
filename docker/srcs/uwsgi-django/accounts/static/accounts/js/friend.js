@@ -15,7 +15,6 @@ export function sendFriendRequest(userId) {
     }).then(response => {
         return response.json().then(data => {
             if (!response.ok) {
-                console.error('Error:', data.error);
                 throw new Error(data.error);
             }
             const event = new CustomEvent('sendFriendRequest success:', { detail: data });
@@ -24,7 +23,7 @@ export function sendFriendRequest(userId) {
             return data;
         });
     }).catch(error => {
-        console.error('Error:', error);
+        console.error('hth: Error:', error);
         const errorEvent = new CustomEvent('sendFriendRequest error:', { detail: error });
         document.dispatchEvent(errorEvent);
     });
@@ -51,7 +50,7 @@ export function cancelFriendRequest(userId) {
             switchPage(window.location.pathname);
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('hth: Error:', error);
             alert(error.message);
         });
 }
@@ -77,7 +76,7 @@ export function acceptFriendRequest(userId) {
             switchPage(window.location.pathname);
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('hth: Error:', error);
             alert(error.message);
         });
 }
@@ -104,7 +103,7 @@ export function rejectFriendRequest(userId) {
                 switchPage(window.location.pathname);
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('hth: Error:', error);
                 alert(error.message);
             });
     } else {
@@ -134,7 +133,7 @@ export function deleteFriend(userId) {
                 switchPage(window.location.pathname);
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('hth: Error:', error);
                 alert(error.message);
             });
 
@@ -197,7 +196,7 @@ export function fetchFriendList() {
             createFriendsList(data);
             setupDeleteFriendEventListener()
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('hth: Error:', error));
 }
 
 
@@ -292,5 +291,5 @@ export function fetchFriendRequestList() {
             createFriendRequestList(data);
             setupFriendRequestListEventListeners()
         })
-        .catch(error => console.error("Error:", error));
+        .catch(error => console.error("hth: Error:", error));
 }

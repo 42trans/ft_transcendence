@@ -32,7 +32,7 @@ export function fetchEnable2FA() {
 		})
 		.catch(error => {
 			document.getElementById('error-message').textContent = "Network error or server is down.";
-			console.error("Fetch error:", error);
+			console.error("hth: Fetch error:", error);
 		});
 }
 
@@ -62,7 +62,7 @@ function enable2FaVerifyToken() {
 		})
 		.catch(error => {
 		document.getElementById('error-message').textContent = "Network error or server is down.";
-		console.error("Fetch error:", error);
+		console.error("hth: Fetch error:", error);
 		});
 }
 

@@ -59,7 +59,7 @@ async function sendStatusUpdate(onlineStatusSocket, status, userId) {
         await waitForWebSocketOpen(onlineStatusSocket);
         onlineStatusSocket.send(JSON.stringify({ 'status': status, 'user_id': userId }));
     } else {
-        console.error('WebSocket is not open. readyState: ' + onlineStatusSocket.readyState);
+        console.log('WebSocket is not open. readyState: ' + onlineStatusSocket.readyState);
     }
 }
 

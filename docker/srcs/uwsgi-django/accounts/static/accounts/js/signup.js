@@ -28,7 +28,7 @@ function signupUser() {
 			if (data.redirect) {
 				switchPage(data.redirect)
 			} else {
-				console.error('Error:', data.error);
+				throw new Error(data.error);
 			}
 		} else if (data.message) {
 			// Verified
@@ -37,7 +37,7 @@ function signupUser() {
 			updateHeader();
 		}
 	})
-	.catch(error => console.error('Error:', error));
+	.catch(error => console.error('hth: Error:', error));
 }
 
 

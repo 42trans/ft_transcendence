@@ -27,7 +27,7 @@ export function disable2FA() {
 				}
 			})
 			.catch(error => {
-				console.error('Disable token failed:', error);
+				console.error('hth: Disable token failed:', error);
 				alert('Disable token failed. Please try again.');
 			});
 	} else {

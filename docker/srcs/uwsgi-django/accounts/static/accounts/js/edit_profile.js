@@ -28,7 +28,7 @@ export function updateNickname(event) {
 				switchPage(redirectTo)
 			}
 		})
-		.catch(error => console.error('Error:', error));
+		.catch(error => console.error('hth: Error:', error));
 }
 
 
@@ -58,7 +58,7 @@ export function updatePassword(event) {
 				switchPage(redirectTo)
 			}
 		})
-		.catch(error => console.error('Error:', error));
+		.catch(error => console.error('hth: Error:', error));
 }
 
 
