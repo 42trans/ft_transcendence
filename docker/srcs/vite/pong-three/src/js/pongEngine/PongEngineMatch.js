@@ -201,6 +201,14 @@ class PongEngineMatch
 		}
 	}
 
+	dispose() 
+	{
+		const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
+		if (endGameButton) {
+			this.removeEndGameButtonClickListener(endGameButton);
+		}
+	}
+
 	sendMatchResult() 
 	{
 		try

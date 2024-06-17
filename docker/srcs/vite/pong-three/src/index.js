@@ -104,7 +104,7 @@ function registerEventListenerSwitchPageResetState()
 		handleCatchError(error);
 	}
 }
-// 削除はできないので、重複しないように書き換える
+// SPA中は削除できないので、重複しないようにフラグを見て書き換える
 registerEventListenerSwitchPageResetState();
 // ---------------------------------------
 // dispose

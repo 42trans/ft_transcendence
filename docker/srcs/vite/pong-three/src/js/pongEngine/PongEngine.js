@@ -63,6 +63,15 @@ class PongEngine
 					if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
 	}
 
+	dispose() 
+	{
+		// PongEngineMatchクラスのdispose()呼び出し　※ボタンに登録されたリスナーを念の為明示的に廃棄
+		if (this.match) {
+			this.match.dispose();
+			this.match = null;
+		}
+	}
+	
 	async animate() 
 	{
 		try {

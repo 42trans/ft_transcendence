@@ -41,7 +41,7 @@ class PongEngineKey
 	}
 }
 
-// モジュールインポート時にキーイベントのリスニングを開始
+// 重複するため、init,destroyで明示的に呼び出すよう修正
 // PongEngineKey.registerListenersKeyUpDown();
 
 export default PongEngineKey;

@@ -54,6 +54,7 @@ class PongApp
 		return PongApp.instance;
 	}
 
+	
 	/**
 	 * - SPAによるreloard時に対応するためコンストラクタでキャッチし、initで最初から全て処理し直す
 	 * - キャッシュ機能をON
@@ -99,7 +100,10 @@ class PongApp
 			await this.allScenesManager.setupScenes();
 			// ゲームの状態（待機、Play、終了）を担当。シングルトン
 			this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
-			PongEngineKey.registerListenersKeyUpDown()
+			// イベントリスナーの登録
+			this.boundHandleResize = this.allScenesManager.handleResize.bind(this.allScenesManager);
+			this.registerListeners();
+			// PongEngineKey.registerListenersKeyUpDown()
 			// 無限ループでアニメーションの更新を担当。シングルトン
 			const renderLoop = LoopManager.getInstance(this);
 			this.renderLoop = renderLoop;
@@ -117,8 +121,6 @@ class PongApp
 							this.setupDevEnv();
 						} 
 
-			this.boundHandleResize = this.allScenesManager.handleResize.bind(this.allScenesManager);
-			window.addEventListener('resize', this.boundHandleResize, false);
 						if (DEBUG_FLOW) {	console.log('init(): done');	}	
 						if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 		} catch (error) {
@@ -127,6 +129,16 @@ class PongApp
 		}	
 	}
 	
+
+	registerListeners() {
+		PongEngineKey.registerListenersKeyUpDown();
+		window.addEventListener('resize', this.boundHandleResize, false);
+	}
+
+	unregisterListeners() {
+		PongEngineKey.unregisterListenersKeyUpDown();
+		window.removeEventListener('resize', this.boundHandleResize);
+	}
 
 	static async loadSwitchPage() {
 		if (import.meta.env.MODE === 'development') {
@@ -155,11 +167,8 @@ class PongApp
 							if (DEBUG_FLOW) {	console.log('destroy(): window.pongApp is false');	window.pongApp}
 				return;
 			}
-			// eventlistenerの削除
-			if (typeof handleSwitchPageResetState === 'function') {
-				window.removeEventListener('switchPageResetState', handleSwitchPageResetState);
-				isEventListenerRegistered = false; 
-			}
+			// まとめてeventlistenerを削除
+			this.unregisterListeners();
 
 			this.stopRenderLoop();
 			if (this.allScenesManager){
@@ -186,7 +195,6 @@ class PongApp
 				window.removeEventListener('resize', this.boundHandleResize);
 				this.boundHandleResize = null;
 			}
-			PongEngineKey.unregisterListenersKeyUpDown();
 
 			// lil-gui を破棄
 			if (this.gui) {

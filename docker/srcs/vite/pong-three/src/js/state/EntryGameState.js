@@ -71,7 +71,9 @@ class EntryGameState extends BaseGameState
 	{
 		try {
 						if (DEBUG_FLOW) {	console.log("exit(): EntryGameState");	}
+			// イベントリスナーの削除
 			this._unregisterStartButtonEventListener();
+			
 			const targetPosition = new THREE.Vector3();
 			this.magmaFlare.getWorldPosition(targetPosition);
 			this.startDistance = this.camera.position.distanceTo(targetPosition);

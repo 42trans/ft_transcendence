@@ -109,6 +109,10 @@ class GameplayState extends BaseGameState
 		try {
 						if (DEBUG_FLOW){	console.log("Exiting GamePlay state");	 };
 			this.PongApp.allScenesManager.gameScene.clearScene();
+			if (this.pongEngine) {
+				this.pongEngine.dispose();
+				this.pongEngine = null;
+			}
 						if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
 		} catch (error) {
 			console.error("Error in GamePlayState.exit():", error);
