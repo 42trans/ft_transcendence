@@ -19,8 +19,8 @@ import * as lil from 'lil-gui';
 import ControlsGUI from './ControlsGUI';
 // import { thickness } from 'three/examples/jsm/nodes/core/PropertyNode.js';
 
-const DEBUG_FLOW	= 1;
-const DEBUG_DETAIL	= 1;
+const DEBUG_FLOW	= 0;
+const DEBUG_DETAIL	= 0;
 const TEST_TRY1		= 0;
 const TEST_TRY2		= 0;
 const TEST_TRY3		= 0;

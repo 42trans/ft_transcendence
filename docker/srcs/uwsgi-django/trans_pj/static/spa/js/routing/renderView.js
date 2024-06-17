@@ -2,7 +2,7 @@ import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
 import { setOnlineStatus } from "/static/accounts/js/setOnlineStatus.js";
 
-const DEBUG_DETAIL = 1;
+const DEBUG_DETAIL = 0;
 const DEBUG_LOG = 0;
 
 // touteTable.jsの記述について
