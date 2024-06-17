@@ -1,6 +1,11 @@
+// docker/srcs/vite/pong-three/src/js/pongEngine/PongEngineMatch.js
 import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+import { loadRouteTable } from '../../index.js';
+// import { loadSwitchPage } from '../PongApp.js';
+import { handleCatchError } from '../../index.js';
+import PongApp from '../PongApp.js';
 
 const DEBUG_FLOW = 0;
 const DEBUG_DETAIL = 0;
@@ -33,14 +38,14 @@ class PongEngineMatch
 			opacity: 0.7,
 		});
 		// 180度回転
-		this.rotationZ = Math.PI; 
-		this.pos = new THREE.Vector3(0, -90, -7);
+		this.rotationZ	= Math.PI; 
+		this.pos		= new THREE.Vector3(0, -90, -7);
 		
 		if (import.meta.env.MODE === 'development') {
-			this.fontURL = '../assets/fonts/droid_sans_bold.typeface.json';
+			this.fontURL	= '../assets/fonts/droid_sans_bold.typeface.json';
 		} else {
-			const baseURL = new URL('.', import.meta.url).href;
-			this.fontURL = new URL('../../fonts/droid_sans_bold.typeface.json', baseURL).href;
+			const baseURL	= new URL('.', import.meta.url).href;
+			this.fontURL	= new URL('../../fonts/droid_sans_bold.typeface.json', baseURL).href;
 		}
 
 		// フォントファイルのパスと3つのコールバック関数（成功、進行中、エラー）を引数として受け取り
@@ -59,9 +64,10 @@ class PongEngineMatch
 				{
 								if (DEBUG_DETAIL) {	console.log((xhr.loaded / xhr.total * 100) + '% font loaded');	}
 				},
-			(err) => 
+			(error) => 
 				{
-					console.error('An error happened');
+					console.error('hth: An error happened');
+					handleCatchError(error);
 				}
 		);
 
@@ -143,20 +149,6 @@ class PongEngineMatch
 		await this.displayEndGameButton();
 	}
 
-	async loadSwitchPage() {
-		if (import.meta.env.MODE === 'development') {
-			// 開発環境用のパス
-			const devUrl = new URL('../../static/spa/js/routing/renderView.js', import.meta.url);
-			const module = await import(devUrl.href);
-			return module.switchPage;
-		} else {
-			// 本番環境用のパス
-			const prodUrl = new URL('../../../spa/js/routing/renderView.js', import.meta.url);
-			const module = await import(prodUrl.href);
-			return module.switchPage;
-		}
-	}
-
 	// ゲーム終了時に Back to Home ボタンリンクを表示する	
 	async displayEndGameButton() 
 	{
@@ -165,32 +157,30 @@ class PongEngineMatch
 			if (endGameButton) 
 			{
 				endGameButton.style.display = 'block';
-				const switchPage = await this.loadSwitchPage();
-				this.registerEndGameButtonClickListener(endGameButton, switchPage);
-				// endGameButton.addEventListener('click', () => 
-				// {
-				// 	const redirectTo = this.pongApp.routeTable['top'].path;
-				// 	switchPage(redirectTo);
-				// });
+				this.registerEndGameButtonClickListener(endGameButton);
 			} else {
 				console.error('hth: End Game button not found');
+				handleCatchError(error);
 			}
 		} catch (error){
 			console.error('hth: updateEndGameBtn() failed: ', error);
+			handleCatchError(error);
 		}
 	}
 
 
-	handleEndGameButtonClick(switchPage) 
+	async handleEndGameButtonClick() 
 	{
-		const redirectTo = this.pongApp.routeTable['top'].path;
+		const routeTable = await loadRouteTable();
+		const switchPage = await PongApp.loadSwitchPage();
+		const redirectTo = routeTable['top'].path;
 		switchPage(redirectTo);
 	}
 
-	registerEndGameButtonClickListener(endGameButton, switchPage) 
+	registerEndGameButtonClickListener(endGameButton) 
 	{
 		if (!this.isEndGameButtonListenerRegistered) {
-			endGameButton.addEventListener('click', this.handleEndGameButtonClick.bind(this, switchPage));
+			endGameButton.addEventListener('click', this.handleEndGameButtonClick.bind(this));
 			this.isEndGameButtonListenerRegistered = true;
 		}
 	}
@@ -231,7 +221,7 @@ class PongEngineMatch
 				.then(response => 
 					{
 						if (!response.ok) {
-							throw new Error('response failed');
+							throw new Error('hth: response failed');
 						}
 						return response.json();
 					})
@@ -243,10 +233,45 @@ class PongEngineMatch
 				})
 			.catch((error) => console.error('Error:', error));
 		} catch (error) {
-			console.error('Error:', error);
-			 // 非同期なので明示的にthrow
-			throw error;
+			console.error('hth: sendMatchResult() failed:', error);
+			handleCatchError(error);
 		}
+	}
+
+
+	dispose() 
+	{
+		// イベントハンドラの削除
+		const endGameButton = document.getElementById('hth-threejs-back-to-home-btn');
+		if (endGameButton) {
+			this.removeEndGameButtonClickListener(endGameButton);
+		}
+
+		// シーンからオブジェクトを廃棄　リーク防止
+		if (this.scoreMesh) {
+			this.scene.remove(this.scoreMesh);
+			this.scoreMesh.geometry.dispose();
+			this.scoreMesh = null;
+		}
+		if (this.font) {
+			this.font = null;
+		}
+			if (this.textMaterial) {
+			this.textMaterial.dispose();
+			this.textMaterial = null;
+		}
+	
+		// 他のプロパティをnullに設定
+		this.pongApp	= null;
+		this.pongEngine	= null;
+		this.scene		= null;
+		this.score1		= null;
+		this.score2		= null;
+		this.maxScore	= null;
+		this.matchData	= null;
+		this.env		= null;
+		this.ball		= null;
+
 	}
 
 }

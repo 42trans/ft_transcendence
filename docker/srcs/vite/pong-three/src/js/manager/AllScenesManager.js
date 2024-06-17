@@ -4,6 +4,7 @@ import EffectsSceneConfig from '../config/EffectsSceneConfig';
 import RendererManager from './RendererManager'
 import SceneUnit from '../SceneUnit';
 import * as THREE from 'three';
+import { handleCatchError } from '../../index.js';
 
 const DEBUG_FLOW 		= 0;
 const DEBUG_DETAIL		= 0;
@@ -74,7 +75,7 @@ class AllScenesManager
 		} catch (error) {
 			console.error('hth: setupScenes() failed', error);
 			// エラーを上位に伝播させ、pongAppでcatchしてSPAリセット
-			throw error;
+			handleCatchError(error);
 		}
 	}
 
@@ -129,6 +130,7 @@ class AllScenesManager
 			});
 		} catch (error) {
 			console.error('hth: handleResize() failed', error);
+			handleCatchError(error);
 		}
 	}
 
@@ -154,6 +156,7 @@ class AllScenesManager
 						if (TEST_TRY7) {	throw new Error('TEST_TRY7');	}
 		} catch (error) {
 			console.error('hth: _adjustCameraForGameScene() failed', error);
+			handleCatchError(error);
 		}
 	}
 	
@@ -187,6 +190,7 @@ class AllScenesManager
 					if (TEST_TRY9) {	throw new Error('TEST_TRY9');	}
 		} catch (error) {
 			console.error('hth: dispose() failed', error);
+			handleCatchError(error);
 		}
 	}
 

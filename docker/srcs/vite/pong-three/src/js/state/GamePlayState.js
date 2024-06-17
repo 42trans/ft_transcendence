@@ -14,9 +14,9 @@ const DEBUG_DETAIL		= 0;
 const TEST_TRY1			= 0;
 const TEST_TRY2			= 0;
 
-const ZOOM_IN_FACTOR = 1.5;
-const ZOOM_OUT_FACTOR = 0.5;
-const SCENE_CHANGE_DELAY_MS = 4500;
+const ZOOM_IN_FACTOR		= 1.5;
+const ZOOM_OUT_FACTOR		= 0.5;
+const SCENE_CHANGE_DELAY_MS	= 4500;
 
 class GameplayState extends BaseGameState 
 {
@@ -40,12 +40,12 @@ class GameplayState extends BaseGameState
 	{
 		try
 		{
-						if (DEBUG_FLOW){	console.log("Entering GamePlay state");	 };
+						if (DEBUG_FLOW){	console.log("GamePlayState.enter(): start");	 };
 			this.scenesMgr.gameScene.refreshScene(new GameSceneConfig());
 			this.pongEngine	= new PongEngine(this.PongApp);
 						if (TEST_TRY1) {	this.pongEngine = null;	}
 			if (!this.pongEngine){
-				throw new Error('Failed to create PongEngine instance.');
+				throw new Error('hth: Failed to create PongEngine instance.');
 			}
 			this.camera 	= this.scenesMgr.getGameSceneCamera()
 						if (DEBUG_DETAIL)
@@ -95,7 +95,6 @@ class GameplayState extends BaseGameState
 			}, SCENE_CHANGE_DELAY_MS);
 		} catch (error) {
 			console.error('hth: GameplayState.enter() failed', error);
-			// 描画がないまま試合結果が決まらないように進行を止める
 			handleCatchError(error);
 		}
 	}
@@ -108,10 +107,18 @@ class GameplayState extends BaseGameState
 	{
 		try {
 						if (DEBUG_FLOW){	console.log("Exiting GamePlay state");	 };
-			this.PongApp.allScenesManager.gameScene.clearScene();
+			if (this.PongApp.allScenesManager.gameScene){
+				this.PongApp.allScenesManager.gameScene.clearScene();
+			}
+			if (this.pongEngine) 
+			{
+				this.pongEngine.dispose();
+				this.pongEngine = null;
+			}
 						if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
 		} catch (error) {
-			console.error("Error in GamePlayState.exit():", error);
+			console.error("hth: GameplayState.exit() failed", error);
+			handleCatchError(error);
 		}
 	}
 

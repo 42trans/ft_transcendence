@@ -2,15 +2,17 @@
 import PongEngineKey from "./PongEngineKey.js";
 import PongOnlineSyncWS from "./PongOnlineSyncWS.js";
 import PongOnlineGameStateManager from "./PongOnlineGameStateManager.js"
+import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js"
+
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-let DEBUG_FLOW		= 0;
-let DEBUG_DETAIL1	= 0;
-let DEBUG_DETAIL2	= 0;
-let TEST_TRY1 = 0;
-let TEST_TRY2 = 0;
-let TEST_TRY3 = 0;
-let TEST_TRY4 = 0;
+const DEBUG_FLOW		= 0;
+const DEBUG_DETAIL1		= 0;
+const DEBUG_DETAIL2		= 0;
+const TEST_TRY1			= 0;
+const TEST_TRY2			= 0;
+const TEST_TRY3			= 0;
+const TEST_TRY4			= 0;
 
 /**
  * 2D-Pong Onlineのメインクラス
@@ -23,8 +25,6 @@ class PongOnlineClientApp
 				if (DEBUG_FLOW){	console.log('PongOnlineClientApp constructor begin');	}
 		this.socket = null;
 		this.init();
-		this.boundInit = this.init.bind(this);
- 		window.addEventListener('switchPageResetState', this.boundInit);
 		this.isStartButtonListenerRegistered = false;
 	}
 	
@@ -32,7 +32,7 @@ class PongOnlineClientApp
 	{
 		try {
 			if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-				console.log('init(): this.socket.close()');
+							if (DEBUG_FLOW) {	console.log('init(): this.socket.close()');	}
 				this.socket.close();
 				this.socket = null;
 
@@ -40,8 +40,10 @@ class PongOnlineClientApp
 			this.initWebSocket();
 			this.initStartButton();
 			this.initEndButton();
+						if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
 		} catch(error) {
-			console.error('hth: init() failed: ', error);
+			console.error('hth: PongOnlineClientApp init() failed: ', error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -55,14 +57,14 @@ class PongOnlineClientApp
 		// 毎回新しいインスタンスを生成。SPA遷移（ renderView() ）が実行された場合、ゲームはリセットする
 		this.gameStateManager	= new PongOnlineGameStateManager(this);
 		this.syncWS				= new PongOnlineSyncWS(this, this.gameStateManager);
-		PongEngineKey.listenForEvents();
+		PongEngineKey.registerListenersKeyUpDown();
 	}
 	
 	// websocket接続開始のためのスタートボタン
 	initStartButton() 
 	{
 		try {
-					if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+						if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 
 			this.startGameButton = document.getElementById('hth-pong-online-start-game-btn');
 			if (!this.startGameButton) {
@@ -70,15 +72,9 @@ class PongOnlineClientApp
 			}
 			this.startGameButton.style.display = 'block' 
 			this.registerStartButtonEventListener();
-			// const startGameButtonClickHandler = () => {
-			// 	console.log('this.socket', this.socket);
-
-			// 	this.setupWebSocketConnection();
-			// 	this.startGameButton.remove();  
-			// };
-			// this.startGameButton.addEventListener('click', startGameButtonClickHandler);
 		} catch (error) {
 			console.error('hth: initStartButton() failed: ', error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 	
@@ -87,6 +83,7 @@ class PongOnlineClientApp
 		if (!this.isStartButtonListenerRegistered) {
 			this.startGameButton.addEventListener('click', this.handleStartButtonClick.bind(this));
 			this.isStartButtonListenerRegistered = true;
+						if (DEBUG_FLOW){	console.log('registerStartButtonEventListener: done');	}
 		}
 	}
 	
@@ -95,12 +92,12 @@ class PongOnlineClientApp
 		if (this.isStartButtonListenerRegistered) {
 			this.startGameButton.removeEventListener('click', this.handleStartButtonClick);
 			this.isStartButtonListenerRegistered = false;
+						if (DEBUG_FLOW){	console.log('unregisterStartButtonEventListener: done');	}
 		}
 	}
 	
 	handleStartButtonClick()
 	{
-		// console.log('this.socket', this.socket);
 		this.setupWebSocketConnection();
 		this.startGameButton.style.display = 'none';
 	}
@@ -117,7 +114,7 @@ class PongOnlineClientApp
 	setupWebSocketConnection()
 	{
 		try {
-					if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
+						if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 
 			if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 				this.socket.close();
@@ -138,18 +135,19 @@ class PongOnlineClientApp
 			this.socket.onerror		= (event) => this.syncWS.onSocketError(event);
 		} catch(error) {
 			console.error('hth: setupWebSocketConnection() failed: ', error)
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
-	// static main(env) {
-	// 	new PongOnlineClientApp(env);
-	// }
-
 	dispose() {
+		// -----------------------------
 		// eventlistenerの削除
-		window.removeEventListener('switchPageResetState', this.boundInit);
+		// -----------------------------
+		// スタートボタン
 		this.unregisterStartButtonEventListener();
-		PongEngineKey.removeListeners();
+		// パドル操作: key up,down
+		PongEngineKey.unregistersListenersKyeUpDown();
+		// -----------------------------
 
 		// WebSocketの切断
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
@@ -170,6 +168,7 @@ class PongOnlineClientApp
 		this.socketUrl = null;
 		this.startGameButton = null;
 		this.isStartButtonListenerRegistered = false;
+					if (DEBUG_FLOW){	console.log('PongOnlineClientApp: dispose: done');	}
 	}
 }
 

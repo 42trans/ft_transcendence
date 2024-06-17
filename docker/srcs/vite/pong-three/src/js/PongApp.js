@@ -12,6 +12,8 @@ import LoopManager from './manager/LoopManager'
 import RendererManager from './manager/RendererManager'
 import PongEngineKey from './pongEngine/PongEngineKey'
 import { handleCatchError } from '../index.js';
+import { loadRouteTable } from '../index.js';
+
 //dev用GUI
 import * as lil from 'lil-gui'; 
 import ControlsGUI from './ControlsGUI';
@@ -52,6 +54,7 @@ class PongApp
 		return PongApp.instance;
 	}
 
+	
 	/**
 	 * - SPAによるreloard時に対応するためコンストラクタでキャッチし、initで最初から全て処理し直す
 	 * - キャッシュ機能をON
@@ -64,32 +67,18 @@ class PongApp
 		{
 						if (DEBUG_FLOW) {	console.log('init(): start');	}
 						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
-			this.routeTable = await PongApp.loadRouteTable();
-			// ----------------------------------
-			// urlがtournametの試合かどうかを判定
-			// ----------------------------------
-			const currentPath = window.location.pathname;
-						if (DEBUG_DETAIL) {	console.log('this.routeTable:', this.routeTable);	}
-			const gameMatchPath = this.routeTable['gameMatch'].path;
-			const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
-			if (!gameMatchRegex.test(currentPath)) {
-							if (DEBUG_FLOW) {	console.log('init()', currentPath, gameMatchRegex);	}
-				return;
-			}
 			// ----------------------------------
 			// 試合が終了しているか判定
 			// ----------------------------------
 			const matchDataElement = document.getElementById('match-data');
-						if (DEBUG_FLOW) {	console.log('init() matchDataElement: ', matchDataElement);	}
-			if (matchDataElement) 
-			{
-				this.matchData = JSON.parse(matchDataElement.textContent);
-							if (DEBUG_DETAIL) {	console.log('Match Data:', this.matchData);	}
-			} else {
+			if (!matchDataElement){
 							if (DEBUG_FLOW) {	console.log('matchDataElement not found');	}
 				return;
 			}
-			// this.routeTable = await PongApp.loadRouteTable();
+
+			this.matchData = JSON.parse(matchDataElement.textContent);
+						if (DEBUG_DETAIL) {	console.log('Match Data:', this.matchData);	}
+			this.routeTable = await loadRouteTable();
 			if (this.matchData && this.matchData.is_finished) 
 			{
 							if (DEBUG_FLOW) {	console.log('matchData.is_finished is true');	}
@@ -97,6 +86,7 @@ class PongApp
 				const switchPage = await PongApp.loadSwitchPage();
 				const redirectTo = this.routeTable['top'].path;
 				switchPage(redirectTo);
+							if (DEBUG_FLOW) {	console.log('switchPage: done');	}
 				return;
 			}
 			// ----------------------------------
@@ -110,6 +100,10 @@ class PongApp
 			await this.allScenesManager.setupScenes();
 			// ゲームの状態（待機、Play、終了）を担当。シングルトン
 			this.gameStateManager = GameStateManager.getInstance(this, this.allScenesManager); 
+			// イベントリスナーの登録
+			this.boundHandleResize = this.allScenesManager.handleResize.bind(this.allScenesManager);
+			this.registerListeners();
+			// PongEngineKey.registerListenersKeyUpDown()
 			// 無限ループでアニメーションの更新を担当。シングルトン
 			const renderLoop = LoopManager.getInstance(this);
 			this.renderLoop = renderLoop;
@@ -127,8 +121,6 @@ class PongApp
 							this.setupDevEnv();
 						} 
 
-			this.boundHandleResize = this.allScenesManager.handleResize.bind(this.allScenesManager);
-			window.addEventListener('resize', this.boundHandleResize, false);
 						if (DEBUG_FLOW) {	console.log('init(): done');	}	
 						if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 		} catch (error) {
@@ -137,6 +129,30 @@ class PongApp
 		}	
 	}
 	
+
+	registerListeners() {
+		PongEngineKey.registerListenersKeyUpDown();
+		window.addEventListener('resize', this.boundHandleResize, false);
+	}
+
+	unregisterListeners() {
+		PongEngineKey.unregisterListenersKeyUpDown();
+		window.removeEventListener('resize', this.boundHandleResize);
+	}
+
+	static async loadSwitchPage() {
+		if (import.meta.env.MODE === 'development') {
+			// 開発環境用のパス
+			const devUrl = new URL('../../static/spa/js/routing/renderView.js', import.meta.url);
+			const module = await import(devUrl.href);
+			return module.switchPage;
+		} else {
+			// 本番環境用のパス
+			const prodUrl = new URL('../../../spa/js/routing/renderView.js', import.meta.url);
+			const module = await import(prodUrl.href);
+			return module.switchPage;
+		}
+	}
 
 	/**
 	 * ページから抜ける（アウト）時にspa/js/views/AbstractView.jsの dispose() から呼び出される
@@ -151,11 +167,8 @@ class PongApp
 							if (DEBUG_FLOW) {	console.log('destroy(): window.pongApp is false');	window.pongApp}
 				return;
 			}
-			// eventlistenerの削除
-			if (typeof handleSwitchPageResetState === 'function') {
-				window.removeEventListener('switchPageResetState', handleSwitchPageResetState);
-				isEventListenerRegistered = false; 
-			}
+			// まとめてeventlistenerを削除
+			this.unregisterListeners();
 
 			this.stopRenderLoop();
 			if (this.allScenesManager){
@@ -182,7 +195,6 @@ class PongApp
 				window.removeEventListener('resize', this.boundHandleResize);
 				this.boundHandleResize = null;
 			}
-			PongEngineKey.removeListeners();
 
 			// lil-gui を破棄
 			if (this.gui) {
@@ -191,8 +203,9 @@ class PongApp
 			}
 
 			this.env = null;
-			this.matchData = null;
+			this.boundHandleResize = null;	
 			this.routeTable = null;
+			this.matchData = null;
 			this.renderer = null;
 			this.animationMixersManager = null;
 			this.allScenesManager = null;
@@ -221,38 +234,7 @@ class PongApp
 			handleCatchError(error);
 		}	
 	}
-
-
-	/** vite での Django コンテナの module import処理(パスの解決) */
-	static async loadRouteTable() 
-	{
-		if (import.meta.env.MODE === 'development') {
-			// 開発環境用のパス
-			const devUrl = new URL('../static/spa/js/routing/routeTable.js', import.meta.url);
-			const module = await import(devUrl.href);
-			return module.routeTable;
-		} else {
-			// 本番環境用のパス
-			const prodUrl = new URL('../../../spa/js/routing/routeTable.js', import.meta.url);
-			const module = await import(prodUrl.href);
-			return module.routeTable;
-		}
-	}
 	
-	static async loadSwitchPage() 
-	{
-		if (import.meta.env.MODE === 'development') {
-			// 開発環境用のパス
-			const devUrl = new URL('../../static/spa/js/routing/renderView.js', import.meta.url);
-			const module = await import(devUrl.href);
-			return module.switchPage;
-		} else {
-			// 本番環境用のパス
-			const prodUrl = new URL('../../../spa/js/routing/renderView.js', import.meta.url);
-			const module = await import(prodUrl.href);
-			return module.switchPage;
-		}
-	}
 
 				setupDevEnv()
 				{

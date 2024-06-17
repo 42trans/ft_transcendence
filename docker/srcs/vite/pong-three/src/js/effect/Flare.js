@@ -65,7 +65,10 @@ class Flare extends THREE.Object3D
 			});
 			const mesh = new THREE.Mesh(geometry, material);
 			this.add(mesh);
-		}).catch(error => console.error('Texture load failed:', error));
+		}).catch(error => {
+			console.error('hth: Texture load failed:', error);
+			// オーラのない描画でゲームに進む
+		});
 	}
 
 	update() 
