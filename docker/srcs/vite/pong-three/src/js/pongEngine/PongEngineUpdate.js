@@ -1,6 +1,8 @@
 // docker/srcs/vite/pong-three/src/js/pongEngine/PongEngineUpdate.js
 import PongEngineKey from './PongEngineKey'
 
+const DEBUG_FLOW 		= 0;
+
 /**
  * ゲームの状態更新を担当。ボールやパドルの位置更新などのゲームロジックを実行
  */
@@ -51,6 +53,12 @@ class PongEngineUpdate
 		
 		if (this.isResetting) return; 
 
+		// 非同期で先にdispose()が実行されてしまう
+		if (!this.physics) 
+		{
+			console.warn('hth: this.physics is null: 1');
+			return;
+		}
 		// 左右の壁との衝突を検出
 		if (this.physics.isCollidingWithSideWalls(ballX, r, this.field)) 
 		{
@@ -58,18 +66,34 @@ class PongEngineUpdate
 			await this.match.updateScore(scorer);
 			await this.resetBall(scorer);
 		}
+
+		if (!this.physics) 
+		{
+			console.warn('hth: this.physics is null: 2');
+			return;
+		}
 		// 上下の壁との衝突を検出
 		if (this.physics.isCollidingWithCeilingOrFloor(ballY, r, this.field)) 
 		{
 			this.ball.dirY = -this.ball.dirY;
 		}
-		// パドルごとの衝突判定とボールの方向や速度の調整
-		if (this.physics.isBallCollidingWithPaddle(this.ball, this.paddle1))
+
+		if (!this.physics) 
 		{
+			console.warn('hth: this.physics is null: 3');
+			return;
+		}
+		// パドルごとの衝突判定とボールの方向や速度の調整
+		if (this.physics.isBallCollidingWithPaddle(this.ball, this.paddle1)){
 			this.physics.adjustBallDirectionAndSpeed(this.ball, this.paddle1);
 		}
-		if (this.physics.isBallCollidingWithPaddle(this.ball, this.paddle2))
+
+		if (!this.physics) 
 		{
+			console.warn('hth: this.physics is null: 4');
+			return;
+		}
+		if (this.physics.isBallCollidingWithPaddle(this.ball, this.paddle2)){
 			this.physics.adjustBallDirectionAndSpeed(this.ball, this.paddle2);
 		}
 	}
@@ -78,8 +102,11 @@ class PongEngineUpdate
 	{
 		if (this.isResetting) return; 
 
-		this.ball.position.x += this.ball.dirX * this.ball.speed;
-		this.ball.position.y += this.ball.dirY * this.ball.speed;
+		if (this.ball)
+		{
+			this.ball.position.x += this.ball.dirX * this.ball.speed;
+			this.ball.position.y += this.ball.dirY * this.ball.speed;
+		}
 	}
 
 	// パドルのプレイヤー操作を処理する
@@ -92,6 +119,8 @@ class PongEngineUpdate
 	// 特定のキー入力に基づいてパドルを動かす
 	updatePaddlePosition(paddle, keyUp, keyDown) 
 	{
+		if (!paddle) return;
+
 		if (PongEngineKey.isDown(keyDown) 
 			&& paddle.position.y < this.field.height / 2 - paddle.height / 2) 
 		{
@@ -114,29 +143,35 @@ class PongEngineUpdate
 		paddle.position.y	= Math.max(Math.min(nextPositionY, maxBottom), maxTop);
 		
 	}
-	
 
 	async resetBall(loser) 
 	{
-		
 		// 1秒停止してボールサーブ
 		this.isResetting = true;
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		this.isResetting = false;
 
-		this.ball.position.set(0, 0, 0); 
-		this.ball.dirX = loser === 1 ? -1 : 1;
-		this.ball.dirY = Math.random() - 0.5;
-		this.ball.speed = this.initBallSpeed;
+		if (this.ball)
+		{
+			this.ball.position.set(0, 0, 0); 
+			this.ball.dirX = loser === 1 ? -1 : 1;
+			this.ball.dirY = Math.random() - 0.5;
+			this.ball.speed = this.initBallSpeed;
+		}
 	}
 
 	async updateGame() 
 	{
-		await this.handleCollisions();
-		if (this.pongEngine.isRunning){
-			this.updateBallPosition();
+					if (DEBUG_FLOW){	console.log("updateGame() start");	 };
+		if (this.pongEngine && this.pongEngine.isRunning) 
+		{ 
+			await this.handleCollisions();
+			if (this.pongEngine && this.pongEngine.isRunning){
+				this.updateBallPosition();
+			}
 		}
 		this.handlePaddleMovement();
+					if (DEBUG_FLOW){	console.log("updateGame(): done ");	 };
 	}
 
 	dispose()
