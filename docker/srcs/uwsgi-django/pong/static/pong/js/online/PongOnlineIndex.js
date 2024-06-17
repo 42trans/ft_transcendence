@@ -4,6 +4,8 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 const DEBUG_FLOW = 0;
+const TEST_TRY1	 = 0;
+const TEST_TRY2	 = 0;
 
 /**
  * 2D-Pong entry point
@@ -15,18 +17,24 @@ let isEventListenerRegistered = false;
 // ---------------------------------------
 async function initPongOnlineClientApp() 
 {
-				if (DEBUG_FLOW) {	console.log('initPongOnlineClientApp: start');	}
-	// urlが FreePlayリンク(view: game2d) かどうかを判定し、早期リターン
-	if (!_isGame2dUrl()) {
-					if (DEBUG_FLOW) {	console.log('initPongOnlineClientApp(): not game2d url');	}
-		return;
+	try {
+					if (DEBUG_FLOW) {	console.log('initPongOnlineClientApp: start');	}
+		// urlが FreePlayリンク(view: game2d) かどうかを判定し、早期リターン
+		if (!_isGame2dUrl()) {
+						if (DEBUG_FLOW) {	console.log('initPongOnlineClientApp(): not game2d url');	}
+			return;
+		}
+		// 重複対策: 削除してから新規作成
+		if (pongOnlineClientApp) {
+			pongOnlineClientApp.dispose();
+			pongOnlineClientApp = null;
+		}
+		pongOnlineClientApp = new PongOnlineClientApp();
+					if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
+	} catch(error) {
+		console.error('hth: initPongOnlineClientApp() failed: ', error);
+		pongOnlineHandleCatchError(error);
 	}
-	// 重複対策: 削除してから新規作成
-	if (pongOnlineClientApp) {
-		pongOnlineClientApp.dispose();
-		pongOnlineClientApp = null;
-	}
-	pongOnlineClientApp = new PongOnlineClientApp();
 }
 
 function _isGame2dUrl() {
@@ -61,15 +69,22 @@ registerEventListenerSwitchPageResetState();
 // ---------------------------------------
 async function disposePongOnlineClientApp() 
 {
-	if (pongOnlineClientApp) 
-	{
-					if (DEBUG_FLOW) {	console.log('disposePongOnlineClientApp: start');	}
-		pongOnlineClientApp.dispose();
-		pongOnlineClientApp = null;
+	try {
+		if (pongOnlineClientApp) 
+		{
+						if (DEBUG_FLOW) {	console.log('disposePongOnlineClientApp: start');	}
+			pongOnlineClientApp.dispose();
+			pongOnlineClientApp = null;
+		}
+					if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
+	} catch(error) {
+		console.error('hth: disposePongOnlineClientApp() failed: ', error);
+		pongOnlineHandleCatchError(error);
 	}
 }
 
 // このメソッドを呼び出すファイル: static/spa/js/views/pong/Game2D.js
+// ここから連鎖的に各クラスのdispose()を呼び出す方針
 if (!window.disposePongOnlineClientApp) {
 	window.disposePongOnlineClientApp = disposePongOnlineClientApp;
 }
