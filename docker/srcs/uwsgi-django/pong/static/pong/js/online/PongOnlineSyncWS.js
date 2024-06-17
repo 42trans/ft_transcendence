@@ -4,10 +4,10 @@ import PongOnlineRenderer from "./PongOnlineRenderer.js";
 import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js";
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-let DEBUG_FLOW = 0;
-let DEBUG_DETAIL = 0;
-let TEST_ERROR_CASE1 = 0;
-let TEST_ERROR_CASE2 = 0;
+const DEBUG_FLOW		= 0;
+const DEBUG_DETAIL		= 0;
+const TEST_ERROR_CASE1	= 0;
+const TEST_ERROR_CASE2	= 0;
 
 /**
  * Websocketのイベントで動くメソッドを担当
