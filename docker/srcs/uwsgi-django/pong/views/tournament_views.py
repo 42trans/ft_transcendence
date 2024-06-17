@@ -75,7 +75,7 @@ def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
 			  f"{next_match.player1} vs {next_match.player2}")
 
 
-@csrf_exempt
+# @csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def save_game_result(request):
