@@ -68,6 +68,7 @@ export const routeTable = {
 
   signup        : { path: "/app/auth/signup/",       view: Signup },
   login         : { path: "/app/auth/login/",        view: Login },
+  oAuthLogin    : { path: "/accounts/oauth-ft/",     view: Login },  // viewは関係なし
 
   // 開発用テストリンク
   // lang    : { path: "/lang/",         view: Lang },
