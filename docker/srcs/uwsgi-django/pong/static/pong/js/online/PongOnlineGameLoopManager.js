@@ -2,6 +2,7 @@
 import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js"
 
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
@@ -92,8 +93,7 @@ class PongOnlineGameLoopManager
 					if (elapsed >= this.desiredFrameTimeMs) 
 					{
 						if (!gameState) {
-							console.error("hth: gameState is null.");
-							return;
+							throw new Error("hth: gameState is null.");
 						} 
 						
 						if (gameState.is_running) {
@@ -114,6 +114,7 @@ class PongOnlineGameLoopManager
 							if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 				} catch(error) {
 					console.error("hth: gameLoop error:", error);
+					pongOnlineHandleCatchError(error);
 				}
 			}
 			// 最初のフレームを要求
@@ -132,6 +133,7 @@ class PongOnlineGameLoopManager
 						if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 		} catch(error) {
 			console.error("hth: stopGameLoop():  renderer.render() failed:", error);
+			pongOnlineHandleCatchError(error);
 		}
 
 		try {
@@ -144,6 +146,7 @@ class PongOnlineGameLoopManager
 						if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 		} catch(error) {
 			console.error("hth: stopGameLoop(): updateEndGameBtn() failed:", error);
+			pongOnlineHandleCatchError(error);
 		}
 
 		// アニメーションを指定してキャンセル
@@ -193,10 +196,11 @@ class PongOnlineGameLoopManager
 				endGameButton.style.display = 'block';
 				this.registerEndGameButtonListener();
 			} else {
-				console.error('End Game button not found');
+				console.error('hth: End Game button not found');
 			}
 		} catch (error){
 			console.error('hth: updateEndGameBtn() failed: ', error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 

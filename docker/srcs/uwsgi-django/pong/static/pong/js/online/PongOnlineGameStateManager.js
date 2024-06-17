@@ -2,6 +2,7 @@
 import PongOnlineGameLoopManager from "./PongOnlineGameLoopManager.js";
 import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "./PongOnlineRenderer.js";
+import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js"
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 const DEBUG_FLOW 		= 0;
@@ -27,7 +28,8 @@ class PongOnlineGameStateManager
 
 				if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 		} catch (error) {
-			console.error("PongOnlineGameStateManager.constructor() failed:", error);
+			console.error("hth: PongOnlineGameStateManager.constructor() failed:", error);
+			pongOnlineHandleCatchError(error);
 		}
 
 		this.ctx				= null
@@ -83,6 +85,7 @@ class PongOnlineGameStateManager
 			}
 		} catch(resizeError) {
 			console.error("hth: Error during resize:", resizeError);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -96,6 +99,7 @@ class PongOnlineGameStateManager
 			this.loopManager.startGameLoop(this.gameFPS);
 		} catch(error) {
 			console.error("hth: handleGameStart() failed: ", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -144,6 +148,7 @@ class PongOnlineGameStateManager
 
 			} catch(error) {
 				console.error("hth: sendClientState() failed: ", error);
+				pongOnlineHandleCatchError(error);
 			}
 		} else {
 			// 通信の遅延もあるのでエラーではない。大量に出力されて負荷が高いのでコメントアウト

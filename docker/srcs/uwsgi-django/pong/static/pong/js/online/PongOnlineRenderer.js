@@ -1,4 +1,5 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineRenderer.js
+// import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js"
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 const DEBUG_FLOW 		= 0;
@@ -50,6 +51,7 @@ class PongOnlineRenderer
 					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 		} catch(error) {
 			console.error("hth: render() failed: ", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -99,7 +101,8 @@ class PongOnlineRenderer
 
 					if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 		} catch(error) {
-			console.error("resizeForAllDevices() failed", error);
+			console.error("hth: resizeForAllDevices() failed", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -121,7 +124,8 @@ class PongOnlineRenderer
 
 				if (TEST_TRY4){	throw new Error('TEST_TRY4');	}
 		} catch (error) {
-			console.error("_drawScore(): ", error);
+			console.error("hth: _drawScore() failed: ", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -141,7 +145,8 @@ class PongOnlineRenderer
 
 			if (TEST_TRY5){	throw new Error('TEST_TRY5');	}
 		} catch (error) {
-			console.error("_drawPaddle(): ", error);
+			console.error("hth: _drawPaddle() failed: ", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -169,7 +174,8 @@ class PongOnlineRenderer
 
 			if (TEST_TRY6){	throw new Error('TEST_TRY6');	}
 		} catch (error) {
-			console.error("_drawBall(): ", error);
+			console.error("hth: _drawBall() failed: ", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -197,7 +203,8 @@ class PongOnlineRenderer
 
 			if (TEST_TRY7){	throw new Error('TEST_TRY7');	}
 		} catch (error) {
-			console.error("_clearField(): ", error);
+			console.error("hth: _clearField() failed: ", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 

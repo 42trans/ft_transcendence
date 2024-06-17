@@ -1,6 +1,7 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineSyncWS.js
 import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "./PongOnlineRenderer.js";
+import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js";
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 let DEBUG_FLOW = 0;
@@ -99,6 +100,7 @@ class PongOnlineSyncWS
 			this.gameStateManager.readyToSendNext = true;
 		} catch (error) {
 			console.error("hth: onSocketMessage() failed", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 	// ------------------------------
@@ -133,6 +135,7 @@ class PongOnlineSyncWS
 			// }
 		} catch (error) {
 			console.error("hth: onSocketOpen() failed", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -147,6 +150,7 @@ class PongOnlineSyncWS
 			// this.clientApp.socket.close();
 		} catch (error) {
 			console.error("hth: onSocketClose() failed", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 	
@@ -175,7 +179,7 @@ class PongOnlineSyncWS
 	// ------------------------------
 	onSocketError(event) {
 		console.error("hth: WebSocket error:", event);
-		alert('WebSocketの接続でエラーが起きました');
+		pongOnlineHandleCatchError("hth: WebSocket error");
 	}
 	
 	/** dev用 再接続チェック用 */

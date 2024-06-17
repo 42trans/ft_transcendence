@@ -2,6 +2,8 @@
 import PongEngineKey from "./PongEngineKey.js";
 import PongOnlineSyncWS from "./PongOnlineSyncWS.js";
 import PongOnlineGameStateManager from "./PongOnlineGameStateManager.js"
+import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js"
+
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 const DEBUG_FLOW		= 0;
@@ -30,7 +32,7 @@ class PongOnlineClientApp
 	{
 		try {
 			if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-				console.log('init(): this.socket.close()');
+							if (DEBUG_FLOW) {	console.log('init(): this.socket.close()');	}
 				this.socket.close();
 				this.socket = null;
 
@@ -38,8 +40,10 @@ class PongOnlineClientApp
 			this.initWebSocket();
 			this.initStartButton();
 			this.initEndButton();
+						if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
 		} catch(error) {
-			console.error('hth: init() failed: ', error);
+			console.error('hth: PongOnlineClientApp init() failed: ', error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -60,7 +64,7 @@ class PongOnlineClientApp
 	initStartButton() 
 	{
 		try {
-					if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+						if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 
 			this.startGameButton = document.getElementById('hth-pong-online-start-game-btn');
 			if (!this.startGameButton) {
@@ -70,6 +74,7 @@ class PongOnlineClientApp
 			this.registerStartButtonEventListener();
 		} catch (error) {
 			console.error('hth: initStartButton() failed: ', error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 	
@@ -109,7 +114,7 @@ class PongOnlineClientApp
 	setupWebSocketConnection()
 	{
 		try {
-					if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
+						if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 
 			if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 				this.socket.close();
@@ -130,6 +135,7 @@ class PongOnlineClientApp
 			this.socket.onerror		= (event) => this.syncWS.onSocketError(event);
 		} catch(error) {
 			console.error('hth: setupWebSocketConnection() failed: ', error)
+			pongOnlineHandleCatchError(error);
 		}
 	}
 

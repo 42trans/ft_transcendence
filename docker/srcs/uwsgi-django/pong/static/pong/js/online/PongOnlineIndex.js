@@ -91,13 +91,8 @@ if (!window.disposePongOnlineClientApp) {
 // ---------------------------------------
 // error
 // ---------------------------------------
-export async function pongOnlineHandleCatchError(error = null) 
+export function pongOnlineHandleCatchError(error = null) 
 {
-	// SPAの状態をリセットしない場合
-	// const switchPage = await loadSwitchPage();
-	// const redirectTo = routeTable['top'].path;
-	// switchPage(redirectTo);
-
 	// ゲームでのエラーは深刻なので、location.hrefでSPAの状態を完全にリセットする
 	if (error) {
 		alert("エラーが発生しました。トップページに遷移します。 error: " + error);

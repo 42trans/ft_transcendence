@@ -1,13 +1,13 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlinePaddleMover.js
 import PongEngineKey from "./PongEngineKey.js";
+// import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js"
 
 class PongOnlinePaddleMover 
 {
 	static 	handlePaddleMovement(field, gameState) 
 	{
 		if (!gameState || !gameState.objects || !gameState.objects.paddle1 || !gameState.objects.paddle2) {
-			console.error('Invalid gameState:', this.gameState);
-			return;
+			throw new Error('hth: Invalid gameState:', this.gameState);
 		}
 		
 		PongOnlinePaddleMover._updatePaddlePosition(field, gameState.objects.paddle1, 'E', 'F');
