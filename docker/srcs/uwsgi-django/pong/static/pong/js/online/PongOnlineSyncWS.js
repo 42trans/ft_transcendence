@@ -50,22 +50,13 @@ class PongOnlineSyncWS
 		try 
 		{
 			let recvEventData = JSON.parse(event.data);
-					
-					if (DEBUG_DETAIL){	
-						console.log("onSocketMessage()", event);	}
-					if (TEST_ERROR_CASE1){
-						recvEventData = {}	}
-		
-		
+						if (DEBUG_DETAIL){		console.log("onSocketMessage()", event);	}
+						if (TEST_ERROR_CASE1){	recvEventData = {}	}
 			if (!recvEventData){
 				return
-			} else if (recvEventData.event_type === 'game_end') {
-
-						if (DEBUG_FLOW) {
-							console.log("onSocketMessage: game_end") }
-						if (DEBUG_FLOW) {
-							console.log("onSocketMessage: recvEventData:", recvEventData) }
-
+				} else if (recvEventData.event_type === 'game_end') {
+							if (DEBUG_FLOW) {	console.log("onSocketMessage: game_end") }
+							if (DEBUG_FLOW) {	console.log("onSocketMessage: recvEventData:", recvEventData) }
 				this.gameStateManager.handleGameEnd(this.clientApp.socket, recvEventData.end_game_state,)
 			} else if (recvEventData.objects && recvEventData.state){
 				// ---------------------------------
@@ -88,9 +79,7 @@ class PongOnlineSyncWS
 				// ---------------------------------
 				if (!this.gameStateManager.isGameLoopStarted) 
 				{
-							if (DEBUG_DETAIL){	
-								console.log("初回: gameState()", this.gameStateManager.gameState)	}
-
+								if (DEBUG_DETAIL){	console.log("初回: gameState()", this.gameStateManager.gameState)	}
 					this.gameStateManager.handleGameStart()
 				}
 			} else {
@@ -110,9 +99,7 @@ class PongOnlineSyncWS
 	onSocketOpen() 
 	{
 		try { 
-			if (DEBUG_FLOW){	
-				console.log("WebSocket connection established.");	}
-			
+						if (DEBUG_FLOW){	console.log("WebSocket connection established.");	}
 			// if (!this.isReconnecting)
 			// {
 				// 初回接続時の処理　{ action: "initialize" }を送信

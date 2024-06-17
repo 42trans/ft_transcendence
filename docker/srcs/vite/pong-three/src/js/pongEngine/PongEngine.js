@@ -11,7 +11,7 @@ import AllScenesManager from '../manager/AllScenesManager';
 import { handleCatchError } from '../../index.js';
 
 
-const DEBUG_FLOW 		= 1;
+const DEBUG_FLOW 		= 0;
 const TEST_TRY1			= 0;
 const TEST_TRY2			= 0;
 

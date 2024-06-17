@@ -26,7 +26,7 @@ class PongOnlineGameStateManager
 			this.loopManager		= new PongOnlineGameLoopManager(clientApp, this)
 			this.clientApp 			= clientApp
 
-				if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 		} catch (error) {
 			console.error("hth: PongOnlineGameStateManager.constructor() failed:", error);
 			pongOnlineHandleCatchError(error);
@@ -63,7 +63,7 @@ class PongOnlineGameStateManager
 		if (!this.isResizeListenerRegistered) {
 			window.addEventListener('resize', this.handleResize);
 			this.isResizeListenerRegistered = true;
-			if (DEBUG_FLOW) {	console.log('registerResizeListener: done');	}
+						if (DEBUG_FLOW) {	console.log('registerResizeListener: done');	}
 		}
 	}
 
@@ -72,14 +72,14 @@ class PongOnlineGameStateManager
 		if (this.isResizeListenerRegistered) {
 			window.removeEventListener('resize', this.handleResize);
 			this.isResizeListenerRegistered = false;
-			if (DEBUG_FLOW) {	console.log('unregisterResizeListener: done');	}
+						if (DEBUG_FLOW) {	console.log('unregisterResizeListener: done');	}
 		}
 	}
 	
 	handleResize()
 	{
 		try {
-			if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
+						if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 			if (this.renderer){
 				this.renderer.resizeForAllDevices();
 			}
@@ -93,7 +93,6 @@ class PongOnlineGameStateManager
 	{
 		try {
 					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
-
 			this.initCanvas();
 			this.registerResizeListener();
 			this.loopManager.startGameLoop(this.gameFPS);
@@ -113,10 +112,7 @@ class PongOnlineGameStateManager
 		}
 		this.ctx		= this.canvas.getContext("2d");
 		this.field		= this.gameState.game_settings.field;
-
-				if (DEBUG_DETAIL){
-					console.log('this.field: ', this.field);	}
-
+				if (DEBUG_DETAIL){	console.log('this.field: ', this.field);	}
 		this.renderer.initRenderer();
 		this.renderer.resizeForAllDevices();
 	}
@@ -167,14 +163,11 @@ class PongOnlineGameStateManager
 	handleGameEnd(socket, endGameState)
 	{
 		this.updateState(endGameState);
-		
 				if (DEBUG_DETAIL){
 					console.log("onSocketMessage: finalGameState:", this.finalGameState)
 					console.log("onSocketMessage: gameState:", this.gameState)
 				}
-				if (DEBUG_FLOW){
-					console.log('handleGameEnd(): done');
-				}
+				if (DEBUG_FLOW){	console.log('handleGameEnd(): done');	}
 	}
 	// ------------------------------
 	// getter , setter

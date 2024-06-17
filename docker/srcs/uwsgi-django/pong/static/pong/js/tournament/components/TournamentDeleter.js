@@ -16,7 +16,7 @@ class TournamentDeleter
 
 	async deleteTournament(tournamentId) 
 	{
-		console.log(`Deleting tournament ID: ${tournamentId}`);
+		// console.log(`Deleting tournament ID: ${tournamentId}`);
 
 		try {
 			const response = await fetch(`${this.API_URLS.tournamentDelete}${tournamentId}/`, 
