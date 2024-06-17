@@ -45,7 +45,8 @@ class DMTest(TestConfig):
         # self._screenshot("block 3")
 
         # DMへ遷移し、dm-log要素が非表示であることを確認
-        self._access_to(f"{self.dm_with_base_url}{self.test_user2_nickname}/")
+        self._move_top_to_dm()
+        self._send_dm_with_form(self.test_user2_nickname)
         self.assertFalse(self._is_unblocking_dm())
 
         # self._screenshot("block 4")
@@ -54,7 +55,8 @@ class DMTest(TestConfig):
         self._unblock_user(self.test_user2_nickname)
 
         # DMへ遷移し、dm-log要素が非表示であることを確認
-        self._access_to(f"{self.dm_with_base_url}{self.test_user2_nickname}/")
+        self._move_top_to_dm()
+        self._send_dm_with_form(self.test_user2_nickname)
         self.assertTrue(self._is_unblocking_dm())
 
         # self._screenshot("block 5")
