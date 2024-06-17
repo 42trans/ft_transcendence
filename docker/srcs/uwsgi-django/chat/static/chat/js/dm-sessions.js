@@ -60,7 +60,7 @@ export function startDMwithUser() {
                     } else {
                         // 検証が成功した場合にdiWithUserに遷移
                         const targetId = data.target_id;
-                        console.log("target_id: " + targetId)
+                        // console.log("target_id: " + targetId)
                         const routePath = routeTable['dmWithUserBase'].path + targetId + '/'
                         switchPage(routePath);
                     }

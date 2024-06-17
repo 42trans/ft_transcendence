@@ -3,8 +3,7 @@
 import {classifyMessageSender} from "./apply-message-style.js";
 import {scrollToBottom} from "./ui-util.js";
 
-export { handleReceiveMessage };
-
+const DEBUG_LOG = 0;
 
 export function escapeHtml(unsafe) {
     return unsafe
@@ -69,12 +68,12 @@ function classifyMessage(messageElement, isSystemMessage, senderId, targetId) {
 }
 
 
-function handleReceiveMessage(event, userInfo, targetInfo) {
+export function handleReceiveMessage(event, userInfo, targetInfo) {
     const data = JSON.parse(event.data);
     const message_data = JSON.parse(data.data);
 
-    console.log('Received WebSocket data:', data);
-    console.log('Received WebSocket message_data:', message_data);
+    if (DEBUG_LOG) { console.log('Received WebSocket data        :', data); }
+    if (DEBUG_LOG) { console.log('Received WebSocket message_data:', message_data); }
 
     const senderInfo = getSenderInfo(message_data.sender_id, userInfo, targetInfo);
 
