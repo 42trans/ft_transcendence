@@ -38,7 +38,6 @@ class UIHelper
 		const backHomeButton = document.createElement('button');
 		backHomeButton.textContent = 'Back Home';
 		backHomeButton.style.display = 'block';
-		// backHomeButton.onclick = () => window.location.href = href;
 		backHomeButton.onclick = () => switchPage(href);
 	}
 
