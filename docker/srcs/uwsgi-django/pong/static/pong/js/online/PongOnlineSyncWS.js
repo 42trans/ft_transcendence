@@ -95,6 +95,7 @@ class PongOnlineSyncWS
 				}
 			} else {
 				console.error("hth: onSocketMessage()): Invalid data:", recvEventData);
+				pongOnlineHandleCatchError(error);
 			}
 			// サーバーに送信する制約を解除するための受信済みを表すフラグ
 			this.gameStateManager.readyToSendNext = true;
@@ -145,7 +146,7 @@ class PongOnlineSyncWS
 	onSocketClose(event) 
 	{
 		try {
-			console.log("onSocketClose(): Code:", event.code);
+			// console.log("onSocketClose(): Code:", event.code);
 			// this.attemptReconnect();
 			// this.clientApp.socket.close();
 		} catch (error) {
