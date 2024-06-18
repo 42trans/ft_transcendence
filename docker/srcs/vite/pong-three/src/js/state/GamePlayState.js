@@ -60,11 +60,18 @@ class GameplayState extends BaseGameState
 							console.log('this.camera.z', this.camera.position.z);
 						}
 			const targetPosition = new THREE.Vector3();
+
+			if (!this.pongEngine.data.objects.plane){
+				throw new Error('hth: this.pongEngine.data.objects.plane is null');
+			}
 			// テーブルの中心位置を取得　実際は0,0,0
 			this.pongEngine.data.objects.plane.getWorldPosition(targetPosition); 
+
+			if (!this.camera){
+				throw new Error('hth: this.camera is null');
+			}
 			// 初期距離を計算
 			this.initialDistance = this.camera.position.distanceTo(targetPosition);
-
 			const zoomParams = 
 			{
 				...GameplayState.zoomParams,
@@ -73,14 +80,12 @@ class GameplayState extends BaseGameState
 				targetPosition: targetPosition,
 				initialDistance: this.initialDistance,
 			};
-
 			const zoomController = new ZoomTable
 			(
 				this.pongEngine,
 				this.camera,
 				this.controls
 			);
-			
 			zoomController.zoomToTable(
 				zoomParams
 			);
@@ -88,10 +93,15 @@ class GameplayState extends BaseGameState
 			// this.scenesMgr.disableAllControls();
 			// this.pongEngine.update.initMouseControl();
 
-			setTimeout(() => 
+			this.timeoutId = setTimeout(() => 
 			{
-				this.scenesMgr.effectsScene.clearScene();
-				this.scenesMgr.backgroundScene.refreshScene(new BackgroundSceneConfig());
+				if (this.pongEngine && this.scenesMgr && this.scenesMgr.effectsScene && this.scenesMgr.backgroundScene) 
+				{
+					this.scenesMgr.effectsScene.clearScene();
+					this.scenesMgr.backgroundScene.refreshScene(new BackgroundSceneConfig());
+				} else {
+					console.warn("hth: pongEngine or scenesMgr is not available");
+				}
 			}, SCENE_CHANGE_DELAY_MS);
 		} catch (error) {
 			console.error('hth: GameplayState.enter() failed', error);
@@ -107,6 +117,10 @@ class GameplayState extends BaseGameState
 	{
 		try {
 						if (DEBUG_FLOW){	console.log("Exiting GamePlay state");	 };
+			// setTimeout をクリアする
+			if (this.timeoutId) {
+				clearTimeout(this.timeoutId);
+			}
 			if (this.PongApp.allScenesManager.gameScene){
 				this.PongApp.allScenesManager.gameScene.clearScene();
 			}

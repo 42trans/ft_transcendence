@@ -7,8 +7,8 @@ import { loadRouteTable } from '../../index.js';
 import { handleCatchError } from '../../index.js';
 import PongApp from '../PongApp.js';
 
-const DEBUG_FLOW = 0;
-const DEBUG_DETAIL = 0;
+const DEBUG_FLOW	= 0;
+const DEBUG_DETAIL	= 0;
 
 /**
  * 試合のスコア管理と試合結果のチェックを担当。スコアの更新と試合の終了条件を評価する。
@@ -146,6 +146,7 @@ class PongEngineMatch
 		if (this.matchData){
 			this.sendMatchResult();
 		}
+		await new Promise(resolve => setTimeout(resolve, 1000)); 
 		await this.displayEndGameButton();
 	}
 

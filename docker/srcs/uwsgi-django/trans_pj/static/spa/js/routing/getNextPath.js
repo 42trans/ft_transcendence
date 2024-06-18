@@ -18,7 +18,9 @@ function getGuestRedirectPath(url) {
       || pathName === routeTable['home'].path
       || pathName === routeTable['game2d'].path
       || pathName === routeTable['signup'].path
-      || pathName === routeTable['login'].path) {
+      || pathName === routeTable['login'].path
+      || pathName === routeTable['veryfy2fa'].path
+      || pathName === routeTable['oAuthLogin'].path) {
     // nextPath = url;
     nextPath = pathName;  // queryStringなどを排除しpathNameに整形
     if (DEBUG) { console.log('guest access to  : ' + nextPath); }
@@ -42,7 +44,8 @@ function getUserRedirectPath(url, isEnable2FA) {
   if (pathName === routeTable['signup'].path
       || pathName === routeTable['login'].path
       || pathName === routeTable['veryfy2fa'].path
-      || (pathName === routeTable['enable2fa'].path && isEnable2FA)) {
+      || (pathName === routeTable['enable2fa'].path && isEnable2FA
+      || pathName === routeTable['oAuthLogin'].path)) {
     // topを表示
     nextPath = routeTable['top'].path;
     if (DEBUG) { console.log('user redirect to: ' + nextPath); }

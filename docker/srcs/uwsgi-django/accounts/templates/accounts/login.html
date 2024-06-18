@@ -66,11 +66,12 @@
 			id="auth42-a-btn"
 			role="button"
 			href="{% url 'accounts:oauth_ft' %}"
+		    data-link
 			>Log in to your 42 account</a>
 
 		 {% comment %} link: Sign up  {% endcomment %}
 		<div class="slideup-text form-sign-text pt-4" >
-			<a href="{{ signup_url }}">Create an Account</a>
+			<a href="{{ signup_url }}" data-link>Create an Account</a>
 		</div>
 
     </div>

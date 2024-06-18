@@ -1,5 +1,7 @@
 // spa/js/utility/isUser.js
 
+const DEBUG_LOG = 0;
+
 export async function isUserLoggedIn() {
     try {
         const response = await fetch('/accounts/api/is-user-logged-in/', {
@@ -10,9 +12,11 @@ export async function isUserLoggedIn() {
         });
         const data = await response.json();
         // alert(`isUserLoggedIn: ${data.is_logged_in}`)
+        if (DEBUG_LOG) { console.log('isUserLoggedIn: ' + data.is_logged_in); }
         return data.is_logged_in;
     } catch (error) {
         console.error('Error:', error);
+        if (DEBUG_LOG) { console.log('isUserLoggedIn: error: ' + error); }
         // alert(`isUserLoggedIn: error: ${error}`)
         return false;
     }

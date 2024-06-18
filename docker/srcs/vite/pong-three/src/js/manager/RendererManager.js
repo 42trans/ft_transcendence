@@ -104,6 +104,21 @@ class RendererManager
 			throw new Error('hth: Canvas element not found in the document.');
 		}
 	}
+
+	// dispose() 
+	// {
+	// 	try {
+	// 		if (this.renderer) 
+	// 		{
+	// 			this.renderer.dispose();
+	// 			this.renderer = null;
+	// 		}
+	// 		RendererManager.instance = null;
+	// 	} catch (error) {
+	// 		console.error('hth: RendererManager dispose() failed', error);
+	// 		handleCatchError(error);
+	// 	}
+	// }
 }
 
 export default RendererManager;

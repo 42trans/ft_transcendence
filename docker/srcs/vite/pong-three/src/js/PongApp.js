@@ -169,7 +169,7 @@ class PongApp
 			}
 			// まとめてeventlistenerを削除
 			this.unregisterListeners();
-
+			
 			this.stopRenderLoop();
 			if (this.allScenesManager){
 				this.allScenesManager.dispose();
@@ -178,6 +178,10 @@ class PongApp
 				{
 				// THREE.WebGLRendererのメソッド
 				// これだけでは不足で、init()でインスタンスの廃棄が必要
+				// TODO_ft-2:　インスタンスの廃棄をdispose()を実装して行うべき
+				// if (RendererManager.instance) {
+				// 	RendererManager.instance.dispose();
+				// }
 				this.renderer.dispose();
 			}
 			if (this.animationMixersManager){
