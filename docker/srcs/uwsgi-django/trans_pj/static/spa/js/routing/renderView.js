@@ -1,11 +1,12 @@
 import { routeTable } from "./routeTable.js";
 import { getUrl } from "../utility/url.js";
 import { setOnlineStatus } from "/static/accounts/js/setOnlineStatus.js";
+
+
 import { isValidParam } from "../utility/isValidParam.js"
 
-
 const DEBUG_DETAIL = 0;
-const DEBUG_LOG = 0;
+const DEBUG_LOG = 1;
 
 // touteTable.jsの記述について
 // game3d: { path: "/app/game/game-3d/", view: Game3D }は、/app/game/game-3d/というパスに対してGame3Dという「クラス」を対応

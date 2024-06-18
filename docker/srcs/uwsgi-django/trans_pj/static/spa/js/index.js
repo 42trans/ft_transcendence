@@ -36,7 +36,7 @@ const setupDOMContentLoadedListener = () => {
     const renderPath = await getNextPath(currentPath)  // guest, userのredirectを加味したPathを取得
     if (DEBUG_DETAIL) { console.log(`DOMContentLoaded: currentPath: ${currentPath} -> renderPath: ${renderPath}`); }
     history.replaceState(null, null, renderPath);  // historyは変更せず、guest, userに応じたURLに変更
-    switchPage(renderPath);
+    renderView(renderPath);
 
     // リンククリック時の遷移を設定
     setupBodyClickListener();
