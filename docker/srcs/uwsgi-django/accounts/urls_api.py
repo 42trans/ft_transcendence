@@ -9,6 +9,7 @@ from accounts.views.is_user import IsUserLoggedInAPIView, IsUserEnabled2FaAPIVie
 from accounts.views.user import UserProfileAPIView
 from accounts.views.user import EditUserProfileAPIView
 from accounts.views.user import UploadAvatarAPI
+from accounts.views.user import IsValidUserIdAPI
 from accounts.views.oauth import OAuthWith42
 from accounts.views.two_factor_auth import Enable2FaAPIView
 from accounts.views.two_factor_auth import Verify2FaAPIView
@@ -36,6 +37,8 @@ urlpatterns = [
     path('api/enable_2fa/'          , Enable2FaAPIView.as_view()        , name='api_enable_2fa'),
     path('api/verify_2fa/'          , Verify2FaAPIView.as_view()        , name='api_verify_2fa'),
     path('api/disable_2fa/'         , Disable2FaView.as_view()          , name='disable_2fa'),
+
+    path('api/is-valid-id/<str:user_id>/', IsValidUserIdAPI.as_view()   , name='is_valid_id'),
 
     path('api/token/refresh/'       , JWTRefreshAPIView.as_view()       , name='api_token_refresh'),
     path('oauth-ft/callback/'       , OAuthWith42.as_view()             , name='oauth_ft_callback'),

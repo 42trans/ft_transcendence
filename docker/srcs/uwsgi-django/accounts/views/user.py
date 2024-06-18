@@ -276,3 +276,18 @@ class GetUserHistoryTemplateView(LoginRequiredMixin, TemplateView):
         user = self.request.user
         context['nickname'] = user.nickname
         return context
+
+
+class IsValidUserIdAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id) -> Response:
+        try:
+            user_id = int(user_id)
+            if user_id <= 0:
+                return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_exists = CustomUser.objects.filter(id=user_id).exists()
+        return Response({'exists': user_exists}, status=status.HTTP_200_OK)
