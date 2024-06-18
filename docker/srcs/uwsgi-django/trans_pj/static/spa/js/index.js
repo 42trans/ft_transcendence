@@ -6,6 +6,7 @@ import { getNextPath } from "./routing/getNextPath.js"
 import { isUserLoggedIn, isUserEnable2FA } from "./utility/isUser.js"
 import { refreshJWT } from "./utility/refreshJWT.js"
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
+import { setNoCache, clearNoCache } from "/static/spa/js/utility/cache.js"
 
 const DEBUG_DETAIL = 0;
 
@@ -34,7 +35,9 @@ const setupDOMContentLoadedListener = () => {
     // 初期ビューを表示
     const currentPath = window.location.href;
     const renderPath = await getNextPath(currentPath)  // guest, userのredirectを加味したPathを取得
-    switchPage(renderPath);
+    if (DEBUG_DETAIL) { console.log(`DOMContentLoaded: currentPath: ${currentPath} -> renderPath: ${renderPath}`); }
+    history.replaceState(null, null, renderPath);  // historyは変更せず、guest, userに応じたURLに変更
+    renderView(renderPath);
 
     // リンククリック時の遷移を設定
     setupBodyClickListener();

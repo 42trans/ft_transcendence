@@ -102,6 +102,9 @@ class UrlAccessTest(TestConfig):
                     self._is_expected_page(PongTopPage)  # topページに遷移していることを確認
 
                 self._logout()  # 次のテストのためにlogout
+            elif page_name == AuthVerify2FaPage:
+                # 42auth->verify2FAルートのために除外
+                continue
             else:
                 self._assert_current_url(url)
                 self._is_not_login_page()  # login pageでないことを確認
@@ -199,7 +202,7 @@ class UrlAccessTest(TestConfig):
             DmPage,
             DmWithUrlBase,  # :nicknameを置き換えるためにUrlBaseでテスト
             AuthEnable2FaPage,
-            AuthVerify2FaPage,
+            # AuthVerify2FaPage,  # 42auth->verify2FAルートのために除外
         }
         return page_name in login_required_pages
 
