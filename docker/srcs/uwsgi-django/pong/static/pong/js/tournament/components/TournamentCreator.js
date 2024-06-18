@@ -167,16 +167,36 @@ class TournamentCreator
 					.map(input => input.value.trim());
 	}
 	
+	/**
+	 * APIのvalidationの詳細: docker/srcs/uwsgi-django/pong/models.py
+	 */
 	_validateFormInputs(nicknames) 
 	{
-		// トーナメント名が未入力の場合
-		if (!this.form.elements['name'].value) {
-			return { isValid: false, errorMessage: 'Tournament name is required.' };
+		// トーナメント名が3文字以上30文字以下の英数字であることを確認
+		const tournamentName = this.form.elements['name'].value.trim();
+		if (!tournamentName || tournamentName.length < 3 || tournamentName.length > 30 || !/^[A-Za-z0-9]+(?:\s+[A-Za-z0-9]+)*$/.test(tournamentName)) {
+			return { isValid: false, errorMessage: 'Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long.' };
 		}
-		// ８箇所すべてのニックネームが入力されているかをチェック
-		if (nicknames.length < 8 || nicknames.includes('')) {
-			return { isValid: false, errorMessage: 'All 8 nicknames are required.' };
+	
+		// // トーナメント名が未入力の場合
+		// if (!this.form.elements['name'].value) {
+		// 	return { isValid: false, errorMessage: 'Tournament name is required.' };
+		// }
+
+		// すべて(8つ)のニックネームが3文字以上30文字以下の英数字であることを確認
+		if (nicknames.length !== 8 || !nicknames.every(nickname => nickname.length >= 3 && nickname.length <= 30 && /^[A-Za-z0-9]+$/.test(nickname))) {
+			return { isValid: false, errorMessage: 'All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long.' };
 		}
+		
+		// ニックネームがすべてユニークであることを確認（Setは重複不可）
+		if (new Set(nicknames).size !== 8) {
+			return { isValid: false, errorMessage: 'All 8 nicknames must be unique.' };
+		}
+
+		// // ８箇所すべてのニックネームが入力されているかをチェック
+		// if (nicknames.length < 8 || nicknames.includes('')) {
+		// 	return { isValid: false, errorMessage: 'All 8 nicknames are required.' };
+		// }
 		return { isValid: true };
 	}
 
