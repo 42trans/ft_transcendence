@@ -3,6 +3,8 @@ import datetime
 import random
 import string
 import time
+import requests
+import urllib3
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoAlertPresentException, NoSuchElementException, StaleElementReferenceException
@@ -18,6 +20,9 @@ from pyotp import TOTP
 from django.conf import settings
 from django.test import LiveServerTestCase
 from accounts.models import CustomUser
+
+# 自己署名証明書の警告を非表示にする
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # uwsgi-djangoコンテナからアクセスできないためnginxコンテナ経由とする
 kURL_PREFIX = "https://nginx"
@@ -371,8 +376,10 @@ class TestConfig(LiveServerTestCase):
             set_up_key = self._setting_enable_2fa()
             self._assert_is_2fa_enabled(expected_2fa_enabled=True)
 
+        id = self._get_id()
+
         self._logout()
-        return set_up_key
+        return id, set_up_key
 
     def _setting_enable_2fa(self):
         """
@@ -424,3 +431,15 @@ class TestConfig(LiveServerTestCase):
         self._send_to_elem(By.ID, "nickname-input", target_nickname)
         signup_button = self._element(By.ID, "nickname-submit")
         self._click_button(signup_button, wait_for_button_invisible=True)
+
+    def _get_id(self):
+        user_profile_url = f"{kURL_PREFIX}/accounts/api/user/profile/"
+        session = requests.Session()
+
+        for cookie in self.driver.get_cookies():
+            session.cookies.set(cookie['name'], cookie['value'])
+
+        response = session.get(user_profile_url, verify=False)
+        # print(response.text)  # レスポンスの内容を出力
+        self.assertEqual(response.status_code, 200)
+        return response.json()['id']

@@ -52,7 +52,7 @@ class UrlAccessTest(TestConfig):
                               nickname=self.user2_nickname,
                               password=self.password)
 
-        self.set_up_key = self._create_new_user(
+        _, self.set_up_key = self._create_new_user(
                               email=self.user3_email,
                               nickname=self.user3_nickname,
                               password=self.password,
