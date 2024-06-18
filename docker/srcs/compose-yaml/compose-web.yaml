@@ -91,6 +91,10 @@ services:
     volumes:
       - ${VOLUME_PATH:?}/postgres:/var/lib/postgresql/data
       # - ${VOLUME_PATH:?}:/container_output
+      # Django-postgres https通信用（Dockerfile, entorypoint.shは公式のものをそのまま使用したいので編集せずに済むようにymlで上書き）
+      # - ./postgres/custom-postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+      # - ./postgres/ssl/server.crt:/etc/postgresql/ssl/server.crt
+      # - ./postgres/ssl/server.key:/etc/postgresql/ssl/server.key
     networks:
       - db_transcendence
     ports:
