@@ -22,7 +22,7 @@ export const switchPage = (targetPath) => {
 };
 
 
-const getSelectedRoute = (currentPath, routeTable) => {
+export const getSelectedRoute = (currentPath, routeTable) => {
   let params = {};  // URLパラメータを格納するオブジェクト
 
   // パスパラメータを含む可能性があるルートを評価

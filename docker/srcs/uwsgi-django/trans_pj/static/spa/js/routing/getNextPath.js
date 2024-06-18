@@ -2,6 +2,7 @@
 
 import { routeTable } from "./routeTable.js"
 import { isUserLoggedIn, isUserEnable2FA } from "../utility/isUser.js"
+import { getSelectedRoute } from "./renderView.js"
 
 
 const DEBUG = 0;
@@ -55,8 +56,25 @@ function getUserRedirectPath(url, isEnable2FA) {
 }
 
 
+// TOPを表示するURLであるか判定する
+// TOP or Invalid URLの場合はTOPを表示
+//  invalidの判定にgetSelectedRoute()を使用。renderView側にまとめた方が良さそう...
+const isRenderTopPageUrl = (url) => {
+  const urlObject = new URL(url);
+  const pathName = urlObject.pathname;
+  return getSelectedRoute(pathName, routeTable) === routeTable['top'];
+}
+
+
 // login userであれば/auth/への遷移を/app/に切り返る
 export async function getNextPath(url) {
+  if (DEBUG) { console.log('getNextPath: ' + url); }
+
+  if (isRenderTopPageUrl(url)) {
+    if (DEBUG) { console.log(' invalid or top -> top'); }
+    return routeTable['top'].path;
+  }
+
   const isLoggedIn = await isUserLoggedIn();
   if (!isLoggedIn) {
     return getGuestRedirectPath(url);
