@@ -36,37 +36,7 @@ export const switchPage = (targetPath) => {
   if (DEBUG_LOG) { console.log(` history.push: ${targetPathName}`); }
   // 戻る、進むでも対応するために、event発行はrenderView内部に移動
   renderView(targetPathName);
-  
-  // renderView(targetPathName).then(() => {
-  //   if (DEBUG_DETAIL) { console.log('event: switchPageResetState');  }
-  //   window.dispatchEvent(new CustomEvent('switchPageResetState'));
-  //   // setOnlineStatus();
-  // });
 };
-
-// export const switchPage = (targePath) => {
-//   // const currentUrl = new URL(window.location.href);
-//   const { targetPathName, targetQueryString } = getPathAndQueryString(targePath);
-
-//   // console.log('path:', targetPathName);
-//   // console.log('queryString:', targetQueryString);
-
-//   // query string込みでURLをpush
-//   history.pushState(null, null, targetPathName + targetQueryString);
-
-//   // DEBUG console log
-//   // console.log(`switchPage`)
-//   // console.log(` currentUrl        :${currentUrl}`)
-//   // console.log(` targetPathName    :${targetPathName}`)
-//   // console.log(` targetQueryString :${targetQueryString}`)
-//   // console.log(` currentPath       :${window.location.pathname}`)
-//   // alert(`[debug] switchPage consolelog確認用`)
-
-//   renderView(targetPathName).then(() => {
-//     // resetState イベントを発行
-//     window.dispatchEvent(new CustomEvent('switchPageResetState'));
-//   });
-// };
 
 
 const getSelectedRoute = (currentPath, routeTable) => {
@@ -160,17 +130,3 @@ export const renderView = async (path) => {
   // 
   setOnlineStatus();
 };
-
-// export const renderView = async (path) => {
-//   // console.log("    renderView 1: path: " + path)
-//   const view = await getView(path)
-
-//   // HTMLの描画 <div id="app">
-//   const htmlSrc = await view.getHtml();
-//   document.querySelector("#spa").innerHTML = htmlSrc;
-//   // console.log("    renderView 2")
-
-//   // スクリプトの読み込みと実行
-//   await view.executeScript();
-//   // console.log("    renderView 3")
-// };

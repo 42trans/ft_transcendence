@@ -66,8 +66,8 @@ class Consumer(AsyncWebsocketConsumer):
 
 
     @database_sync_to_async
-    def _get_user_by_nickname(self, nickname: str):
-        return CustomUser.objects.get(nickname=nickname)
+    def _get_user_by_id(self, id: int):
+        return CustomUser.objects.get(id=id)
 
 
     @database_sync_to_async

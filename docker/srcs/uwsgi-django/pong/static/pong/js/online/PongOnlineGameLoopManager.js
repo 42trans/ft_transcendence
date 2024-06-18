@@ -2,14 +2,15 @@
 import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js"
 
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-let DEBUG_FLOW 		= 0;
-let DEBUG_DETAIL 	= 0;
-let TEST_TRY1 = 0;
-let TEST_TRY2 = 0;
-let TEST_TRY3 = 0;
+const DEBUG_FLOW 		= 0;
+const DEBUG_DETAIL		= 0;
+const TEST_TRY1 		= 0;
+const TEST_TRY2 		= 0;
+const TEST_TRY3 		= 0;
 /**
  * 参考:【window.cancelAnimationFrame() - Web API | MDN】 <https://developer.mozilla.org/ja/docs/Web/API/Window/cancelAnimationFrame>
  */
@@ -22,6 +23,8 @@ class PongOnlineGameLoopManager
 		this.gameStateManager	= gameStateManager
 
 		this.animationFrameId	= null; 
+		this.isEndGameButtonListenerRegistered = false;
+		this.handleEndGameButtonClick = this.handleEndGameButtonClick.bind(this);
 	}
 
 
@@ -41,7 +44,7 @@ class PongOnlineGameLoopManager
 		this.renderer.render(this.gameStateManager.ctx, this.gameStateManager.gameState.game_settings.field, this.gameStateManager.gameState);
 		// プログレスバーを表示
 		this.showProgressBar();
-		// 2秒待機してボールサーブ（ループ開始）
+		// 2000ms = 2秒待機してボールサーブ（ループ開始）
 		this.startGameLoopAfterDelay(2000);
 	}
 
@@ -90,8 +93,7 @@ class PongOnlineGameLoopManager
 					if (elapsed >= this.desiredFrameTimeMs) 
 					{
 						if (!gameState) {
-							console.error("hth: gameState is null.");
-							return;
+							throw new Error("hth: gameState is null.");
 						} 
 						
 						if (gameState.is_running) {
@@ -112,6 +114,7 @@ class PongOnlineGameLoopManager
 							if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 				} catch(error) {
 					console.error("hth: gameLoop error:", error);
+					pongOnlineHandleCatchError(error);
 				}
 			}
 			// 最初のフレームを要求
@@ -127,9 +130,10 @@ class PongOnlineGameLoopManager
 		try {
 			// 最終スコアの描画: 終了フラグ受信後に、最後に一度だけ描画する（静止画像）
 			this.renderer.render(this.ctx, this.field, gameState);
-					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
+						if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 		} catch(error) {
 			console.error("hth: stopGameLoop():  renderer.render() failed:", error);
+			pongOnlineHandleCatchError(error);
 		}
 
 		try {
@@ -138,10 +142,11 @@ class PongOnlineGameLoopManager
 			// ws接続をcloseする
 			// このタイミングは、loopの最後であり、サーバーからのis_running=false受け取り直後でもある
 			this.clientApp.socket.close();
-					if (DEBUG_FLOW) {	console.log("stopGameLoop(): socket.close");	}
-					if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
+						if (DEBUG_FLOW) {	console.log("stopGameLoop(): socket.close");	}
+						if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 		} catch(error) {
 			console.error("hth: stopGameLoop(): updateEndGameBtn() failed:", error);
+			pongOnlineHandleCatchError(error);
 		}
 
 		// アニメーションを指定してキャンセル
@@ -151,11 +156,37 @@ class PongOnlineGameLoopManager
 		}
 		// loopを止めるフラグ
 		this.gameStateManager.isGameLoopStarted = false;
-
-				if (DEBUG_FLOW) {	console.log("stopGameLoop(): end");	}
+					if (DEBUG_FLOW) {	console.log("stopGameLoop(): end");	}
 	}
 	
 
+	registerEndGameButtonListener()
+	{
+		const endGameButton = document.getElementById('hth-pong-online-back-to-home-btn');
+		if (endGameButton && !this.isEndGameButtonListenerRegistered) {
+			endGameButton.addEventListener('click', this.handleEndGameButtonClick);
+			this.isEndGameButtonListenerRegistered = true;
+						if (DEBUG_FLOW) {	console.log('registerEndGameButtonListener: done');	}
+		}
+	}
+
+	unregisterEndGameButtonListener()
+	{
+		const endGameButton = document.getElementById('hth-pong-online-back-to-home-btn');
+		if (endGameButton && this.isEndGameButtonListenerRegistered) {
+			endGameButton.removeEventListener('click', this.handleEndGameButtonClick);
+			this.isEndGameButtonListenerRegistered = false;
+						if (DEBUG_FLOW) {	console.log('unregisterEndGameButtonListener: done');	}
+		}
+	}
+
+	handleEndGameButtonClick()
+	{
+		const redirectTo = routeTable['top'].path;
+		switchPage(redirectTo);
+	}
+
+	
 	// ゲーム終了時に Back to Home ボタンリンクを表示する	
 	updateEndGameBtn() 
 	{
@@ -163,15 +194,13 @@ class PongOnlineGameLoopManager
 			const endGameButton = document.getElementById('hth-pong-online-back-to-home-btn');
 			if (endGameButton) {
 				endGameButton.style.display = 'block';
-				endGameButton.addEventListener('click', () => {
-					const redirectTo = routeTable['top'].path;
-					switchPage(redirectTo);
-				});
+				this.registerEndGameButtonListener();
 			} else {
-				console.error('End Game button not found');
+				console.error('hth: End Game button not found');
 			}
 		} catch (error){
 			console.error('hth: updateEndGameBtn() failed: ', error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -181,12 +210,9 @@ class PongOnlineGameLoopManager
 			cancelAnimationFrame(this.animationFrameId);
 			this.animationFrameId = null;
 		}
-	
-		const endGameButton = document.getElementById('hth-pong-online-back-to-home-btn');
-		if (endGameButton) {
-			endGameButton.removeEventListener('click', this.endGameButtonClickHandler);
-		}
-
+		// イベントリスナー削除:終了時ボタン
+		this.unregisterEndGameButtonListener();
+		
 		this.renderer = null;
 		this.clientApp = null;
 		this.gameStateManager = null;

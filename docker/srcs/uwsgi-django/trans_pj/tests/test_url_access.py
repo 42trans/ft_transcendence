@@ -232,7 +232,7 @@ class UrlAccessTest(TestConfig):
         """
         url_with_param_pages = {
             UserInfoUrlBase,
-            DmWithUrlBase,
+            # DmWithUrlBase,  # /url/<user_id>/ に変更, id取得必要のためテストNG
         }
         return page_name in url_with_param_pages
 

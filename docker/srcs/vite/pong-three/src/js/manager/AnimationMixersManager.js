@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { handleCatchError } from '../../index.js';
 
 const DEBUG_FLOW = 0;
 const DEBUG_DETAIL = 0;
@@ -39,7 +40,7 @@ class AnimationMixersManager
 			this.mixersMap.set(object.uuid, mixer);
 		} catch (error) {
 			console.error('hth: addMixer() failed', error);
-			// 他の部分の処理には影響を与えないので伝播させない errorログの出力のみ errorログの出力のみ
+			handleCatchError(error);
 		}
 	}
 
@@ -57,7 +58,7 @@ class AnimationMixersManager
 			this.clock = null; 
 		} catch (error) {
 			console.error('hth: dispose() failed', error);
-			// 他の部分の処理には影響を与えないので伝播させない errorログの出力のみ
+			handleCatchError(error);
 		}
 	}
 	
@@ -67,7 +68,7 @@ class AnimationMixersManager
 		{
 			if (!object || !object.uuid) 
 			{
-				console.error("Invalid object or missing UUID.");
+				console.error("hth: Invalid object or missing UUID.");
 				return;
 			}
 		
@@ -78,7 +79,7 @@ class AnimationMixersManager
 			}
 		} catch (error) {
 			console.error('hth: removeMixer() failed', error);
-			// 他の部分の処理には影響を与えないので伝播させない errorログの出力のみ
+			handleCatchError(error);
 		}
 	}
 
@@ -98,21 +99,21 @@ class AnimationMixersManager
 						mixer.update(delta);
 					} catch (error) {
 						// ミキサーの更新に失敗した場合
-						console.error(`Error updating mixer for UUID: ${uuid}:`, error);
+						console.error(`hth: Error updating mixer for UUID: ${uuid}:`, error);
 						// 不正なミキサーをマップから削除
 						this.mixersMap.delete(uuid);
 						// 他のミキサーの更新処理を継続
 					}
 				} else {
-					console.error(`Invalid mixer for UUID: ${uuid}`);
+					console.error(`hth: Invalid mixer for UUID: ${uuid}`);
 					this.mixersMap.delete(uuid);
+					// 他のミキサーの更新処理を継続
 				}
 			});
 		} catch (error) {
 			console.error('hth: update() failed', error);
-			// 他の部分の処理には影響を与えないので伝播させない errorログの出力のみ
+			handleCatchError(error);
 		}
-		
 	}
 
 }

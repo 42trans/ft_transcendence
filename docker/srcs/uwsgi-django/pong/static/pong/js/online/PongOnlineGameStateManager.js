@@ -2,15 +2,16 @@
 import PongOnlineGameLoopManager from "./PongOnlineGameLoopManager.js";
 import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "./PongOnlineRenderer.js";
+import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js"
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-let DEBUG_FLOW 		= 0;
-let DEBUG_DETAIL 	= 0;
-let DEBUG_DETAIL2 	= 0;
-let TEST_TRY1 = 0;
-let TEST_TRY2 = 0;
-let TEST_TRY3 = 0;
-let TEST_TRY4 = 0;
+const DEBUG_FLOW 		= 0;
+const DEBUG_DETAIL 		= 0;
+const DEBUG_DETAIL2 	= 0;
+const TEST_TRY1 		= 0;
+const TEST_TRY2 		= 0;
+const TEST_TRY3 		= 0;
+const TEST_TRY4 		= 0;
 
 /**
  * Gameに必要なデータ(paddle,ballなどのオブジェクト、試合のスコアや状態など)を格納
@@ -25,9 +26,10 @@ class PongOnlineGameStateManager
 			this.loopManager		= new PongOnlineGameLoopManager(clientApp, this)
 			this.clientApp 			= clientApp
 
-				if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 		} catch (error) {
-			console.error("PongOnlineGameStateManager.constructor() failed:", error);
+			console.error("hth: PongOnlineGameStateManager.constructor() failed:", error);
+			pongOnlineHandleCatchError(error);
 		}
 
 		this.ctx				= null
@@ -48,33 +50,55 @@ class PongOnlineGameStateManager
 			state: {},
 			is_running: false
 		};
+
+		this.isResizeListenerRegistered = false;
+		this.handleResize = this.handleResize.bind(this);
 	}
 
 	// ------------------------------
 	// game start
 	// ------------------------------
+	registerResizeListener()
+	{
+		if (!this.isResizeListenerRegistered) {
+			window.addEventListener('resize', this.handleResize);
+			this.isResizeListenerRegistered = true;
+						if (DEBUG_FLOW) {	console.log('registerResizeListener: done');	}
+		}
+	}
+
+	unregisterResizeListener()
+	{
+		if (this.isResizeListenerRegistered) {
+			window.removeEventListener('resize', this.handleResize);
+			this.isResizeListenerRegistered = false;
+						if (DEBUG_FLOW) {	console.log('unregisterResizeListener: done');	}
+		}
+	}
+	
+	handleResize()
+	{
+		try {
+						if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
+			if (this.renderer){
+				this.renderer.resizeForAllDevices();
+			}
+		} catch(resizeError) {
+			console.error("hth: Error during resize:", resizeError);
+			pongOnlineHandleCatchError(error);
+		}
+	}
+
 	handleGameStart()
 	{
 		try {
 					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
-
 			this.initCanvas();
-			
-			window.addEventListener('resize', () => 
-			{
-				try {
-							if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
-					if (this.renderer){
-						this.renderer.resizeForAllDevices();
-					}
-				} catch(resizeError) {
-					console.error("hth: Error during resize:", resizeError);
-				}
-			});
-
+			this.registerResizeListener();
 			this.loopManager.startGameLoop(this.gameFPS);
 		} catch(error) {
 			console.error("hth: handleGameStart() failed: ", error);
+			pongOnlineHandleCatchError(error);
 		}
 	}
 
@@ -88,10 +112,7 @@ class PongOnlineGameStateManager
 		}
 		this.ctx		= this.canvas.getContext("2d");
 		this.field		= this.gameState.game_settings.field;
-
-				if (DEBUG_DETAIL){
-					console.log('this.field: ', this.field);	}
-
+				if (DEBUG_DETAIL){	console.log('this.field: ', this.field);	}
 		this.renderer.initRenderer();
 		this.renderer.resizeForAllDevices();
 	}
@@ -123,9 +144,10 @@ class PongOnlineGameStateManager
 
 			} catch(error) {
 				console.error("hth: sendClientState() failed: ", error);
+				pongOnlineHandleCatchError(error);
 			}
 		} else {
-			// 通信の遅延もあるのでエラー出力ではない。大量に出力されて負荷が高いのでコメントアウト
+			// 通信の遅延もあるのでエラーではない。大量に出力されて負荷が高いのでコメントアウト
 			// console.log("sendClientState() failed: WebSocket not ready or previous message pending.");
 
 					if (DEBUG_DETAIL2)
@@ -141,14 +163,11 @@ class PongOnlineGameStateManager
 	handleGameEnd(socket, endGameState)
 	{
 		this.updateState(endGameState);
-		
 				if (DEBUG_DETAIL){
 					console.log("onSocketMessage: finalGameState:", this.finalGameState)
 					console.log("onSocketMessage: gameState:", this.gameState)
 				}
-				if (DEBUG_FLOW){
-					console.log('handleGameEnd(): done');
-				}
+				if (DEBUG_FLOW){	console.log('handleGameEnd(): done');	}
 	}
 	// ------------------------------
 	// getter , setter
@@ -162,8 +181,10 @@ class PongOnlineGameStateManager
 	}
 
 	dispose() {
-		window.removeEventListener('resize', this.resizeHandler);
-
+		// window.removeEventListener('resize', this.resizeHandler);
+		// イベントリスナー削除: window resize
+		this.unregisterResizeListener();
+		
 		if (this.renderer) {
 			this.renderer.dispose();
 			this.renderer = null;

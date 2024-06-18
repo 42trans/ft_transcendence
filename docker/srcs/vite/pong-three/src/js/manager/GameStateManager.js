@@ -54,7 +54,6 @@ class GameStateManager
 						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 		} catch (error) {
 			console.error('hth: changeState() failed', error);
-			// この場合、ゲームに入れないのでリセットする
 			handleCatchError(error);
 		}
 	}
@@ -70,6 +69,7 @@ class GameStateManager
 						if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 		} catch (error) {
 			console.error('hth: update() failed', error);
+			handleCatchError(error);
 		}
 	}
 
@@ -102,6 +102,7 @@ class GameStateManager
 						if (TEST_TRY3){	throw new Error('TEST_TRY3');	}
 		} catch (error) {
 			console.error('hth: dispose() failed', error);
+			handleCatchError(error);
 		}
 	}
 }

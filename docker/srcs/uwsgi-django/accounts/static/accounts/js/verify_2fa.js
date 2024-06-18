@@ -25,17 +25,17 @@ function verify2FA() {
 					switchPage(data.redirect);
 				} else {
 					// alert('[tmp] varify2fa error' + data.error)
-					console.error('Error:', data.error);
+					throw new Error(data.error);
 				}
 			} else if (data.message) {
 				// Verified
-				console.log(data.message);
+				// console.log(data.message);
 				// alert('[tmp] varify2fa success, redirect:' + data.redirect)
 				switchPage(data.redirect)  // Redirect on successful verification
                 updateHeader();
 			}
 		})
-		.catch(error => console.error("Error:", error));
+		.catch(error => console.error("hth: Error:", error));
 
 	clearForm()
 }

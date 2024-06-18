@@ -23,12 +23,12 @@ export function updateNickname(event) {
 				document.getElementById('message-area').textContent = data.error;
 			} else {
 				document.getElementById('message-area').textContent = data.message;
-				console.log('Success:', data.message);
+				// console.log('Success:', data.message);
 				const redirectTo = routeTable['userProfile'].path;
 				switchPage(redirectTo)
 			}
 		})
-		.catch(error => console.error('Error:', error));
+		.catch(error => console.error('hth: Error:', error));
 }
 
 
@@ -53,12 +53,12 @@ export function updatePassword(event) {
 				document.getElementById('message-area').textContent = data.error;
 			} else {
 				document.getElementById('message-area').textContent = data.message;
-				console.log('Success:', data.message);
+				// console.log('Success:', data.message);
 				const redirectTo = routeTable['userProfile'].path;
 				switchPage(redirectTo)
 			}
 		})
-		.catch(error => console.error('Error:', error));
+		.catch(error => console.error('hth: Error:', error));
 }
 
 

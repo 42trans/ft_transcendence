@@ -44,10 +44,5 @@ export default class extends AbstractView {
     if (typeof window.disposePongApp === 'function') {
       window.disposePongApp();
     }
-    // if (window.pongApp) {
-    //       if (DEBUG_FLOW) {  console.log('GameMatch: disopose(): window.pongApp is true'); }
-    //   await window.pongApp.destroy();
-    //   window.pongApp = null;
-    // }
   }
 }

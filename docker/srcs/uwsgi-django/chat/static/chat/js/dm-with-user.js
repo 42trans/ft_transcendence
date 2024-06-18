@@ -14,14 +14,13 @@ export function initDM() {
         return
     }
 
-    const dmTargetNickname = JSON.parse(
-        document.getElementById('target_nickname').textContent
-    );
+    const userInfo = JSON.parse(document.getElementById('user_info').textContent);
+    const targetInfo = JSON.parse(document.getElementById('target_info').textContent);
 
-    applyStylesToInitialLoadMessages(dmTargetNickname);
+    applyStylesToInitialLoadMessages(targetInfo);
     scrollToBottom();  // 受信時にスクロール位置を調整
 
-    setupDmWebsocket(dmTargetNickname);
+    setupDmWebsocket(userInfo, targetInfo);
     setupSendKeyEventListener();
 }
 

@@ -2,10 +2,10 @@
 import Home         from "../views/Home.js";
 import PongTop      from "../views/pong/PongTop.js";
 
-import FreePlay     from "../views/pong/FreePlay.js";
+// import FreePlay     from "../views/pong/FreePlay.js";
 import Tournament   from "../views/pong/Tournament.js";
 import Game2D       from "../views/pong/Game2D.js";
-import Game3D       from "../views/pong/Game3D.js";
+// import Game3D       from "../views/pong/Game3D.js";
 import GameMatch    from "../views/pong/GameMatch.js";
 
 import GameHistory  from "../views/user/GameHistory.js";
@@ -44,7 +44,7 @@ export const routeTable = {
   // game
   tournament    : { path: "/app/game/tournament/",   view: Tournament },
   game2d        : { path: "/app/game/game-2d/",      view: Game2D },
-  game3d        : { path: "/app/game/game-3d/",      view: Game3D },
+  // game3d        : { path: "/app/game/game-3d/",      view: Game3D },
   gameMatch     : { path: "/app/game/match/:matchId/",  view: GameMatch },
 
   gameHistory   : { path: "/app/user/game-history/", view: GameHistory },
@@ -56,7 +56,7 @@ export const routeTable = {
 
   friends       : { path: "/app/user/friends/",               view: Friends },
   dmSessions    : { path: "/app/dm/",                         view: DMSessions },
-  dmWithUser    : { path: "/app/dm/:nickname/",               view: DMwithUser },
+  dmWithUser    : { path: "/app/dm/:userId/",                 view: DMwithUser },
   dmWithUserBase: { path: "/app/dm/",                         view: DMwithUser },
 
   editProfile   : { path: "/app/user/profile/edit/",          view: EditProfile },

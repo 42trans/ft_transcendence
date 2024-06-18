@@ -31,6 +31,7 @@ class RendererManager
 			return RendererManager.instance;
 		} catch (error) {
 			console.error('hth: RendererManager constructor() failed', error);
+			handleCatchError(error);
 		}
 	}
 
@@ -59,6 +60,7 @@ class RendererManager
 			return RendererManager.instance;
 		} catch (error) {
 			console.error('hth: getInstance() failed', error);
+			handleCatchError(error);
 		}
 	}
 
@@ -73,6 +75,7 @@ class RendererManager
 			return RendererManager.instance.renderer;
 		} catch (error) {
 			console.error('hth: getRenderer() failed', error);
+			handleCatchError(error);
 		}
 	}
 
@@ -88,6 +91,7 @@ class RendererManager
 						if (TEST_TRY5){	this.renderer = null;	}
 		} catch (error) {
 			console.error('hth: initializeRenderer() failed', error);
+			handleCatchError(error);
 		}
 	}
 

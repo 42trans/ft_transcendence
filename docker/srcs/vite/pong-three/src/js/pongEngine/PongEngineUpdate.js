@@ -1,3 +1,4 @@
+// docker/srcs/vite/pong-three/src/js/pongEngine/PongEngineUpdate.js
 import PongEngineKey from './PongEngineKey'
 
 /**
@@ -108,15 +109,9 @@ class PongEngineUpdate
 		let nextPositionY = paddle.position.y + paddle.dirY;
 		// パドルがフィールドの上端または下端を超えないようにmax,min()で補正する
 		// 理由：衝突の直前の最後の一回はspeed分だけ動くのでフィールドからはみ出る場合がある。
-		let maxTop = -this.field.height / 2 + paddle.height / 2;
-		let maxBottom = this.field.height / 2 - paddle.height / 2;
-		paddle.position.y = Math.max(Math.min(nextPositionY, maxBottom), maxTop);
-
-		// if (PongEngineKey.isDown(keyDown) && paddle.position.y < this.field.height / 2 - paddle.height) {
-		// 	paddle.position.y += paddle.speed;
-		// } else if (PongEngineKey.isDown(keyUp) && paddle.position.y > -this.field.height / 2) {
-		// 	paddle.position.y -= paddle.speed;
-		// }
+		let maxTop			= -this.field.height / 2 + paddle.height / 2;
+		let maxBottom		= this.field.height / 2 - paddle.height / 2;
+		paddle.position.y	= Math.max(Math.min(nextPositionY, maxBottom), maxTop);
 		
 	}
 	
@@ -141,8 +136,23 @@ class PongEngineUpdate
 		if (this.pongEngine.isRunning){
 			this.updateBallPosition();
 		}
-		
 		this.handlePaddleMovement();
+	}
+
+	dispose()
+	{
+		this.pongEngine 	= null;
+		this.physics		= null;
+		this.match			= null;
+		this.pongEngineData = null;
+		this.ball			= null;
+		this.paddle1		= null;
+		this.paddle2		= null;
+		this.field			= null;
+		this.difficulty		= null;
+		this.maxBallSpeed	= null;
+		this.initBallSpeed	= null;
+		this.isResetting	= false;
 	}
 
 }

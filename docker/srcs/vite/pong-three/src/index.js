@@ -32,11 +32,9 @@ import './css/3d.css';
 // DEBUG TEST FLAG
 const DEBUG_FLOW	= 0;
 const DEBUG_DETAIL1	= 0;
-const DEBUG_DETAIL2	= 0;
 const TEST_TRY1		= 0;
 const TEST_TRY2		= 0;
 const TEST_TRY3		= 0;
-const TEST_TRY4		= 0;
 
 window.pongApp = null;
 let isEventListenerRegistered = false; 
@@ -48,6 +46,12 @@ async function initPongApp(env)
 	try {
 					if (DEBUG_FLOW) {	console.log('initPongApp(): start');	}
 					if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
+		// URLをチェックしてはじく
+		if (!await _isGameMatchUrl()) {
+						if (DEBUG_FLOW) {	console.log('initPongApp(): not game match url');	}
+			return;
+		}
+
 		if (window.pongApp){
 			await window.pongApp.destroy();
 			window.pongApp = null;
@@ -60,7 +64,16 @@ async function initPongApp(env)
 		handleCatchError(error);
 	}	
 }
-
+async function _isGameMatchUrl() {
+	const routeTable = await loadRouteTable();
+	const currentPath = window.location.pathname;
+				if (DEBUG_FLOW) {	console.log('routeTable:', routeTable);	}
+	const gameMatchPath = routeTable['gameMatch'].path;
+	const gameMatchRegex = new RegExp(`^${gameMatchPath.replace(':matchId', '\\d+')}$`);
+				if (DEBUG_DETAIL1) {	console.log('init()', currentPath, gameMatchRegex);	}
+	return gameMatchRegex.test(currentPath);
+}
+// 3Dgameインスタンスの作成
 initPongApp();
 // ---------------------------------------
 // switchPageResetState
@@ -70,29 +83,28 @@ async function handleSwitchPageResetState()
 {
 	try {
 					if (DEBUG_FLOW) { console.log('switchPageResetState: event'); }
+		// 常にinitを呼び出す。内部でURLをチェックして処理中断する。
 		await initPongApp();
 	} catch (error) {
 		console.error('hth: handleSwitchPageResetState() failed', error);
 		handleCatchError(error);
 	}	
-
 }
 
 function registerEventListenerSwitchPageResetState() 
 {
 	try {
 					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
-		if (isEventListenerRegistered) {
-			return; 
+		if (!isEventListenerRegistered) {
+			window.addEventListener('switchPageResetState', handleSwitchPageResetState);
+			isEventListenerRegistered = true;
 		}
-		window.addEventListener('switchPageResetState', handleSwitchPageResetState);
-		isEventListenerRegistered = true;
 	} catch (error) {
 		console.error('hth: registerEventListenerSwitchPageResetState() failed', error);
 		handleCatchError(error);
 	}
 }
-
+// SPA中は削除できないので、重複しないようにフラグを見て書き換える
 registerEventListenerSwitchPageResetState();
 // ---------------------------------------
 // dispose
@@ -119,7 +131,7 @@ if (!window.disposePongApp) {
 // handle error
 // ---------------------------------------
 // vite コンテナから Django static/ のファイルをimportするための処理
-async function loadRouteTable() {
+export async function loadRouteTable() {
 	if (import.meta.env.MODE === 'development') {
 		// 開発環境用のパス
 		const devUrl = new URL('../../static/spa/js/routing/routeTable.js', import.meta.url);
@@ -135,13 +147,7 @@ async function loadRouteTable() {
 
 export async function handleCatchError(error = null) 
 {
-	// SPAの状態をリセットしない場合
-	// const switchPage = await loadSwitchPage();
-	// const redirectTo = routeTable['top'].path;
-	// switchPage(redirectTo);
-
 	// ゲームでのエラーは深刻なので、location.hrefでSPAの状態を完全にリセットする
-	
 	const routeTable = await loadRouteTable();
 	if (error) {
 		alert("エラーが発生しました。トップページに遷移します。 error: " + error);
@@ -150,18 +156,3 @@ export async function handleCatchError(error = null)
 	}
 	window.location.href = routeTable['top'].path;
 }
-
-// SPAの状態をリセットしない場合
-// async function loadSwitchPage() {
-// 	if (import.meta.env.MODE === 'development') {
-// 		// 開発環境用のパス
-// 		const devUrl = new URL('../../static/spa/js/routing/renderView.js', import.meta.url);
-// 		const module = await import(devUrl.href);
-// 		return module.switchPage;
-// 	} else {
-// 		// 本番環境用のパス
-// 		const prodUrl = new URL('../../../spa/js/routing/renderView.js', import.meta.url);
-// 		const module = await import(prodUrl.href);
-// 		return module.switchPage;
-// 	}
-// }

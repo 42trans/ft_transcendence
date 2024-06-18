@@ -10,7 +10,6 @@
   - 連携: github, discord, spotify
     - テスト時注意
       - 同一アドレスで登録できない(githubとdiscordで同じメアドの場合)。連続で挙動テストするときに発生するかも。adm:admで管理者でインして、emailが同一のuserを削除してテストしてください
-  - TODO_ft：Basic認証の下にAuthボタン > Basic認証機能を削除するか検討中
   <img src="img/スクリーンショット 2024-03-31 21.45.44.png" width="450" alt="alt">
   <img src="img/スクリーンショット 2024-04-01 8.51.45.png" width="450" alt="alt">
 
@@ -29,7 +28,7 @@
 
 ![alt text](<img/スクリーンショット 2024-03-30 8.03.02.png>)
 
-## TODO_ft
+## TODO_ft_2
 
 - 優先
 - Auth0

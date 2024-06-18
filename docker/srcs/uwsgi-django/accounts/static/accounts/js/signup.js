@@ -30,7 +30,7 @@ function signupUser() {
 				if (DEBUG_LOG) { console.log('signup error: next: ' + data.redirect); };
 				switchPage(data.redirect);
 			} else {
-				console.error('Error:', data.error);
+				throw new Error(data.error);
 			}
 		} else if (data.message) {
 			// Verified

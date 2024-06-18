@@ -86,7 +86,7 @@ class DMConsumer(Consumer):
         timestamp = message_instance.timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
         send_data = {
-            'sender'            : self.user.nickname,
+            'sender_id'         : self.user.id,
             'message'           : message,
             'timestamp'         : timestamp,
             'is_system_message' : False,
@@ -114,7 +114,7 @@ class DMConsumer(Consumer):
                 f'room_{dm_session.id}',
                 {
                     'type'              : 'send_message',
-                    'sender'            : system_user.nickname,
+                    'sender_id'         : system_user.id,
                     'message'           : message,
                     'timestamp'         : timestamp,
                     'is_system_message' : True
@@ -138,13 +138,13 @@ class DMConsumer(Consumer):
         return None
 
     async def _get_users(self):
-        # DM送受信者のuser objectをnickanmeから取得
+        # DM送受信者のuser objectをidから取得
         try:
-            user_nickname = self.scope['user'].nickname
-            other_user_nickname = self.scope['url_route']['kwargs']['nickname']
+            user_id = self.scope['user'].id
+            other_user_id = self.scope['url_route']['kwargs']['id']
 
-            user = await self._get_user_by_nickname(nickname=user_nickname)
-            other_user = await self._get_user_by_nickname(nickname=other_user_nickname)
+            user = await self._get_user_by_id(id=user_id)
+            other_user = await self._get_user_by_id(id=other_user_id)
 
             if user == other_user:
                 raise ValueError('user and other_user must be a different user')
