@@ -16,13 +16,17 @@ class FriendTest(TestConfig):
         self.password = "pass0123"
 
         # friend request用のtest_user1, test_user2を作成
-        self._create_new_user(email=self.test_user1_email,
-                              nickname=self.test_user1_nickname,
-                              password=self.password)
+        self.user1_id, _ = self._create_new_user(
+            email=self.test_user1_email,
+            nickname=self.test_user1_nickname,
+            password=self.password
+        )
 
-        self._create_new_user(email=self.test_user2_email,
-                              nickname=self.test_user2_nickname,
-                              password=self.password)
+        self.user2_id, _ = self._create_new_user(
+            email=self.test_user2_email,
+            nickname=self.test_user2_nickname,
+            password=self.password
+        )
 
     ############################################################################
 
@@ -42,7 +46,7 @@ class FriendTest(TestConfig):
         # self._screenshot("friend1")
 
         # test_user2のinfo pageへアクセスし、friend requestを送信
-        self._access_to(f"{self.user_info_base_url}{self.test_user2_nickname}/")
+        self._access_to(f"{self.user_info_base_url}{self.user2_id}/")
         # self._screenshot("friend2")
 
         request_button = self._button(By.CSS_SELECTOR, ".sendFriendRequestButton")
@@ -61,7 +65,7 @@ class FriendTest(TestConfig):
         send_to_user2_item = sent_requests_div.find_element(By.XPATH, f".//li[contains(., '{self.test_user2_nickname}')]")
         cancel_button = send_to_user2_item.find_element(By.CSS_SELECTOR, ".cancelButton")
         info_link = send_to_user2_item.find_element(By.LINK_TEXT, f"{self.test_user2_nickname}")
-        self.assertEqual(info_link.get_attribute("href"), f"{self.user_info_base_url}{self.test_user2_nickname}/")
+        self.assertEqual(info_link.get_attribute("href"), f"{self.user_info_base_url}{self.user2_id}/")
         # self._screenshot("friend4")
 
         # test_user1をlogout
@@ -94,7 +98,7 @@ class FriendTest(TestConfig):
         delete_button = friend_item.find_element(By.CSS_SELECTOR, ".deleteButton")
         # friend nameのlink: info page
         user_name_link_url = self._text_link_url(self.test_user1_nickname)
-        self.assertEqual(user_name_link_url, f"{self.user_info_base_url}{self.test_user1_nickname}/")
+        self.assertEqual(user_name_link_url, f"{self.user_info_base_url}{self.user1_id}/")
 
         # delete buttonのチェック
         # ConfirmでCancelしDelete中断
@@ -123,7 +127,7 @@ class FriendTest(TestConfig):
         self._login(email=self.test_user1_email, password=self.password)
 
         # test_user2 info page #################################################
-        self._access_to(f"{self.user_info_base_url}{self.test_user2_nickname}/")
+        self._access_to(f"{self.user_info_base_url}{self.user2_id}/")
 
         # requestを送信
         request_button = self._button(By.CSS_SELECTOR, ".sendFriendRequestButton")
@@ -166,7 +170,7 @@ class FriendTest(TestConfig):
         # self._screenshot("friend1")
 
         # test_user2のinfo pageへアクセスし、friend requestを送信
-        self._access_to(f"{self.user_info_base_url}{self.test_user2_nickname}/")
+        self._access_to(f"{self.user_info_base_url}{self.user2_id}/")
         # self._screenshot("friend2")
 
         request_button = self._button(By.CSS_SELECTOR, ".sendFriendRequestButton")
