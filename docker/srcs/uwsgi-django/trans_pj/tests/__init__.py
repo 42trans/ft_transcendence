@@ -67,7 +67,7 @@ class TestConfig(LiveServerTestCase):
         self.top_url            = f"{kURL_PREFIX}{self.url_config['kSpaPongTopUrl']}"
 
         self.game_2d_url        = f"{kURL_PREFIX}{self.url_config['kSpaGame2D']}"
-        self.game_3d_url        = f"{kURL_PREFIX}{self.url_config['kSpaGame3D']}"
+        # self.game_3d_url        = f"{kURL_PREFIX}{self.url_config['kSpaGame3D']}"
         self.tournament_url     = f"{kURL_PREFIX}{self.url_config['kSpaTournamentUrl']}"
 
         self.game_history_url   = f"{kURL_PREFIX}{self.url_config['kSpaGameHistoryUrl']}"

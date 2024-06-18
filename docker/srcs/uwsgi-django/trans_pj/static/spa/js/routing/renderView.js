@@ -36,7 +36,7 @@ const comparePathParts = async (routeParts, currentPathParts, params) => {
           // パラメータの整合性を評価
           const isValid = await isValidParam(paramName, currentPathParts[index]);
           if (!isValid) {
-              if (DEBUG_LOG) { console.log(`    -> parameter invalid`); }
+            if (DEBUG_LOG) { console.log(`    -> parameter invalid`); }
             return false;
           }
           if (DEBUG_LOG) { console.log(`    -> parameter valid`); }

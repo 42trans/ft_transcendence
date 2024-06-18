@@ -4,7 +4,6 @@
 
   "kSpaTournamentUrl"   : "/app/game/tournament/",
   "kSpaGame2D"          : "/app/game/game-2d/",
-  "kSpaGame3D"          : "/app/game/game-3d/",
   "kSpaGameMatchBase"   : "/app/game/match/",
   "kSpaGameMatchUrl"    : "/app/game/match/:matchId/",
 
