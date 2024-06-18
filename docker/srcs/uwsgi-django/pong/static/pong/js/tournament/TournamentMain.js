@@ -27,7 +27,6 @@ export function setupTournament() {
 		console.error("hth: setupTournament: ", error);
 		tournamentHandleCatchError(error);
 	}
-
 }
 
 // ---------------------------------------
