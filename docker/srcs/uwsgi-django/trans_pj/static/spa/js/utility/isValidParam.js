@@ -1,5 +1,5 @@
 
-const DEBUG_LOG = 1;
+const DEBUG_LOG = 0;
 
 async function isValidMatchId(matchId) {
     try {

@@ -6,7 +6,7 @@ import { setOnlineStatus } from "/static/accounts/js/setOnlineStatus.js";
 import { isValidParam } from "../utility/isValidParam.js"
 
 const DEBUG_DETAIL = 0;
-const DEBUG_LOG = 1;
+const DEBUG_LOG = 0;
 
 // touteTable.jsの記述について
 // game3d: { path: "/app/game/game-3d/", view: Game3D }は、/app/game/game-3d/というパスに対してGame3Dという「クラス」を対応

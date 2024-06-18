@@ -5,7 +5,7 @@ import { isUserLoggedIn, isUserEnable2FA } from "../utility/isUser.js"
 import { getSelectedRoute } from "./renderView.js"
 
 
-const DEBUG = 1;
+const DEBUG = 0;
 
 // Guestのリダイレクトを制御
 //  top, home, game2d, signup, loginはそのまま表示

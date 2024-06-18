@@ -7,7 +7,7 @@ import { isUserLoggedIn, isUserEnable2FA } from "./utility/isUser.js"
 import { refreshJWT } from "./utility/refreshJWT.js"
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
-const DEBUG_DETAIL = 1;
+const DEBUG_DETAIL = 0;
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
