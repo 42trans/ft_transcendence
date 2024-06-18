@@ -238,7 +238,7 @@ function createFriendRequestList(data) {
 
 function createRequestLink(nickname, friend_id, isSent) {
     const link = document.createElement('a');
-    link.href = `${routeTable['userInfoBase'].path}${nickname}/`;
+    link.href = `${routeTable['userInfoBase'].path}${friend_id}/`;
     link.className = 'nav__link';
     link.setAttribute('data-link', '');
     link.textContent = nickname;

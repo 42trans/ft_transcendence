@@ -14,13 +14,17 @@ class DMTest(TestConfig):
         self.password = "pass0123"
 
         # friend request用のtest_user1, test_user2を作成
-        self._create_new_user(email=self.test_user1_email,
-                              nickname=self.test_user1_nickname,
-                              password=self.password)
+        self.user1_id, _ = self._create_new_user(
+            email=self.test_user1_email,
+            nickname=self.test_user1_nickname,
+            password=self.password
+        )
 
-        self._create_new_user(email=self.test_user2_email,
-                              nickname=self.test_user2_nickname,
-                              password=self.password)
+        self.user2_id, _ = self._create_new_user(
+            email=self.test_user2_email,
+            nickname=self.test_user2_nickname,
+            password=self.password
+        )
 
     ############################################################################
 
@@ -41,7 +45,7 @@ class DMTest(TestConfig):
         # self._screenshot("block 2")
 
         # test_user2のinfo pageへアクセスし、block
-        self._block_user(self.test_user2_nickname)
+        self._block_user(self.test_user2_nickname, self.user2_id)
         # self._screenshot("block 3")
 
         # DMへ遷移し、dm-log要素が非表示であることを確認
@@ -52,7 +56,7 @@ class DMTest(TestConfig):
         # self._screenshot("block 4")
 
         # test_user2のinfo pageへアクセスし、unblock
-        self._unblock_user(self.test_user2_nickname)
+        self._unblock_user(self.test_user2_nickname, self.user2_id)
 
         # DMへ遷移し、dm-log要素が非表示であることを確認
         self._move_top_to_dm()
@@ -72,15 +76,15 @@ class DMTest(TestConfig):
         except Exception:
             return False
 
-    def _block_user(self, target_nickname):
-        self._access_to(f"{self.user_info_base_url}{target_nickname}/")
+    def _block_user(self, target_nickname, target_id):
+        self._access_to(f"{self.user_info_base_url}{target_id}/")
 
         block_button = self._button(By.CSS_SELECTOR, ".blockUserButton")
         self._click_button(block_button, wait_for_button_invisible=False)
         self._close_alert(f"User {target_nickname} successfully blocked")
 
-    def _unblock_user(self, target_nickname):
-        self._access_to(f"{self.user_info_base_url}{target_nickname}/")
+    def _unblock_user(self, target_nickname, target_id):
+        self._access_to(f"{self.user_info_base_url}{target_id}/")
 
         unblock_button = self._button(By.CSS_SELECTOR, ".unBlockUserButton")
         self._click_button(unblock_button, wait_for_button_invisible=False)

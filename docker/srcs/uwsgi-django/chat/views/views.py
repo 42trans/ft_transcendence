@@ -75,9 +75,17 @@ class DMView(LoginRequiredMixin, TemplateView):
     Login認証していなければ accounts:login へ遷移
     """
     template_name = "chat/dm_with.html"
-    error_occurred_redirect_to = "chat:dm_sessions"
+    error_occurred_redirect_to = "/pong/"
 
     def get(self, request, target_id: str):
+        # target_idが整数でない場合の遷移
+        try:
+            target_id = int(target_id)
+            if target_id <= 0:
+                return redirect(self.error_occurred_redirect_to)
+        except ValueError:
+            return redirect(self.error_occurred_redirect_to)
+
         # user, other_userを取得
         # dm targetのnicknameがuser.nicknameである場合はerr
         user, dm_target, err = _get_dm_users(request, target_id)
@@ -124,3 +132,18 @@ class DMSessionsView(LoginRequiredMixin, TemplateView):
 
     def get(self, request):
         return render(request, self.template_name)
+
+
+class IsValidDmUserIdAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, target_id) -> Response:
+        try:
+            target_id = int(target_id)
+            if target_id <= 0 or target_id == request.user.id:
+                return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_exists = CustomUser.objects.filter(id=target_id).exists()
+        return Response({'exists': user_exists}, status=status.HTTP_200_OK)

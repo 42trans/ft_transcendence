@@ -34,7 +34,7 @@ urlpatterns = [
 
     path('friends/', UserFriendsView.as_view(), name='friends'),
 
-    path('info/<str:nickname>/', get_user_info, name='info'),
+    path('info/<str:user_id>/', get_user_info, name='info'),
 
     path('verify/enable_2fa/', Enable2FaTemplateView.as_view(), name='enable_2fa'),
     path('verify/verify_2fa/', Verify2FaTepmlateView.as_view(), name='verify_2fa'),
