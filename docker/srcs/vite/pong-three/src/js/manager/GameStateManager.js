@@ -61,14 +61,14 @@ class GameStateManager
 	update() 
 	{
 		try {
-						if (DEBUG_DETAIL) {	console.log('update():', this.currentState);	}
+						if (DEBUG_DETAIL) {	console.log('GameStateManager update(): this.currentState', this.currentState);	}
 			if (this.currentState) {
-						if (DEBUG_DETAIL) {	console.log('update():', this.currentState);	}
+						if (DEBUG_DETAIL) {	console.log('GameStateManager update(): this.currentState', this.currentState);	}
 				this.currentState.update();
 			}
 						if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 		} catch (error) {
-			console.error('hth: update() failed', error);
+			console.error('hth: GameStateManager.update() failed', error);
 			handleCatchError(error);
 		}
 	}

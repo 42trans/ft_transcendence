@@ -35,7 +35,7 @@ class PongEngine
 			this.animate	= this.animate.bind(this);
 			setTimeout(() => this.animate(), 4500);
 		} catch (error) {
-			console.error('hth: GameplayState.enter() failed', error);
+			console.error('hth: PongEngine constructor failed', error);
 			handleCatchError(error);
 		}
 	}
@@ -65,14 +65,18 @@ class PongEngine
 
 	dispose() 
 	{
-					if (DEBUG_FLOW){	console.log("Exiting GamePlay state");	 };
+					if (DEBUG_FLOW){	console.log("PongEngine dispose()");	 };
 		this.isRunning = false;
+		// このキャンセルの前に実行された animate()内の　await this.update.updateGame();　で nullになってしまう
+		cancelAnimationFrame(this.animationId);
 
 		if (this.match) {
 			this.match.dispose();
 			this.match = null;
 		}
+
 		if (this.update) {
+			// await this.update.updateGame();の実行中に　変数をnullにしてしまう
 			this.update.dispose();
 			this.update = null;
 		}
@@ -102,21 +106,25 @@ class PongEngine
 	async animate() 
 	{
 		try {
+						if (DEBUG_FLOW){	console.log("PongEngine.animate(): start");	 };
 			if (this.isRunning)
 			{
-				requestAnimationFrame(this.animate);
-				// ここで描画ループを止めると終了後のアスペクト比がバグる
-			// } else {
-			// 	// ゲームが終了した場合は、描画ループを停止
-			// 	this.pongApp.stopRenderLoop();
+						if (DEBUG_FLOW){	console.log("PongEngine.animate(): 2");	 };
+
+				this.animationId = requestAnimationFrame(this.animate.bind(this)); 
 			}
-			if (this.update) {
+						if (DEBUG_FLOW){	console.log("PongEngine.animate(): 3");	 };
+
+			if (this.update) 
+			{
+						if (DEBUG_FLOW){	console.log("PongEngine.animate(): 4");	 };
 				await this.update.updateGame();
 			}
-			if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
+						if (DEBUG_FLOW){	console.log("PongEngine.animate(): 5");	 };
+						if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
 		} catch (error) {
-			console.error('hth: GameplayState.enter() failed', error);
-			handleCatchError(error);
+			console.error('hth: PongEngine.animate() failed', error);
+			// handleCatchError(error);
 		}
 	}
 }
