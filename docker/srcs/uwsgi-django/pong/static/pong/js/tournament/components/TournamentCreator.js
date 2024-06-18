@@ -12,7 +12,7 @@ const TEST_TRY2 		= 0;
 const TEST_TRY3 		= 0;
 const TEST_TRY4 		= 0;
 const TEST_TRY5 		= 0;
-const TEST_TRY6 		= 1;
+const TEST_TRY6 		= 0;
 
 class TournamentCreator 
 {
