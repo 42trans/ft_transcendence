@@ -17,7 +17,7 @@
   "kSpaChangeAvatarUrl" : "/app/user/profile/change-avatar/",
 
   "kSpaDmUrl"           : "/app/dm/",
-  "kSpaDmWithUrl"       : "/app/dm/:userId/",
+  "kSpaDmWithUrl"       : "/app/dm/:dmTargetId/",
   "kSpaDmWithUrlBase"   : "/app/dm/",
 
   "kSpaAuthEnable2FaUrl": "/app/auth/enable-2fa/",

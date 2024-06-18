@@ -56,7 +56,7 @@ export const routeTable = {
 
   friends       : { path: "/app/user/friends/",               view: Friends },
   dmSessions    : { path: "/app/dm/",                         view: DMSessions },
-  dmWithUser    : { path: "/app/dm/:userId/",                 view: DMwithUser },
+  dmWithUser    : { path: "/app/dm/:dmTargetId/",             view: DMwithUser },
   dmWithUserBase: { path: "/app/dm/",                         view: DMwithUser },
 
   editProfile   : { path: "/app/user/profile/edit/",          view: EditProfile },
