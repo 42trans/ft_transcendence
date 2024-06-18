@@ -3,7 +3,10 @@ import UIHelper		from '../UIHelper.js';
 import { config }	from '../ConfigTournament.js';
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
+// import { tournamentHandleCatchError } from "../TournamentMain.js";
 
+const TEST_TRY1 		= 0;
+const TEST_TRY2 		= 0;
 
 class TournamentDeleter 
 {
@@ -16,9 +19,8 @@ class TournamentDeleter
 
 	async deleteTournament(tournamentId) 
 	{
-		// console.log(`Deleting tournament ID: ${tournamentId}`);
-
 		try {
+						if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
 			const response = await fetch(`${this.API_URLS.tournamentDelete}${tournamentId}/`, 
 			{
 				method: 'POST',
@@ -37,15 +39,19 @@ class TournamentDeleter
 			}
 
 			const data = await response.json();
+						if (TEST_TRY2) {	data.status = 404;	}
 			if (data.status === 'success') {
 				UIHelper.handleSuccess('Tournament deleted successfully', routeTable["top"].path, this.submitMessage)
 				switchPage(routeTable["tournament"].path)
 
 			} else {
 				UIHelper.putError("No data returned. Please try again later.", this.errorMessage);
+				alert("No data returned. Please try again later.", this.errorMessage);
+
 			}
 		} catch (error) {
 			UIHelper.putError("Failed to delete the tournament. Please try again.", this.errorMessage);
+			alert("Failed to delete the tournament. Please try again.", this.errorMessage);
 		}
 	}
 }

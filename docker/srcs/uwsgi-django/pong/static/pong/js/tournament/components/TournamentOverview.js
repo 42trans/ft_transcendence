@@ -1,5 +1,10 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/components/TournamentOverview.js
 import { config }	from '../ConfigTournament.js';
+// import { tournamentHandleCatchError } from "../TournamentMain.js";
+
+const TEST_TRY1 		= 0;
+const TEST_TRY2 		= 0;
+const TEST_TRY3 		= 0;
 
 /**
  * - ゲストも利用可能なAPIを用いている
@@ -16,6 +21,8 @@ class TournamentOverview
 	 */
 	async generateOverview(tournamentId) 
 	{
+					if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
+
 		const tournament = await this.fetchTournamentDetails(tournamentId);
 		if (tournament) 
 		{
@@ -34,27 +41,20 @@ class TournamentOverview
 	async fetchTournamentDetails(tournamentId) 
 	{
 		try {
+						if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
 			const url = `${config.API_URLS.tournamentData}${tournamentId}/`;
-			// console.log(`fetchTournamentDetails fetch: ${url}`);
-
 			const response = await fetch(url,
 			{
 				headers: {
 					'Content-Type': 'application/json'
 				}
 			});
-
-			// console.log(`Response status: ${response.status}`);
-			// console.log(`Response status text: ${response.statusText}`);
-
 			if (!response.ok)
 			{
 				throw new Error('Failed to fetch tournament details');
 			}
 
 			const jsonData = await response.json();
-			// console.log(`jsonData: ${JSON.stringify(jsonData)}`);
-
 			return jsonData
 		} catch (error) {
 			console.error('hth: Failed to load tournament details:', error);
@@ -65,6 +65,8 @@ class TournamentOverview
 	/** 表示するエレメントを生成 */
 	createOverviewElement(tournament) 
 	{
+					if (TEST_TRY3) {	throw new Error('TEST_TRY3');	}
+
 		const detailsContainer = document.createElement('div');
 		// # トーナメント参加者のニックネームをHTML でのリスト表示が可能な形にする
 		// - tournament.player_nicknames 配列に含まれる各ニックネームに対して、map 関数が <li> タグを追加

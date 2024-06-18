@@ -3,6 +3,11 @@ import UIHelper				from '../UIHelper.js';
 import { config }			from '../ConfigTournament.js';
 import TournamentDeleter	from './TournamentDeleter.js';
 import TournamentOverview	from './TournamentOverview.js';
+import { tournamentHandleCatchError } from "../TournamentMain.js";
+
+const TEST_TRY1 		= 0;
+const TEST_TRY2 		= 0;
+const TEST_TRY3 		= 0;
 
 /** 
  * トーナメントの入り口のページを構築 
@@ -28,29 +33,41 @@ class TournamentEntry
 	/** 注意: appendChildの順番は上から順番で追加される。 */
 	async display(ongoingTournament, userProfile) 
 	{
-		this.tournamentContainer.innerHTML = ''; 
-		// 見出し要素を作成
-		const header = await this.addDisplayHeader(userProfile);
-		// overviewクラスで概要（名称、日付、参加者nickname）を作成
-		const overview = await this.tournamentOverview.generateOverview(ongoingTournament.id);
-		// ナビを作成
-		const naviButton = this.addNavigationLinks();
-		// トーナメントid要素を作成
-		const tourId = this.addAddTournamentId(ongoingTournament.id);
-		// 削除ボタンを作成
-		const deleteButton = this.addDeleteButton(ongoingTournament.id);
+		try {
+						if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
 
-		// 作成した<div>要素をhtmlに追加
-		this.tournamentContainer.appendChild(header);
-		this.tournamentContainer.appendChild(naviButton);
-		this.tournamentContainer.appendChild(overview);
-		// this.tournamentContainer.appendChild(tourId);
-		this.tournamentContainer.appendChild(deleteButton);
+			this.tournamentContainer.innerHTML = ''; 
+			// 見出し要素を作成
+			const header = await this.addDisplayHeader(userProfile);
+			// overviewクラスで概要（名称、日付、参加者nickname）を作成
+			const overview = await this.tournamentOverview.generateOverview(ongoingTournament.id);
+			// ナビを作成
+			const naviButton = this.addNavigationLinks();
+
+			// 現時点では不要なので非表示
+			// トーナメントid要素を作成
+			// const tourId = this.addAddTournamentId(ongoingTournament.id);
+
+			// 削除ボタンを作成
+			const deleteButton = this.addDeleteButton(ongoingTournament.id);
+
+			// 作成した<div>要素をhtmlに追加
+			this.tournamentContainer.appendChild(header);
+			this.tournamentContainer.appendChild(naviButton);
+			this.tournamentContainer.appendChild(overview);
+			this.tournamentContainer.appendChild(deleteButton);
+			
+			// this.tournamentContainer.appendChild(tourId);
+		} catch(error) { 
+			tournamentHandleCatchError(error);
+		}
 	}
 
 	/** トーナメントが進行中であることを示す見出しを作成 */
 	async addDisplayHeader(userProfile) 
 	{
+					if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
+
 		UIHelper.displayUserInfo(userProfile, this.tournamentContainer);
 		const header = document.createElement('h2');
 		header.id = 'overview-header';
@@ -66,6 +83,7 @@ class TournamentEntry
 		naviButton.className = 'hth-btn my-3';
 		naviButton.textContent = 'Round';
 		naviButton.onclick = () => this.roundManager.changeStateToRound(1);
+					if (TEST_TRY3) {	throw new Error('TEST_TRY3');	}
 		return naviButton;
 	}
 
@@ -84,13 +102,13 @@ class TournamentEntry
 	}
 
 	// トーナメントIDを作成
-	addAddTournamentId(tournamentId) 
-	{
-		const tourId = document.createElement('p');
-		tourId.id = 'tourId';
-		tourId.textContent = `tournament ID: ${tournamentId}`;
-		return tourId;
-	}
+	// addAddTournamentId(tournamentId) 
+	// {
+	// 	const tourId = document.createElement('p');
+	// 	tourId.id = 'tourId';
+	// 	tourId.textContent = `tournament ID: ${tournamentId}`;
+	// 	return tourId;
+	// }
 
 }
 
