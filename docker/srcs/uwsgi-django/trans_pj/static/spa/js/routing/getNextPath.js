@@ -5,7 +5,7 @@ import { isUserLoggedIn, isUserEnable2FA } from "../utility/isUser.js"
 import { getSelectedRoute } from "./renderView.js"
 
 
-const DEBUG = 0;
+const DEBUG = 1;
 
 // Guestのリダイレクトを制御
 //  top, home, game2d, signup, loginはそのまま表示
@@ -59,10 +59,12 @@ function getUserRedirectPath(url, isEnable2FA) {
 // TOPを表示するURLであるか判定する
 // TOP or Invalid URLの場合はTOPを表示
 //  invalidの判定にgetSelectedRoute()を使用。renderView側にまとめた方が良さそう...
-const isRenderTopPageUrl = (url) => {
+const isRenderTopPageUrl = async (url) => {
   const urlObject = new URL(url);
   const pathName = urlObject.pathname;
-  return getSelectedRoute(pathName, routeTable) === routeTable['top'];
+  const ret =  await getSelectedRoute(pathName, routeTable) === routeTable['top'];
+  if (DEBUG) { console.log(' isRenderTopPageUrl -> ' + ret); }
+  return ret
 }
 
 
@@ -70,7 +72,8 @@ const isRenderTopPageUrl = (url) => {
 export async function getNextPath(url) {
   if (DEBUG) { console.log('getNextPath: ' + url); }
 
-  if (isRenderTopPageUrl(url)) {
+  const isTopUrl = await isRenderTopPageUrl(url);
+  if (isTopUrl) {
     if (DEBUG) { console.log(' invalid or top -> top'); }
     return routeTable['top'].path;
   }

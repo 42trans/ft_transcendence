@@ -18,3 +18,12 @@ async function isValidUserId(userId) {
         return false;
     }
 }
+
+
+// URLパラメータの整合性を評価
+export const isValidParam = async (paramName, paramValue) => {
+    if (paramName === "userId") {
+        return await isValidUserId(paramValue)
+    }
+    return false;
+}

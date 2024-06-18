@@ -7,7 +7,7 @@ import { isUserLoggedIn, isUserEnable2FA } from "./utility/isUser.js"
 import { refreshJWT } from "./utility/refreshJWT.js"
 import { setupLoginEventListener } from "/static/accounts/js/login.js"
 
-const DEBUG_DETAIL = 0;
+const DEBUG_DETAIL = 1;
 
 // ブラウザの戻る/進むボタンで発火
 const setupPopStateListener = () => {
@@ -34,6 +34,8 @@ const setupDOMContentLoadedListener = () => {
     // 初期ビューを表示
     const currentPath = window.location.href;
     const renderPath = await getNextPath(currentPath)  // guest, userのredirectを加味したPathを取得
+    if (DEBUG_DETAIL) { console.log(`DOMContentLoaded: currentPath: ${currentPath} -> renderPath: ${renderPath}`); }
+    history.replaceState(null, null, renderPath);  // historyは変更せず、guest, userに応じたURLに変更
     switchPage(renderPath);
 
     // リンククリック時の遷移を設定
