@@ -16,8 +16,11 @@ from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 import random
 
 
@@ -387,3 +390,19 @@ def get_matches_of_latest_tournament_user_ongoing(request) -> JsonResponse:
 		for match in matches
 	]
 	return JsonResponse({'matches': matches_data}, safe=False, status=200)
+
+
+class IsValidMatchIdAPI(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request, match_id) -> Response:
+		try:
+			match_id = int(match_id)
+			if match_id <= 0:
+				return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+
+			match_exists = Match.objects.filter(id=match_id).exists()
+			return Response({'exists': match_exists}, status=status.HTTP_200_OK)
+
+		except Exception:
+			return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)

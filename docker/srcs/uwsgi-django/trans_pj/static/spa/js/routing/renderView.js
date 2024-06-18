@@ -31,7 +31,7 @@ const comparePathParts = async (routeParts, currentPathParts, params) => {
         if (part.startsWith(':')) {
           // パラメータのキーを抽出（例: :nickname -> nickname）
           const paramName = part.slice(1);
-            if (DEBUG_LOG) { console.log(`    parameter name  : ${paramName}`); }
+          if (DEBUG_LOG) { console.log(`    parameter name  : ${paramName}`); }
 
           // パラメータの整合性を評価
           const isValid = await isValidParam(paramName, currentPathParts[index]);
@@ -39,6 +39,7 @@ const comparePathParts = async (routeParts, currentPathParts, params) => {
               if (DEBUG_LOG) { console.log(`    -> parameter invalid`); }
             return false;
           }
+          if (DEBUG_LOG) { console.log(`    -> parameter valid`); }
 
           params[paramName] = currentPathParts[index];  // パラメータを格納
             if (DEBUG_LOG) { console.log(`    currentPathParts: ${currentPathParts[index]}`); }
