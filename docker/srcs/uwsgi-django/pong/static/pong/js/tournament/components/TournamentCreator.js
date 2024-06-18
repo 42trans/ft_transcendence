@@ -2,7 +2,7 @@
 import UIHelper		from '../UIHelper.js';
 import { config }	from '../ConfigTournament.js';
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
-import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { switchPage } from "/static/spa/js/routing/renderView.js";
 
 
 class TournamentCreator 
@@ -43,7 +43,7 @@ class TournamentCreator
 		// TODO_ft:onsubmit="signupUser(event)"削除する
 		return `
 		<div class="form-sign m-auto" id="tournament-create-form">
-				<form class="hth-sign-form" onsubmit="signupUser(event)">
+				<form class="hth-sign-form">
 					<h2 class="slideup-text mb-3">Create Tournament</h2>
 					
 					<input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
