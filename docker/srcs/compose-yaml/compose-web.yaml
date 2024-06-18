@@ -17,7 +17,8 @@ services:
       - ${SSL_CERT_PATH:?}:/etc/nginx/ssl/nginx.crt
       - ${SSL_KEY_PATH:?}:/etc/nginx/ssl/nginx.key
       # - ${VOLUME_PATH:?}:/container_output
-      - ${VOLUME_PATH:?}/log_vol:/var/log/nginx
+      # - ${VOLUME_PATH:?}/log_vol:/var/log/nginx
+      - ${VOLUME_PATH:?}/nginx/var/log:/var/log/nginx
       - ./uwsgi-django/static/:/var/trans/static/
       - ./uwsgi-django/media/:/var/trans/media/
     networks:
@@ -70,6 +71,7 @@ services:
       - ./hardhat/hardhat_pj/share/:/code/share_hardhat/
       # - ./webpack2/ft_trans/public/:/var/trans/static/share_webpack2/
       - ./vite/pong-three/public/static/pong/three:/code/pong/static/pong/three/
+      - '${VOLUME_PATH:?}/uwsgi-django/var/log/:/var/log/'
       # - logs_volume:/src/logs
       # - ${VOLUME_PATH:?}/django/code:/code
   #     - ${VOLUME_PATH:?}/ft_django/uwsgi:/etc/uwsgi
