@@ -9,7 +9,7 @@ import logging
 # ロガーの設定
 logger = logging.getLogger(__name__)
 
-@csrf_exempt
+# @csrf_exempt
 def fetch_testnet(request, testnet_name):
 	"""
 	GETリクエストを受け取り、Ethereumテストネットワークからすべてのゲーム結果を取得します。
