@@ -10,7 +10,7 @@
 
   "kSpaGameHistoryUrl"  : "/app/user/game-history/",
   "kSpaUserProfileUrl"  : "/app/user/profile/",
-  "kSpaUserInfoUrl"     : "/app/user/info/:nickname/",
+  "kSpaUserInfoUrl"     : "/app/user/info/:userId/",
   "kSpaUserInfoUrlBase" : "/app/user/info/",
   "kSpaUserFriendUrl"   : "/app/user/friends/",
   "kSpaEditProfileUrl"  : "/app/user/profile/edit/",

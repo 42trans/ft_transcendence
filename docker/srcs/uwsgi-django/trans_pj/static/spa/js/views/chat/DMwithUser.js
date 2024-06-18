@@ -14,7 +14,7 @@ export default class extends AbstractView {
   }
 
   async getHtml() {
-    const userId = this.params.userId;
+    const userId = this.params.dmUserId;
     const uri = `/chat/dm-with/${userId}/`;
     const data = await fetchData(uri);
     //console.log("Pong:" + data);
