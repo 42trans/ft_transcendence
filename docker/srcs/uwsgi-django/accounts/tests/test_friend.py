@@ -7,8 +7,10 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from accounts.models import CustomUser, Friend
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class SendFriendRequestAPITestCase(TestCase):
     kUser1Email = 'test1@example.com'
     kUser1Nickname = 'test1'
@@ -156,6 +158,7 @@ class SendFriendRequestAPITestCase(TestCase):
         self.assertIn('User not found', response.data['error'])
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class CancelFriendRequestAPITestCase(TestCase):
     kUser1Email = 'test1@example.com'
     kUser1Nickname = 'test1'
@@ -264,6 +267,7 @@ class CancelFriendRequestAPITestCase(TestCase):
         self.assertIn('Friend request not found', response.data['error'])
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class AcceptFriendRequestAPITestCase(TestCase):
     kUser1Email = 'test1@example.com'
     kUser1Nickname = 'test1'
@@ -367,6 +371,7 @@ class AcceptFriendRequestAPITestCase(TestCase):
         self.assertIn('Friend request not found', response.data['error'])
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class RejectFriendRequestAPITestCase(TestCase):
     kUser1Email = 'test1@example.com'
     kUser1Nickname = 'test1'
@@ -470,6 +475,7 @@ class RejectFriendRequestAPITestCase(TestCase):
         self.assertIn('Friend request not found', response.data['error'])
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class DeleteFriendAPITestCase(TestCase):
     kUser1Email = 'test1@example.com'
     kUser1Nickname = 'test1'
@@ -573,6 +579,7 @@ class DeleteFriendAPITestCase(TestCase):
         self.assertIn('Friend not found.', response.data['error'])
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class GetFriendListAPITestCase(TestCase):
     kUser1Email = 'test1@example.com'
     kUser1Nickname = 'test1'
@@ -699,6 +706,7 @@ class GetFriendListAPITestCase(TestCase):
         self.assertEqual(len(response.data['friends']), 0)
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class GetFriendRequestListAPITestCase(TestCase):
     kUser1Email = 'test1@example.com'
     kUser1Nickname = 'test1'

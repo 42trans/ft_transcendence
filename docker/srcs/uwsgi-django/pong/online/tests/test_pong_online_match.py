@@ -2,7 +2,9 @@ from django.test import TestCase
 from pong.online.pong_online_game_manager import PongOnlineGameManager
 from asgiref.sync import async_to_sync
 from unittest.mock import MagicMock, AsyncMock
+from django.test import override_settings
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestPongOnlineMatch(TestCase):
     def setUp(self):
         mock_consumer = MagicMock()  
@@ -39,5 +41,3 @@ class TestPongOnlineMatch(TestCase):
             self.game_manager.pong_engine_data["is_running"],
             "スコアが最大に達したら試合が終了すべき"
         )
-
-

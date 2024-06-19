@@ -6,8 +6,10 @@ import json
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import status
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestGetLatestOngoingTournament(TestCase):
 	def setUp(self):
 		self.get_latest_tournament_url = reverse('get_latest_user_ongoing_tournament')

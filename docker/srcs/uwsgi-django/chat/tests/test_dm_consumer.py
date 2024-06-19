@@ -18,8 +18,10 @@ from trans_pj.asgi import application
 from django.urls import reverse, resolve
 from channels.testing import WebsocketCommunicator
 from rest_framework import status
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class DMConsumerTestCase(TransactionTestCase):
     kUser1Email = 'user1@example.com'
     kUser1Nickname = 'user1'
@@ -204,6 +206,7 @@ class DMConsumerTestCase(TransactionTestCase):
             self.fail(f"Unexpected error occurred: {str(e)}")
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class DMConsumerInvalidTestCase(TransactionTestCase):
     kUser1Email = 'user1@example.com'
     kUser1Nickname = 'user1'
