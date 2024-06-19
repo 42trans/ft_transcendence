@@ -25,7 +25,6 @@ services:
       # - monitor_transcendence
     restart: unless-stopped
     depends_on:
-      # - pgadmin
       uwsgi-django:
         condition: service_healthy
     init: true
@@ -45,8 +44,8 @@ services:
     networks:
       - db_transcendence
       - web_transcendence
-      - blockchain_transcendence
-      - elk
+      # - blockchain_transcendence
+      # - elk
     ports:
       - "8096:8001" # http
       - "${DJANGO_PORT:?}:8000"
@@ -67,7 +66,7 @@ services:
       - '${VOLUME_PATH:?}/log_django_vol:/src/logs'
       - ./uwsgi-django/:/code/
       # - ./uwsgi-django/static/:/var/trans/static/
-      - ./hardhat/hardhat_pj/share/:/code/share_hardhat/
+      # - ./hardhat/hardhat_pj/share/:/code/share_hardhat/
       # - ./webpack2/ft_trans/public/:/var/trans/static/share_webpack2/
       - ./vite/pong-three/public/static/pong/three:/code/pong/static/pong/three/
       # - logs_volume:/src/logs
@@ -123,42 +122,4 @@ services:
       - VITE_MODE=production
     profiles:
       - three
-
-  
-  # frontend:
-  #   container_name: frontend
-  #   build: ./frontend
-  #   image: frontend
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - web_transcendence
-  #     # - monitor_transcendence
-  #   ports:
-  #     - "${FRONTEND_PORT:?}:3000"
-  #     - "3090:3001"
-  #   restart: unless-stopped
-  #   init: true
-
-
-  # pythontest:
-  #   container_name: pythontest
-  #   build: ./pythontest
-  #   image: pythontest
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - db_transcendence
-  #     - web_transcendence
-  #     - blockchain_transcendence
-  #     - elk
-  #   ports:
-  #     - "8097:8001" # http
-  #     - "8197:8000"
-  #   depends_on:
-  #     - postgres
-  #   restart: unless-stopped
-  #   init: true
-  #   volumes:
-  #     - ./pythontest/mysite/:/code/mysite/
-  #     - ./pythontest/polls/:/code/polls/
+    init: true

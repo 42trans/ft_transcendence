@@ -8,10 +8,14 @@
 # 各compose.ymlを定義
 COMPOSE_FILES = ./docker/srcs/compose.yaml \
 				./docker/srcs/compose-yaml/compose-networks.yaml \
-				./docker/srcs/compose-yaml/compose-web.yaml \
-				./docker/srcs/compose-yaml/compose-blockchain.yaml \
-				./docker/srcs/compose-yaml/compose-monitor.yaml \
-				./docker/srcs/compose-yaml/compose-exporter.yaml
+				./docker/srcs/compose-yaml/compose-web.yaml 
+
+# COMPOSE_FILES = ./docker/srcs/compose.yaml \
+# 				./docker/srcs/compose-yaml/compose-networks.yaml \
+# 				./docker/srcs/compose-yaml/compose-web.yaml \
+# 				./docker/srcs/compose-yaml/compose-blockchain.yaml \
+# 				./docker/srcs/compose-yaml/compose-monitor.yaml \
+# 				./docker/srcs/compose-yaml/compose-exporter.yaml
 COMPOSE_FILES_ARGS = $(addprefix -f , $(COMPOSE_FILES))
 
 # -----------------------------------------------
