@@ -33,9 +33,8 @@ all: build_up_default
 # -----------------------------------------------
 .PHONY: build
 build: init
-	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) build
+	docker-compose $(COMPOSE_FILES_ARGS) build
 # COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) build
-
 
 .PHONY: b
 b:
@@ -43,24 +42,13 @@ b:
 
 .PHONY: up
 up: init
-	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) up -d
+	docker-compose $(COMPOSE_FILES_ARGS) up -d
 # COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
 
 .PHONY: u
 u:
 	make up
 
-# .PHONY: build_elk
-# build_elk: init
-# 	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml build
-
-# .PHONY: up_elk
-# up_elk: init
-# 	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up
-
-# .PHONY: setup_elk
-# setup_elk: init
-# 	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up setup
 
 # .PHONY: build_up_blockchain
 # build_up_blockchain: init
@@ -75,15 +63,17 @@ u:
 # 	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) build
 # 	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
 
+# Django + vite環境の起動
 .PHONY: build_up_three
 build_up_three: init
 	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) build
 	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) up -d
-	
+
+# 通常の起動: viteはbuildのみ行い、即downしrmする
 .PHONY: build_up_default
-build_up_default: init build_up_three vite_npm_run_build django_collectstatic
-	docker-compose $(COMPOSE_FILES_ARGS) build
-	docker-compose $(COMPOSE_FILES_ARGS) up -d
+build_up_default: init build_up_three vite_npm_run_build down_vite django_collectstatic
+# docker-compose $(COMPOSE_FILES_ARGS) build
+# docker-compose $(COMPOSE_FILES_ARGS) up -d
 
 .PHONY: stop
 stop:
@@ -98,9 +88,25 @@ s:
 start:
 	docker-compose $(COMPOSE_FILES_ARGS) start
 
+# ------------------------------
+# down
+# ------------------------------
+# viteコンテナだけをdownする：make の際、viteでbuildだけしてdownするために使用する
+.PHONY: down_vite
+down_vite:
+	docker-compose $(COMPOSE_FILES_ARGS) rm -s -f vite
+
+# Django+vite起動環境のdown
+.PHONY: down_three	
+down_three:
+	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) down
+
+# 通常時のdown: viteは起動していない想定
 .PHONY: down
 down:
-	COMPOSE_PROFILES=elk,blockchain,monitor,three docker-compose $(COMPOSE_FILES_ARGS) down
+	docker-compose $(COMPOSE_FILES_ARGS) down
+# COMPOSE_PROFILES=elk,blockchain,monitor,three docker-compose $(COMPOSE_FILES_ARGS) down
+
 #	COMPOSE_PROFILES=elk,blockchain,monitor,three docker-compose $(COMPOSE_FILES_ARGS) down; \
 #	PATTERN='127.0.0.1 $(SERVER_NAME)'; \
 #	OSTYPE=`uname -s`; \
@@ -126,28 +132,6 @@ reset_ft_django:
 	rm -rf mount_volume/ft_django
 	docker-compose $(COMPOSE_FILES_ARGS) build ft_django
 	docker-compose $(COMPOSE_FILES_ARGS) up ft_django -d
-
-# .PHONY: reset_kibana
-# reset_kibana:
-# 	docker-compose $(COMPOSE_FILES_ARGS) down kibana
-# # rm -rf mount_volume/kibana
-# 	docker-compose $(COMPOSE_FILES_ARGS) build kibana
-# 	docker-compose $(COMPOSE_FILES_ARGS) up kibana -d
-
-# .PHONY: reset_es
-# reset_es:
-# 	docker-compose $(COMPOSE_FILES_ARGS) down elasticsearch
-# # rm -rf mount_volume/elasticsearch
-# 	docker-compose $(COMPOSE_FILES_ARGS) build elasticsearch
-# 	docker-compose $(COMPOSE_FILES_ARGS) up elasticsearch -d
-
-# .PHONY: reset_logstash
-# reset_logstash:
-# 	docker-compose $(COMPOSE_FILES_ARGS) down logstash
-# # rm -rf mount_volume/logstash
-# 	docker-compose $(COMPOSE_FILES_ARGS) build logstash
-# 	docker-compose $(COMPOSE_FILES_ARGS) up logstash -d
-
 
 # -----------------------------------------------
 #  other docker command
@@ -218,11 +202,6 @@ ntp_linux:
 	sudo systemctl restart ntp
 	sudo systemctl enable ntp
 
-# .PHONY: ELK_certs
-# ELK_certs:
-# 	chmod +x srcs/make/generate_certs.sh
-# 	bash srcs/make/generate_certs.sh
-# 	openssl x509 -in docker/srcs/elasticsearch/cert/elasticsearch.crt -text -noout
 
 # -----------------------------------------------
 #  test
