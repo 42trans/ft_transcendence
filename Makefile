@@ -197,8 +197,10 @@ env:
 .PHONY: cert_key
 cert_key:
 	@chmod +x init/cert_key.sh && ./init/cert_key.sh
+	@chmod +x init/cert_key_django.sh && ./init/cert_key_django.sh
+	@chmod +x init/cert_key_postgresql.sh && ./init/cert_key_postgresql.sh
 # gfarana追加
-	@chmod +x init/cert_key_grafana.sh && init/cert_key_grafana.sh
+#	@chmod +x init/cert_key_grafana.sh && init/cert_key_grafana.sh
 
 .PHONY: check_key
 check_key:
