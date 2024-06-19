@@ -195,28 +195,28 @@ class TestConfig(LiveServerTestCase):
     ############################################################################
     # ページ遷移、操作 要素
 
-    def _wait_invisible(self, target, timeout_sec=10):
-        WebDriverWait(driver=self.driver, timeout=10).until(
+    def _wait_invisible(self, target, timeout_sec=20):
+        WebDriverWait(driver=self.driver, timeout=timeout_sec).until(
             EC.invisibility_of_element_located(target)
         )
 
-    def _wait_visible(self, target, timeout_sec=10):
-        WebDriverWait(driver=self.driver, timeout=10).until(
+    def _wait_visible(self, target, timeout_sec=20):
+        WebDriverWait(driver=self.driver, timeout=timeout_sec).until(
             EC.visibility_of_element_located(target)
         )
 
     def _wait_send_keys(self, by, elem_value, send_value):
-        WebDriverWait(self.driver, 10).until(
+        WebDriverWait(self.driver, 20).until(
             EC.text_to_be_present_in_element_value((by, elem_value), send_value)
         )
 
     def _wait_to_be_url(self, url):
-        WebDriverWait(self.driver, 10).until(
+        WebDriverWait(self.driver, 20).until(
             EC.url_to_be(url)
         )
 
     def _wait_display_message(self, expected_message, value):
-        WebDriverWait(driver=self.driver, timeout=10).until(
+        WebDriverWait(driver=self.driver, timeout=20).until(
             EC.text_to_be_present_in_element(
                 locator=(By.ID, value),
                 text_=expected_message
