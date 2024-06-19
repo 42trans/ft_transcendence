@@ -21,7 +21,8 @@ COMPOSE_FILES_ARGS = $(addprefix -f , $(COMPOSE_FILES))
 # -----------------------------------------------
 #  docker-compose
 # -----------------------------------------------
-all: init build up
+# all: init build up
+all: build_up_default
 
 # DEBUG: 環境変数チェック
 # echo $$SERVER_NAME 
@@ -32,7 +33,8 @@ all: init build up
 # -----------------------------------------------
 .PHONY: build
 build: init
-	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) build
+	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) build
+# COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) build
 
 
 .PHONY: b
@@ -41,7 +43,8 @@ b:
 
 .PHONY: up
 up: init
-	COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
+	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) up -d
+# COMPOSE_PROFILES=elk,blockchain,monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
 
 .PHONY: u
 u:
