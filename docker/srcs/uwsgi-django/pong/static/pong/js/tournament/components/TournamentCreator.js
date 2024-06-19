@@ -137,7 +137,7 @@ class TournamentCreator
 			if (!validationResult.isValid) 
 			{
 				// UIHelper.putError(validationResult.errorMessage, this.errorMessage);
-				alert('You cannot create: ', validationResult.errorMessage)
+				alert('You cannot create: ' + validationResult.errorMessage)
 				return;
 			}
 
@@ -178,18 +178,11 @@ class TournamentCreator
 	 */
 	_validateFormInputs(nicknames)
 	{
-		console.log("tournament 1")
 		const tournamentName = this.form.elements['name'].value;
 		// トーナメント名が3文字以上30文字以下の英数字であることを確認
-		console.log(` tournamentName: [${tournamentName}]`)
-		console.log(` length        : [${tournamentName.length}]`)
-		console.log(` pattern       : [${/^[A-Za-z0-9]+(?:\s+[A-Za-z0-9]+)*$/.test(tournamentName)}]`)
-
 		if (!tournamentName || tournamentName.length < 3 || tournamentName.length > 30 || !/^[A-Za-z0-9]+(?:\s+[A-Za-z0-9]+)*$/.test(tournamentName)) {
-			console.log("tournament 3")
 			return { isValid: false, errorMessage: 'Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long.' };
 		}
-		console.log("tournament 4")
 
 		// // トーナメント名が未入力の場合
 		// if (!this.form.elements['name'].value) {
