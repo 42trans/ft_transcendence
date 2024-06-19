@@ -7,8 +7,10 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from pong.models import Tournament, Match
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class IsValidMatchIdAPITests(TestCase):
     kLoginAPIName = "api_accounts:api_login"
     kLogoutAPIName = "api_accounts:api_logout"
