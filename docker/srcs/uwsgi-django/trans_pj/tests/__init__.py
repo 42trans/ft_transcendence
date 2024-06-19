@@ -54,6 +54,7 @@ class TestConfig(LiveServerTestCase):
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--ignore-certificate-errors')  # 自己署名証明書
+        options.add_argument('--ignore-ssl-errors')
         options.add_experimental_option('prefs', {'loggingPrefs': {'browser': 'ALL'}})
 
         options.binary_location = '/usr/bin/chromium'
