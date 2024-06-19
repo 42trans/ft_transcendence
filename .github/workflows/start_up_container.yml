@@ -77,3 +77,31 @@ jobs:
 
       - name: Check start-up container
         run: bash docker/tests/container_run_healthy.sh
+
+      - name: Check SSL-Connection
+        run: |
+          total_result=0
+          
+          docker exec uwsgi-django python manage.py test trans_pj.ssl_test.test_ssl_connection > /dev/null
+          unit_result=$?
+          total_result=$((total_result | unit_result))
+          if [ $unit_result -eq 0 ]; then
+            echo -e "\e[32m[OK] django\e[0m"
+          else
+            echo -e "\e[31m[NG] django\e[0m"
+          fi
+
+          unit_result=$(( $(docker exec postgres cat /var/lib/postgresql/data/log/postgresql.log | grep SSL | wc -l) > 0 ? 0 : 1 ))
+          total_result=$((total_result | unit_result))
+          if [ $unit_result -eq 0 ]; then
+            echo -e "\e[32m[OK] postgresql\e[0m"
+          else
+            echo -e "\e[31m[NG] postgresql\e[0m"
+          fi
+          
+          if [ $total_result -eq 0 ]; then
+            echo -e "\e[32m[OK] ALL TEST SUCCESS\e[0m"
+          else
+            echo -e "\e[31m[NG] TEST FAILURE\e[0m"
+            exit 1
+          fi
