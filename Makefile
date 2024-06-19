@@ -47,30 +47,30 @@ up: init
 u:
 	make up
 
-.PHONY: build_elk
-build_elk: init
-	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml build
+# .PHONY: build_elk
+# build_elk: init
+# 	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml build
 
-.PHONY: up_elk
-up_elk: init
-	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up
+# .PHONY: up_elk
+# up_elk: init
+# 	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up
 
-.PHONY: setup_elk
-setup_elk: init
-	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up setup
+# .PHONY: setup_elk
+# setup_elk: init
+# 	docker-compose -f ./docker/srcs/elk/docker-compose-elk.yml up setup
 
-.PHONY: build_up_blockchain
-build_up_blockchain: init
-	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) build
-	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) up -d
-	make hardhat_deploy_hardhat
-	make hardhat_deploy_ganache
-	make setup_ganache_data
+# .PHONY: build_up_blockchain
+# build_up_blockchain: init
+# 	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) build
+# 	COMPOSE_PROFILES=blockchain docker-compose $(COMPOSE_FILES_ARGS) up -d
+# 	make hardhat_deploy_hardhat
+# 	make hardhat_deploy_ganache
+# 	make setup_ganache_data
 
-.PHONY: build_up_monitor
-build_up_monitor: init
-	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) build
-	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
+# .PHONY: build_up_monitor
+# build_up_monitor: init
+# 	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) build
+# 	COMPOSE_PROFILES=monitor docker-compose $(COMPOSE_FILES_ARGS) up -d
 
 .PHONY: build_up_three
 build_up_three: init
@@ -124,26 +124,26 @@ reset_ft_django:
 	docker-compose $(COMPOSE_FILES_ARGS) build ft_django
 	docker-compose $(COMPOSE_FILES_ARGS) up ft_django -d
 
-.PHONY: reset_kibana
-reset_kibana:
-	docker-compose $(COMPOSE_FILES_ARGS) down kibana
-# rm -rf mount_volume/kibana
-	docker-compose $(COMPOSE_FILES_ARGS) build kibana
-	docker-compose $(COMPOSE_FILES_ARGS) up kibana -d
+# .PHONY: reset_kibana
+# reset_kibana:
+# 	docker-compose $(COMPOSE_FILES_ARGS) down kibana
+# # rm -rf mount_volume/kibana
+# 	docker-compose $(COMPOSE_FILES_ARGS) build kibana
+# 	docker-compose $(COMPOSE_FILES_ARGS) up kibana -d
 
-.PHONY: reset_es
-reset_es:
-	docker-compose $(COMPOSE_FILES_ARGS) down elasticsearch
-# rm -rf mount_volume/elasticsearch
-	docker-compose $(COMPOSE_FILES_ARGS) build elasticsearch
-	docker-compose $(COMPOSE_FILES_ARGS) up elasticsearch -d
+# .PHONY: reset_es
+# reset_es:
+# 	docker-compose $(COMPOSE_FILES_ARGS) down elasticsearch
+# # rm -rf mount_volume/elasticsearch
+# 	docker-compose $(COMPOSE_FILES_ARGS) build elasticsearch
+# 	docker-compose $(COMPOSE_FILES_ARGS) up elasticsearch -d
 
-.PHONY: reset_logstash
-reset_logstash:
-	docker-compose $(COMPOSE_FILES_ARGS) down logstash
-# rm -rf mount_volume/logstash
-	docker-compose $(COMPOSE_FILES_ARGS) build logstash
-	docker-compose $(COMPOSE_FILES_ARGS) up logstash -d
+# .PHONY: reset_logstash
+# reset_logstash:
+# 	docker-compose $(COMPOSE_FILES_ARGS) down logstash
+# # rm -rf mount_volume/logstash
+# 	docker-compose $(COMPOSE_FILES_ARGS) build logstash
+# 	docker-compose $(COMPOSE_FILES_ARGS) up logstash -d
 
 
 # -----------------------------------------------
@@ -202,7 +202,7 @@ env:
 cert_key:
 	@chmod +x init/cert_key.sh && ./init/cert_key.sh
 # gfarana追加
-	@chmod +x init/cert_key_grafana.sh && init/cert_key_grafana.sh
+# @chmod +x init/cert_key_grafana.sh && init/cert_key_grafana.sh
 
 .PHONY: check_key
 check_key:
@@ -215,11 +215,11 @@ ntp_linux:
 	sudo systemctl restart ntp
 	sudo systemctl enable ntp
 
-.PHONY: ELK_certs
-ELK_certs:
-	chmod +x srcs/make/generate_certs.sh
-	bash srcs/make/generate_certs.sh
-	openssl x509 -in docker/srcs/elasticsearch/cert/elasticsearch.crt -text -noout
+# .PHONY: ELK_certs
+# ELK_certs:
+# 	chmod +x srcs/make/generate_certs.sh
+# 	bash srcs/make/generate_certs.sh
+# 	openssl x509 -in docker/srcs/elasticsearch/cert/elasticsearch.crt -text -noout
 
 # -----------------------------------------------
 #  test
@@ -238,10 +238,10 @@ log_async_online:
 	tail -f docker/srcs/uwsgi-django/pong/utils/async_log.log
 
 
-.PHONY: test_main
-test_main:
-	bash ./test/main_test.sh
-	make test_django_test_py
+# .PHONY: test_main
+# test_main:
+# 	bash ./test/main_test.sh
+# 	make test_django_test_py
 
 .PHONY: t
 t:
@@ -252,33 +252,33 @@ t:
 test_game_result_json:
 	sh test/django/game_result_json.sh
 
-.PHONY: test_game_result_json_hardhat
-test_game_result_json_hardhat:
-	sh test/hardhat/save_game_result_json_hardhat.sh
+# .PHONY: test_game_result_json_hardhat
+# test_game_result_json_hardhat:
+# 	sh test/hardhat/save_game_result_json_hardhat.sh
 
-.PHONY: test_ganache
-test_ganache:
-	bash ./test/ganache/test_main_ganache.sh
+# .PHONY: test_ganache
+# test_ganache:
+# 	bash ./test/ganache/test_main_ganache.sh
 # -----------------------------------------------
 # Blockcharin コマンド
 # -----------------------------------------------
 # build blockchainでも実行
-.PHONY: hardhat_deploy_hardhat
-hardhat_deploy_hardhat:
-	docker exec hardhat /bin/sh -c 'NETWORK_NAME=hardhat npx hardhat run scripts/deploy.ts --network localhost'
-# build blockchainでも実行
-.PHONY: hardhat_deploy_ganache
-hardhat_deploy_ganache:
-	docker exec hardhat /bin/sh -c 'NETWORK_NAME=ganache npx hardhat run scripts/deploy.ts --network ganache'
-# 公開ネットなので、コントラクトは一度だけデプロイ
-.PHONY: hardhat_deploy_sepolia
-hardhat_deploy_sepolia:
-	docker exec hardhat /bin/sh -c 'NETWORK_NAME=sepolia npx hardhat run scripts/deploy.ts --network sepolia'
-# ganacheにサンプルデータを20件登録する
-# build blockchainでも実行
-.PHONY: setup_ganache_data
-setup_ganache_data:
-	sh docker/srcs/ganache/setup_data.sh
+# .PHONY: hardhat_deploy_hardhat
+# hardhat_deploy_hardhat:
+# 	docker exec hardhat /bin/sh -c 'NETWORK_NAME=hardhat npx hardhat run scripts/deploy.ts --network localhost'
+# # build blockchainでも実行
+# .PHONY: hardhat_deploy_ganache
+# hardhat_deploy_ganache:
+# 	docker exec hardhat /bin/sh -c 'NETWORK_NAME=ganache npx hardhat run scripts/deploy.ts --network ganache'
+# # 公開ネットなので、コントラクトは一度だけデプロイ
+# .PHONY: hardhat_deploy_sepolia
+# hardhat_deploy_sepolia:
+# 	docker exec hardhat /bin/sh -c 'NETWORK_NAME=sepolia npx hardhat run scripts/deploy.ts --network sepolia'
+# # ganacheにサンプルデータを20件登録する
+# # build blockchainでも実行
+# .PHONY: setup_ganache_data
+# setup_ganache_data:
+# 	sh docker/srcs/ganache/setup_data.sh
 # -----------------------------------------------
 # docment 自動作成
 # -----------------------------------------------
@@ -286,9 +286,9 @@ setup_ganache_data:
 sphinx_make_html:
 	docker exec uwsgi-django /bin/sh -c "cd sphinx && make html"
 
-.PHONY: hardhat_docgen
-hardhat_docgen:
-	docker exec hardhat npx hardhat docgen
+# .PHONY: hardhat_docgen
+# hardhat_docgen:
+# 	docker exec hardhat npx hardhat docgen
 # -----------------------------------------------
 # Re-setup 再起動時に毎回実行するコマンドを登録してください。
 .PHONY: Re-setup
