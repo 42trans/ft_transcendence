@@ -92,7 +92,8 @@ MIDDLEWARE = [
 	# --------------------
 	'django_otp.middleware.OTPMiddleware',  # 2fa
 	'accounts.middleware.JWTAuthenticationMiddleware',	# jwt
-	'accounts.middleware.DisableCSRFForJWT'
+	'accounts.middleware.DisableCSRFForJWT',
+	'trans_pj.middleware.LogRequestSchemeMiddleware',  # https確認用
 ]
 
 
@@ -160,8 +161,25 @@ DATABASES = {
 		'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
 		'HOST': 'postgres',  # Docker内のPostgreSQLサービス名
 		'PORT': '5432',
+		'OPTIONS': {
+			'sslmode': 'require',
+			'sslcert': '/code/ssl/django.crt',  # Djangoクライアント用
+			'sslkey' : '/code/ssl/django.key',   # Djangoクライアント用
+		},
 	}
 }
+
+# Django-Nginx SSL #############################################################
+# セキュアなクッキー設定
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# SSLリダイレクト
+SECURE_SSL_REDIRECT = True
+
+# 安全な接続の設定
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+################################################################################
 
 
 # ユーザー登録数の上限
@@ -297,6 +315,11 @@ LOGGING = {
 		'handlers': ['console', 'file'],
 		'level': 'DEBUG',
 		'propagate': False,
+	},
+	'trans_pj.middleware': {
+		'handlers': ['console', 'file'],
+		'level': 'DEBUG',
+		'propagate': True,
 	},
 },
 }
