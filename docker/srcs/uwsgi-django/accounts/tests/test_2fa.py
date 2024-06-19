@@ -14,8 +14,10 @@ from django.test import TestCase
 from django.urls import reverse, resolve
 from rest_framework import status
 from rest_framework.test import APIClient
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class Enable2FaAPITests(TestCase):
     kUserEmail = 'test@example.com'
     kUserNickname = 'test'
@@ -165,6 +167,7 @@ class Enable2FaAPITests(TestCase):
         self.client.get(logout_api_url)
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class Verify2FaAPITests(TestCase):
     kUserEmail = 'test@example.com'
     kUserNickname = 'test'

@@ -5,8 +5,10 @@ from ...models import Tournament
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import status
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestListAllUserTournaments(TestCase):
 	def setUp(self):
 		User = get_user_model()

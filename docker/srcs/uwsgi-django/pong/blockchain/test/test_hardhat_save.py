@@ -3,7 +3,9 @@ from django.test import Client, TestCase
 from django.urls import reverse
 import json
 from .check_network import CheckNetwork
+from django.test import override_settings
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestGanashSave(TestCase):
 	"""
 	Django のAPIで Hardhat のテストネットへの登録をテストするクラス
