@@ -1,5 +1,9 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/StateBaseRound.js
 import { config }	from '../ConfigTournament.js';
+import { tournamentHandleCatchError } from "../TournamentMain.js";
+
+const TEST_TRY1		= 0;
+const TEST_TRY2		= 0;
 
 /**
  * # StateBaseRound
@@ -34,21 +38,26 @@ class StateBaseRound
 	async loadAndDisplayMatches(roundNumber) 
 	{
 		try {
+						if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
+
 			const response = await fetch(`${this.API_URLS.ongoingMatchesByRound}${roundNumber}/`);
 			if (!response.ok) {
 				throw new Error('Server responded with an error: ' + response.status);
 			}
 			const data = await response.json();
 			this.matches = data.matches; 
-			this.displayMatches(roundNumber);
+			this._displayMatches(roundNumber);
 		} catch (error) {
-			console.error('Failed to load matches:', error);
-			this.tournamentContainer.innerHTML = 'Failed to load matches.';
+			console.error('hth: loadAndDisplayMatches() failed:', error);
+			tournamentHandleCatchError(error);
+			// this.tournamentContainer.innerHTML = 'Failed to load matches.';
 		}
 	}
 
-	displayMatches(roundNumber) 
+	_displayMatches(roundNumber) 
 	{
+					if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
+
 		this.tournamentContainer.innerHTML = ''; 
 		// matchesが空の配列であるか、null/undefinedである場合は早期リターン
 		if (!this.matches || this.matches.length === 0) {

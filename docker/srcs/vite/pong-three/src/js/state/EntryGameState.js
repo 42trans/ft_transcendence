@@ -7,12 +7,12 @@ import ZoomBall from '../effect/ZoomBall';
 import AllScenesManager from '../manager/AllScenesManager';
 import { handleCatchError } from '../../index.js';
 
-let DEBUG_FLOW		= 0;
-let DEBUG_DETAIL1	= 0;
-let TEST_TRY1		= 0;
-let TEST_TRY2		= 0;
-let TEST_TRY3		= 0;
-let TEST_TRY4		= 0;
+const DEBUG_FLOW		= 0;
+const DEBUG_DETAIL1		= 0;
+const TEST_TRY1			= 0;
+const TEST_TRY2			= 0;
+const TEST_TRY3			= 0;
+const TEST_TRY4			= 0;
 
 class EntryGameState extends BaseGameState 
 {
