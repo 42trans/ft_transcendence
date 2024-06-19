@@ -82,6 +82,18 @@ class TournamentOverview
 			</p>
 			<ul>${nicknamesList}</ul>
 		`;
+
+		// 上記htmlのul以外にslideup-textを追加
+		const allElementsExceptUl = detailsContainer.querySelectorAll(':not(ul)'); 
+		allElementsExceptUl.forEach(element => {
+			element.classList.add('slideup-text');
+		});
+		// li 要素（nicknamesList）にも追加
+		const listElements = detailsContainer.querySelectorAll('li'); 
+		listElements.forEach(element => {
+			element.classList.add('slideup-text');
+		});
+
 		return detailsContainer;
 	}
 

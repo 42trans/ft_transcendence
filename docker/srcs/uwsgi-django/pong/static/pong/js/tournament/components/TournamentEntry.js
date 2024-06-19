@@ -71,6 +71,7 @@ class TournamentEntry
 		UIHelper.displayUserInfo(userProfile, this.tournamentContainer);
 		const header = document.createElement('h2');
 		header.id = 'overview-header';
+		header.className = 'slideup-text';
 		header.textContent = 'Tournament is in progress.';
 		return header;
 	}
@@ -80,7 +81,7 @@ class TournamentEntry
 	{
 		const naviButton = document.createElement('button');
 		naviButton.id = 'round-navigation';
-		naviButton.className = 'hth-btn my-3';
+		naviButton.className = 'slideup-text hth-btn my-3';
 		naviButton.textContent = 'Round';
 		naviButton.onclick = () => this.roundManager.changeStateToRound(1);
 					if (TEST_TRY3) {	throw new Error('TEST_TRY3');	}
@@ -91,7 +92,7 @@ class TournamentEntry
 	addDeleteButton(tournamentId) {
 		const deleteButton = document.createElement('button');
 		deleteButton.id = 'delete-button';
-		deleteButton.className = 'hth-btn my-3';
+		deleteButton.className = 'slideup-text hth-btn my-3';
 		deleteButton.textContent = 'Delete Tournament';
 		deleteButton.onclick = async () => {
 			if (confirm('Delete this tournament?')) {
