@@ -169,6 +169,10 @@ logs:
 .PHONY: fclean
 fclean: down docker_rm remove_mount_volume
 
+.PHONY: re
+re: fclean all
+
+
 # -----------------------------------------------
 #  init
 # -----------------------------------------------
