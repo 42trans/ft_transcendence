@@ -39,21 +39,50 @@ class PongOnlineRenderer
 	}
 
 
+	isObj(ctx, field, gameState)
+	{
+		if (!ctx || !field || !gameState){
+			console.warn('hth: render(): ctx, field, or gameState is null');
+			return false;
+		}
+		if (!gameState.objects || !gameState.objects.paddle1 || !gameState.objects.paddle2 || !gameState.objects.ball) {
+			console.warn('hth: render(): gameState.objects or its properties are null');
+			return false;
+		}
+		if (!gameState.state) {
+			console.warn('hth: render(): gameState.state is null');
+			return false;
+		}
+		return true;
+	}
+
+
 	render(ctx, field, gameState) 
 	{	
-		try {
-			this._clearField(ctx, field);
-			this._drawPaddle(ctx, gameState.objects.paddle1);
-			this._drawPaddle(ctx, gameState.objects.paddle2);
-			this._drawBall(ctx, gameState.objects.ball);
-			this._drawScore(ctx, field, gameState.state);
-
+		try 
+		{
+			if (this.isObj(ctx, field, gameState)) {
+				this._clearField(ctx, field);
+			}
+			if (this.isObj(ctx, field, gameState)) {
+				this._drawPaddle(ctx, gameState.objects.paddle1);
+			}
+			if (this.isObj(ctx, field, gameState)) {
+				this._drawPaddle(ctx, gameState.objects.paddle2);
+			}
+			if (this.isObj(ctx, field, gameState)) {
+				this._drawBall(ctx, gameState.objects.ball);
+			}
+			if (this.isObj(ctx, field, gameState)) {
+				this._drawScore(ctx, field, gameState.state);
+			}
 					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 		} catch(error) {
 			console.error("hth: render() failed: ", error);
 			pongOnlineHandleCatchError(error);
 		}
 	}
+
 
 	// ウインドウのサイズに合わせて動的に描画サイズを変更
 	resizeForAllDevices() 
@@ -207,6 +236,7 @@ class PongOnlineRenderer
 			pongOnlineHandleCatchError(error);
 		}
 	}
+
 
 	dispose() {
 		this.gameStateManager = null;
