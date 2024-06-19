@@ -3,6 +3,7 @@ from django.http import JsonResponse
 import json
 # from unittest.mock import patch
 from ..contract_helpers.validate_request_data import validate_request_data
+from django.test import override_settings
 
 """
 .. Note::
@@ -13,6 +14,7 @@ from ..contract_helpers.validate_request_data import validate_request_data
 	- レスポンスの内容をテキストとして読みたい場合は `response.content.decode('utf-8')`
 """
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class ValidateRequestDataTest(TestCase):
 	"""
 	validate_request_data()の正常な動作と例外処理の動作をテストするクラス

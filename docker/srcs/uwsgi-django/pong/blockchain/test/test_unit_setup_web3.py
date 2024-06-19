@@ -4,9 +4,11 @@ from django.test import TestCase
 from unittest.mock import patch
 # テスト対象のimport: setup_web3_and_contract関数
 from ..contract_helpers.setup_web3_and_contract import setup_web3_and_contract
+from django.test import override_settings
 
 # Pythonのクラスはキャメルケース、ファイル名はスネークケース
 # TestCaseクラスを継承
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestSetupWeb3AndContract(TestCase):
 	"""
 	setup_web3_and_contract関数の正常な動作と例外処理の動作をテストするクラス

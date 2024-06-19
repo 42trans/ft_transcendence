@@ -13,10 +13,12 @@ from django.test import LiveServerTestCase
 from trans_pj.asgi import application
 from django.urls import reverse
 from rest_framework import status
+from django.test import override_settings
 
 # ロガーの設定
 logger = logging.getLogger(__name__)
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestPongOnlineConsumer(ChannelsLiveServerTestCase):
     kUser1Email = 'user1@example.com'
     kUser1Nickname = 'user1'

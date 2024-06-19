@@ -5,8 +5,10 @@ from django.urls import reverse, resolve
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class IsUserLoggedInAPITests(TestCase):
     kLoginAPIName = "api_accounts:api_login"
     kLogoutAPIName = "api_accounts:api_logout"
@@ -63,6 +65,7 @@ class IsUserLoggedInAPITests(TestCase):
         self.assertFalse(response.json()['is_logged_in'])
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class IsUserEnabled2FaAPITests(TestCase):
     kLoginAPIName = "api_accounts:api_login"
     kLogoutAPIName = "api_accounts:api_logout"

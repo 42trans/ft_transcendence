@@ -1,6 +1,8 @@
 import requests
 import os
+from django.test import override_settings
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class CheckNetwork:
 	"""
 	EVMテストネットワークの可用性を確認するためのメソッドを提供するクラス
