@@ -129,6 +129,7 @@ class TournamentCreator
 			UIHelper.clearContainer(this.errorMessage);
 			UIHelper.clearContainer(this.submitMessage);
 
+			this._trimTournamentName();
 			const nicknames			= this._getNicknames();
 			const validationResult	= this._validateFormInputs(nicknames);
 
@@ -166,18 +167,30 @@ class TournamentCreator
 		return Array.from(this.form.querySelectorAll('input[name="nickname"]'))
 					.map(input => input.value.trim());
 	}
-	
+
+	_trimTournamentName()
+	{
+		this.form.elements['name'].value = this.form.elements['name'].value.trim();
+	}
+
 	/**
 	 * APIのvalidationの詳細: docker/srcs/uwsgi-django/pong/models.py
 	 */
-	_validateFormInputs(nicknames) 
+	_validateFormInputs(nicknames)
 	{
+		console.log("tournament 1")
+		const tournamentName = this.form.elements['name'].value;
 		// トーナメント名が3文字以上30文字以下の英数字であることを確認
-		const tournamentName = this.form.elements['name'].value.trim();
+		console.log(` tournamentName: [${tournamentName}]`)
+		console.log(` length        : [${tournamentName.length}]`)
+		console.log(` pattern       : [${/^[A-Za-z0-9]+(?:\s+[A-Za-z0-9]+)*$/.test(tournamentName)}]`)
+
 		if (!tournamentName || tournamentName.length < 3 || tournamentName.length > 30 || !/^[A-Za-z0-9]+(?:\s+[A-Za-z0-9]+)*$/.test(tournamentName)) {
+			console.log("tournament 3")
 			return { isValid: false, errorMessage: 'Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long.' };
 		}
-	
+		console.log("tournament 4")
+
 		// // トーナメント名が未入力の場合
 		// if (!this.form.elements['name'].value) {
 		// 	return { isValid: false, errorMessage: 'Tournament name is required.' };

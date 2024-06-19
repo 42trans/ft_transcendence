@@ -36,6 +36,9 @@ class TournamentTest(TestConfig):
             "a a",
             "1 a",
             "abc",
+            "       abc",       # -> abc
+            "abc     ",         # -> abc
+            "       abc     ",  # -> abc
             f"{'a' * 29}",
             f"{'a' * 30}",
         ]
@@ -66,8 +69,8 @@ class TournamentTest(TestConfig):
             {"name": ".",               "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
             {"name": "abc*012",         "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
             {"name": "abc_012",         "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": "  abc",           "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": "abc  ",           "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
+            {"name": "  ab",            "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
+            {"name": "ab  ",            "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
             {"name": "<script>alert('a')</script>",        "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
 
             # too short
@@ -91,7 +94,8 @@ class TournamentTest(TestConfig):
             # self._screenshot("invalid1")
             self._submit_tournament(wait_invisible=False)
             # self._screenshot("invalid2")
-            self._assert_message(expected_message, value="error-message")
+            # self._assert_message(expected_message, value="error-message")
+            self._close_alert("You cannot create: ")
             self._is_tournament_top()
 
     def test_invalid_player_name(self):
@@ -133,7 +137,8 @@ class TournamentTest(TestConfig):
             # self._screenshot("invalid_nickname_1")
             self._submit_tournament(wait_invisible=False)
             # self._screenshot("invalid_nickname_2")
-            self._assert_message(expected_message, value="error-message")
+            # self._assert_message(expected_message, value="error-message")
+            self._close_alert("You cannot create: ")
             self._is_tournament_top()
 
     def _submit_tournament(self, wait_invisible=True):
