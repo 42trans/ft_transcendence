@@ -147,8 +147,8 @@ class EditUserProfileAPIView(APIView):
 
 
 # todo: tmp, API and FBV -> CBV
-def get_user_info(request, nickname):
-    if not nickname:
+def get_user_info(request, user_id):
+    if not user_id:
         return redirect('/accounts/login/')
 
     try:
@@ -156,7 +156,7 @@ def get_user_info(request, nickname):
         if not user.is_authenticated:
             return redirect(to='/accounts/login/')
 
-        info_user = CustomUser.objects.get(nickname=nickname)
+        info_user = CustomUser.objects.get(id=user_id)
         avatar_url = info_user.avatar.url
         is_blocking_user = request.user.blocking_users.filter(id=info_user.id).exists()
 
@@ -276,3 +276,18 @@ class GetUserHistoryTemplateView(LoginRequiredMixin, TemplateView):
         user = self.request.user
         context['nickname'] = user.nickname
         return context
+
+
+class IsValidUserIdAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id) -> Response:
+        try:
+            user_id = int(user_id)
+            if user_id <= 0:
+                return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_exists = CustomUser.objects.filter(id=user_id).exists()
+        return Response({'exists': user_exists}, status=status.HTTP_200_OK)

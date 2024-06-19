@@ -51,7 +51,8 @@ class PongOnlineGameLoopManager
 	/**
 	 * 参考:【プログレス · Bootstrap v5.3】 <https://getbootstrap.jp/docs/5.3/components/progress/>
 	 */
-	showProgressBar() {
+	showProgressBar() 
+	{
 		let progressBar = document.querySelector('.progress-bar');
 		let width = 0;
 		const progress = setInterval(() => {
@@ -69,6 +70,24 @@ class PongOnlineGameLoopManager
 	}
 	
 
+	isGameLoopReady() 
+	{
+		if ( 
+			this.gameStateManager &&
+			this.gameStateManager.gameState &&
+			this.gameStateManager.gameState.game_settings &&
+			this.field &&
+			this.ctx &&
+			this.canvas &&
+			this.renderer
+		){
+			return true;
+		} else {
+			console.warn('hth: isGameLoopReady() is false: null or undefined');
+			return false;
+		}
+	}
+	
 	startGameLoopAfterDelay(delay) 
 	{
 		setTimeout(() => 
@@ -76,14 +95,15 @@ class PongOnlineGameLoopManager
 			const gameLoop = () => 
 			{
 				try {
-					const gameState	= this.gameStateManager.gameState;
-					this.field		= this.gameStateManager.gameState.game_settings.field
-					this.ctx		= this.gameStateManager.ctx
-					this.canvas		= this.gameStateManager.canvas
-
+					const gameState = this.gameStateManager && this.gameStateManager.gameState;
+					this.field = gameState && gameState.game_settings && gameState.game_settings.field;
+					this.ctx = this.gameStateManager && this.gameStateManager.ctx;
+					this.canvas = this.gameStateManager && this.gameStateManager.canvas;
 					
 					// ループ終了条件
-					if (!this.gameStateManager.isGameLoopStarted) {
+					if (!this.isGameLoopReady() ||
+						!this.gameStateManager.isGameLoopStarted) 
+					{
 						return;
 					}
 					
@@ -92,20 +112,28 @@ class PongOnlineGameLoopManager
 					// 目標フレーム時間よりも経過時間が短い場合は、次のフレームを待つ
 					if (elapsed >= this.desiredFrameTimeMs) 
 					{
-						if (!gameState) {
-							throw new Error("hth: gameState is null.");
-						} 
-						
-						if (gameState.is_running) {
-							PongOnlinePaddleMover.handlePaddleMovement(this.field, gameState);
-							this.gameStateManager.sendClientState(gameState);
-							this.renderer.render(this.ctx, this.field, gameState);
+						if (this.isGameLoopReady() && gameState.is_running) 
+						{
+							// 全ての行でnullチェック
+							// 理由：ゲーム中に、 戻る>進む で、最後のloopが処理中にdispose()が実行されてnullになるため
+							if (this.isGameLoopReady()) {
+								PongOnlinePaddleMover.handlePaddleMovement(this.field, gameState);
+							}
+							if (this.isGameLoopReady()) {
+								this.gameStateManager.sendClientState(gameState);
+							}
+							if (this.isGameLoopReady()) {
+								this.renderer.render(this.ctx, this.field, gameState);
+							}
+
 							// 描画した時点の時刻を登録
 							this.lastFrameTimeMs = currentTime;
 						} else {
 							// 終了時
-							if (DEBUG_DETAIL) {	console.log("gameLoop(): gameState", gameState);	}
-							this.stopGameLoop(gameState);
+										if (DEBUG_DETAIL) {	console.log("gameLoop(): gameState", gameState);	}
+							if (this.isGameLoopReady()) {
+								this.stopGameLoop(gameState);
+							}
 						}
 					}
 					// 次のフレームを要求
@@ -113,7 +141,7 @@ class PongOnlineGameLoopManager
 
 							if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 				} catch(error) {
-					console.error("hth: gameLoop error:", error);
+					console.error("hth: startGameLoopAfterDelay(): gameLoop() failed:", error);
 					pongOnlineHandleCatchError(error);
 				}
 			}

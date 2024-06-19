@@ -1,14 +1,15 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/TournamentManager.js
 import { config }	from '../ConfigTournament.js';
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
-import { switchPage } from "/static/spa/js/routing/renderView.js"
+import { switchPage } from "/static/spa/js/routing/renderView.js";
+import { tournamentHandleCatchError } from "../TournamentMain.js";
 
 // console.log: 出力=true、本番時はfalseに設定。0,1でも動く
-let DEBUG_FLOW		= 0;
-let DEBUG_DETAIL	= 0;
-let TEST_TRY1 = 0;
-let TEST_TRY2 = 0;
-let TEST_TRY3 = 0;
+const DEBUG_FLOW		= 0;
+const DEBUG_DETAIL		= 0;
+const TEST_TRY1 		= 0;
+const TEST_TRY2 		= 0;
+const TEST_TRY3 		= 0;
 
 /**
  * 処理フロー: 
@@ -42,7 +43,8 @@ class TournamentManager
 			}
 		} catch (error) {
 			console.error("hth: TournamentManager.main() failed", error);
-			this.tournamentContainer.textContent = "Error loading your information. Try again later.";
+			// this.tournamentContainer.textContent = "Error loading your information. Try again later.";
+			tournamentHandleCatchError(error);
 		}
 	}
 
@@ -73,7 +75,8 @@ class TournamentManager
 			}
 		} catch (error) {
 			console.error('hth: _handleLoggedInUser() failed: ', error);
-			this.tournamentContainer.textContent = 'Error loading tournaments.';
+			// this.tournamentContainer.textContent = 'Error loading tournaments.';
+			tournamentHandleCatchError(error);
 		}
 	}
 

@@ -2,7 +2,6 @@
 
 import AbstractView from "../AbstractView.js";
 import fetchData from "../../utility/fetch.js";
-import { getUrl } from "../../utility/url.js";
 import { loadAndExecuteScript } from "../../utility/script.js";
 
 
@@ -14,8 +13,8 @@ export default class extends AbstractView {
   }
 
   async getHtml() {
-    const userId = this.params.userId;
-    const uri = `/chat/dm-with/${userId}/`;
+    const targetId = this.params.dmTargetId;
+    const uri = `/chat/dm-with/${targetId}/`;
     const data = await fetchData(uri);
     //console.log("Pong:" + data);
     return data;

@@ -1,9 +1,9 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/tournament/UserManager.js
 import { config }	from '../ConfigTournament.js';
 
-let DEBUG_FLOW		= 0;
-let DEBUG_DETAIL	= 0;
-let TEST_TRY1 		= 0;
+const DEBUG_FLOW		= 0;
+const DEBUG_DETAIL		= 0;
+const TEST_TRY1 		= 0;
 
 class UserManager 
 {
@@ -40,7 +40,7 @@ class UserManager
 			} catch (error) {
 				if (error.code === 401) {
 					console.error('hth: Authentication failed');
-					// 401 Unauthorized エラーの場合UIに表示
+					// 401 Unauthorized エラーの場合、ログインを促すメッセージをコンテナに表示
 					alert('Your session has expired. Please log in again.');
 				} else {
 					console.error('hth: Failed to fetch user profile:', error);

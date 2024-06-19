@@ -4,6 +4,10 @@ import StateSecondRound from '../round/StateSecondRound.js'
 import StateFinalRound	from '../round/StateFinalRound.js'
 import StateEntry		from '../round/StateEntry.js';
 import { config }		from '../ConfigTournament.js';
+import { tournamentHandleCatchError } from "../TournamentMain.js";
+
+const DEBUG_FLOW		= 0;
+const TEST_TRY1 		= 0;
 
 /** ラウンドの切り替え */
 class RoundManager 
@@ -29,6 +33,7 @@ class RoundManager
 	changeStateToRound(roundNumber) 
 	{
 		try {
+						if (DEBUG_FLOW){	console.log('changeStateToRound(): start');	}
 			const newState = this.states[roundNumber];
 			if (!newState || this.currentRound === roundNumber) {
 				return;
@@ -41,8 +46,11 @@ class RoundManager
 				this.currentState = newState;
 				this.currentState.enter();
 			}
+						if (TEST_TRY1){	throw new Error('TEST_TRY1');	}
 		} catch(error) {
 			console.error("hth: changeStateToRound() failed: ", error);
+			// トーナメントページが一切表示できないのでtopにリダイレクトする
+			tournamentHandleCatchError(error);
 		}
 	}
 }

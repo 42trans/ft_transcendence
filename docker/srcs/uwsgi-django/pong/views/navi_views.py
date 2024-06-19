@@ -34,28 +34,39 @@ def pong_view(request):
 
 # 3D
 def play_tournament(request, match_id):
+	# match_idが整数でない場合の遷移
+	try:
+		match_id = int(match_id)
+		if match_id <= 0:
+			return redirect(to='/pong/')
+	except ValueError:
+		return redirect(to='/pong/')
+
 	if not request.user.is_authenticated:
 		return redirect(to='/accounts/login/')
 
-	match = get_object_or_404(Match, id=match_id)
-	match_data = {
-		"id": match.id,
-		"round_number": match.round_number,
-		"match_number": match.match_number,
-		"player1": match.player1,
-		"player2": match.player2,
-		"player1_score": match.player1_score,
-		"player2_score": match.player2_score,
-		"is_finished": match.is_finished
-	}
-	context = {
-		# viteコンテナで作成したjsをDjango dev serverでも使えるようにするため、Django の DEBUG 設定をwindow.に渡す
-		'is_dev_server': settings.DEBUG,
-		'match_json': JsonResponse(match_data, safe=False).content.decode()
-	}
-	# return render(request, 'pong/play-tournament.html', {'match': match})
-	return render(request, 'pong/play-tournament.html', context)
-	# return render(request, 'pong/play-tournament.html', {'match_json': JsonResponse(match_data, safe=False).content.decode()})
+	try:
+		match = get_object_or_404(Match, id=match_id)
+		match_data = {
+			"id": match.id,
+			"round_number": match.round_number,
+			"match_number": match.match_number,
+			"player1": match.player1,
+			"player2": match.player2,
+			"player1_score": match.player1_score,
+			"player2_score": match.player2_score,
+			"is_finished": match.is_finished
+		}
+		context = {
+			# viteコンテナで作成したjsをDjango dev serverでも使えるようにするため、Django の DEBUG 設定をwindow.に渡す
+			'is_dev_server': settings.DEBUG,
+			'match_json': JsonResponse(match_data, safe=False).content.decode()
+		}
+		# return render(request, 'pong/play-tournament.html', {'match': match})
+		return render(request, 'pong/play-tournament.html', context)
+		# return render(request, 'pong/play-tournament.html', {'match_json': JsonResponse(match_data, safe=False).content.decode()})
+	except Exception:
+		return redirect(to='/pong/')
 
 def game(request):
 	return render(request, 'pong/game.html')

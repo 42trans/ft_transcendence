@@ -76,7 +76,7 @@ jobs:
           echo -e "\e[32mAll uwsgi-django container is finish starting up\e[0m"
 
       - name: Check start-up container
-        run: bash test/container_run_healthy.sh
+        run: bash docker/tests/container_run_healthy.sh
 
       - name: Check SSL-Connection
         run: |
@@ -105,3 +105,4 @@ jobs:
             echo -e "\e[31m[NG] TEST FAILURE\e[0m"
             exit 1
           fi
+

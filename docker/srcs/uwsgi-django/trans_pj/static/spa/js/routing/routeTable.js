@@ -51,12 +51,12 @@ export const routeTable = {
 
   // user
   userProfile   : { path: "/app/user/profile/",               view: UserProfile },  // private profile
-  userInfo      : { path: "/app/user/info/:nickname/",        view: UserInfo },     // public profile
+  userInfo      : { path: "/app/user/info/:userId/",          view: UserInfo },     // public profile
   userInfoBase  : { path: "/app/user/info/",                  view: UserInfo },
 
   friends       : { path: "/app/user/friends/",               view: Friends },
   dmSessions    : { path: "/app/dm/",                         view: DMSessions },
-  dmWithUser    : { path: "/app/dm/:userId/",                 view: DMwithUser },
+  dmWithUser    : { path: "/app/dm/:dmTargetId/",             view: DMwithUser },
   dmWithUserBase: { path: "/app/dm/",                         view: DMwithUser },
 
   editProfile   : { path: "/app/user/profile/edit/",          view: EditProfile },

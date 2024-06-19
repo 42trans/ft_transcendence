@@ -36,6 +36,9 @@ class TournamentTest(TestConfig):
             "a a",
             "1 a",
             "abc",
+            "       abc",       # -> abc
+            "abc     ",         # -> abc
+            "       abc     ",  # -> abc
             f"{'a' * 29}",
             f"{'a' * 30}",
         ]
@@ -58,40 +61,41 @@ class TournamentTest(TestConfig):
 
         invalid_tournament_name_and_expected_messages = [
             # empty
-            {"name": "",                "message": "Tournament name is required."},
+            {"name": "",                "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
 
             # invalid character
-            {"name": "トーナメント",      "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": " ",               "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": ".",               "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": "abc*012",         "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": "abc_012",         "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": "  abc",           "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": "abc  ",           "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": "<script>alert('a')</script>",        "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
+            {"name": "トーナメント",      "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": " ",               "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": ".",               "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": "abc*012",         "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": "abc_012",         "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": "  ab",            "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": "ab  ",            "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": "<script>alert('a')</script>",        "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
 
             # too short
-            {"name": "a",               "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": "aa",              "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
-            {"name": "  aa  ",          "message": "Error: Invalid tournament_name: non-empty alnum 3-30 length name required."},
+            {"name": "a",               "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": "aa",              "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": "  aa  ",          "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
 
             # too long
-            {"name": f"{'a' * 31}",     "message": "Error: Invalid name: この値は 30 文字以下でなければなりません( 31 文字になっています)。"},
-            {"name": f"{'a' * 8192}",   "message": "Error: Invalid name: この値は 30 文字以下でなければなりません( 8192 文字になっています)。"},
-            {"name": "<script>alert('hello')</script>",   "message": "Error: Invalid name: この値は 30 文字以下でなければなりません( 31 文字になっています)。"},
+            {"name": f"{'a' * 31}",     "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": f"{'a' * 8192}",   "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
+            {"name": "<script>alert('hello')</script>",   "message": "Tournament name must be a non-empty alphanumeric string between 3 and 30 characters long."},
         ]
 
         print(f"[Testing] invalid tournament name")
         for invalid_data in invalid_tournament_name_and_expected_messages:
             invalid_tournament_name = invalid_data["name"]
-            expected_message = invalid_data["message"]
+            expected_message = f"You cannot create: {invalid_data["message"]}"
             print(f" tournament name: [{invalid_tournament_name}]")
 
             self._send_to_elem(By.CSS_SELECTOR, 'input[name="name"]', invalid_tournament_name)
             # self._screenshot("invalid1")
             self._submit_tournament(wait_invisible=False)
             # self._screenshot("invalid2")
-            self._assert_message(expected_message, value="error-message")
+            # self._assert_message(expected_message, value="error-message")
+            self._close_alert(expected_message)
             self._is_tournament_top()
 
     def test_invalid_player_name(self):
@@ -99,41 +103,42 @@ class TournamentTest(TestConfig):
 
         invalid_player_name_and_expected_messages = [
             # empty
-            {"name": "",                "message": "All 8 nicknames are required."},
-            {"name": " ",               "message": "All 8 nicknames are required."},
+            {"name": "",                "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
+            {"name": " ",               "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
 
             # same as user
-            {"name": self.nickname,    "message": "Error: Invalid player_nicknames: 8 unique, non-empty alnum, 3-30 length nicknames required."},
+            {"name": self.nickname,    "message": "All 8 nicknames must be unique."},
 
             # invalid character
-            {"name": "ニックネーム",      "message": "Error: Invalid player_nicknames: 8 unique, non-empty alnum, 3-30 length nicknames required."},
-            {"name": ".",               "message": "Error: Invalid player_nicknames: 8 unique, non-empty alnum, 3-30 length nicknames required."},
-            {"name": "abc*012",         "message": "Error: Invalid player_nicknames: 8 unique, non-empty alnum, 3-30 length nicknames required."},
-            {"name": "abc_012",         "message": "Error: Invalid player_nicknames: 8 unique, non-empty alnum, 3-30 length nicknames required."},
-            {"name": "<script>alert('a')</script>",         "message": "Error: Invalid player_nicknames: 8 unique, non-empty alnum, 3-30 length nicknames required."},
+            {"name": "ニックネーム",      "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
+            {"name": ".",               "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
+            {"name": "abc*012",         "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
+            {"name": "abc_012",         "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
+            {"name": "<script>alert('a')</script>",         "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
 
             # too short
-            {"name": "a",               "message": "Error: Invalid player_nicknames: 8 unique, non-empty alnum, 3-30 length nicknames required."},
-            {"name": "aa",              "message": "Error: Invalid player_nicknames: 8 unique, non-empty alnum, 3-30 length nicknames required."},
-            {"name": "  aa  ",          "message": "Error: Invalid player_nicknames: 8 unique, non-empty alnum, 3-30 length nicknames required."},
+            {"name": "a",               "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
+            {"name": "aa",              "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
+            {"name": "  aa  ",          "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
 
             # too long
-            {"name": f"{'a' * 31}",     "message": "Error: Invalid player_nicknames: Item 2 in the array did not validate: この値は 30 文字以下でなければなりません( 31 文字になっています)。"},
-            {"name": f"{'a' * 8192}",   "message": "Error: Invalid player_nicknames: Item 2 in the array did not validate: この値は 30 文字以下でなければなりません( 8192 文字になっています)。"},
-            {"name": "<script>alert('hello')</script>",     "message": "Error: Invalid player_nicknames: Item 2 in the array did not validate: この値は 30 文字以下でなければなりません( 31 文字になっています)。"},
+            {"name": f"{'a' * 31}",     "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
+            {"name": f"{'a' * 8192}",   "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
+            {"name": "<script>alert('hello')</script>",     "message": "All 8 nicknames must be unique, non-empty alphanumeric strings between 3 and 30 characters long."},
         ]
 
         print(f"[Testing] invalid player name")
         for invalid_data in invalid_player_name_and_expected_messages:
             invalid_player_name = invalid_data["name"]
-            expected_message = invalid_data["message"]
+            expected_message = f"You cannot create: {invalid_data["message"]}"
             print(f" player name: [{invalid_player_name}]")
 
             self._send_to_elem(By.CSS_SELECTOR,  '.slideup-text.form-floating:nth-of-type(3) input[name="nickname"]', invalid_player_name)
             # self._screenshot("invalid_nickname_1")
             self._submit_tournament(wait_invisible=False)
             # self._screenshot("invalid_nickname_2")
-            self._assert_message(expected_message, value="error-message")
+            # self._assert_message(expected_message, value="error-message")
+            self._close_alert(expected_message)
             self._is_tournament_top()
 
     def _submit_tournament(self, wait_invisible=True):

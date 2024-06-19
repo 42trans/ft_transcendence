@@ -6,7 +6,7 @@ HomePage         = "kSpaHomeUrl"
 
 TournamentPage   = "kSpaTournamentUrl"
 Game2D           = "kSpaGame2D"
-Game3D           = "kSpaGame3D"
+# Game3D           = "kSpaGame3D"
 GameMatchBase    = "kSpaGameMatchBase"
 GameMatchPage    = "kSpaGameMatchUrl"
 
@@ -44,19 +44,24 @@ class UrlAccessTest(TestConfig):
 
         self.password = "pass0123"
 
-        self._create_new_user(email=self.user1_email,
-                              nickname=self.user1_nickname,
-                              password=self.password)
+        self.user1_id, _ = self._create_new_user(
+            email=self.user1_email,
+            nickname=self.user1_nickname,
+            password=self.password
+        )
 
-        self._create_new_user(email=self.user2_email,
-                              nickname=self.user2_nickname,
-                              password=self.password)
+        self.user2_id, _ = self._create_new_user(
+            email=self.user2_email,
+            nickname=self.user2_nickname,
+            password=self.password
+        )
 
-        self.set_up_key = self._create_new_user(
-                              email=self.user3_email,
-                              nickname=self.user3_nickname,
-                              password=self.password,
-                              is_enable_2fa=True)
+        self.user3_id, self.set_up_key = self._create_new_user(
+            email=self.user3_email,
+            nickname=self.user3_nickname,
+            password=self.password,
+            is_enable_2fa=True
+        )
 
     ############################################################################
 
@@ -186,16 +191,18 @@ class UrlAccessTest(TestConfig):
             GameMatchPage,
             UserInfoPage,
             DmWithPage,
+            UserInfoUrlBase,  # login->app遷移, except追加
+            DmWithUrlBase,  # login->app遷移, except追加
         }
         return page_name in except_test_pages
 
     def _is_page_login_required(self, page_name):
         login_required_pages = {
             TournamentPage,
-            Game3D,
+            # Game3D,
             GameHistoryPage,
             UserProfilePage,
-            UserInfoUrlBase,  # :nicknameを置き換えるためにUrlBaseでテスト
+            UserInfoUrlBase,  # :nicknameを置き換えるためにUrlBaseでテスト  login->app遷移
             UserFriendPage,
             EditProfilePage,
             ChangeAvatarPage,
@@ -232,7 +239,7 @@ class UrlAccessTest(TestConfig):
         """
         url_with_param_pages = {
             UserInfoUrlBase,
-            # DmWithUrlBase,  # /url/<user_id>/ に変更, id取得必要のためテストNG
+            DmWithUrlBase,  # /url/<user_id>/ に変更, id取得必要のためテストNG
         }
         return page_name in url_with_param_pages
 
@@ -462,7 +469,7 @@ class UrlAccessTest(TestConfig):
 
     def _get_url(self, page_name, page_path):
         if self._is_url_with_param(page_name):
-            url = f"{kURL_PREFIX}{page_path}{self.user2_nickname}/"
+            url = f"{kURL_PREFIX}{page_path}{self.user2_id}/"
         else:
             url = f"{kURL_PREFIX}{page_path}"
         return url

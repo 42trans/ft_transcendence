@@ -12,7 +12,8 @@ from .views.tournament_views import (
 	get_matches_of_latest_tournament_user_ongoing, 
 	get_matches_by_round_latest_user_ongoing_tournament, 
 	get_tournament_id_user_all_ongoing, get_latest_user_ongoing_tournament,
-	save_game_result
+	save_game_result,
+	IsValidMatchIdAPI
 )
 
 # パスはapiが先頭につきます。ex./pong/api/tournament/create/
@@ -48,4 +49,6 @@ urlpatterns = [
 		path("tournament/user/ongoing/all/", get_tournament_id_user_all_ongoing, name="get_tournament_id_user_all_ongoing"),
 		# 「ユーザーが主催する && 未終了のトーナメント」 に関する「全7試合」のデータを全て取得する
 		path("tournament/user/ongoing/matches/all", get_matches_of_latest_tournament_user_ongoing, name="get_matches_of_latest_tournament_user_ongoing"),
+
+	path('is-valid-match-id/<str:match_id>/', IsValidMatchIdAPI.as_view(), name='is_valid_match_id'),
 ]

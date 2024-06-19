@@ -1,9 +1,12 @@
 import { routeTable } from "./routeTable.js";
-import { getUrl } from "../utility/url.js";
+import { getUrl } from "../unusedFiles/url.js";
 import { setOnlineStatus } from "/static/accounts/js/setOnlineStatus.js";
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 import { setNoCache, clearNoCache } from "/static/spa/js/utility/cache.js"
 
+
+
+import { isValidParam } from "../utility/isValidParam.js"
 
 const DEBUG_DETAIL = 0;
 const DEBUG_LOG = 0;
@@ -39,37 +42,66 @@ export const switchPage = (targetPath) => {
 };
 
 
-const getSelectedRoute = (currentPath, routeTable) => {
+const comparePathParts = async (routeParts, currentPathParts, params) => {
+  const isMatch = await Promise.all(
+      routeParts.map(async (part, index) => {
+        if (part.startsWith(':')) {
+          // パラメータのキーを抽出（例: :nickname -> nickname）
+          const paramName = part.slice(1);
+          if (DEBUG_LOG) { console.log(`    parameter name  : ${paramName}`); }
+
+          // パラメータの整合性を評価
+          const isValid = await isValidParam(paramName, currentPathParts[index]);
+          if (!isValid) {
+            if (DEBUG_LOG) { console.log(`    -> parameter invalid`); }
+            return false;
+          }
+          if (DEBUG_LOG) { console.log(`    -> parameter valid`); }
+
+          params[paramName] = currentPathParts[index];  // パラメータを格納
+            if (DEBUG_LOG) { console.log(`    currentPathParts: ${currentPathParts[index]}`); }
+          return true;
+        }
+        return part === currentPathParts[index];
+      })
+  );
+
+  return isMatch.every(Boolean);
+};
+
+export const getSelectedRoute = async (currentPath, routeTable) => {
   let params = {};  // URLパラメータを格納するオブジェクト
 
   // パスパラメータを含む可能性があるルートを評価
-  const matchedRoute = Object.values(routeTable).find(route => {
-    const routeParts = route.path.split('/').filter(part => part);
-    const currentPathParts = currentPath.split('/').filter(part => part);
+  const matchedRoute = await Promise.all(
+      Object.values(routeTable).map(async (route) => {
+        const routeParts = route.path.split('/').filter(part => part);
+        const currentPathParts = currentPath.split('/').filter(part => part);
 
-    if (routeParts.length !== currentPathParts.length) {
-      return false;
-    }
+        if (routeParts.length !== currentPathParts.length) {
+          return null;
+        }
 
-    // パスの各部分を比較
-    return routeParts.every((part, index) => {
-      if (part.startsWith(':')) {
-        // パラメータのキーを抽出（例: :nickname -> nickname）
-        const paramName = part.slice(1);
-        params[paramName] = currentPathParts[index];  // パラメータを格納
-        return true;
-      }
-      return part === currentPathParts[index];
-    });
-  });
+        // パスの各部分を比較
+        const isMatch = await comparePathParts(routeParts, currentPathParts, params);
+        if (isMatch) {
+          return { ...route, params };
+        }
+        return null;
+      })
+  );
 
-  if (matchedRoute) {
-    matchedRoute.params = params;
-    matchedRoute.queryParams = new URLSearchParams(window.location.search);
-    return matchedRoute;
+  const foundRoute = matchedRoute.find(route => route !== null);
+
+  if (foundRoute) {
+    foundRoute.queryParams = new URLSearchParams(window.location.search);
+    if (DEBUG_LOG) { console.log(` matchedRoute -> ` + foundRoute.path); }
+    return foundRoute;
   } else {
     // routeTableに存在しないpathの場合、Guest, Userともにtopを表示
     // todo: URLとinnerHTMLが乖離 -> URLも/app/に切り替えるべきか？
+    if (DEBUG_LOG) { console.log(` NO matchedRoute -> top`); }
+    if (DEBUG_LOG) { console.log(`---------------------------------`); }
     return routeTable['top'];
   }
 };
@@ -77,7 +109,7 @@ const getSelectedRoute = (currentPath, routeTable) => {
 
 async function getView(path) {
   // 選択されたルートを取得
-  const selectedRoute = getSelectedRoute(path, routeTable);
+  const selectedRoute = await getSelectedRoute(path, routeTable);
   // console.log("renderView: selectedRoute.path: " + selectedRoute.path)
 
   // 選択されたルートに対応するビューをインスタンス化して、paramsを渡す
@@ -110,7 +142,7 @@ export const renderView = async (path) => {
   // --------------------------
   // ここから今回のviewに対する処理
   // viewクラスの指定とメソッド呼び出し
-  const selectedRoute = getSelectedRoute(path, routeTable);
+  const selectedRoute = await getSelectedRoute(path, routeTable);
   const view = new selectedRoute.view(selectedRoute.params);
   currentView = view;
   const htmlSrc = await view.getHtml();

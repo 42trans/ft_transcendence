@@ -135,7 +135,7 @@ function updateOrCreateFriendListItem(friend) {
 
     // <link-to-user-info>
     const link = document.createElement('a');
-    link.href = `${routeTable['userInfoBase'].path}${friend.nickname}/`;
+    link.href = `${routeTable['userInfoBase'].path}${friend.id}/`;
     link.className = 'nav__link';
     link.setAttribute('data-link', '');
     link.textContent = friend.nickname;
