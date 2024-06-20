@@ -14,8 +14,8 @@ export function setupTournament() {
 	try {
 		// インスタンスは一つだけ
 		const userManagement = new UserManager();
-		const roundManager = new RoundManager();
 		const creator = new TournamentCreator();
+		const roundManager = new RoundManager(creator);
 
 		// 依存性注入
 		const tournamentManager = new TournamentManager(userManagement, roundManager, creator);

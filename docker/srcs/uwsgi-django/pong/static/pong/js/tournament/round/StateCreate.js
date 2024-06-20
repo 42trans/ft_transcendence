@@ -5,7 +5,7 @@ import { tournamentHandleCatchError } from "../TournamentMain.js";
 const TEST_TRY1		= 0;
 
 /** トーナメントの最初の初期のページ。Round 0として扱う */
-class StateEntry extends StateBaseRound 
+class StateCreate extends StateBaseRound 
 {
 	constructor(roundManager) 
 	{
@@ -20,12 +20,9 @@ class StateEntry extends StateBaseRound
 						if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
 			this.tournamentContainer.innerHTML = ''; 
 
-			this.tournamentEntry.display(
-				this.roundManager.userTournament,
-				this.roundManager.userProfile
-			);
+			this.roundManager.creator.createForm(this.roundManager.userProfile);
 		} catch(error) { 
-			console.error('hth: StateEntry.enter(): ', error);
+			console.error('hth: StateCreate.enter(): ', error);
 			tournamentHandleCatchError(error);
 		}
 	}
@@ -36,4 +33,4 @@ class StateEntry extends StateBaseRound
 	}
 }
 
-export default StateEntry;
+export default StateCreate;

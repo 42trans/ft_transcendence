@@ -22,7 +22,6 @@ class StateBaseRound
 		this.roundManager		= roundManager;
 		this.API_URLS			= config.API_URLS;
 		// 情報を表示するコンテナのIDを設定から取得
-		this.tournamentForm				= document.getElementById(config.tournamentFormId);
 		this.userInfoContainer			= document.getElementById(config.userInfoId);
 		this.errorMessage				= document.getElementById(config.errorMessageId);
 		this.submitMessage				= document.getElementById(config.submitMessageId);

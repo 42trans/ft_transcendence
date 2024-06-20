@@ -57,22 +57,14 @@ class TournamentManager
 					if (TEST_TRY2){	throw new Error('TEST_TRY2');	}
 
 			const latestTournament = await this._getFilteredUserTournaments();
-			// 主催トーナメントの開催状態で分岐
-			if (latestTournament) {
-
+			// if (latestTournament) {
 						if (DEBUG_DETAIL){	console.log('latestTournament:', latestTournament);	}
-
-				// roundManagerに必要な値を渡す
 				this.roundManager.userTournament	= latestTournament;
 				this.roundManager.userProfile		= this.userProfile;
-				// トーナメント情報の表示
 				this.roundManager.changeStateToRound(0);
-			} else {
-						if (DEBUG_FLOW){	console.log('!latestTournament');	}
-				
-				// トーナメント新規作成フォームを表示
-				this.tournamentCreator.createForm(this.userProfile);
-			}
+			// } else {
+				// this.tournamentCreator.createForm(this.userProfile);
+			// }
 		} catch (error) {
 			console.error('hth: _handleLoggedInUser() failed: ', error);
 			// this.tournamentContainer.textContent = 'Error loading tournaments.';
