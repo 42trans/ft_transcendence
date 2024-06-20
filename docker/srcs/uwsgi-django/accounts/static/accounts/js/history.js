@@ -20,7 +20,8 @@ class MatchHistory
 	constructor() 
 	{
 		this.userId					= window.userId;
-		this.itemsPerPage			= 10;
+		// 1ページに表示する試合データ数
+		this.itemsPerPage			= 5;
 		this.matchHistoryData		= [];
 		this.currentPage			= 1;
 	}
@@ -64,6 +65,13 @@ class MatchHistory
 					if (DEBUG_FLOW) {	console.log('loadMatchHistory(): done');	}
 	}
 
+	formatValue(value) {
+		if (Number.isInteger(value)) {
+			return value;
+		} else {
+			return value.toFixed(3);
+		}
+	}
 
 	renderStats() 
 	{
@@ -77,20 +85,43 @@ class MatchHistory
 		}
 					if (DEBUG_DETAIL1) {	console.log('renderStats() stats: ', stats);	}
 		
-		const statsList	= document.createElement("ul");
-		// Bootstrapのクラス
-		statsList.classList.add("list-group");
-		statsList.classList.add("mb-5");
+		const statsLabels = {
+			total_matches: "Total Matches",
+			wins: "Wins",
+			losses: "Losses",
+			win_rate: "Win Rate",
+			avg_points_scored: "Avg. Points Scored",
+			avg_points_lost: "Avg. Points Lost"
+		};
 
+		const statsRow = document.createElement("div");
+		statsRow.classList.add("row");
 		for (const key in stats) {
-			const listItem = document.createElement("li");
-			// Bootstrapのクラス
-			listItem.classList.add("list-group-item");
-			listItem.innerHTML = `<strong>${key}:</strong> ${stats[key]}`;
-			statsList.appendChild(listItem);
-						if (DEBUG_DETAIL2) {	console.log('renderStats() listItem: ', listItem);	}
+			const statsCol = document.createElement("div");
+			statsCol.classList.add("col-sm-4", "mb-3");
+
+			const statsCard = document.createElement("div");
+			statsCard.classList.add("card");
+
+			const statsCardBody = document.createElement("div");
+			statsCardBody.classList.add("card-body");
+
+			const statsCardTitle = document.createElement("h5");
+			statsCardTitle.classList.add("card-title");
+			statsCardTitle.textContent = statsLabels[key] || key;
+
+			const statsCardText = document.createElement("p");
+			statsCardText.classList.add("card-text");
+			statsCardText.textContent = this.formatValue(stats[key]);
+
+			statsCardBody.appendChild(statsCardTitle);
+			statsCardBody.appendChild(statsCardText);
+			statsCard.appendChild(statsCardBody);
+			statsCol.appendChild(statsCard);
+			statsRow.appendChild(statsCol);
+						if (DEBUG_DETAIL2) {	console.log('renderStats() statsCard: ', statsCard);	}
 		}
-		statsContainer.appendChild(statsList);
+		statsContainer.appendChild(statsRow);
 					if (DEBUG_FLOW) {	console.log('renderStats(): done');	}
 					if (TEST_TRY_MATCH3) {	throw new Error('TEST_TRY_MATCH3');	}
 	}
@@ -157,7 +188,8 @@ class MatchHistory
 			// Bootstrapのクラス
 			link.classList.add("page-link");
 			link.textContent = i;
-			link.href = "#";
+			link.href = `?page=${i}`; 
+			link.setAttribute("data-link", ""); 
 
 			link.addEventListener("click", () => 
 			{
