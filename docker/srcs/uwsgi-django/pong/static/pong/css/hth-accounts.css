@@ -1,7 +1,7 @@
 
-#user-info {
+/* #user-info {
 	list-style-type: none;
-}
+} */
 
 
 #message-area {
@@ -51,9 +51,9 @@
 }
 
 /* tournament UIHelper SPA後削除*/
-#user-info {
+/* #user-info {
 	list-style-type: none;
-}
+} */
 
 /* アバター画像 */
 .avatar {

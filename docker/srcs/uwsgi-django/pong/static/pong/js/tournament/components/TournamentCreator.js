@@ -31,7 +31,7 @@ class TournamentCreator
 	createForm(userProfile) 
 	{
 		try{
-			UIHelper.displayUserInfo(userProfile, this.userInfoContainer);
+			// UIHelper.displayUserInfo(userProfile, this.userInfoContainer);
 			// フォーム要素を作成し、プロパティを設定
 			this.form			= document.createElement('form');
 			this.form.method	= 'post';
