@@ -113,6 +113,7 @@ class MatchHistory
 			const statsCardText = document.createElement("p");
 			statsCardText.classList.add("card-text");
 			statsCardText.textContent = this.formatValue(stats[key]);
+			// statsCardText.textContent = stats[key];
 
 			statsCardBody.appendChild(statsCardTitle);
 			statsCardBody.appendChild(statsCardText);
