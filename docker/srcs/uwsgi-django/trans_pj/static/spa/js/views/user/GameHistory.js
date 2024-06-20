@@ -18,7 +18,17 @@ export default class extends AbstractView {
   }
 
   async executeScript(spaElement) {
-    // loadAndExecuteScript("/static/accounts/js/history.js");
+    await loadAndExecuteScript(spaElement, "/static/accounts/js/history.js", true);
+    if (window.MatchHistory) {
+      window.MatchHistory.getInstance().loadMatchHistory();
+    }
+  }
+
+  async dispose() {
+    if (window.MatchHistory) {
+      window.MatchHistory.dispose();
+      window.MatchHistory = null;
+    }
   }
 
 }

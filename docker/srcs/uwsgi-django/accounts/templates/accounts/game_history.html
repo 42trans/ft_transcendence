@@ -3,6 +3,13 @@
 {% load static %}
 
 <h1>{{ nickname }}'s Game History</h1>
-<ul>
-	<li>History: history here</li>
+<div id="match-history-stats-container"></div>
+<ul id="match-history-container" >
+	{% comment %} <li>History: history here</li> {% endcomment %}
 </ul>
+<nav aria-label="Page navigation">
+	<ul class="pagination" id="pagination-container"></ul>
+</nav>
+<script>
+	window.userId = "{{ request.user.id }}";
+</script>

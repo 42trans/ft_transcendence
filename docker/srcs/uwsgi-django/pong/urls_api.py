@@ -28,7 +28,7 @@ urlpatterns = [
 	# ----------------------------------------
 	# ofline tournament
 	# ----------------------------------------
-	path("tournament/user/match/history", get_match_history, name="get_match_history"),
+	path("tournament/user/match/history/", get_match_history, name="get_match_history"),
 	# 「最新」のトーナメントの情報を取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
 	path("tournament/user/ongoing/latest/", get_latest_user_ongoing_tournament, name="get_latest_user_ongoing_tournament"),
 	#  「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。
