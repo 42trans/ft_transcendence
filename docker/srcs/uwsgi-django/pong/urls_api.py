@@ -15,6 +15,7 @@ from .views.tournament.save_views import save_game_result
 from .views.tournament.create_views import create_new_tournament_and_matches 
 from .views.tournament.delete_views import delete_tournament_and_matches 
 from .views.tournament.is_valid_match_api_view import IsValidMatchIdAPI 
+from .views.tournament.get_match_history_view import get_match_history 
 
 # パスはapiが先頭につきます。ex./pong/api/tournament/create/
 urlpatterns = [
@@ -27,6 +28,7 @@ urlpatterns = [
 	# ----------------------------------------
 	# ofline tournament
 	# ----------------------------------------
+	path("tournament/user/match/history", get_match_history, name="get_match_history"),
 	# 「最新」のトーナメントの情報を取得: 「ログイン中のユーザーが主催する未終了トーナメント」の。
 	path("tournament/user/ongoing/latest/", get_latest_user_ongoing_tournament, name="get_latest_user_ongoing_tournament"),
 	#  「ID」でトーナメント情報を取得: 指定されたトーナメントIDの。
