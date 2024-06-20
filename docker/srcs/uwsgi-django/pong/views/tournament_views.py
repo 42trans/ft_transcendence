@@ -78,13 +78,22 @@ def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
 			  f"{next_match.player1} vs {next_match.player2}")
 
 
+def is_tournament_finished(tournament):
+	"""「全ての試合」が終了していたら「トーナメントの終了フラグ」を立てる"""
+	matches = Match.objects.filter(tournament=tournament)
+	for match in matches:
+		if not match.is_finished:
+			return False
+	return True
+
 # @csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def save_game_result(request):
+	"""試合結果を保存する"""
 	try:
 		data = json.loads(request.body)
-		print("Received data:", data)
+		# print("Received data:", data)
 		match_id = data.get('match_id')
 		player1_score = data.get('player1_score', 0)
 		player2_score = data.get('player2_score', 0)
@@ -104,7 +113,10 @@ def save_game_result(request):
 		if winner:
 			assign_winner_to_next_match(match, winner)
 
-			# トーナメントの is_Finisjed を立てる処理は未実装 全試合終了チェック が必要
+			# トーナメントの全試合が終了していた場合、 is_Finisjed を立てる
+			if is_tournament_finished(match.tournament):
+				match.tournament.is_finished = True
+				match.tournament.save()
 
 		return JsonResponse({"status": "success", "message": "Game result saved successfully."})
 	except Exception as e:
