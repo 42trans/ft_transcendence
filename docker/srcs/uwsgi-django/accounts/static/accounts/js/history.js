@@ -1,4 +1,6 @@
 // docker/srcs/uwsgi-django/accounts/static/accounts/js/history.js
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+
 const DEBUG_FLOW		= 1;
 const DEBUG_DETAIL1		= 1;
 const DEBUG_DETAIL2		= 1;
@@ -153,5 +155,98 @@ class MatchHistory
 }
 
 // 呼び出し
-MatchHistory.getInstance().loadMatchHistory();
+// MatchHistory.getInstance().loadMatchHistory();
+
+
+
+let matchHistory = null;
+let isEventListenerRegisteredMatchHistory = false;
+// ---------------------------------------
+// init
+// ---------------------------------------
+async function initMatchHistory() 
+{
+	try {
+					if (DEBUG_FLOW) {	console.log('initMatchHistory: start');	}
+		// urlが FreePlayリンク(view: gameHistory) かどうかを判定し、早期リターン
+		if (!_isGameHistoryPath()) {
+						if (DEBUG_FLOW) {	console.log('initMatchHistory(): not gameHistory url');	}
+			return;
+		}
+		// 重複対策: 削除してから新規作成
+		if (matchHistory) {
+			matchHistory.dispose();
+			matchHistory = null;
+		}
+		matchHistory = new MatchHistory();
+		matchHistory.loadMatchHistory();
+					if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
+	} catch(error) {
+		console.error('hth: initMatchHistory() failed: ', error);
+		matchHistoryHandleCatchError(error);
+	}
+}
+
+function _isGameHistoryPath() {
+	const currentPath = window.location.pathname;
+				if (DEBUG_FLOW) {	console.log('currentPath:', currentPath);	}
+	const game2dPath = routeTable['gameHistory'].path;
+	return currentPath === game2dPath;
+}
+
+// PongOnlineClientAppインスタンスの作成
+initMatchHistory();
+// ---------------------------------------
+// switchPageResetState
+// ---------------------------------------
+async function handleSwitchPageResetStateMatchHistory() {
+	// 常にinitする。
+	await initMatchHistory();
+}
+
+function registerEventListenerSwitchPageResetStateMatchHistory() {
+	if (!isEventListenerRegisteredMatchHistory) {
+		window.addEventListener('switchPageResetState', handleSwitchPageResetStateMatchHistory);
+		isEventListenerRegisteredMatchHistory = true;
+					if (DEBUG_FLOW) {	console.log('registerEventListenerSwitchPageResetStateMatchHistory: done');	}
+	}
+}
+// イベントリスナー削除はしない
+// 重複登録対策: flagで管理
+registerEventListenerSwitchPageResetStateMatchHistory();
+// ---------------------------------------
+// dispose
+// ---------------------------------------
+async function disposeMatchHistory() 
+{
+	try {
+		if (matchHistory) 
+		{
+						if (DEBUG_FLOW) {	console.log('disposeMatchHistory: start');	}
+			matchHistory.dispose();
+			matchHistory = null;
+		}
+					if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
+	} catch(error) {
+		console.error('hth: disposeMatchHistory() failed: ', error);
+		matchHistoryHandleCatchError(error);
+	}
+}
+
+if (!window.disposeMatchHistory) {
+	window.disposeMatchHistory = disposeMatchHistory;
+}
+// ---------------------------------------
+// error
+// ---------------------------------------
+export function matchHistoryHandleCatchError(error = null) 
+{
+	// ゲームでのエラーは深刻なので、location.hrefでSPAの状態を完全にリセットする
+	if (error) {
+		alert("エラーが発生しました。トップページに遷移します。 error: " + error);
+	} else {
+		alert("エラーが発生しました。トップページに遷移します。");
+	}
+	window.location.href = routeTable['top'].path;
+}
 
