@@ -2,8 +2,8 @@
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 
 const DEBUG_FLOW		= 0;
-const DEBUG_DETAIL1		= 0;
-const DEBUG_DETAIL2		= 0;
+const DEBUG_DETAIL1		= 1;
+const DEBUG_DETAIL2		= 1;
 const TEST_TRY1 		= 0;
 const TEST_TRY2 		= 0;
 const TEST_TRY_MATCH1	= 0;
@@ -52,10 +52,29 @@ class MatchHistory
 
 			const data = await response.json();
 						if (DEBUG_DETAIL1) {	console.log("API response data:", data);	}
-			this.statsData = data.stats || [];
+
+			this.statsData = {};
+			this.matchHistoryData = [];
+
+			if (data.stats) {
+				for (const [key, value] of Object.entries(data.stats)) {
+					if (value !== null) {
+						this.statsData[key] = value;
+					}
+				}
+			}
 			this.renderStats();
-			this.matchHistoryData = data.matches || [];
+			
+			if (data.matches) {
+				for (const match of data.matches) 
+				{
+					if (match && match.player1 && match.player2 && match.winner && match.ended_at) {
+						this.matchHistoryData.push(match);
+					}
+				}
+			}
 			this.renderMatchHistory();
+
 						if (DEBUG_DETAIL1) {	console.log('renderStats() matchHistoryData: ', this.matchHistoryData);	}
 						if (TEST_TRY_MATCH2) {	throw new Error('TEST_TRY_MATCH2');	}
 		} catch (error) {
@@ -113,7 +132,6 @@ class MatchHistory
 			const statsCardText = document.createElement("p");
 			statsCardText.classList.add("card-text");
 			statsCardText.textContent = this.formatValue(stats[key]);
-			// statsCardText.textContent = stats[key];
 
 			statsCardBody.appendChild(statsCardTitle);
 			statsCardBody.appendChild(statsCardText);
