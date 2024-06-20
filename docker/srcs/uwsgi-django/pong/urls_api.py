@@ -3,18 +3,18 @@ from django.urls import path
 from pong.blockchain import save_testnet
 from pong.blockchain import fetch_testnet
 from pong.blockchain import fetch_testnet
-from pong.blockchain import record_game_result
-from .views.tournament_views import (
-	create_new_tournament_and_matches, 
+# from pong.blockchain import record_game_result
+from .views.tournament.get_views import (
 	get_tournament_data_by_id, 
 	get_history_all_user_tournaments, 
-	delete_tournament_and_matches, 
 	get_matches_of_latest_tournament_user_ongoing, 
 	get_matches_by_round_latest_user_ongoing_tournament, 
-	get_tournament_id_user_all_ongoing, get_latest_user_ongoing_tournament,
-	save_game_result,
-	IsValidMatchIdAPI
+	get_tournament_id_user_all_ongoing, get_latest_user_ongoing_tournament
 )
+from .views.tournament.save_views import save_game_result
+from .views.tournament.create_views import create_new_tournament_and_matches 
+from .views.tournament.delete_views import delete_tournament_and_matches 
+from .views.tournament.is_valid_match_api_view import IsValidMatchIdAPI 
 
 # パスはapiが先頭につきます。ex./pong/api/tournament/create/
 urlpatterns = [
