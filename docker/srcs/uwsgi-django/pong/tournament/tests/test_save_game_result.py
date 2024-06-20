@@ -2,7 +2,7 @@ from django.test import TestCase
 from ...models import Tournament, Match
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from ...views.tournament_views import is_tournament_finished
+from ...views.tournament.save_views import is_tournament_finished
 
 class TestSaveGameResult(TestCase):
 	def setUp(self):

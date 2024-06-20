@@ -153,16 +153,16 @@ remove_mount_volume:
 rm:
 	make remove_mount_volume
 
-.PYHONY: ps
+.PHONY: ps
 ps:
 	docker-compose $(COMPOSE_FILES_ARGS) ps
 
-.PYHONY: ps_a
+.PHONY: ps_a
 ps_a:
 	docker-compose $(COMPOSE_FILES_ARGS) ps -a
 
 
-.PYHONY: logs
+.PHONY: logs
 logs:
 	docker-compose $(COMPOSE_FILES_ARGS) logs
 

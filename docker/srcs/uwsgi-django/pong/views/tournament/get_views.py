@@ -1,27 +1,12 @@
 # docker/srcs/uwsgi-django/pong/views/tournament/get_views.py
-# import json
 import logging
-# from typing import Any, Tuple
 from django.http import JsonResponse, HttpResponse
-from django.contrib.auth.decorators import login_required
 from ...models import Tournament, Match
 from django.shortcuts import get_object_or_404
-# from django.db import transaction
 from django.contrib.auth import get_user_model
-# from django.core.exceptions import ValidationError
-# from django.views.decorators.http import require_POST
-# from django.utils.dateparse import parse_datetime
 from django.forms.models import model_to_dict
-# from ..models import PongGameResult
-# from django.views.decorators.csrf import csrf_exempt
-# from django.views.decorators.http import require_http_methods
-# from django.utils import timezone
-# from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-# from rest_framework.response import Response
-# from rest_framework.views import APIView
-# import random
 
 logger = logging.getLogger('django')
 User = get_user_model()
