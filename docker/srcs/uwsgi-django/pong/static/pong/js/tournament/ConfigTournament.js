@@ -20,7 +20,7 @@ class ConfigTournament
 	init() 
 	{
 		this.tournamentFormId		= 'tournament-form';
-		this.userInfoId				= 'user-info';
+		// this.userInfoId				= 'user-info';
 		this.errorMessageId			= 'error-message';
 		this.submitMessageId		= 'submit-message';
 		this.backHomeButtonId		= 'back-home';

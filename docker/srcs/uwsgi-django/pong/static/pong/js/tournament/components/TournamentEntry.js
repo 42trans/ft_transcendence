@@ -68,7 +68,7 @@ class TournamentEntry
 	{
 					if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
 
-		UIHelper.displayUserInfo(userProfile, this.tournamentContainer);
+		// UIHelper.displayUserInfo(userProfile, this.tournamentContainer);
 		const header = document.createElement('h2');
 		header.id = 'overview-header';
 		header.className = 'slideup-text';
