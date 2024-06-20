@@ -194,6 +194,7 @@ class PongEngineMatch
 		}
 	}
 
+	// TODO_ft: D描画と逆にDBに保存されてる。スコア、勝者
 	sendMatchResult() 
 	{
 		try
