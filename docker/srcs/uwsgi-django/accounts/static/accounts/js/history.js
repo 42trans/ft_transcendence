@@ -1,12 +1,17 @@
 // docker/srcs/uwsgi-django/accounts/static/accounts/js/history.js
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 
-const DEBUG_FLOW		= 1;
-const DEBUG_DETAIL1		= 1;
-const DEBUG_DETAIL2		= 1;
+const DEBUG_FLOW		= 0;
+const DEBUG_DETAIL1		= 0;
+const DEBUG_DETAIL2		= 0;
 const TEST_TRY1 		= 0;
 const TEST_TRY2 		= 0;
-const TEST_TRY3 		= 0;
+const TEST_TRY_MATCH1	= 0;
+const TEST_TRY_MATCH2	= 0;
+const TEST_TRY_MATCH3	= 0;
+const TEST_TRY_MATCH4	= 0;
+const TEST_TRY_MATCH5	= 0;
+const TEST_TRY_MATCH6	= 0;
 
 class MatchHistory 
 {
@@ -24,11 +29,42 @@ class MatchHistory
 	static getInstance() 
 	{
 		if (!window.MatchHistory) {
-		  window.MatchHistory = new MatchHistory();
+			window.MatchHistory = new MatchHistory();
+						if (TEST_TRY_MATCH1) {	throw new Error('TEST_TRY_MATCH1');	}
 		}
 		return window.MatchHistory;
 	}
 	
+		
+	async loadMatchHistory() 
+	{
+		try 
+		{	
+						if (DEBUG_FLOW) {	console.log('loadMatchHistory(): start');	}
+			const url		= `/pong/api/tournament/user/match/history/`;		
+			const response	= await fetch(url, {
+				headers: { 'Content-Type': 'application/json' }
+			});
+			if (!response.ok) {
+				throw new Error('hth: Failed to fetch game history');
+			}
+
+			const data = await response.json();
+						if (DEBUG_DETAIL1) {	console.log("API response data:", data);	}
+			this.statsData = data.stats || [];
+			this.renderStats();
+			this.matchHistoryData = data.matches || [];
+			this.renderMatchHistory();
+						if (DEBUG_DETAIL1) {	console.log('renderStats() matchHistoryData: ', this.matchHistoryData);	}
+						if (TEST_TRY_MATCH2) {	throw new Error('TEST_TRY_MATCH2');	}
+		} catch (error) {
+			console.error("hth: loading game history() failed:", error);
+			matchHistoryHandleCatchError(error);
+		}
+					if (DEBUG_FLOW) {	console.log('loadMatchHistory(): done');	}
+	}
+
+
 	renderStats() 
 	{
 					if (DEBUG_FLOW) {	console.log('renderStats(): start');	}
@@ -39,78 +75,57 @@ class MatchHistory
 			console.warn("Stats data not available");
 			return;
 		}
-		const statsList				= document.createElement("ul");
-		statsList.classList.add("list-group");
 					if (DEBUG_DETAIL1) {	console.log('renderStats() stats: ', stats);	}
+		
+		const statsList	= document.createElement("ul");
+		// Bootstrapのクラス
+		statsList.classList.add("list-group");
+		statsList.classList.add("mb-5");
+
 		for (const key in stats) {
 			const listItem = document.createElement("li");
+			// Bootstrapのクラス
 			listItem.classList.add("list-group-item");
 			listItem.innerHTML = `<strong>${key}:</strong> ${stats[key]}`;
 			statsList.appendChild(listItem);
-						if (DEBUG_DETAIL1) {	console.log('renderStats() listItem: ', listItem);	}
+						if (DEBUG_DETAIL2) {	console.log('renderStats() listItem: ', listItem);	}
 		}
 		statsContainer.appendChild(statsList);
 					if (DEBUG_FLOW) {	console.log('renderStats(): done');	}
+					if (TEST_TRY_MATCH3) {	throw new Error('TEST_TRY_MATCH3');	}
 	}
-		
-	async loadMatchHistory() 
-	{
-		try 
-		{	
-						if (DEBUG_FLOW) {	console.log('loadMatchHistory(): start');	}
-			const url = `/pong/api/tournament/user/match/history/`;
-			// const url = `/pong/api/tournament/user/match/history/?user_id=${this.userId}`;
-		
-			const response = await fetch(url, {
-				headers: { 'Content-Type': 'application/json' }
-			});
-			if (!response.ok) {
-				throw new Error('Failed to fetch game history');
-			}
-			const data = await response.json();
-						if (DEBUG_DETAIL1) {	console.log("API response data:", data);	}
-			this.statsData = data.stats || [];
-			this.renderStats();
-			this.matchHistoryData = data.matches || [];
-			this.renderMatchHistory();
-						if (DEBUG_DETAIL1) {	console.log('renderStats() matchHistoryData: ', this.matchHistoryData);	}
-		} catch (error) {
-			console.error("loading game history() failed:", error);
-		}
-					if (DEBUG_FLOW) {	console.log('loadMatchHistory(): done');	}
-	}
+
 
 	renderMatchHistory() 
 	{
 					if (DEBUG_FLOW) {	console.log('renderMatchHistory(): start');	}
 		const historyContainer		= document.getElementById("match-history-container");
-		historyContainer.innerHTML = "";
+		historyContainer.innerHTML	= "";
+		const startIndex			= (this.currentPage - 1) * this.itemsPerPage;
+		const endIndex				= startIndex + this.itemsPerPage;
+		const currentPageData		= this.matchHistoryData.slice(startIndex, endIndex);
 
-		const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-		const endIndex = startIndex + this.itemsPerPage;
-		const currentPageData = this.matchHistoryData.slice(startIndex, endIndex);
-
-		currentPageData.forEach(match => {
+		currentPageData.forEach(match => 
+		{
 			const listItem = document.createElement("li");
 			listItem.classList.add("list-group-item");
 			let opponent = match.player1;
 			if (opponent === 'You') {
-			  opponent = match.player2;
+				opponent = match.player2;
 			}
 		
 			let result = 'Lost';
 			if (match.winner === 'You') {
-			  result = 'Won';
+				result = 'Won';
 			}
 		
 			const score = `${match.player1_score} - ${match.player2_score}`;
 		
 			listItem.innerHTML = `
-				
-				<div>Opponent: ${opponent}</div>
-				<div>Result: ${result}</div>
-				<div>Score: ${score}</div>
-				<div>Ended at: ${match.ended_at}</div>
+				<h4 class="match-stats-opponent">Opponent: ${opponent}</h4>
+				<h5 class="match-stats-result">Result: ${result}</h5>
+				<div class="match-stats-score">Score: ${score}</div>
+				<div class="match-stats-ended">Ended at: ${match.ended_at}</div>
 				<hr>
 			`;
 		
@@ -119,51 +134,62 @@ class MatchHistory
 		
 		  this.renderPagination();
 					if (DEBUG_FLOW) {	console.log('renderMatchHistory(): done');	}
+					if (TEST_TRY_MATCH4) {	throw new Error('TEST_TRY_MATCH4');	}
 	}
 
 	renderPagination() 
 	{
 					if (DEBUG_FLOW) {	console.log('renderPagination(): start');	}
-		const totalPages = Math.ceil(this.matchHistoryData.length / this.itemsPerPage);
-		const paginationContainer	= document.getElementById("pagination-container");
-		paginationContainer.innerHTML = "";
+		const totalPages				= Math.ceil(this.matchHistoryData.length / this.itemsPerPage);
+		const paginationContainer		= document.getElementById("pagination-container");
+		paginationContainer.innerHTML	= "";
 
-		for (let i = 1; i <= totalPages; i++) {
+		for (let i = 1; i <= totalPages; i++) 
+		{
 			const listItem = document.createElement("li");
+			// Bootstrapのクラス
 			listItem.classList.add("page-item");
-			if (i === this.currentPage) listItem.classList.add("active");
+			if (i === this.currentPage) {
+				listItem.classList.add("active");
+			}
 			
 			const link = document.createElement("a");
+			// Bootstrapのクラス
 			link.classList.add("page-link");
 			link.textContent = i;
 			link.href = "#";
-			link.addEventListener("click", () => {
+
+			link.addEventListener("click", () => 
+			{
 				this.currentPage = i;
 				this.renderMatchHistory();
 			});
+
 			listItem.appendChild(link);
 			paginationContainer.appendChild(listItem);
 		}
 					if (DEBUG_FLOW) {	console.log('renderPagination(): done');	}
+					if (TEST_TRY_MATCH5) {	throw new Error('TEST_TRY_MATCH5');	}
 	}
 
-	dispose() {
-					if (DEBUG_FLOW) {	console.log('MatchHistory.dispose(): start');	}
-		MatchHistory.instance = null;
-					if (DEBUG_FLOW) {	console.log('MatchHistory.dispose(): done');	}
+	async dispose() 
+	{
+		try {
+						if (DEBUG_FLOW) {	console.log('MatchHistory.dispose(): start');	}
+			MatchHistory.instance = null;
+						if (TEST_TRY_MATCH6) {	throw new Error('TEST_TRY_MATCH6');	}
+		} catch(error) {
+			console.error('hth: MatchHistory dispose() failed: ', error);
+			matchHistoryHandleCatchError(error);
+		}
 	}
 }
 
-// 呼び出し
-// MatchHistory.getInstance().loadMatchHistory();
-
-
-
-let matchHistory = null;
-let isEventListenerRegisteredMatchHistory = false;
 // ---------------------------------------
 // init
 // ---------------------------------------
+let matchHistory = null;
+let isEventListenerRegisteredMatchHistory = false;
 async function initMatchHistory() 
 {
 	try {
@@ -178,7 +204,9 @@ async function initMatchHistory()
 			matchHistory.dispose();
 			matchHistory = null;
 		}
-		matchHistory = new MatchHistory();
+		// シングルトンインスタンスを取得
+		matchHistory = MatchHistory.getInstance();
+		// matchHistory = new MatchHistory();
 		matchHistory.loadMatchHistory();
 					if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
 	} catch(error) {
@@ -194,10 +222,10 @@ function _isGameHistoryPath() {
 	return currentPath === game2dPath;
 }
 
-// PongOnlineClientAppインスタンスの作成
+// インスタンスの作成
 initMatchHistory();
 // ---------------------------------------
-// switchPageResetState
+// listener: switchPageResetState
 // ---------------------------------------
 async function handleSwitchPageResetStateMatchHistory() {
 	// 常にinitする。
@@ -223,7 +251,7 @@ async function disposeMatchHistory()
 		if (matchHistory) 
 		{
 						if (DEBUG_FLOW) {	console.log('disposeMatchHistory: start');	}
-			matchHistory.dispose();
+			await matchHistory.dispose();
 			matchHistory = null;
 		}
 					if (TEST_TRY2) {	throw new Error('TEST_TRY2');	}
@@ -237,7 +265,7 @@ if (!window.disposeMatchHistory) {
 	window.disposeMatchHistory = disposeMatchHistory;
 }
 // ---------------------------------------
-// error
+// error handling
 // ---------------------------------------
 export function matchHistoryHandleCatchError(error = null) 
 {
