@@ -74,15 +74,18 @@ def calculate_user_stats(matches):
 	"""
 	統計情報を計算する関数
 	"""
-	total_matches = len(matches)
+	# total_matches = len(matches)
+	total_matches = 0
 	wins = 0
 	total_points_scored = 0
 	total_points_lost = 0
 
 	# 勝利数
 	for match in matches:
-		if match['winner'] == 'You':
-			wins += 1
+		if match['winner'] is not None:
+			total_matches += 1
+			if match['winner'] == 'You':
+				wins += 1
 	# 敗北数
 	losses = total_matches - wins
 	# 勝率
