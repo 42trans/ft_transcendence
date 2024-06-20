@@ -8,7 +8,7 @@
 # 各compose.ymlを定義
 COMPOSE_FILES = ./docker/srcs/compose.yaml \
 				./docker/srcs/compose-yaml/compose-networks.yaml \
-				./docker/srcs/compose-yaml/compose-web.yaml 
+				./docker/srcs/compose-yaml/compose-web.yaml
 
 # COMPOSE_FILES = ./docker/srcs/compose.yaml \
 # 				./docker/srcs/compose-yaml/compose-networks.yaml \
@@ -97,7 +97,7 @@ down_vite:
 	docker-compose $(COMPOSE_FILES_ARGS) rm -s -f vite
 
 # Django+vite起動環境のdown
-.PHONY: down_three	
+.PHONY: down_three
 down_three:
 	COMPOSE_PROFILES=three docker-compose $(COMPOSE_FILES_ARGS) down
 
@@ -192,6 +192,8 @@ env:
 .PHONY: cert_key
 cert_key:
 	@chmod +x init/cert_key.sh && ./init/cert_key.sh
+	@chmod +x init/cert_key_django.sh && ./init/cert_key_django.sh
+	@chmod +x init/cert_key_postgresql.sh && ./init/cert_key_postgresql.sh
 # gfarana追加
 # @chmod +x init/cert_key_grafana.sh && init/cert_key_grafana.sh
 

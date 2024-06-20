@@ -3,7 +3,10 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from django.urls import reverse
 from accounts.models import CustomUser
+from django.test import override_settings
 
+
+@override_settings(SECURE_SSL_REDIRECT=False)
 class UserBlockTestCase(TestCase):
     kUser1Email = 'test1@example.com'
     kUser1Nickname = 'test1'
@@ -93,6 +96,7 @@ class UserBlockTestCase(TestCase):
         self.assertTrue(self.user1.is_blocking_user(self.user2))  # user1 blocking user2
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class UserUnblockTestCase(TestCase):
     kUser1Email = 'test1@example.com'
     kUser1Nickname = 'test1'

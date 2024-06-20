@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class CustomUserCreateTests(TestCase):
     # test用のDBが作成されるため、super_user, user1, user2を追加する
     kAdminEmail = 'admin@example.com'
@@ -55,6 +57,7 @@ class CustomUserCreateTests(TestCase):
 
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class CustomUserUniqueTests(TestCase):
     kUserPassword = 'pass012345'
     kUser1Email = 'user1@example.com'
@@ -79,6 +82,7 @@ class CustomUserUniqueTests(TestCase):
 
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class CustomUserInvalidTests(TestCase):
     kUserPassword = 'pass012345'
 

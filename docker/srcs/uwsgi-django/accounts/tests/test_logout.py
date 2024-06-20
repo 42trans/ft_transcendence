@@ -6,8 +6,10 @@ from django.test import TestCase
 from rest_framework import status
 
 from accounts.models import CustomUser, UserManager
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class LogoutAPITests(TestCase):
     kLoginAPIName = "api_accounts:api_login"
     kLogoutAPIName = "api_accounts:api_logout"

@@ -5,8 +5,10 @@ from pong.online.pong_online_game_manager import PongOnlineGameManager
 from channels.testing import WebsocketCommunicator
 from pong.online.pong_online_consumer import PongOnlineConsumer
 import asyncio
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestPongOnlineInit(TestCase):
     def setUp(self):
         # asyncSetUp を同期的に呼び出す

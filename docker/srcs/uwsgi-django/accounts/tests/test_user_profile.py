@@ -5,8 +5,10 @@ from django.urls import reverse, resolve
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class UserProfileAPITests(TestCase):
     kUserProfileAPIName = "api_accounts:api_user_profile"
 
@@ -38,6 +40,7 @@ class UserProfileAPITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class EditUserProfileAPITests(TestCase):
     kEditUserProfileAPIName = "api_accounts:api_edit_profile"
     kLoginAPIName = "api_accounts:api_login"

@@ -12,6 +12,12 @@ _setting_log_file() {
   chmod 664 /code/django_debug.log
 }
 
+_setting_cert_key() {
+  # SSL証明書のパーミッション設定
+  chown www-data:www-data /code/ssl/django.key
+  chmod 600 /code/ssl/django.key
+}
+
 
 _migrate_db() {
 # DBスキーマの変更に基づきマイグレーションファイルを生成
@@ -38,7 +44,8 @@ _collect_static_to_root() {
 }
 
 _main() {
-  # _setting_log_file
+  _setting_log_file
+  _setting_cert_key
 
   # _migrate_db
 

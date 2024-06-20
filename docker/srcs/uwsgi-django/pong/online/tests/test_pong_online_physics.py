@@ -2,7 +2,9 @@ from django.test import TestCase
 from pong.online.pong_online_game_manager import PongOnlineGameManager
 from asgiref.sync import async_to_sync
 from unittest.mock import AsyncMock
+from django.test import override_settings
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestPongOnlinePhysics(TestCase):
     def setUp(self):
         self.game_manager = PongOnlineGameManager(consumer=AsyncMock(), user_id=1)

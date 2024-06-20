@@ -8,8 +8,10 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from accounts.models import CustomUser, UserManager
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class LoginAPIViewTestCase(TestCase):
     kUser1Email = 'test1@example.com'
     kUser1Nickname = 'test1'
