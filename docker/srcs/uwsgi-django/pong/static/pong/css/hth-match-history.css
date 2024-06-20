@@ -1,13 +1,26 @@
 /* docker/srcs/uwsgi-django/pong/static/pong/css/match-history.css */
-.hth-results-container{
-	background: #131313;
+
+#pagination-container .page-link{
+	background-color: var(--btn-bg-color);
+	color: var(--form-text-color); 
+	border-color: var(--form-text-color); 
+	text-shadow: 0px 0px 0px #fff;
+}
+#pagination-container .page-link:hover{
+	background-color: var(--form-text-color); 
+	color: var(--btn-bg-color);
+	border-color: var(--btn-bg-color);
+	text-shadow: 0px 0px 0px #fff;
 }
 
-.hth-results-title{
-	color: #fff;
+
+#match-history-container{
+	background: rgba(var(--transparent-bg-color), 0.8); 
 }
 
-.hth-results-ul{
-	list-style-type: none;
-	color: #fff;
+#match-history-stats-container .row .card{
+	background-color: var(--btn-bg-color);
+	color: var(--form-text-color); 
+	border-color: var(--form-text-color); 
+	text-shadow: 0px 0px 0px #fff;
 }
