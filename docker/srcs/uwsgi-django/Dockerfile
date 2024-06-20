@@ -8,11 +8,13 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     libpcre3-dev \
     gettext \
+    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # 環境変数を設定
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV UWSGI_PROFILE_OVERRIDE=ssl=true
 
 # 作業ディレクトリを設定
 WORKDIR /code
@@ -40,6 +42,7 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     chromium \
     chromium-driver \
+    net-tools \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONDONTWRITEBYTECODE 1

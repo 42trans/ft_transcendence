@@ -5,8 +5,10 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 from accounts.models import CustomUser
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class SignUpAPITests(TestCase):
     kSignUpAPIName = "api_accounts:api_signup"
     kUserEmail = "test@example.com"

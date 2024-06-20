@@ -189,6 +189,14 @@ ENV PGDATA /var/lib/postgresql/data
 RUN mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA" && chmod 1777 "$PGDATA"
 VOLUME /var/lib/postgresql/data
 
+# postgresql.conf and SSL証明書をコピー
+RUN mkdir -p /etc/postgresql/ssl
+COPY postgresql.conf    /etc/postgresql/postgresql.conf
+COPY pg_hba.conf        /etc/postgresql/pg_hba.conf
+COPY ssl/postgresql.crt /etc/postgresql/ssl/server.crt
+COPY ssl/postgresql.key /etc/postgresql/ssl/server.key
+RUN chmod 0600 /etc/postgresql/ssl/server.key && chown postgres:postgres /etc/postgresql/ssl/server.key
+
 COPY docker-entrypoint.sh docker-ensure-initdb.sh /usr/local/bin/
 RUN ln -sT docker-ensure-initdb.sh /usr/local/bin/docker-enforce-initdb.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
@@ -224,4 +232,5 @@ STOPSIGNAL SIGINT
 # that even 90 seconds may not be long enough in many instances.
 
 EXPOSE 5432
-CMD ["postgres"]
+#CMD ["postgres"]
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]

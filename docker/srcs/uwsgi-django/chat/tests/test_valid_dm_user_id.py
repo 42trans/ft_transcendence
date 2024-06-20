@@ -5,8 +5,10 @@ from django.urls import reverse, resolve
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class IsValidDmUserIdAPITests(TestCase):
     kLoginAPIName = "api_accounts:api_login"
     kLogoutAPIName = "api_accounts:api_logout"
