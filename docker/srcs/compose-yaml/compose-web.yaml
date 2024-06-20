@@ -47,9 +47,7 @@ services:
       # - blockchain_transcendence
       # - elk
     ports:
-      - "8096:8001" # http
-      - "${DJANGO_PORT:?}:8000"
-      - "8002:8002"
+      - "${DJANGO_PORT:?}:8443"  # https
       - "8003:8003"  # wss
     depends_on:
       postgres:
