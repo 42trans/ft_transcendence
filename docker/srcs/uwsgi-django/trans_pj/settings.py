@@ -160,11 +160,11 @@ DATABASES = {
 		'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
 		'HOST': 'postgres',  # Docker内のPostgreSQLサービス名
 		'PORT': '5432',
-		'OPTIONS': {
-			'sslmode': 'require',
-			'sslcert': '/code/ssl/django.crt',  # Djangoクライアント用
-			'sslkey' : '/code/ssl/django.key',   # Djangoクライアント用
-		},
+		# 'OPTIONS': {
+		# 	'sslmode': 'require',
+		# 	'sslcert': '/code/ssl/django.crt',  # Djangoクライアント用
+		# 	'sslkey' : '/code/ssl/django.key',   # Djangoクライアント用
+		# },
 	}
 }
 
