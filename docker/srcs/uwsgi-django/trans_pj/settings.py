@@ -93,7 +93,6 @@ MIDDLEWARE = [
 	'django_otp.middleware.OTPMiddleware',  # 2fa
 	'accounts.middleware.JWTAuthenticationMiddleware',	# jwt
 	'accounts.middleware.DisableCSRFForJWT',
-	'trans_pj.middleware.LogRequestSchemeMiddleware',  # https確認用
 ]
 
 
@@ -315,11 +314,6 @@ LOGGING = {
 		'handlers': ['console', 'file'],
 		'level': 'DEBUG',
 		'propagate': False,
-	},
-	'trans_pj.middleware': {
-		'handlers': ['console', 'file'],
-		'level': 'DEBUG',
-		'propagate': True,
 	},
 },
 }
