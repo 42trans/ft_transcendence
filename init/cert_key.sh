@@ -32,3 +32,6 @@ if [ ! -f $SSL_DIR/nginx.key ] || [ ! -f $SSL_DIR/nginx.crt ]; then
 else
   echo "nginx cert_key already exists"
 fi
+
+sudo chmod 600 $SSL_DIR/nginx.key
+sudo chmod 644 $SSL_DIR/nginx.crt
