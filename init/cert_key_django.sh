@@ -33,5 +33,5 @@ else
   echo "django cert_key already exists"
 fi
 
-sudo chmod 600 $SSL_DIR/django.key
+sudo chmod 644 $SSL_DIR/django.key
 sudo chmod 644 $SSL_DIR/django.crt
