@@ -89,7 +89,7 @@ class TestGetMatchHistory(TestCase):
 		self.assertEqual(response.status_code, 200)
 		response_data = response.json()
 		
-		print(response_data)
+		# print(response_data)
 		self.assertEqual(len(response_data['matches']), 2)
 		self.assertEqual(response_data['matches'][0]['player1'], 'You')
 		self.assertEqual(response_data['matches'][0]['player2'], 'player2')

@@ -1,4 +1,4 @@
-# chat/consumers.py
+# chat/dm_consumers.py
 
 import json
 import logging
@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from accounts.models import CustomUser
 from chat.consumers import Consumer
 from chat.models import DMSession, Message
+from pong.utils.async_logger import async_log
 
 
 logging.basicConfig(
@@ -56,6 +57,8 @@ class DMConsumer(Consumer):
         メッセージをDBに保存し、groupにmessage_dataを送信する
         """
         # logger.debug(f'[DMConsumer]: receive 1')
+        await async_log(f"DMConsumer.receive(): start")
+
         try:
             text_data_json = json.loads(text_data)
             message = text_data_json['message']
@@ -70,6 +73,8 @@ class DMConsumer(Consumer):
 
             # グループにsend_dataを送信 -> send_message()
             await super().receive(json_data=json.dumps(send_data))
+            await async_log(f"DMConsumer.receive(): {send_data}")
+
 
         except json.JSONDecodeError as e:
             logger.debug(f'[DMConsumer]: Error: Invalid JSON data: {str(e)}')
@@ -123,6 +128,22 @@ class DMConsumer(Consumer):
         except Exception as e:
             logger.error(f'[DMConsumer]: Error: send_system_message: {str(e)}')
             raise e
+
+    @classmethod
+    async def send_system_message(cls, channel_layer, room_id, sender_nickname, message, timestamp, is_system_message=True):
+        await async_log(f'send_system_message(): sender_id: {sender_nickname}')
+        await channel_layer.group_send(
+        # async_to_sync(channel_layer.group_send)(
+            f'room_{room_id}',
+            {
+                'type': 'send_data',
+                'sender_id': sender_nickname,
+                'message': message,
+                'timestamp': timestamp,
+                'is_system_message': is_system_message
+            }
+        )
+
 
     async def _get_dm_consumer_params(self):
         self.user, self.other_user, err = await self._get_users()

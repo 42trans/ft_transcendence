@@ -8,6 +8,7 @@ from ...views.tournament.save_views import is_tournament_finished, is_round_fini
 from django.test import override_settings
 from rest_framework.test import APIClient
 from rest_framework import status
+from unittest.mock import patch
 
 
 @override_settings(SECURE_SSL_REDIRECT=False)
@@ -92,7 +93,6 @@ class TestSaveGameResult(TestCase):
 		}
 		client = APIClient()
 		client.force_authenticate(user=self.user) 
-		# self.client.force_login(self.user)
 		response = self.client.post(reverse('save_game_result'), data=json.dumps(data), content_type='application/json')
 		self.assertEqual(response.status_code, 200)
 		match.refresh_from_db()
@@ -120,3 +120,27 @@ class TestSaveGameResult(TestCase):
 			match.save()
 		self.assertTrue(is_round_finished(self.tournament, 1))
 		self.assertFalse(is_round_finished(self.tournament, 2))
+
+	def test_send_system_message_to_organizer(self):
+		self.create_matches(finished=False)
+		matches = Match.objects.filter(round_number=1)
+
+		# send_direct_system_message 関数をモック化
+		with patch('pong.views.tournament.save_views.send_direct_system_message') as mock_send_direct_system_message:
+			for match in matches:
+				data = {
+					'match_id': match.id,
+					'player1_score': 11,
+					'player2_score': 9
+				}
+				client = APIClient()
+				client.force_authenticate(user=self.user)
+
+				response = self.client.post(reverse('save_game_result'), data=json.dumps(data), content_type='application/json')
+				self.assertEqual(response.status_code, 200)
+
+		self.assertTrue(is_round_finished(self.tournament, 1))
+
+		# send_system_message_to_organizer 関数が 1 回呼ばれたことを確認
+		mock_send_direct_system_message.assert_called_once()
+		# mock_send_direct_system_message.assert_called_once_with(self.tournament.organizer.nickname, f"トーナメント「{self.tournament.name}」のラウンド2が始まりました！")

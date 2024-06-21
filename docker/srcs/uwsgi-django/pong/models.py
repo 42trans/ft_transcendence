@@ -21,7 +21,7 @@ class Tournament(models.Model):
 	organizer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='tournaments')
 	is_finished = models.BooleanField(default=False)
 	# 前回終了したラウンド番号を保存するためのフィールド
-	last_finished_round = models.IntegerField(default=0)
+	last_finished_round = models.IntegerField(default=-1)
 
 	def __str__(self):
 		return self.name

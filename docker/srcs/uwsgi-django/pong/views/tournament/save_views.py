@@ -61,8 +61,8 @@ def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
 			next_match.can_start = True
 
 		next_match.save()
-		print(f"Updated next match {next_match.id}: "
-			  f"{next_match.player1} vs {next_match.player2}")
+		# print(f"Updated next match {next_match.id}: "
+		# 	  f"{next_match.player1} vs {next_match.player2}")
 
 def is_round_finished(tournament, round_number):
 	""" 「指定されたラウンド」が終了したかどうかを確認する"""
@@ -109,14 +109,15 @@ def save_game_result(request):
 
 			current_round = match.round_number
 			if is_round_finished(match.tournament, current_round):
-				print(f"Round {current_round} finished.")
+				# print(f"Round {current_round} finished.")
 
 				if current_round > match.tournament.last_finished_round:
 					# 新たに終了したラウンドがある場合
 					match.tournament.last_finished_round = current_round
 					match.tournament.save()
-					# TODO_ft: システムからDMを送信
-		
+					# システムからDMを送信
+					send_system_message_to_organizer(match.tournament, current_round + 1)
+
 			# トーナメントの全試合が終了していた場合、 is_Finisjed を立てる
 			if is_tournament_finished(match.tournament):
 				match.tournament.is_finished = True
@@ -127,3 +128,18 @@ def save_game_result(request):
 		import traceback
 		traceback.print_exc()  # サーバーのコンソールにエラーのトレースバックを出力
 		return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+
+def send_system_message_to_organizer(tournament, next_round):
+	# print(f"send_system_message_to_organizer(): start")
+	# print(f"tournament.organizer.nickname: {tournament.organizer.nickname} ")
+	organizer_nickname = tournament.organizer.nickname
+	message = f"トーナメント「{tournament.name}」のラウンド{next_round}が始まりました！"
+	send_direct_system_message(organizer_nickname, message)
+	# print(f"send_system_message_to_organizer(): done")
+
+
+def send_direct_system_message(target_nickname, message):
+	# chat/のsend_direct_system_message関数を呼び出す
+	from chat.views.system_message import send_direct_system_message  
+	return send_direct_system_message(target_nickname, message)
