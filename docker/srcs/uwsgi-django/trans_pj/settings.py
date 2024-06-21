@@ -161,7 +161,7 @@ DATABASES = {
 		'NAME': get_env_variable('POSTGRES_DB'),
 		'USER': get_env_variable('POSTGRES_USER'),
 		'PASSWORD': get_env_variable('POSTGRES_PASSWORD'),
-		'HOST': '192.168.100.3',  # Docker内のPostgreSQLサービス名
+		'HOST': '192.168.100.3',  # コンテナ名 -> ip
 		'PORT': '5432',
 		'OPTIONS': {
 			'sslmode': 'require',
