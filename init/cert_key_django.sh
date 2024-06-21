@@ -32,3 +32,6 @@ if [ ! -f $SSL_DIR/django.key ] || [ ! -f $SSL_DIR/django.crt ]; then
 else
   echo "django cert_key already exists"
 fi
+
+chmod 600 $SSL_DIR/django.key
+chmod 644 $SSL_DIR/django.crt
