@@ -1,7 +1,7 @@
 # docker/srcs/uwsgi-django/pong/online/pong_online_config.py
 
 TEST_MAX_PADDLE_HEIGHT = 0
-TEST_END_GAME = 1
+TEST_END_GAME = 0
 
 class PongOnlineConfig:
     def __init__(self):

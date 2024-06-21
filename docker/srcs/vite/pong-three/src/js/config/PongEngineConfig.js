@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 let TEST_MAX_PADDLE_HEIGHT = 0;
-let TEST_END_GAME = 1;
+let TEST_END_GAME = 0;
 
 /**
  * ゲームに必要な初期値を設定
