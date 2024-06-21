@@ -93,8 +93,7 @@ services:
 #      - ${VOLUME_PATH:?}/certs/server.key:/var/lib/postgresql/certs/server.key
       # - ${VOLUME_PATH:?}:/container_output
     networks:
-      db_transcendence:
-        ipv4_address: 192.168.100.3
+      - db_transcendence
     ports:
       - "${POSTGRES_PORT:?}:5432"
     healthcheck:
