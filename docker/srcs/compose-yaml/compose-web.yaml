@@ -125,3 +125,15 @@ services:
     profiles:
       - three
     init: true
+
+  # access deny確認用
+  # curl -k https://nginx は403
+  bash_test:
+    image: debian:bullseye-slim
+    container_name: bash_test
+    command: ["bash", "-c", "apt-get update && apt-get install -y curl && bash"]
+    networks:
+      - web_transcendence
+      - test_network
+    stdin_open: true
+    tty: true
