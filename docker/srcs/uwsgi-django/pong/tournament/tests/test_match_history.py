@@ -4,7 +4,9 @@ from ...models import Tournament, Match
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from rest_framework import status
+from django.test import override_settings
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestGetMatchHistory(TestCase):
 	def setUp(self):
 		User = get_user_model()
@@ -75,7 +77,7 @@ class TestGetMatchHistory(TestCase):
 	def __login(self, email, password):
 		login_api_url = reverse('api_accounts:api_login')
 		login_data = {'email': email, 'password': password}
-		response = self.client.post(login_api_url, data=login_data)
+		response = self.client.post(login_api_url, data=login_data, follow=True)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 	def __logout(self):
@@ -86,7 +88,8 @@ class TestGetMatchHistory(TestCase):
 		response = self.client.get(reverse('get_match_history'))
 		self.assertEqual(response.status_code, 200)
 		response_data = response.json()
-
+		
+		print(response_data)
 		self.assertEqual(len(response_data['matches']), 2)
 		self.assertEqual(response_data['matches'][0]['player1'], 'You')
 		self.assertEqual(response_data['matches'][0]['player2'], 'player2')
