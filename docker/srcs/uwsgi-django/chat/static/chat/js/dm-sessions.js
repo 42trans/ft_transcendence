@@ -4,6 +4,7 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { escapeHtml } from "./module/handle-receive-message.js"
 
+// ... (tournamentInvite 関数)
 
 export function fetchDMList() {
     fetch('/chat/api/dm-sessions/', {
@@ -22,7 +23,6 @@ export function fetchDMList() {
         .catch(error => console.error('There has been a problem with your fetch operation:', error));
 }
 
-// TODO_ft: 招待ボタン、警告ボタンを同様に作成し、定型メッセージを送信するeventを設定する
 export function startDMwithUser() {
     const input = document.querySelector('#nickname-input');
     const submitButton = document.querySelector('#nickname-submit');
@@ -102,4 +102,80 @@ function createDMSessionLinks(data) {
         item.appendChild(link);
         list.appendChild(item);
     });
+}
+
+
+// -------------------------------------
+// setupInviteButton
+// -------------------------------------
+let tournamentInviteSocket = null; 
+export function tournamentInvite() {
+    const tournamentInviteButton = document.querySelector('#tournament-invite');
+    const nicknameInput = document.querySelector('#nickname-input');
+    const userInfo = JSON.parse(document.querySelector('#user_info').textContent); 
+
+    tournamentInviteButton.onclick = function() {
+        const dmTargetNickname = escapeHtml(nicknameInput.value);
+        const messageArea = document.querySelector('#message-area');
+
+        if (!dmTargetNickname) {
+            messageArea.textContent = "Nickname cannot be empty";
+            return;
+        }
+
+        fetch(`/chat/api/validate-dm-target/${dmTargetNickname}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                return response.json().then(data => {
+                    if (!response.ok) {
+                        throw new Error(data.error);
+                    } else {
+                        const targetId = data.target_id;
+
+                        // 既存のトーナメント招待用 WebSocket 接続があれば閉じる
+                        if (tournamentInviteSocket) {
+                            tournamentInviteSocket.close();
+                        }
+
+                        // トーナメント招待用の WebSocket 接続を確立して招待メッセージを送信
+                        const targetInfo = { id: targetId, nickname: dmTargetNickname };
+                        setupTournamentInviteWebsocket(userInfo, targetInfo);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('tournamentInvite(): error', error);
+            });
+    };
+}
+
+function setupTournamentInviteWebsocket(userInfo, targetInfo) {
+    const websocketUrl = 'wss://' + window.location.host + '/ws/dm-with/' + targetInfo.id + '/';
+    tournamentInviteSocket = new WebSocket(websocketUrl);
+
+    tournamentInviteSocket.onopen = () => {
+        handleSendMessage(tournamentInviteSocket, "こんにちは。今から、私がいる場所付近で、私のデバイスを交代で使用して8人でゲームのトーナメントをしましょう");
+        const messageArea = document.querySelector('#message-area');
+        messageArea.textContent = `私のデバイスを交代で使用するトーナメントに${targetInfo.nickname}を誘いました`;
+        tournamentInviteSocket.close(); // 送信後、WebSocket 接続を閉じる
+    };
+
+    tournamentInviteSocket.onclose = () => {
+        tournamentInviteSocket = null; // 接続が閉じたら null に戻す
+    };
+
+    tournamentInviteSocket.onerror = (event) => {
+        console.error('WebSocket error (tournament invite):', event);
+        tournamentInviteSocket = null; // エラーが発生したら null に戻す
+    };
+}
+
+function handleSendMessage(socket, message) {
+    socket.send(JSON.stringify({
+        'message': message
+    }));
 }
