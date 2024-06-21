@@ -82,13 +82,11 @@ services:
       # 冗長だが明示的に指定。　.envを上書きしたい場合に活用する
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?}
       - POSTGRES_USER=${POSTGRES_USER:?}
-      - POSTGRES_DB=${POSTGRES_DB:?POSTGRES_DB is not set}
-      - POSTGRES_HOST_AUTH_METHOD=${POSTGRES_HOST_AUTH_METHOD:?}
-      - POSTGRES_LOCAL_AUTH_METHOD=${POSTGRES_LOCAL_AUTH_METHOD:?}
+      - POSTGRES_DB=${POSTGRES_DB:?}
+#      - POSTGRES_HOST_AUTH_METHOD=${POSTGRES_HOST_AUTH_METHOD:?}
+#      - POSTGRES_LOCAL_AUTH_METHOD=${POSTGRES_LOCAL_AUTH_METHOD:?}
     volumes:
       - ${VOLUME_PATH:?}/postgres:/var/lib/postgresql/data
-      - ${VOLUME_PATH:?}/certs/server.crt:/var/lib/postgresql/certs/server.crt
-      - ${VOLUME_PATH:?}/certs/server.key:/var/lib/postgresql/certs/server.key
       # - ${VOLUME_PATH:?}:/container_output
     networks:
       - db_transcendence
