@@ -21,8 +21,9 @@ services:
       - ./uwsgi-django/static/:/var/trans/static/
       - ./uwsgi-django/media/:/var/trans/media/
     networks:
-      web_transcendence:
-        ipv4_address: 192.168.200.10
+      - web_transcendence
+#      web_transcendence:
+#        ipv4_address: 192.168.200.10
       # - monitor_transcendence
     restart: unless-stopped
     depends_on:
