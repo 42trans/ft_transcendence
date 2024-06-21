@@ -23,6 +23,7 @@ def get_env_variable(var_name):
 		value = os.environ[var_name]
 		if value == '':
 			raise ValueError
+		print(f"ov_env: {var_name} = {value}")
 		return value
 	except KeyError:
 		raise ImproperlyConfigured(f'{var_name} undefined')
@@ -153,8 +154,8 @@ DATABASES = {
 		# -------------------------
 # 		# Prometheus
 # 		# -------------------------
-		"ENGINE": "django_prometheus.db.backends.postgresql",
-		# 'ENGINE': 'django.db.backends.postgresql',
+# 		"ENGINE": "django_prometheus.db.backends.postgresql",
+		'ENGINE': 'django.db.backends.postgresql',
 # 		# -------------------------
 		'NAME': get_env_variable('POSTGRES_DB'),
 		'USER': get_env_variable('POSTGRES_USER'),
