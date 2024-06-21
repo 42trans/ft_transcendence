@@ -10,6 +10,9 @@ from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 import random
+from django.urls import reverse
+import requests
+
 
 logger = logging.getLogger('django')
 User = get_user_model()
@@ -61,9 +64,16 @@ def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
 		print(f"Updated next match {next_match.id}: "
 			  f"{next_match.player1} vs {next_match.player2}")
 
+def is_round_finished(tournament, round_number):
+	""" 「指定されたラウンド」が終了したかどうかを確認する"""
+	matches = Match.objects.filter(tournament=tournament, round_number=round_number)
+	for match in matches:
+		if not match.is_finished:
+			return False
+	return True
 
 def is_tournament_finished(tournament):
-	"""「全ての試合」が終了していたら「トーナメントの終了フラグ」を立てる"""
+	"""「全ての試合」が終了したかどうかを確認する"""
 	matches = Match.objects.filter(tournament=tournament)
 	for match in matches:
 		if not match.is_finished:
@@ -97,6 +107,16 @@ def save_game_result(request):
 		if winner:
 			assign_winner_to_next_match(match, winner)
 
+			current_round = match.round_number
+			if is_round_finished(match.tournament, current_round):
+				print(f"Round {current_round} finished.")
+
+				if current_round > match.tournament.last_finished_round:
+					# 新たに終了したラウンドがある場合
+					match.tournament.last_finished_round = current_round
+					match.tournament.save()
+					# TODO_ft: システムからDMを送信
+		
 			# トーナメントの全試合が終了していた場合、 is_Finisjed を立てる
 			if is_tournament_finished(match.tournament):
 				match.tournament.is_finished = True
@@ -107,4 +127,3 @@ def save_game_result(request):
 		import traceback
 		traceback.print_exc()  # サーバーのコンソールにエラーのトレースバックを出力
 		return JsonResponse({"status": "error", "message": str(e)}, status=400)
-
