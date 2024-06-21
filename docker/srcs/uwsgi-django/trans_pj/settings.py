@@ -45,6 +45,7 @@ SECRET_KEY = 'django-insecure-^u(k4_odzhvjof^yx-bauu&!6jv)^!5nt8c3p^g1!da3ro^cf6
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'hioikawa.42.fr']
 
 
 # Application definition
@@ -155,9 +156,9 @@ DATABASES = {
 		"ENGINE": "django_prometheus.db.backends.postgresql",
 		# 'ENGINE': 'django.db.backends.postgresql',
 # 		# -------------------------
-		'NAME': os.environ.get('POSTGRES_DB'),
-		'USER': os.environ.get('POSTGRES_USER'),
-		'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+		'NAME': get_env_variable('POSTGRES_DB'),
+		'USER': get_env_variable('POSTGRES_USER'),
+		'PASSWORD': get_env_variable('POSTGRES_PASSWORD'),
 		'HOST': 'postgres',  # Docker内のPostgreSQLサービス名
 		'PORT': '5432',
 		'OPTIONS': {
