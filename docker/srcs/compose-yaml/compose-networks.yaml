@@ -15,6 +15,7 @@ networks:
     ipam:
       config:
         - subnet: '${DB_NETWORK_SUBNET:?}'
+
   # blockchain_transcendence:
   #   driver: bridge
   #   name: blockchain_transcendence

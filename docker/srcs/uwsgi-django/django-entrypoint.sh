@@ -16,6 +16,9 @@ _setting_cert_key() {
   # SSL証明書のパーミッション設定
   chown www-data:www-data /code/ssl/django.key
   chmod 600 /code/ssl/django.key
+
+  chown www-data:www-data /code/ssl/django.crt
+  chmod 644 /code/ssl/django.crt
 }
 
 
