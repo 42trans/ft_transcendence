@@ -22,7 +22,7 @@ export function fetchDMList() {
         .catch(error => console.error('There has been a problem with your fetch operation:', error));
 }
 
-
+// TODO_ft: 招待ボタン、警告ボタンを同様に作成し、定型メッセージを送信するeventを設定する
 export function startDMwithUser() {
     const input = document.querySelector('#nickname-input');
     const submitButton = document.querySelector('#nickname-submit');
