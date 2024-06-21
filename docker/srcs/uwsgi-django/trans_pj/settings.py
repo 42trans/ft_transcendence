@@ -47,7 +47,15 @@ DEBUG = False
 
 # ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = ['localhost']
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'hioikawa.42.fr', 'nginx', 'postgres', 'vite']
+ALLOWED_HOSTS = [
+	'localhost',
+	'127.0.0.1',
+	'hioikawa.42.fr',
+	'nginx',
+	'postgres',
+	'vite',
+	'uwsgi-django'
+]
 
 
 # Application definition
@@ -161,7 +169,7 @@ DATABASES = {
 		'NAME': get_env_variable('POSTGRES_DB'),
 		'USER': get_env_variable('POSTGRES_USER'),
 		'PASSWORD': get_env_variable('POSTGRES_PASSWORD'),
-		'HOST': '192.168.100.3',  # Docker内のPostgreSQLサービス名
+		'HOST': 'postgres',  # コンテナ名
 		'PORT': '5432',
 		'OPTIONS': {
 			'sslmode': 'require',

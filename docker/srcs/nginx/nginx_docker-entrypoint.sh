@@ -17,7 +17,7 @@ set -e
 # fi
 # -------------------------------------
 # 環境変数を使用してnginxの設定ファイルを生成
-envsubst '${SERVER_NAME},${GRAFANA_PORT}' < nginx.conf > /etc/nginx/nginx.conf
+envsubst '${SERVER_NAME},${GRAFANA_PORT},${WEB_NETWORK_SUBNET}' < nginx.conf > /etc/nginx/nginx.conf
 cp /uwsgi_params /etc/nginx/uwsgi_parames
 # -------------------------------------
 # ホストでの確認のためにマウントvolumeにファイル出力

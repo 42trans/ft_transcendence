@@ -16,6 +16,14 @@ networks:
       config:
         - subnet: '${DB_NETWORK_SUBNET:?}'
 
+  test_network:
+    driver: bridge
+    name: db_transcendence
+    ipam:
+      config:
+        - subnet: '${TEST_NETWORK_SUBNET:?}'
+
+
   # blockchain_transcendence:
   #   driver: bridge
   #   name: blockchain_transcendence
