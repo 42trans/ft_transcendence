@@ -3,7 +3,6 @@ import PongOnlinePaddleMover from "./PongOnlinePaddleMover.js";
 import PongOnlineRenderer from "./PongOnlineRenderer.js";
 import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js";
 
-// console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 const DEBUG_FLOW		= 0;
 const DEBUG_DETAIL		= 0;
 const TEST_ERROR_CASE1	= 0;
@@ -35,7 +34,6 @@ class PongOnlineSyncWS
 		// 単位: ミリ秒
 		this.reconnectInterval		= 3000;
 
-						// TODO_fr: 本番時削除
 						// dev用 websocket接続を閉じるためのボタン
 						// this.devTestCloseButton();
 	}

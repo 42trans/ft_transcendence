@@ -351,7 +351,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # chat
-# TODO_ft: 本番時のredis
 CHANNEL_LAYERS = {
     # 'default': {
     # 	'BACKEND':'channels_redis.core.RedisChannelLayer',

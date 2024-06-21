@@ -4,7 +4,6 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js";
 import { tournamentHandleCatchError } from "../TournamentMain.js";
 
-// console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 const DEBUG_FLOW		= 0;
 const DEBUG_DETAIL		= 0;
 const TEST_TRY1 		= 0;
