@@ -23,6 +23,7 @@ def get_env_variable(var_name):
 		value = os.environ[var_name]
 		if value == '':
 			raise ValueError
+		# print(f"ov_env: {var_name} = {value}")
 		return value
 	except KeyError:
 		raise ImproperlyConfigured(f'{var_name} undefined')
@@ -41,10 +42,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = get_env_variable('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = false
-DEBUG = True
+DEBUG = False
+# DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = [
+	'localhost',
+	'127.0.0.1',
+	'hioikawa.42.fr',
+	'nginx',
+	'postgres',
+	'vite',
+	'uwsgi-django'
+]
 
 
 # Application definition
@@ -152,12 +163,12 @@ DATABASES = {
 		# -------------------------
 # 		# Prometheus
 # 		# -------------------------
-		"ENGINE": "django_prometheus.db.backends.postgresql",
-		# 'ENGINE': 'django.db.backends.postgresql',
+# 		"ENGINE": "django_prometheus.db.backends.postgresql",
+		'ENGINE': 'django.db.backends.postgresql',
 # 		# -------------------------
-		'NAME': os.environ.get('POSTGRES_DB'),
-		'USER': os.environ.get('POSTGRES_USER'),
-		'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+		'NAME': get_env_variable('POSTGRES_DB'),
+		'USER': get_env_variable('POSTGRES_USER'),
+		'PASSWORD': get_env_variable('POSTGRES_PASSWORD'),
 		'HOST': 'postgres',  # Docker内のPostgreSQLサービス名
 		'PORT': '5432',
 		'OPTIONS': {
