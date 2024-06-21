@@ -74,31 +74,37 @@ def calculate_user_stats(matches):
 	"""
 	統計情報を計算する関数
 	"""
-	total_matches = len(matches)
-	wins = 0
-	total_points_scored = 0
-	total_points_lost = 0
+	total_matches		= 0
+	wins				= 0
+	total_points_scored	= 0
+	total_points_lost	= 0
 
 	# 勝利数
 	for match in matches:
+		if match['winner'] is None:
+			continue
+	
+		total_matches += 1
+		
 		if match['winner'] == 'You':
 			wins += 1
-	# 敗北数
-	losses = total_matches - wins
-	# 勝率
-	if total_matches > 0:
-		win_rate = wins / total_matches
-	else:
-		win_rate = 0
 
-	# 総得失点の計算 ※リターンに含めない
-	for match in matches:
+		# 総得失点の計算 ※リターンに含めない
 		if match['player1'] == 'You':
 			total_points_scored += match['player1_score']
 			total_points_lost += match['player2_score']
 		else:
 			total_points_scored += match['player2_score']
 			total_points_lost += match['player1_score']
+
+	# 敗北数
+	losses = total_matches - wins
+
+	# 勝率
+	if total_matches > 0:
+		win_rate = wins / total_matches
+	else:
+		win_rate = 0
 
 	# 平均得失点の計算
 	if total_matches > 0:
