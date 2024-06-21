@@ -5,6 +5,9 @@ networks:
   web_transcendence:
     driver: bridge
     name: web_transcendence
+    ipam:
+      config:
+        - subnet: '${WEB_NETWORK_SUBNET:?}'
 
   db_transcendence:
     driver: bridge
