@@ -32,3 +32,6 @@ if [ ! -f $SSL_DIR/postgresql.key ] || [ ! -f $SSL_DIR/postgresql.crt ]; then
 else
   echo "postgresql cert_key already exists"
 fi
+
+chmod 600 $SSL_DIR/postgresql.key
+chmod 644 $SSL_DIR/postgresql.crt
