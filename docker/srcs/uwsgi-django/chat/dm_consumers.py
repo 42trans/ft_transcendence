@@ -57,7 +57,7 @@ class DMConsumer(Consumer):
         メッセージをDBに保存し、groupにmessage_dataを送信する
         """
         # logger.debug(f'[DMConsumer]: receive 1')
-        await async_log(f"DMConsumer.receive(): start")
+        # await async_log(f"DMConsumer.receive(): start")
 
         try:
             text_data_json = json.loads(text_data)
@@ -73,7 +73,7 @@ class DMConsumer(Consumer):
 
             # グループにsend_dataを送信 -> send_message()
             await super().receive(json_data=json.dumps(send_data))
-            await async_log(f"DMConsumer.receive(): {send_data}")
+            # await async_log(f"DMConsumer.receive(): {send_data}")
 
 
         except json.JSONDecodeError as e:

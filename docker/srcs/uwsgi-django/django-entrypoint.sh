@@ -44,10 +44,10 @@ _collect_static_to_root() {
 }
 
 _main() {
-  _setting_log_file
-  _setting_cert_key
+  # _setting_log_file
+  # _setting_cert_key
 
-  _migrate_db
+  # _migrate_db
 
   _add_user_to_db
   # _collect_static_to_root
