@@ -58,7 +58,7 @@ jobs:
 
       - name: Build and start containers
 #        run: make || make logs
-        run: make build_up_default || make logs
+        run: make || make logs
 
       - name: wait for start up django container
         run: |
