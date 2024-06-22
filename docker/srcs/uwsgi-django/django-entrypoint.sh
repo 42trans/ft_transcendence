@@ -50,7 +50,7 @@ _main() {
   _migrate_db
 
   _add_user_to_db
-  # _collect_static_to_root
+   _collect_static_to_root
 }
 
 
