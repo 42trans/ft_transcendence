@@ -71,9 +71,18 @@ build_up_three: init
 
 # 通常の起動: viteはbuildのみ行い、即downしrmする
 .PHONY: build_up_default
-build_up_default: build_up_three vite_npm_run_build down_vite django_collectstatic
+build_up_default: build_up_three vite_npm_run_build django_collectstatic
+# build_up_default: build_up_three vite_npm_run_build down_vite django_collectstatic
 # docker-compose $(COMPOSE_FILES_ARGS) build
 # docker-compose $(COMPOSE_FILES_ARGS) up -d
+
+.PHONY: restart_uwsgi-django
+restart_uwsgi-django:
+	docker-compose $(COMPOSE_FILES_ARGS) restart uwsgi-django
+
+.PHONY: r
+r:
+	make restart_uwsgi-django
 
 .PHONY: stop
 stop:
