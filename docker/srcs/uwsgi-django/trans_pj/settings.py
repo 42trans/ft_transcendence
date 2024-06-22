@@ -366,10 +366,14 @@ CHANNEL_LAYERS = {
 
 def _load_url_config():
 	try:
-		file_path = ('static/spa/json/urlConfig.json')
+		base_dir = os.path.dirname(os.path.abspath(__file__))
+		file_path = os.path.join(base_dir, 'static', 'spa', 'json', 'urlConfig.json')
+		print(f"base_dir: {base_dir}")
+
+		# file_path = ('static/spa/json/urlConfig.json')
 		with open(file_path) as f:
 			url_config = json.load(f)
-			# print(f'load_url_config: {url_config}')
+			print(f'load_url_config: {url_config}')
 			return url_config
 	except Exception as e:
 		print(f'load_url_config: Error: could not load urlConfig: {str(e)}')
