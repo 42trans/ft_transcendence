@@ -3,6 +3,8 @@
 import AbstractView from "../AbstractView.js";
 import fetchData from "../../utility/fetch.js";
 import { loadAndExecuteScript } from "../../utility/script.js";
+import { routeTable } from "/static/spa/js/routing/routeTable.js";
+import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 const DEBUG_FLOW = 0;
 
@@ -19,6 +21,11 @@ export default class extends AbstractView {
     const uri = `/pong/play/${matchId}`;
           if (DEBUG_FLOW) {  console.log('uri: ', uri); }
     const data = await fetchData(uri);
+    // console.log('data', data);
+    // if (data.is_playing) {
+    //   window.location.href = routeTable['top'].path;
+    //   return;
+    // }
     return data;
   }
 

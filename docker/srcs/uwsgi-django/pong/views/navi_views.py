@@ -47,6 +47,7 @@ def play_tournament(request, match_id):
 	# TODO_ft-2:トーナメントtopに遷移した方が良さそう
 	match = get_object_or_404(Match, id=match_id)
 	if match.is_playing:
+		# return JsonResponse({'is_playing': True})
 		return redirect(to='/pong/')
 		# return redirect(to='/tournament/')
 
