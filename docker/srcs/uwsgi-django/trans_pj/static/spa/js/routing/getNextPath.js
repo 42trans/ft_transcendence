@@ -2,7 +2,7 @@
 
 import { routeTable } from "./routeTable.js"
 import { isUserLoggedIn, isUserEnable2FA } from "../utility/isUser.js"
-import { getSelectedRoute } from "./renderView.js"
+import { getMatchedRoute } from "./getMatchedRoute.js"
 
 
 const DEBUG = 0;
@@ -65,7 +65,7 @@ function getUserRedirectPath(url, isEnable2FA) {
 const isRenderTopPageUrl = async (url) => {
   const urlObject = new URL(url);
   const pathName = urlObject.pathname;
-  const ret =  await getSelectedRoute(pathName, routeTable) === routeTable['top'];
+  const ret =  await getMatchedRoute(pathName) === routeTable['top'];
   if (DEBUG) { console.log(' isRenderTopPageUrl -> ' + ret); }
   return ret
 }

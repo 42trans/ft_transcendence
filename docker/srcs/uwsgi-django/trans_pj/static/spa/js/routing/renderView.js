@@ -1,5 +1,5 @@
 import { routeTable } from "./routeTable.js";
-import { getUrl } from "../unusedFiles/url.js";
+import { getMatchedRoute } from "./getMatchedRoute.js"
 import { setOnlineStatus } from "/static/accounts/js/setOnlineStatus.js";
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 import { setNoCache, clearNoCache } from "/static/spa/js/utility/cache.js"
@@ -42,74 +42,10 @@ export const switchPage = (targetPath) => {
 };
 
 
-const comparePathParts = async (routeParts, currentPathParts, params) => {
-  const isMatch = await Promise.all(
-      routeParts.map(async (part, index) => {
-        if (part.startsWith(':')) {
-          // パラメータのキーを抽出（例: :nickname -> nickname）
-          const paramName = part.slice(1);
-          if (DEBUG_LOG) { console.log(`    parameter name  : ${paramName}`); }
-
-          // パラメータの整合性を評価
-          const isValid = await isValidParam(paramName, currentPathParts[index]);
-          if (!isValid) {
-            if (DEBUG_LOG) { console.log(`    -> parameter invalid`); }
-            return false;
-          }
-          if (DEBUG_LOG) { console.log(`    -> parameter valid`); }
-
-          params[paramName] = currentPathParts[index];  // パラメータを格納
-            if (DEBUG_LOG) { console.log(`    currentPathParts: ${currentPathParts[index]}`); }
-          return true;
-        }
-        return part === currentPathParts[index];
-      })
-  );
-
-  return isMatch.every(Boolean);
-};
-
-export const getSelectedRoute = async (currentPath, routeTable) => {
-  let params = {};  // URLパラメータを格納するオブジェクト
-
-  // パスパラメータを含む可能性があるルートを評価
-  const matchedRoute = await Promise.all(
-      Object.values(routeTable).map(async (route) => {
-        const routeParts = route.path.split('/').filter(part => part);
-        const currentPathParts = currentPath.split('/').filter(part => part);
-
-        if (routeParts.length !== currentPathParts.length) {
-          return null;
-        }
-
-        // パスの各部分を比較
-        const isMatch = await comparePathParts(routeParts, currentPathParts, params);
-        if (isMatch) {
-          return { ...route, params };
-        }
-        return null;
-      })
-  );
-
-  const foundRoute = matchedRoute.find(route => route !== null);
-
-  if (foundRoute) {
-    foundRoute.queryParams = new URLSearchParams(window.location.search);
-    if (DEBUG_LOG) { console.log(` matchedRoute -> ` + foundRoute.path); }
-    return foundRoute;
-  } else {
-    // routeTableに存在しないpathの場合、Guest, Userともにtopを表示
-    // todo: URLとinnerHTMLが乖離 -> URLも/app/に切り替えるべきか？
-    if (DEBUG_LOG) { console.log(` NO matchedRoute -> top`); }
-    if (DEBUG_LOG) { console.log(`---------------------------------`); }
-    return routeTable['top'];
-  }
-};
-
 
 async function getView(path) {
   // 選択されたルートを取得
-  const selectedRoute = await getSelectedRoute(path, routeTable);
+  const selectedRoute = await getMatchedRoute(path);
   // console.log("renderView: selectedRoute.path: " + selectedRoute.path)
 
   // 選択されたルートに対応するビューをインスタンス化して、paramsを渡す
@@ -142,7 +78,7 @@ export const renderView = async (path) => {
   // --------------------------
   // ここから今回のviewに対する処理
   // viewクラスの指定とメソッド呼び出し
-  const selectedRoute = await getSelectedRoute(path, routeTable);
+  const selectedRoute = await getMatchedRoute(path);
   const view = new selectedRoute.view(selectedRoute.params);
   currentView = view;
   const htmlSrc = await view.getHtml();
