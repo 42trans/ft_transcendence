@@ -22,12 +22,12 @@
 			">For a happier life, let's play the pong game!</p>
 	{% endif %}
 
-	{% include 'pong/dev-link.html' %}
+	{% if debug %}
+		{% include 'pong/dev-link.html' %}
+	{% endif %}
 
 
 	{% if user_id %}
 	<input type="hidden" id="user-id" value="{{ user_id }}">
 	{% endif %}
 </div>
-
-

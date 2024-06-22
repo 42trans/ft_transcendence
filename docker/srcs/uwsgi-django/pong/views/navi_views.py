@@ -1,4 +1,5 @@
 # docker/srcs/uwsgi-django/pong/views/navi_views.py
+from django.conf import settings
 from django.shortcuts import redirect, render
 from django.http import JsonResponse
 import logging
@@ -19,13 +20,29 @@ def tournament(request):
 		return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
 def pong_view(request):
+	# if request.user.is_authenticated:
+	# 	param = {
+	# 		'nickname'	: request.user.nickname,
+	# 		'user_id'	: request.user.id
+	# 	}
+	# 	return render(request, 'pong/index.html', param)
+	# return render(request, 'pong/index.html')
+	is_debug_mode = settings.DEBUG
+
 	if request.user.is_authenticated:
 		param = {
 			'nickname'	: request.user.nickname,
-			'user_id'	: request.user.id
+			'user_id'	: request.user.id,
+			'debug'		: is_debug_mode,
 		}
 		return render(request, 'pong/index.html', param)
-	return render(request, 'pong/index.html')
+
+	param = {
+		'debug'		: is_debug_mode,
+	}
+	return render(request, 'pong/index.html', param)
+
+
 
 # 3D
 def play_tournament(request, match_id):
@@ -65,4 +82,3 @@ def play_tournament(request, match_id):
 
 def game(request):
 	return render(request, 'pong/game.html')
-
