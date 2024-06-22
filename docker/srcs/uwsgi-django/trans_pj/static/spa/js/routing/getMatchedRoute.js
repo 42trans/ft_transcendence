@@ -1,7 +1,7 @@
 import { routeTable } from "./routeTable.js";
 import { isValidParam } from "../utility/isValidParam.js"
 
-const DEBUG_LOG = 1;
+const DEBUG_LOG = 0;
 
 
 const normalizePath = (path) => {
