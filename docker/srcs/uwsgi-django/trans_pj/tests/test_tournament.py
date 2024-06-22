@@ -20,12 +20,14 @@ class TournamentTest(TestConfig):
     def test_create_and_delete_tournament(self):
         self._is_tournament_top()
         # self._screenshot("tournament1")
-        self._submit_tournament()
+        self._move_to_create_tournament()
         # self._screenshot("tournament2")
-        self._is_progress()
+        self._submit_tournament()
         # self._screenshot("tournament3")
-        self._delete_tournament()
+        self._is_progress()
         # self._screenshot("tournament4")
+        self._delete_tournament()
+        # self._screenshot("tournament5")
         self._is_tournament_top()
 
     def test_valid_tournament_name(self):
@@ -45,6 +47,7 @@ class TournamentTest(TestConfig):
 
         print(f"[Testing] valid tournament name")
         for tournament_name in valid_tournament_names:
+            self._move_to_create_tournament()
             print(f" tournament name: [{tournament_name}]")
 
             self._send_to_elem(By.CSS_SELECTOR, 'input[name="name"]', tournament_name)
@@ -54,10 +57,13 @@ class TournamentTest(TestConfig):
             self._is_progress()
             # self._screenshot(f"valid_tournament-{tournament_name}-3")
             self._delete_tournament()
+            # self._screenshot(f"valid_tournament-{tournament_name}-4")
             self._is_tournament_top()
+            # self._screenshot(f"valid_tournament-{tournament_name}-5")
 
     def test_invalid_tournament_name(self):
         self._is_tournament_top()
+        self._move_to_create_tournament()
 
         invalid_tournament_name_and_expected_messages = [
             # empty
@@ -96,10 +102,11 @@ class TournamentTest(TestConfig):
             # self._screenshot("invalid2")
             # self._assert_message(expected_message, value="error-message")
             self._close_alert(expected_message)
-            self._is_tournament_top()
+            self._is_create_tournament_page()
 
     def test_invalid_player_name(self):
         self._is_tournament_top()
+        self._move_to_create_tournament()
 
         invalid_player_name_and_expected_messages = [
             # empty
@@ -139,7 +146,13 @@ class TournamentTest(TestConfig):
             # self._screenshot("invalid_nickname_2")
             # self._assert_message(expected_message, value="error-message")
             self._close_alert(expected_message)
-            self._is_tournament_top()
+            self._is_create_tournament_page()
+
+    def _move_to_create_tournament(self, wait_invisible=True):
+        create_button = self._button(By.CSS_SELECTOR, ".slideup-text.hth-btn.my-3")
+        self.driver.execute_script("arguments[0].click();", create_button)
+        if wait_invisible:
+            self._wait_invisible(create_button)
 
     def _submit_tournament(self, wait_invisible=True):
         submit_button = self._button(By.CSS_SELECTOR, ".hth-btn.my-4")
@@ -151,16 +164,27 @@ class TournamentTest(TestConfig):
         delete_button = self._button(By.ID, "delete-button")
         self.driver.execute_script("arguments[0].click();", delete_button)
         self._close_alert("Delete this tournament?")
+        time.sleep(0.1)
 
     def _is_tournament_top(self):
         """
-        'Create Tournament'が表示されている場合はsign up pageとみなす
+        'Welcome back!'が表示されている場合はsign up pageとみなす
         """
         h1_element = self._element(
             by=By.CSS_SELECTOR,
             value="h2.slideup-text",
         )
-        self.assertIn("Create Tournament", h1_element.text)
+        self.assertIn("Welcome back!", h1_element.text)
+
+    def _is_create_tournament_page(self):
+        """
+        'Welcome back!'が表示されている場合はsign up pageとみなす
+        """
+        h2_element = self._element(
+            by=By.CSS_SELECTOR,
+            value=".slideup-text.mb-3",
+        )
+        self.assertIn("Create Tournament", h2_element.text)
 
     def _is_progress(self):
         """
