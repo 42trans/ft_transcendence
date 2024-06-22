@@ -7,3 +7,7 @@
 	padding: 1rem;
 	border-radius: 10px; 
 }
+
+#delete-button {
+	float: right;
+}

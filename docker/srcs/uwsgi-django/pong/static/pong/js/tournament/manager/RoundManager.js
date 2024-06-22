@@ -5,6 +5,7 @@ import StateFinalRound	from '../round/StateFinalRound.js'
 import StateEntry		from '../round/StateEntry.js';
 import { config }		from '../ConfigTournament.js';
 import { tournamentHandleCatchError } from "../TournamentMain.js";
+import StateCreate from '../round/StateCreate.js';
 
 const DEBUG_FLOW		= 0;
 const TEST_TRY1 		= 0;
@@ -12,8 +13,9 @@ const TEST_TRY1 		= 0;
 /** ラウンドの切り替え */
 class RoundManager 
 {
-	constructor() 
+	constructor(creator) 
 	{
+		this.creator			= creator;
 		this.API_URLS			= config.API_URLS;
 		this.userTournament		= null;
 		this.userProfile		= null;
@@ -27,6 +29,7 @@ class RoundManager
 			1: new StateFirstRound(this),
 			2: new StateSecondRound(this),
 			3: new StateFinalRound(this),
+			5: new StateCreate(this),
 		}
 	}
 

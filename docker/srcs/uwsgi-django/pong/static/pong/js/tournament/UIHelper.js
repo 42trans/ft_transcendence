@@ -10,27 +10,27 @@ import { switchPage } from "/static/spa/js/routing/renderView.js"
 */
 class UIHelper 
 {
-	static displayUserInfo(userProfile, container) 
-	{
-		if (!container) 
-		{
-			console.error(`UIHelper error: UserInfo container not found (${container})`);
-			return;
-		}
+	// static displayUserInfo(userProfile, container) 
+	// {
+	// 	if (!container) 
+	// 	{
+	// 		console.error(`UIHelper error: UserInfo container not found (${container})`);
+	// 		return;
+	// 	}
 
-		if (userProfile && userProfile.nickname) 
-		{
-			const nicknameItem = document.createElement('li');
-			nicknameItem.textContent = `${userProfile.nickname}`;
-			// nicknameItem.textContent = `Nickname: ${userProfile.nickname}`;
-			nicknameItem.id = 'user-info';
-			nicknameItem.className = 'mb-2';
-			// nicknameItem.style.listStyle = 'none';
-			container.appendChild(nicknameItem);
-		} else {
-			UIHelper.putError('User profile data is incomplete or missing.', container);
-		}
-	}
+	// 	if (userProfile && userProfile.nickname) 
+	// 	{
+	// 		const nicknameItem = document.createElement('li');
+	// 		nicknameItem.textContent = `${userProfile.nickname}`;
+	// 		// nicknameItem.textContent = `Nickname: ${userProfile.nickname}`;
+	// 		nicknameItem.id = 'user-info';
+	// 		nicknameItem.className = 'mb-2';
+	// 		// nicknameItem.style.listStyle = 'none';
+	// 		container.appendChild(nicknameItem);
+	// 	} else {
+	// 		UIHelper.putError('User profile data is incomplete or missing.', container);
+	// 	}
+	// }
 
 	static handleSuccess(message, href, submitMessage) 
 	{

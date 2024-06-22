@@ -22,7 +22,6 @@ class StateBaseRound
 		this.roundManager		= roundManager;
 		this.API_URLS			= config.API_URLS;
 		// 情報を表示するコンテナのIDを設定から取得
-		this.tournamentForm				= document.getElementById(config.tournamentFormId);
 		this.userInfoContainer			= document.getElementById(config.userInfoId);
 		this.errorMessage				= document.getElementById(config.errorMessageId);
 		this.submitMessage				= document.getElementById(config.submitMessageId);
@@ -75,7 +74,7 @@ class StateBaseRound
 
 			let matchDetails = `
 				<div class="round-result-score hth-transparent-black-bg-color mb-2">
-				<h4 class="round-match-title px-3 pt-3 mb-2">Match #${match.match_number}: ${player1} vs ${player2}</h4>
+				<h4 class="slideup-text round-match-title px-3 pt-3 mb-2">Match #${match.match_number}: ${player1} vs ${player2}</h4>
 			`;
 
 			// 試合終了している場合はスコア表示
@@ -90,16 +89,16 @@ class StateBaseRound
 					minute: '2-digit' // 分
 				});
 				
-				matchDetails += `<p class="round-result-score text-white px-4  mb-0">Score: ${match.player1_score} - ${match.player2_score}</p>`;
-				matchDetails += `<p class="round-result-winner text-white px-4 mb-0">Winner: ${match.winner}</p>`;
-				matchDetails += `<p class="round-result-endedat text-white px-4 pb-2">Ended at: ${formattedEndedAt}</p>`;
+				matchDetails += `<p class="slideup-text round-result-score text-white px-4  mb-0">Score: ${match.player1_score} - ${match.player2_score}</p>`;
+				matchDetails += `<p class="slideup-text round-result-winner text-white px-4 mb-0">Winner: ${match.winner}</p>`;
+				matchDetails += `<p class="slideup-text round-result-endedat text-white px-4 pb-2">Ended at: ${formattedEndedAt}</p>`;
 				
 			} else {
 				if (match.can_start) {
 					// Pong gameへのリンク APIにmatch.idを渡す。
-					matchDetails += `<a class="hth-btn px-3 mx-4 mt-2 mb-3" href="/app/game/match/${match.id}/" data-link>Start Match</a>`;
+					matchDetails += `<a class="slideup-text hth-btn px-3 mx-4 mt-2 mb-3" href="/app/game/match/${match.id}/" data-link>Start Match</a>`;
 				} else {
-					matchDetails += `<p class="px-4 pb-2" >On Hold</p>`;
+					matchDetails += `<p class="slideup-text px-4 pb-2" >On Hold</p>`;
 				}
 			}
 			matchDetails += '</div>'
@@ -107,8 +106,8 @@ class StateBaseRound
 			matchElement.innerHTML = matchDetails;
 			this.tournamentContainer.appendChild(matchElement);
 		});
-		const prevNavi = this.addPrevNavigationLinks(roundNumber, 'prev-round', 'hth-btn my-5 me-5', 'prev');
-		const nextNavi = this.addNextNavigationLinks(roundNumber, 'next-round', 'hth-btn my-5', 'next');
+		const prevNavi = this.addPrevNavigationLinks(roundNumber, 'prev-round', 'slideup-text hth-btn my-5 me-5', 'prev');
+		const nextNavi = this.addNextNavigationLinks(roundNumber, 'next-round', 'slideup-text hth-btn my-5', 'next');
 		this.tournamentContainer.appendChild(prevNavi);
 		this.tournamentContainer.appendChild(nextNavi);
 	}

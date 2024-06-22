@@ -201,8 +201,11 @@ class PongEngineMatch
 			const result = 
 			{
 				match_id: this.matchData.id, 
-				player1_score: this.score1,
-				player2_score: this.score2,
+				// スコアが逆に感じる
+				player1_score: this.score2,
+				player2_score: this.score1,
+				// player1_score: this.score1,
+				// player2_score: this.score2,
 			};
 			
 			// viteが開発環境ならば、this.env == 'dev'

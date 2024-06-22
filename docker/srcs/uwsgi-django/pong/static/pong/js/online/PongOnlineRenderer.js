@@ -1,7 +1,6 @@
 // docker/srcs/uwsgi-django/pong/static/pong/js/online/PongOnlineRenderer.js
 // import { pongOnlineHandleCatchError } from "./PongOnlineIndex.js"
 
-// console.log: 出力=true、本番時はfalseに設定。0,1でも動く
 const DEBUG_FLOW 		= 0;
 const DEBUG_DETAIL		= 0;
 const DEBUG_DETAIL2		= 0;

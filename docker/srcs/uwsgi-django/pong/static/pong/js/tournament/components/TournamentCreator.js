@@ -18,12 +18,11 @@ class TournamentCreator
 {
 	constructor() 
 	{
-		this.API_URLS			= config.API_URLS;
-		this.tournamentForm		= document.getElementById(config.tournamentFormId);
-		this.userInfoContainer	= document.getElementById(config.userInfoId);
-		this.errorMessage		= document.getElementById(config.errorMessageId);
-		this.submitMessage		= document.getElementById(config.submitMessageId);
-
+		this.API_URLS				= config.API_URLS;
+		this.tournamentContainer	= document.getElementById(config.tournamentContainerId);
+		this.userInfoContainer		= document.getElementById(config.userInfoId);
+		this.errorMessage			= document.getElementById(config.errorMessageId);
+		this.submitMessage			= document.getElementById(config.submitMessageId);
 	}
 
 
@@ -31,22 +30,35 @@ class TournamentCreator
 	createForm(userProfile) 
 	{
 		try{
-			UIHelper.displayUserInfo(userProfile, this.userInfoContainer);
+						if (DEBUG_FLOW) {	console.log('createForm(): start');	};
+			// .htmlのthis.tournamentContainerにフォームを追加
+			if (!this.tournamentForm) {
+				this.tournamentForm = document.createElement('div');
+				this.tournamentForm.id = 'tournament-form';
+				this.tournamentContainer.appendChild(this.tournamentForm);
+						if (DEBUG_FLOW) {	console.log('createForm(): tournamentContainer', this.tournamentContainer);	};
+			}
+
 			// フォーム要素を作成し、プロパティを設定
 			this.form			= document.createElement('form');
 			this.form.method	= 'post';
 			this.form.action	= config.API_URLS.tournamentCreate;
 			this.form.organizer	= userProfile.id;
+						if (DEBUG_DETAIL) {	console.log('createForm():form ', this.form);	};
 			// フォームのHTML内容を生成して設定
 			this.form.innerHTML	= this._generateFormHTML(UIHelper.getCSRFToken(), userProfile.nickname);
-			// .htmlの<div>にフォームを追加
+						if (DEBUG_DETAIL) {	console.log('createForm():this.form.innerHTML ', this.form.innerHTML);	};
 			this.tournamentForm.appendChild(this.form);
+						if (DEBUG_DETAIL) {	console.log('createForm():this.tournamentForm.innerHTML ', this.tournamentForm.innerHTML);	};
+
 			// UTC ISO8601:"YYYY-MM-DDTHH:MM:SS.sssZ"
 			this.form.elements['date'].value = new Date().toISOString();
 			// ボタンクリックでhandleSubmit()を呼び出す
 			// removeについて: tournamentForm 要素が DOM から削除 > その子要素であるフォームも一緒に削除 > フォームに登録されていたイベントリスナーも自動で削除
 			this.form.addEventListener('submit', e => this._saveTournament(e));
 						if (TEST_TRY1) {	throw new Error('TEST_TRY1');	}
+						if (DEBUG_FLOW) {	console.log('createForm(): done');	};
+
 		} catch (error) {
 			console.error("hth: TournamentManager.main() failed", error);
 			// this.tournamentContainer.textContent = "Error loading your information. Try again later.";
@@ -58,7 +70,6 @@ class TournamentCreator
 	/** form部分のhtml*/
 	_generateFormHTML(csrfToken, organizerNickname)
 	{
-		// TODO_ft:onsubmit="signupUser(event)"削除する
 		return `
 		<div class="form-sign m-auto" id="tournament-create-form">
 				<form class="hth-sign-form">

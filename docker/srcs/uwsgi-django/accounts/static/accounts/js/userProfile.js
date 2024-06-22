@@ -4,6 +4,7 @@ import { disable2FA } from "./disable_2fa.js"
 import { createActionButton } from "./friend.js"
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { isUserEnable2FA } from "/static/spa/js/utility/isUser.js"
+import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 const DEBUG = 0;
 
@@ -73,6 +74,11 @@ export function fetchUserProfile() {
 		.then(response => response.json())
 		.then(data => {
 			drawUserProfile(data);
+			const gameHistoryButton = document.getElementById('game-history-button');
+			gameHistoryButton.addEventListener('click', () => {
+				const redirectTo = routeTable['gameHistory'].path;
+				switchPage(redirectTo);
+			});
 		})
 		.catch(error => console.error("hth: Error:", error));
 }

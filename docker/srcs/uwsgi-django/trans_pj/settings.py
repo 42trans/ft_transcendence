@@ -351,7 +351,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # chat
-# TODO_ft: 本番時のredis
 CHANNEL_LAYERS = {
     # 'default': {
     # 	'BACKEND':'channels_redis.core.RedisChannelLayer',
@@ -367,7 +366,11 @@ CHANNEL_LAYERS = {
 
 def _load_url_config():
 	try:
-		file_path = ('static/spa/json/urlConfig.json')
+		base_dir = os.path.dirname(os.path.abspath(__file__))
+		file_path = os.path.join(base_dir, 'static', 'spa', 'json', 'urlConfig.json')
+		# print(f"base_dir: {base_dir}")
+
+		# file_path = ('static/spa/json/urlConfig.json')
 		with open(file_path) as f:
 			url_config = json.load(f)
 			# print(f'load_url_config: {url_config}')
