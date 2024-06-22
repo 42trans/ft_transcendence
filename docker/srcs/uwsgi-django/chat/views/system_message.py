@@ -104,47 +104,96 @@ class SystemMessageAPI(APIView):
             return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-async def send_direct_system_message(target_nickname, message):
-    try:
-        await async_log(f"send_system_message: start")
+def send_direct_system_message(target_nickname, message):
+    @async_to_sync
+    async def async_send_direct_system_message():
+        try:
+            await async_log(f"send_system_message: start")
 
-        target_user = await database_sync_to_async(CustomUser.objects.get)(nickname=target_nickname)
-        system_user = await database_sync_to_async(CustomUser.objects.get)(is_system=True)
-        # print(f"target_user.nickname: {target_user.nickname}")
-        await async_log(f"send_direct_system_message(): target_user.nickname: {target_user.nickname}")
+            target_user = await database_sync_to_async(CustomUser.objects.get)(nickname=target_nickname)
+            system_user = await database_sync_to_async(CustomUser.objects.get)(is_system=True)
+            # print(f"target_user.nickname: {target_user.nickname}")
+            await async_log(f"send_direct_system_message(): target_user.nickname: {target_user.nickname}")
 
-        dm_session = await database_sync_to_async(DMSession.get_session)(
-            system_user.id,
-            target_user.id,
-            is_system_message=True
-        )
+            dm_session = await database_sync_to_async(DMSession.get_session)(
+                system_user.id,
+                target_user.id,
+                is_system_message=True
+            )
 
-        # メッセージをデータベースに保存
-        message_instance = await database_sync_to_async(Message.objects.create)(
-            sender=system_user,
-            receiver=target_user,
-            message=message
-        )
-        timestamp = message_instance.timestamp.strftime("%Y-%m-%d %H:%M:%S")
-        await async_log(f"message_instance.sender: {message_instance.sender}")
+            # メッセージをデータベースに保存
+            message_instance = await database_sync_to_async(Message.objects.create)(
+                sender=system_user,
+                receiver=target_user,
+                message=message
+            )
+            timestamp = message_instance.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            await async_log(f"message_instance.sender: {message_instance.sender}")
 
-        channel_layer = get_channel_layer()
-        # print(f"channel_layer: {channel_layer}")
-        await DMConsumer.send_system_message(
-            channel_layer,
-            dm_session.id,
-            system_user.nickname,
-            message,
-            timestamp,
-            is_system_message=True
-        )
-        await async_log(f"send_system_message: done")
+            channel_layer = get_channel_layer()
+            # print(f"channel_layer: {channel_layer}")
+            await DMConsumer.send_system_message(
+                channel_layer,
+                dm_session.id,
+                system_user.nickname,
+                message,
+                timestamp,
+                is_system_message=True
+            )
+            await async_log(f"send_system_message: done")
 
-        # print(f"send_system_message: done")
-        return True
-    except CustomUser.DoesNotExist:
-        # print(f"Error in send_direct_system_message: {str(e)}")
-        return False
-    except Exception as e:
-        # print(f"Error in send_direct_system_message: {str(e)}")
-        return False
+            # print(f"send_system_message: done")
+            return True
+        except CustomUser.DoesNotExist:
+            # print(f"Error in send_direct_system_message: {str(e)}")
+            return False
+        except Exception as e:
+            # print(f"Error in send_direct_system_message: {str(e)}")
+            return False
+    return async_send_direct_system_message()
+    
+
+# async def send_direct_system_message(target_nickname, message):
+#     try:
+#         await async_log(f"send_system_message: start")
+
+#         target_user = await database_sync_to_async(CustomUser.objects.get)(nickname=target_nickname)
+#         system_user = await database_sync_to_async(CustomUser.objects.get)(is_system=True)
+#         # print(f"target_user.nickname: {target_user.nickname}")
+#         await async_log(f"send_direct_system_message(): target_user.nickname: {target_user.nickname}")
+
+#         dm_session = await database_sync_to_async(DMSession.get_session)(
+#             system_user.id,
+#             target_user.id,
+#             is_system_message=True
+#         )
+
+#         # メッセージをデータベースに保存
+#         message_instance = await database_sync_to_async(Message.objects.create)(
+#             sender=system_user,
+#             receiver=target_user,
+#             message=message
+#         )
+#         timestamp = message_instance.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+#         await async_log(f"message_instance.sender: {message_instance.sender}")
+
+#         channel_layer = get_channel_layer()
+#         # print(f"channel_layer: {channel_layer}")
+#         await DMConsumer.send_system_message(
+#             channel_layer,
+#             dm_session.id,
+#             system_user.nickname,
+#             message,
+#             timestamp,
+#             is_system_message=True
+#         )
+#         await async_log(f"send_system_message: done")
+
+#         # print(f"send_system_message: done")
+#         return True
+#     except CustomUser.DoesNotExist:
+#         # print(f"Error in send_direct_system_message: {str(e)}")
+#         return False
+#     except Exception as e:
+#         # print(f"Error in send_direct_system_message: {str(e)}")
+#         return False
