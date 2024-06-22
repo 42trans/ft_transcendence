@@ -127,7 +127,7 @@ down:
 
 .PHONY: d
 d:
-	make down
+	make down_three
 
 .PHONY: reset_nginx
 reset_nginx:
