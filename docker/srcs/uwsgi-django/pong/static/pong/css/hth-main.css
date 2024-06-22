@@ -1,0 +1,75 @@
+:root {
+	--header-height: 50px;
+	--footer-height: 50px;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	margin: 0;
+	background: #131313;
+}
+
+.hth-main {
+	width: 100%; 
+	padding-top: var(--header-height);
+	min-height: calc(100vh - var(--header-height) - var(--footer-height)); 
+	padding-bottom: var(--footer-height);
+	flex-grow: 1;
+	overflow-x: hidden;
+	overflow-y: auto;	
+}
+
+/* 背景設定用コンテナ */
+.hth-container {
+	width: 100%;
+	min-height: calc(100vh - var(--header-height) - var(--footer-height));
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: url('../img/bg.png') no-repeat center center;
+	background-size: cover;
+	position: relative;
+	color: #ffb320;
+	text-shadow: 1px 1px 5px #000; 
+	flex-direction: column;
+}
+
+#hth-txt-container{
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+}
+
+.hth-container .text-shadow-primary{
+	color: #ffb320;
+	text-shadow: 0px 0px 10px #000; 
+}
+
+.hth-container .text-shadow-secondary {
+	color: #fff;
+	text-shadow: 1px 1px 5px #000;
+}
+
+.hth-container a {
+	color: #fff; 
+	text-decoration: none; 
+	text-shadow: 1px 1px 5px #000; 
+}
+
+.hth-container  a:hover {
+	color: #ffb320;
+	text-shadow: 1px 1px 5px #000; 
+}
+
+.dev-link{
+	color: #fff;
+	text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* 50%透明の黒のテキストシャドウ */
+	background: rgba(0, 0, 0, 0.5); /* 50%透明の黒い背景 */
+}
+
+/* -------- 共通 */
+/* 透明の背景 */
+.hth-transparent-black-bg-color {
+	background: rgba(var(--transparent-bg-color), 0.8); 
+}

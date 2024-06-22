@@ -1,0 +1,45 @@
+{% comment %} user_info.html  {% endcomment %}
+
+{% load static %}
+
+<h1><img src="{{ user_data.avatar_url }}" alt="User Avatar" class="avatar"> User Info (public)</h1>
+<ul>
+	<li>Nickname: {{ user_data.info_user_nickname }}</li>
+	<li>History: history here</li>
+	<li>xxx: xxx</li>
+	<li>xxx: xxx</li>
+	<li><a href="{{ url_config.kSpaDmWithUrlBase }}{{ user_data.info_user_id }}/" data-link>DM with {{ user_data.info_user_nickname }}</a></li>
+</ul>
+
+<hr>
+
+{% comment %} フレンド関係の表示 {% endcomment %}
+<ul>
+	<h4>friendship</h4>
+	{% if user_data.is_friend %}
+		Friend with You
+		<button class="hth-btn deleteFriendButton" data-userid="{{ user_data.info_user_id }}">Delete friendship</button>
+	{% elif user_data.friend_request_sent_status == "pending" %}
+		Request sent (pending)
+		<button class="hth-btn cancelFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Cancel</button>
+	{% elif user_data.friend_request_received_status == "pending" %}
+		Request received (pending)
+	{% else %}
+		Not Friend Yet
+		<button class="hth-btn sendFriendRequestButton" data-userid="{{ user_data.info_user_id }}">Send Friend Reques</button>
+	{% endif %}
+</ul>
+
+<hr>
+
+{% comment %} Block {% endcomment %}
+<ul>
+	<h4>blocking</h4>
+	{% if not user_data.isBlockingUser %}
+		Unblocking
+		<button class="hth-btn blockUserButton" data-nickname="{{ user_data.info_user_nickname }}">block user</button>
+	{% else %}
+		Blocking
+		<button class="hth-btn unBlockUserButton" data-nickname="{{ user_data.info_user_nickname }}">unblock user</button>
+	{% endif %}
+</ul>

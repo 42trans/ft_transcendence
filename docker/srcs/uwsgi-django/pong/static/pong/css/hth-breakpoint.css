@@ -1,0 +1,45 @@
+/* Bootstarp breakpoint
+X-Small: <576px
+Small: ≥576px
+Medium: ≥768px
+Large: ≥992px
+X-Large: ≥1200px
+XX-Large: ≥1400px */
+
+/**
+指定はサイズ「以上」の場合なので、最も小さいサイズに適用したものは全てに適用される。
+ただし、上書きされていない場合。
+ */
+
+/**
+用途：bootstrap container の挙動に合わせる時に使用する想定
+*/
+/* xxl  */
+@media (min-width: 1400px) {
+
+}
+
+/* xl */
+@media (min-width: 1200px) {
+
+}
+
+/* lg */
+@media (min-width: 992px) {
+
+}
+
+/* md: Tablet との分岐点*/
+@media (min-width: 768px)  {
+
+}
+
+/* sm */
+@media (min-width: 576px){
+
+}
+
+/* -xs */
+@media (min-width: 0px) {
+
+}

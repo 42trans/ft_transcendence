@@ -1,0 +1,25 @@
+{% comment %} friends.html  {% endcomment %}
+
+{% load static %}
+
+<div class="container" >
+
+	<div class="friends-info-container">
+		{% comment %} UserFriendsViewで受け取ったuser_idをJSでuser-idとして使用できるようにする  {% endcomment %}
+		<input type="hidden" id="user-id" value="{{ user_id }}">
+
+		<ul id="friends-container">
+			{% comment %} JavaScriptで動的に内容が生成される  {% endcomment %}
+		</ul>
+		<hr>
+		<ul id="requests-container">
+			{% comment %} JavaScriptで動的に内容が生成される  {% endcomment %}
+		</ul>
+
+		{% comment %} online-status取得のためのwebsocketに接続  {% endcomment %}
+	</div>
+
+</div>
+
+{% comment %} <script type="module" src="{% static 'accounts/js/friend.js' %}"></script> {% endcomment %}
+{% comment %} <script type="module" src="{% static 'accounts/js/online-status.js' %}"></script> {% endcomment %}

@@ -1,0 +1,22 @@
+ {% comment %} enable_2fa.html  {% endcomment %}
+
+{% load static %}
+
+<div class="container">
+
+	<div class="hth-accounts-container">
+		<h2 class="pb-3">Enable Two-Factor Authentication (2FA)</h2>
+		<div id="qrCodeContainer" class="pb-3"></div>
+		<div id="error-message" style="color: red;"></div>
+		<form id="enableForm">
+			<div class="pb-3">
+				<label for="token">Verification Code:</label>
+				<input type="text" id="token" name="token" required>
+			</div>
+			<button class="hth-btn verifyTokenButton">Enable 2FA</button>
+		</form>
+	</div>
+
+</div>
+
+{% comment %} <script type="module" src="{% static 'accounts/js/enable_2fa.js' %}"></script> {% endcomment %}

@@ -1,0 +1,30 @@
+/* edit */
+
+#password-form,
+#nickname-form {
+	padding-bottom: 1rem;
+}
+
+#password-form h2,
+#nickname-form h2{
+	margin-bottom: 0.5rem;
+}
+
+#password-form p,
+#nickname-form p {
+	display: flex;
+	padding-bottom: 0.5rem;
+}
+
+#password-form label,
+#nickname-form label {
+	/* 幅を固定してinputにインデントを設定 */
+	width: 200px;
+	margin-right: 5px;
+}
+
+#password-form input, 
+#nickname-form input {
+	/* 入力欄を可変幅：余白を調整 */
+	flex-grow: 0;
+}

@@ -1,0 +1,53 @@
+ {% comment %} chat/templates/chat/dm_with.html  {% endcomment %}
+
+{% load static %}
+
+{% if not target_info.isSystemUser %}
+    <h2>DM with <a href="{{ url_config.kSpaUserInfoUrlBase }}{{ target_info.id }}/" data-link>{{ target_info.nickname }}</a></h2>
+{% else %}
+    <h2>System Message</h2>
+{% endif %}
+
+
+{% if not target_info.isBlockingUser %}
+    <p id="error-message"></p>
+
+    <div id="dm-container">
+    
+        {% comment %} DBから読み込んだmessage_logを表示  {% endcomment %}
+        <ul id="dm-log" style="list-style: none;">
+            {% for message in message_log %}
+            <li class="{{ message.sender.id|slugify }}" data-sender-id="{{ message.sender.id }}">
+                <div class="avatar-and-sender">
+                    {% if message.sender.id == target_info.id %}
+                        <img src="{{ target_info.avatar_url }}" alt="Avatar" class="avatar">
+                        <span class="sender-name">{{ target_info.nickname }}</span>
+                    {% else %}
+                        <img src="{{ user_info.avatar_url }}" alt="Avatar" class="avatar">
+                        <span class="sender-name">{{ user_info.nickname }}</span>
+                    {% endif %}
+                </div>
+                <div class="message-content">
+                    <span>{{ message.message|escape }}</span>
+                    <span class="timestamp">{{ message.timestamp|date:"Y-m-d H:i:s" }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+
+        {% if not target_info.isSystemUser %}
+        <div class="message-container">
+            <input id="message-input" type="text">
+            <input id="message-submit" type="button" value="Send">
+        </div>
+    {% endif %}
+
+    </div>
+{% else %}
+    <p>[blocking user]</p>
+{% endif %}
+
+
+{{ user_info|json_script:"user_info" }}
+{{ target_info|json_script:"target_info" }}

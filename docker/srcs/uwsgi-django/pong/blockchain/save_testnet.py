@@ -12,7 +12,7 @@ from .contract_helpers.get_network_settings import get_network_settings
 # --------------------------------------
 # 指定のAPIにPOSTならば、テストネットワークに保存を実行
 # --------------------------------------
-@csrf_exempt
+# @csrf_exempt
 def save_testnet(request, testnet_name):
 	"""
 	POSTリクエストを受け取り、Ethereumテストネットワークにゲームの結果を記録します。

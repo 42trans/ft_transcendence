@@ -7,22 +7,23 @@
 <body>
 	<h1>Djangoのルート | https://localhost/</h1>
 	<p>index.html | docker/srcs/uwsgi-django/trans_pj/templates</p>
+	<br>
 	<h2>Django admin</h2>
-	<p>- DJANGO_SUPERUSER_USERNAME=admin<br>
-		- DJANGO_SUPERUSER_EMAIL=admin@example.com<br>
-		- DJANGO_SUPERUSER_PASSWORD=adminpassword</p>
+	<p> - DJANGO_SUPERUSER_USERNAME = {{ admin_name }}<br>
+		- DJANGO_SUPERUSER_EMAIL = {{ admin_email }}<br>
+		- DJANGO_SUPERUSER_PASSWORD = {{ admin_pass }}</p>
 	<ul>
 		<li><a href="/admin/">admin/</a></li>
 		<li><a href="/api/status/">api/status/</a></li>
 	</ul>
+	<br>
 	<h2>Django経由 pong</h2>
 	<ul>
-		<h3>PsotgreSQL</h3>
-		<p>PGADMIN_DEFAULT_EMAIL=a@a.jp<br>
-			PGADMIN_DEFAULT_PASSWORD=pw</p>
+		<h3>Pong</h3>
 		<ul>
-			<li><a href="/pong/results/">pong/results/</a></li>
+			<li><a href="/pong/">🏓 pong index page</a></li>
 		</ul>
+
 		<h3>Blockchain</h3>
 		<ul>
 			<li><a href="/pong/api/fetch_testnet/ganache/">pong/api/fetch_testnet/ganache</a></li>
@@ -30,6 +31,7 @@
 			<li><a href="/pong/api/fetch_testnet/sepolia/">pong/api/fetch_testnet/sepolia</a></li>
 		</ul>
 	</ul>
+	<br>
 	<h2>Devops</h2>
 	<ul>
 		<h3>Monitoring system</h3>
@@ -56,10 +58,10 @@
 			<li><a href="http://localhost:{{ kibana_port }}"> kibana {{ kibana_port }}:5601 | http://localhost:{{ kibana_port }}/</a></li>
 		</ul>
 	</ul>
+	<br>
 	<h2>コンテナ・サービス</h2>
 	<ul>
 		<li><a href="http://localhost:{{ frontend_port }}/three.html">frontend {{ frontend_port }}:3000 | http://localhost:{{ frontend_port }}/three.html</a></li>
-		<li><a href="http://localhost:{{ pgadmin_port }}/">pgadmin: {{ pgadmin_port }}:80 |  https://localhost:{{ pgadmin_port }}/</a></li>
 		<li><a href="https://localhost:{{ nginx_ssl_port }}/">nginx_ssl: {{ nginx_ssl_port }}:443 |  https://localhost:{{ nginx_ssl_port }}/</a></li>
 	</ul>
 </body>

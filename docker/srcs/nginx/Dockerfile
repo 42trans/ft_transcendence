@@ -1,18 +1,13 @@
-FROM debian:bullseye
-RUN apt-get update && \
-	apt-get install -y \
-	nginx \
-	gettext-base \
-	curl \
-	uwsgi \
-	telnet \
-	inetutils-ping \
-	&& \
-	rm -rf /var/lib/apt/lists/*
+FROM alpine:3.18
+RUN apk update && apk add --no-cache \
+    nginx \
+    gettext \
+    curl
+
 # SSL用ディレクトリ
 RUN mkdir -p /etc/nginx/ssl
 # 静的ファイル
-RUN mkdir -p /var/trans/static
+RUN mkdir -p /var/trans/static /var/trans/media
 # Nginxの設定ファイルを環境変数で設定するためのテンプレート
 COPY ./nginx.conf /
 COPY ./uwsgi_params /

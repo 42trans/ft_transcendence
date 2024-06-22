@@ -1,0 +1,109 @@
+name: Check Containers Starting Up Successfuly
+on: [push]
+jobs:
+  docker-compose-ci-test:
+    runs-on: ubuntu-22.04
+    environment:
+      name: CREDENTIALS
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Display system architecture
+        run: |
+          echo "Operating System: $(uname -o)"
+          echo "Machine Hardware Name: $(uname -m)"
+          echo "Kernel Release: $(uname -r)"
+          echo "Processor Type: $(uname -p)"      
+
+      - name: Install Docker engine
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+          docker --version
+
+      - name: Set up Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      - name: create .env_credentials file
+        run: |
+          cat << EOF >> docker/srcs/.env_src_credentials
+          # ------------------------------------------------------------------------------
+          # CREDENTIALS
+          # ------------------------------------------------------------------------------
+          
+          # Auth0
+          GF_AUTH_GENERIC_OAUTH_CLIENT_ID=${{ secrets.GF_AUTH_GENERIC_OAUTH_CLIENT_ID }}
+          GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=${{ secrets.GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET }}
+          
+          # grafana alert
+          GRAFANA_CONTACT_POINT_SLACK=${{ secrets.GRAFANA_CONTACT_POINT_SLACK }}
+          GRAFANA_CONTACT_POINT_DISCORD=${{ secrets.GRAFANA_CONTACT_POINT_DISCORD }}
+            
+          # API_KEY
+          INFURA_API_KEY=${{ secrets.INFURA_API_KEY }}
+          SEPOLIA_PRIVATE_KEY=${{ secrets.SEPOLIA_PRIVATE_KEY }}
+          GANACHE_PRIVATE_KEY=${{ secrets.GANACHE_PRIVATE_KEY }}
+          
+          # 42; Valid until 1st/Mar/2024
+          FT_UID=${{ secrets.FT_UID }}
+          FT_SECRET=${{ secrets.FT_SECRET }}
+          
+          # Django Secret
+          DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+          # ------------------------------------------------------------------------------
+          EOF
+
+      - name: Build and start containers
+#        run: make || make logs
+        run: make || make logs
+
+      - name: wait for start up django container
+        run: |
+          timeout=300
+          elapsed=0
+          while [ "$(docker inspect --format='{{.State.Health.Status}}' uwsgi-django)" != "healthy" ]; do
+            if [ $elapsed -ge $timeout ]; then
+              echo -e "\e[31m[NG] Timeout waiting for uwsgi-django to finish starting up\e[0m"
+              exit 1
+            fi
+              echo -e "\e[33mWaiting for uwsgi-django to finish starting up... remain:${$(( $timeout - $elapsed ))}sec\e[0m"
+            sleep 10
+            elapsed=$(($elapsed + 10))
+          done
+          echo -e "\e[32mAll uwsgi-django container is finish starting up\e[0m"
+
+      - name: Check start-up container
+        run: bash docker/tests/container_run_healthy.sh
+
+      - name: Check SSL-Connection
+        run: |
+          total_result=0
+          
+          docker exec uwsgi-django python manage.py test trans_pj.ssl_test.test_ssl_connection > /dev/null
+          unit_result=$?
+          total_result=$((total_result | unit_result))
+          if [ $unit_result -eq 0 ]; then
+            echo -e "\e[32m[OK] django\e[0m"
+          else
+            echo -e "\e[31m[NG] django\e[0m"
+          fi
+
+          unit_result=$(( $(docker exec postgres cat /var/lib/postgresql/data/log/postgresql.log | grep SSL | wc -l) > 0 ? 0 : 1 ))
+          total_result=$((total_result | unit_result))
+          if [ $unit_result -eq 0 ]; then
+            echo -e "\e[32m[OK] postgresql\e[0m"
+          else
+            echo -e "\e[31m[NG] postgresql\e[0m"
+          fi
+          
+          if [ $total_result -eq 0 ]; then
+            echo -e "\e[32m[OK] ALL TEST SUCCESS\e[0m"
+          else
+            echo -e "\e[31m[NG] TEST FAILURE\e[0m"
+            exit 1
+          fi

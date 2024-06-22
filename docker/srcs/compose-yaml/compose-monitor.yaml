@@ -1,118 +1,76 @@
-version: "3.7"
+# version: "3.7"
 # docker/srcs/compose-yaml/compose-monitor.yaml
-services:
-  filebeat:
-    container_name: filebeat
-    build: 
-      context: ./filebeat
-      args:
-        ELASTIC_VERSION: ${ELASTIC_VERSION:?}
-    image: filebeat
-    volumes:
-      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - ${VOLUME_PATH:?}/log_vol:/var/log/nginx:ro
-      - ./filebeat/filebeat-entrypoint.sh:/usr/local/bin/entrypoint.sh
-    env_file:
-      - .env
-    depends_on:
-      - nginx
-    networks:
-      - web_transcendence
-      - monitor_transcendence
-      - elk
-    profiles:
-      - monitor
+# services:
+  # filebeat:
+    # container_name: filebeat
+    # build: 
+    #   context: ./filebeat
+    #   args:
+    #     ELASTIC_VERSION: ${ELASTIC_VERSION:?}
+    # image: filebeat
+    # volumes:
+    #   - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+    #   - ${VOLUME_PATH:?}/log_vol:/var/log/nginx:ro
+    #   - ./filebeat/filebeat-entrypoint.sh:/usr/local/bin/entrypoint.sh
+    # env_file:
+    #   - .env
+    # depends_on:
+    #   - nginx
+    # networks:
+    #   - web_transcendence
+    #   - monitor_transcendence
+    #   - elk
+    # profiles:
+    #   - monitor
 
-  prometheus:
-    container_name: prometheus
-    build: ./prometheus
-    image: prometheus
-    env_file:
-      - .env
-    ports:
-      - "${PROMETHEUS_PORT:?}:9090"
-    networks:
-      - web_transcendence
-      - db_transcendence
-      - monitor_transcendence
-      - elk
-    volumes:
-      - ${VOLUME_PATH:?}/prometheus:/prometheus
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    profiles:
-      - monitor
+  # prometheus:
+  #   container_name: prometheus
+  #   build: ./prometheus
+  #   image: prometheus
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "${PROMETHEUS_PORT:?}:9090"
+  #   networks:
+  #     - web_transcendence
+  #     - db_transcendence
+  #     - monitor_transcendence
+  #     - elk
+  #   volumes:
+  #     - ${VOLUME_PATH:?}/prometheus:/prometheus
+  #     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   profiles:
+  #     - monitor
 
-  grafana:
-    container_name: grafana
-    build: ./grafana
-    image: grafana
-    restart: unless-stopped
-    # nginxでリバースプロキシを設定する場合、ここを削除して直接アクセスできないようにする
-    ports:
-      - "${GRAFANA_PORT:?}:3000"
-    volumes:
-      - ${VOLUME_PATH:?}/grafana/:/var/lib/grafana
-      # 上記/var/lib/grafanaの中でもdashboradの設定ファイルは、別枠でコンテナイメージに入れたい。方法がわからないのでマウントで対応
-      - ./grafana/dashboards/1860-node-exporter-full.json:/var/lib/grafana/dashboards/ft_trans/1860-node-exporter-full.json
-      # TODO-ft: レビュー前に.gitignoreする
-      - ./grafana/ssl/grafana.crt:/etc/grafana/grafana.crt
-      - ./grafana/ssl/grafana.key:/etc/grafana/grafana.key
-      # TODO_ft:本番環境ではimageに埋め込む？開発スピードのために即時反映させたいのでマウント
-      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-    env_file:
-      - .env
-    environment:
-      - GF_INSTALL_PLUGINS=grafana-clock-panel
-      - GF_LOG_LEVEL=debug
-      - GF_PLUGIN_GRAFANA_IMAGE_RENDERER_RENDERING_IGNORE_HTTPS_ERRORS=true
-      # Aouth0設定　
-      # https://manage.auth0.com/ の設定で"3032"固定で設定されているので、GRAFANA_PORTが変更されたらそちらも修正する。
-      #  Grafana インスタンスをホストするために使用するドメイン
-      #  port番号が変わったら、その都度 https://manage.auth0.com/ で callback url を修正する。
-      - GF_SERVER_ROOT_URL=https://localhost:${GRAFANA_PORT:?}/
-      # Auth0 でのサインインを有効
-      # - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP=true
-      # - GF_AUTH_GENERIC_OAUTH_ENABLED=true
-      # - GF_AUTH_GENERIC_OAUTH_NAME=Auth0
-      # GrafanaがOAuthを介して認証プロバイダーから要求する情報の範囲
-      # - GF_AUTH_GENERIC_OAUTH_SCOPES=openid profile email offline_access
-      # - GF_AUTH_GENERIC_OAUTH_TOKEN_URL=https://dev-jb2wfmp3mth8halz.us.auth0.com/oauth/token
-      # - GF_AUTH_GENERIC_OAUTH_AUTH_URL=https://dev-jb2wfmp3mth8halz.us.auth0.com/authorize
-      # - GF_AUTH_GENERIC_OAUTH_API_URL=https://dev-jb2wfmp3mth8halz.us.auth0.com/userinfo
-      - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=EZxGEXDXUNeZycoVUMQRBfleDL4AwRu4
-      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=jSGZdUjOxrn4sqqOUmq_EzuzCPOtHV00lqqeEUlUxNBlrW88CDXJNfGWJQnYOvAh
-    networks:
-      - web_transcendence
-      - monitor_transcendence
-    profiles:
-      - monitor
-
-  grafana-dev:
-    container_name: grafana-dev
-    build: ./grafana-dev
-    image: grafana-dev
-    restart: unless-stopped
-    ports:
-      - "3309:3000"
-    volumes:
-      - ${VOLUME_PATH:?}/grafana-dev/:/var/lib/grafana
-      - ./grafana-dev/dashboards/1860-node-exporter-full.json:/var/lib/grafana/dashboards/ft_trans/1860-node-exporter-full.json
-      # TODO-ft: レビュー前に.gitignoreする
-      - ./grafana/ssl/grafana.crt:/etc/grafana/grafana.crt
-      - ./grafana/ssl/grafana.key:/etc/grafana/grafana.key
-      # TODO_ft:本番環境ではimageに埋め込む？開発スピードのために即時反映させたいのでマウント
-      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-    env_file:
-      - .env
-    environment:
-      - GF_INSTALL_PLUGINS=grafana-clock-panel
-      - GF_LOG_LEVEL=debug
-      - GF_PLUGIN_GRAFANA_IMAGE_RENDERER_RENDERING_IGNORE_HTTPS_ERRORS=true
-      - GF_SERVER_ROOT_URL=https://localhost:3309/
-      - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=IBOgL837OMbpdc4E9PnQXZsYEAV0HLCO
-      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=0vzX0wZQnElg7HTnE7f5NhHTBxx5gDKCfO5jzEIw0jIH5Ccke_nRzZcKBNPxTQQG
-    networks:
-      - web_transcendence
-      - monitor_transcendence
-    profiles:
-      - monitor
+  # grafana:
+  #   container_name: grafana
+  #   build: ./grafana
+  #   image: grafana
+  #   restart: unless-stopped
+  #   # nginxでリバースプロキシを設定する場合、ここを削除して直接アクセスできないようにする
+  #   ports:
+  #     - "${GRAFANA_PORT:?}:3000"
+  #   volumes:
+  #     - ${VOLUME_PATH:?}/grafana/:/var/lib/grafana
+  #     # 上記/var/lib/grafanaの中でもdashboradの設定ファイルは、別枠でコンテナイメージに入れたい。方法がわからないのでマウントで対応
+  #     - ./grafana/dashboards/1860-node-exporter-full.json:/var/lib/grafana/dashboards/ft_trans/1860-node-exporter-full.json
+  #     # TODO_ft_2: レビュー前に.gitignoreする
+  #     - ./grafana/ssl/grafana.crt:/etc/grafana/grafana.crt
+  #     - ./grafana/ssl/grafana.key:/etc/grafana/grafana.key
+  #     - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - GF_INSTALL_PLUGINS=grafana-clock-panel
+  #     - GF_LOG_LEVEL=debug
+  #     - GF_PLUGIN_GRAFANA_IMAGE_RENDERER_RENDERING_IGNORE_HTTPS_ERRORS=true
+  #     # Aouth0設定　
+  #     # https://manage.auth0.com/ の設定で"3032"固定で設定されているので、GRAFANA_PORTが変更されたらそちらも修正する。
+  #     #  Grafana インスタンスをホストするために使用するドメイン
+  #     #  port番号が変わったら、その都度 https://manage.auth0.com/ で callback url を修正する。
+  #     - GF_SERVER_ROOT_URL=https://localhost:${GRAFANA_PORT:?}/
+  #   networks:
+  #     - web_transcendence
+  #     - monitor_transcendence
+  #   profiles:
+  #     - monitor

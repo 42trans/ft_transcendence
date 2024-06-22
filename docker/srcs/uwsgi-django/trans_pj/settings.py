@@ -12,7 +12,24 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import json
+from datetime import timedelta
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import gettext_lazy as _
+
+def get_env_variable(var_name):
+	try:
+		value = os.environ[var_name]
+		if value == '':
+			raise ValueError
+		# print(f"ov_env: {var_name} = {value}")
+		return value
+	except KeyError:
+		raise ImproperlyConfigured(f'{var_name} undefined')
+	except ValueError:
+		raise ImproperlyConfigured(f'{var_name} empty')
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,18 +39,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^u(k4_odzhvjof^yx-bauu&!6jv)^!5nt8c3p^g1!da3ro^cf6'
+SECRET_KEY = get_env_variable('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = false
-DEBUG = True
+DEBUG = False
+# DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = [
+	'localhost',
+	'127.0.0.1',
+	'hioikawa.42.fr',
+	'nginx',
+	'postgres',
+	'vite',
+	'uwsgi-django'
+]
 
 
 # Application definition
-
 INSTALLED_APPS = [
+	'daphne',							# chat, listed before django.contrib.staticfiles
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -42,14 +69,30 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'pong',
 	'django_prometheus',
+	'accounts',  # user_accounts
+	'django_otp',  						# 2fa
+	'django_otp.plugins.otp_totp',  	# 2fa
+	'django_otp.plugins.otp_static',  	# 2fa
+	'channels',							# chat
+	'chat',								# chat
+  'trans_pj',
+  'corsheaders', #CORS用
 ]
 
+
+FT_CLIENT_ID = get_env_variable('FT_UID')
+FT_SECRET = get_env_variable('FT_SECRET')
+
+
 MIDDLEWARE = [
+    # CORS用 ------------
+	"corsheaders.middleware.CorsMiddleware",
 	# Prometheus----------
 	'django_prometheus.middleware.PrometheusBeforeMiddleware',
 	# --------------------
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
+	"django.middleware.locale.LocaleMiddleware",
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -58,8 +101,38 @@ MIDDLEWARE = [
 	# Prometheus----------
 	'django_prometheus.middleware.PrometheusAfterMiddleware',
 	# --------------------
-
+	'django_otp.middleware.OTPMiddleware',  # 2fa
+	'accounts.middleware.JWTAuthenticationMiddleware',	# jwt
+	'accounts.middleware.DisableCSRFForJWT',
 ]
+
+
+AUTHENTICATION_BACKENDS = [
+	'accounts.authentication_backend.JWTAuthenticationBackend',
+	'django.contrib.auth.backends.ModelBackend',  # Optional
+]
+
+
+SIMPLE_JWT = {
+	# 'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),  # テスト用
+	# 'REFRESH_TOKEN_LIFETIME': timedelta(seconds=60),  # テスト用
+	'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),  # アクセストークンの有効期間
+	'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # リフレッシュトークンの有効期間
+	'ROTATE_REFRESH_TOKENS': True,
+	'BLACKLIST_AFTER_ROTATION': True,
+	'UPDATE_LAST_LOGIN': False,
+
+	'ALGORITHM': 'HS256',
+	'SIGNING_KEY': SECRET_KEY,
+	'VERIFYING_KEY': None,
+	'AUDIENCE': None,
+	'ISSUER': None,
+	'JWK_URL': None,
+	'LEEWAY': 0,
+}
+
+
+OTP_TOTP_ISSUER = 'trans_pj'
 
 ROOT_URLCONF = 'trans_pj.urls'
 
@@ -80,40 +153,47 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'trans_pj.wsgi.application'
+ASGI_APPLICATION = 'trans_pj.asgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-# 		# -------------------------
-# 		# Prometheus
-# 		# -------------------------
-# 		'ENGINE': 'django_prometheus.db.backends.sqlite3',
-#         # 'ENGINE': 'django.db.backends.sqlite3',
-# 		# -------------------------
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
-
 DATABASES = {
 	'default': {
 		# -------------------------
 # 		# Prometheus
 # 		# -------------------------
-		"ENGINE": "django_prometheus.db.backends.postgresql",
-		# 'ENGINE': 'django.db.backends.postgresql',
+# 		"ENGINE": "django_prometheus.db.backends.postgresql",
+		'ENGINE': 'django.db.backends.postgresql',
 # 		# -------------------------
-		'NAME': os.environ.get('POSTGRES_DB'),
-		'USER': os.environ.get('POSTGRES_USER'),
-		'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+		'NAME': get_env_variable('POSTGRES_DB'),
+		'USER': get_env_variable('POSTGRES_USER'),
+		'PASSWORD': get_env_variable('POSTGRES_PASSWORD'),
 		'HOST': 'postgres',  # Docker内のPostgreSQLサービス名
 		'PORT': '5432',
+		'OPTIONS': {
+			'sslmode': 'require',
+			'sslcert': '/code/ssl/django.crt',  # Djangoクライアント用
+			'sslkey' : '/code/ssl/django.key',   # Djangoクライアント用
+		},
 	}
 }
+
+# Django-Nginx SSL #############################################################
+# セキュアなクッキー設定
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# SSLリダイレクト
+SECURE_SSL_REDIRECT = True
+
+# 安全な接続の設定
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+################################################################################
+
+
+# ユーザー登録数の上限
+MAX_USER_COUNT = 10000
 
 
 # Password validation
@@ -122,9 +202,16 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
 	{
 		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+		'OPTIONS': {
+			'user_attributes': ('email', 'nickname'),
+			'max_similarity': 0.7,
+		},
 	},
 	{
 		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+		'OPTIONS': {
+			'min_length': 8,
+		},
 	},
 	{
 		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -134,11 +221,10 @@ AUTH_PASSWORD_VALIDATORS = [
 	},
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -151,10 +237,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
-# STATIC_ROOT = '/code/static/'
-# BASE_DIR: プロジェクトのルート
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# upload file
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -165,11 +252,17 @@ LOGGING = {
 'version': 1,
 'handlers': {
 	'console': {
-		'level': 'ERROR',  # 基礎的な全般設定 ※WARNINGにするとテスト時の意図的な操作も拾ってしまう
+		'level': 'DEBUG',  # 基礎的な全般設定 ※WARNINGにするとテスト時の意図的な操作も拾ってしまう
+		# 'level': 'ERROR',  # 基礎的な全般設定 ※WARNINGにするとテスト時の意図的な操作も拾ってしまう
+		'class': 'logging.StreamHandler',
+	},
+	'console_debug': {
+		'level': 'DEBUG',
 		'class': 'logging.StreamHandler',
 	},
 	'file': {
-		'level': 'WARNING',
+		# 'level': 'WARNING',
+		'level': 'DEBUG',
 		'class': 'logging.FileHandler',
 		'filename': 'django_debug.log',
 	},
@@ -192,19 +285,108 @@ LOGGING = {
 		'propagate': True,
 	},
 	'django.request': {
-		'handlers': ['logstash'],
+		'handlers': ['console'],
+		# 'handlers': ['logstash'],
 		'level': 'DEBUG',
-		'propagate': True,
+		'propagate': False,
 	},
 	'django': { # Django's default logger
 			'handlers': ['console', 'file'],
+			# 'level': 'DEBUG',
 			'level': 'WARNING',
 			'propagate': True,
 	},
 	'pong': {  # 'pong' はアプリケーション固有のロガーの名前 filterとして特定の場所のdebugに使用する
+		'handlers': ['console', 'file'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'pong.views': {
+		'handlers': ['console_debug', 'file'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'chat': {
+		'handlers': ['console_debug', 'file'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'accounts': {
+		'handlers': ['console_debug', 'file'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'pong.online': { 
 		'handlers': ['console'],
+		'level': 'DEBUG',
+		'propagate': False,
+	},
+	'PongOnlineConsumer': {
+		'handlers': ['console', 'file'],
 		'level': 'DEBUG',
 		'propagate': False,
 	},
 },
 }
+
+# 全てのAPIエンドポイントのデフォルト認証をJWTに設定 -> CSRFトークンのチェックは不要
+REST_FRAMEWORK = {
+	'DEFAULT_AUTHENTICATION_CLASSES': [
+		'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT
+	],
+}
+
+LOGIN_URL = '/accounts/login/'
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+
+ # 多言語設定
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
+LANGUAGE_CODE = 'ja'
+LANGUAGES = [
+    ('ja', _('Japanese')),
+    ('en', _('English')),
+    ('fr', _('French')),
+]
+
+
+# CORS設定
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost",
+    "http://localhost:8002",
+]
+
+# chat
+CHANNEL_LAYERS = {
+    # 'default': {
+    # 	'BACKEND':'channels_redis.core.RedisChannelLayer',
+    # 	'CONFIG': {
+    # 		"hosts": [('127.0.0.1', 6379)],
+    # 	},
+    # },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"  # インメモリを使う場合
+    },
+}
+
+
+def _load_url_config():
+	try:
+		base_dir = os.path.dirname(os.path.abspath(__file__))
+		file_path = os.path.join(base_dir, 'static', 'spa', 'json', 'urlConfig.json')
+		# print(f"base_dir: {base_dir}")
+
+		# file_path = ('static/spa/json/urlConfig.json')
+		with open(file_path) as f:
+			url_config = json.load(f)
+			# print(f'load_url_config: {url_config}')
+			return url_config
+	except Exception as e:
+		print(f'load_url_config: Error: could not load urlConfig: {str(e)}')
+
+URL_CONFIG = _load_url_config()

@@ -17,7 +17,7 @@ if [ ! -f $SSL_DIR/openssl.cnf ]; then
 fi
 
 if [ ! -f $SSL_DIR/nginx.key ] || [ ! -f $SSL_DIR/nginx.crt ]; then
-  echo "generate cert_key"
+  echo "generate nginx cert_key"
 
   mkdir -p $SSL_DIR/
 
@@ -30,5 +30,8 @@ if [ ! -f $SSL_DIR/nginx.key ] || [ ! -f $SSL_DIR/nginx.crt ]; then
           -keyout $SSL_DIR/nginx.key \
           -out $SSL_DIR/nginx.crt > /dev/null 2>&1
 else
-  echo "cert_key already exists"
+  echo "nginx cert_key already exists"
 fi
+
+sudo chmod 600 $SSL_DIR/nginx.key
+sudo chmod 644 $SSL_DIR/nginx.crt

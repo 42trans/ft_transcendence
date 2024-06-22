@@ -1,0 +1,31 @@
+# docker/srcs/grafana/provisioning/alerting/contact-points.yaml
+apiVersion: 1
+contactPoints:
+    # - orgId: 1
+    #   name: email receiver
+    #   receivers:
+    #     - uid: fdh6wc6uviqyob
+    #       type: email
+    #       settings:
+    #         addresses: <example@email.com>
+    #       disableResolveMessage: false
+    - orgId: 1
+      name: hioikawa-Slack
+      receivers:
+        - uid: cdh6r87abdeypb
+          type: slack
+          settings:
+            mentionGroups: uminomae
+            url: ${GRAFANA_CONTACT_POINT_SLACK}
+            username: hioikawa-Grafana-Alert
+            recipient: '#ft_trans_alert'
+          disableResolveMessage: false
+    - orgId: 1
+      name: hioikawa-Discord
+      receivers:
+        - uid: ddh6wc6uviqypb
+          type: discord
+          settings:
+            url: ${GRAFANA_CONTACT_POINT_DISCORD}
+            use_discord_username: true
+          disableResolveMessage: false

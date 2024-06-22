@@ -1,0 +1,33 @@
+{% load static %}
+
+<div class="container" id="hth-txt-container">
+	<h2 class="
+		slideup-text
+		text-shadow-primary
+		">Unrivaled <span>hth Pong</span> Experience</h2>
+
+	{% if nickname %}
+	<h3 class="
+			slideup-text
+			text-shadow-primary
+			">Welcome, [{{ nickname }}]</h3>
+	{% else %}
+	<h3 class="
+			slideup-text
+			text-shadow-primary
+			">Welcome, Guest</h3>
+	<p class="
+			slideup-text
+			text-shadow-secondary
+			">For a happier life, let's play the pong game!</p>
+	{% endif %}
+
+	{% if debug %}
+		{% include 'pong/dev-link.html' %}
+	{% endif %}
+
+
+	{% if user_id %}
+	<input type="hidden" id="user-id" value="{{ user_id }}">
+	{% endif %}
+</div>

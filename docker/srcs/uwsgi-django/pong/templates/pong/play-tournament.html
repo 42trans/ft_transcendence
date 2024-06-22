@@ -1,0 +1,9 @@
+<canvas id="threejs-canvas-container"></canvas>
+<button id="hth-threejs-start-game-btn" class="hth-btn" >Enter Game</button>
+<button id="hth-threejs-back-to-home-btn" class="hth-btn mt-4" style="display: none;" >Back to Home</button>
+<script type="application/json" id="match-data">
+	{{ match_json|safe }}
+</script>	
+<script>
+	window.isDevServer = "{{ is_dev_server }}";
+</script>

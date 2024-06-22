@@ -1,0 +1,113 @@
+ {% comment %} signup.html  {% endcomment %}
+
+{% load static %}
+
+<div class="container">
+	<div class="
+		hth-accounts-container
+		m-auto
+		"
+		id="signup-form-container">
+
+		<h1 class="
+			slideup-text
+			">Please sign up</h1>
+
+		<p id="message-area"></p>
+
+		 {% comment %} auth form  {% endcomment %}
+		<form class="hth-sign-form">
+			<div class="
+				slideup-text
+				form-floating">
+				<input class="form-control"
+				id="email"
+				type="text"
+				placeholder="name@example.com"
+				autocomplete="off"
+				required>
+				 {% comment %} labelはinputの下に記述する: bootstrap templateのアニメーションのため  {% endcomment %}
+				<label for="floatingInput">Email address</label>
+			</div>
+			<div class="
+				slideup-text
+				form-floating">
+				<input class="form-control"
+				id="nickname"
+				type="text"
+				placeholder="nickname"
+				autocomplete="off"
+				required>
+				<label for="floatingInput">Nickname</label>
+			</div>
+			<div class="
+				slideup-text
+				form-floating">
+				<input class="form-control"
+				id="password1"
+				type="password"
+				placeholder="password"
+				autocomplete="off"
+				required>
+				<label for="floatingPassword">Password</label>
+			</div>
+			<div class="
+				slideup-text
+				form-floating">
+				<input class="form-control"
+				type="password"
+				id="password2"
+				placeholder="password confirmation"
+				autocomplete="off"
+				required>
+				<label for="floatingPassword">Password confirmation</label>
+			</div>
+			<button class="
+				slideup-text
+				sign_btn
+				sign_btn-primary
+				mb-1
+				w-100
+				py-2
+				my-2
+				"
+				id="sign-submit"
+				type="submit">Sign up</button>
+		</form>
+
+		<hr>
+
+		 {% comment %} button 42 auth  {% endcomment %}
+		<a class="
+			slideup-text
+			sign_btn
+			sign_btn-primary
+			w-100
+			py-2
+			"
+			id="auth42-a-btn"
+			role="button"
+			href="{% url 'accounts:oauth_ft' %}"
+			>Signing up for a 42 account</a>
+
+		 {% comment %} link: login here  {% endcomment %}
+		<div class="slideup-text form-sign-text pt-4" >
+			<a href="{{ login_url }}" class="nav__link" data-link>Login here</a>
+			 {% comment %} <a href="{% url 'accounts:login'%}">ログインはこちら</a>  {% endcomment %}
+		</div>
+
+		 {% comment %} text: Password requirements  {% endcomment %}
+		<div class="slideup-text form-sign-text text-white py-2" id="password-requirements">Password requirements:</div>
+		<ul class="form-sign-text">
+			<li class="slideup-text">8文字以上</li>
+			<li class="slideup-text">一般的によく使われるパスワードは使用不可</li>
+			<li class="slideup-text">数字のみのパスワードは使用不可</li>
+			{% comment %} <li class="slideup-text">At least 8 characters</li>
+			<li class="slideup-text">Cannot be a commonly used password</li>
+			<li class="slideup-text">Cannot be all numeric</li>  {% endcomment %}
+		</ul>
+
+	</div>
+ </div>
+
+{% comment %} <script src="{% static 'accounts/js/signup.js' %}"></script> {% endcomment %}

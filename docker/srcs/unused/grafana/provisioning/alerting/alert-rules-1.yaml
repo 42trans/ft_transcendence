@@ -1,0 +1,178 @@
+# 参考:【構成ファイルを使用してアラート リソースをプロビジョニングする | Grafana のドキュメント】 <https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/>
+
+# config file version
+apiVersion: 1
+# List of rule groups to import or update
+groups:
+    # <int> organization ID, default = 1
+    - orgId: 1
+      # <string, required> name of the rule group
+      name: ft_trans
+      # <string, required> name of the folder the rule group will be stored in
+      folder: ft_trans
+      # <duration, required> interval that the rule group should evaluated at
+      interval: 1m
+      # <list, required> list of rules that are part of the rule group
+      rules:
+        # <string, required> unique identifier for the rule. Should not exceed 40 symbols. Only letters, numbers, - (hyphen), and _ (underscore) allowed.
+        # <文字列、必須> ルールの一意の識別子。 シンボルは 40 個を超えてはなりません。 文字、数字、- (ハイフン)、および _ (アンダースコア) のみを使用できます。
+        - uid: ft_trans_prometheus_alert_1
+        # - uid: bdh34dvilwhz4d
+          # <string, required> title of the rule that will be displayed in the UI
+          title: Cpu usage 95% over 9m
+          # <string, required> which query should be used for the condition
+          # 条件に使用するクエリ
+          condition: A
+          # <list, required> list of query objects that should be executed on each
+          #                  evaluation - should be obtained through the API
+          # data: クエリの実行設定
+          data:
+            # クエリのid
+            - refId: A
+              # クエリの時間範囲
+              relativeTimeRange:
+                # 600秒(10分)前から現在時刻までのデータを取得
+                from: 600
+                to: 0
+              # データソースのid(ここではPrometheusのデータを指定)
+              datasourceUid: ft_trans_prometheus
+              # アラート条件
+              # PrometheusのQuery Language（PromQL）を用いて、特定のメトリクスに基づいて評価される式を指定
+              model:
+                # テキストの折り返しを無効にするかどうか(false=折り返しが有効)
+                disableTextWrap: false
+                # クエリエディタのモードを指定(builderはビジュアルクエリビルダーを使用)
+                editorMode: builder
+                # 1分間の平均CPU使用率が値を超えるかどうかを評価
+                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.95)
+                # 完全なメタデータ検索を使用するか(false=無効=行わないことでパフォーマンスを向上させる)
+                fullMetaSearch: false
+                # nullのメタデータを結果に含めるか(true=含める=nullも含めてデータの完全性を保つ)
+                includeNullMetadata: true
+                # 即時クエリを実行(最新のデータポイントのみを取得=リアルタイムの監視や最新の状態を迅速に確認)
+                instant: true
+                # クエリの実行間隔(1000=1秒, リアルタイムデータを監視する場合に有用)
+                intervalMs: 10000
+                # レジェンド（凡例）に表示されるテキストのフォーマット(__auto=Grafanaが自動的に決定)
+                legendFormat: __auto
+                # クエリから取得する最大データポイント数
+                maxDataPoints: 43200
+                # 時間範囲クエリを使用するか(false=使用しない, 特定の時間範囲にわたるクエリではなく、特定の時点のデータを対象にクエリを実行, 即時のデータポイントに基づいたアラートや分析が目的)
+                range: false
+                refId: A
+                # バックエンドでクエリを実行する(false=ブラウザサイドで実行される)
+                useBackend: false
+          # データ不足の際の挙動
+          noDataState: NoData
+          # 実行エラー時の挙動
+          execErrState: Error
+          # 条件を満たす持続時間
+          for: 9m
+          # メタデータを追加する
+          annotations: {}
+          # labels: 任意の名前が可能。通知のフィルタリングに使用する。
+          labels:
+            # priority: アラートの処理優先度（例：high, medium, low）。
+            priority: "midium"
+            # チームまたは部門（例：infra, dev, ops）
+            team: "infra"
+            # サービスやアプリケーション（例：frontend, Django, Blockchain）
+            service: "host"
+          # ルールの一時停止
+          isPaused: false
+        # =======================================================
+        - uid: ft_trans_prometheus_alert_2
+          title: Cpu usage 99% over
+          condition: A
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: ft_trans_prometheus
+              model:
+                disableTextWrap: false
+                editorMode: builder
+                expr: avg(rate(node_cpu_seconds_total{mode="idle"}[1m]) > 0.99)
+                fullMetaSearch: false
+                includeNullMetadata: true
+                instant: true
+                intervalMs: 10000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+                useBackend: false
+          dashboardUid: ""
+          panelId: 0
+          noDataState: NoData
+          execErrState: Error
+          for: 9m
+          annotations: {}
+          labels:
+            # priority: アラートの処理優先度（例：high, medium, low）。
+            priority: "high"
+            # チームまたは部門（例：infra, dev, ops）
+            team: "ops"
+            # サービスやアプリケーション（例：frontend, Django, Blockchain）
+            service: "host"
+          isPaused: false
+        # =======================================================
+        # # メモリ使用率90%超
+        # - uid: memory_usage_high
+        #   title: Memory Usage 90% Over
+        #   condition: B
+        #   data:
+        #     - refId: B
+        #       relativeTimeRange:
+        #         from: 600
+        #         to: 0
+        #       datasourceUid: ft_trans_prometheus
+        #       model:
+        #         expr: (1 - (avg(node_memory_MemAvailable_bytes) / avg(node_memory_MemTotal_bytes))) > 0.9
+        #         legendFormat: "{{instance}}: {{job}}"
+        #         refId: B
+        #   for: 5m
+        #   annotations: {}
+        #   labels:
+        #     team: "infra"
+        #   isPaused: false
+        # # =======================================================
+        # - uid: disk_usage_high
+        #   title: Disk Usage 90% Over
+        #   condition: C
+        #   data:
+        #     - refId: C
+        #       relativeTimeRange:
+        #         from: 600
+        #         to: 0
+        #       datasourceUid: ft_trans_prometheus
+        #       model:
+        #         expr: (avg(node_filesystem_size_bytes) - avg(node_filesystem_free_bytes)) / avg(node_filesystem_size_bytes) > 0.9
+        #         legendFormat: "{{device}}, {{mountpoint}}"
+        #         refId: C
+        #   for: 5m
+        #   annotations: {}
+        #   labels: {}
+        #   isPaused: false
+        # # =======================================================
+        # - uid: network_traffic_high
+        #   title: Network Traffic High
+        #   condition: D
+        #   data:
+        #     - refId: D
+        #       relativeTimeRange:
+        #         from: 600
+        #         to: 0
+        #       datasourceUid: ft_trans_prometheus
+        #       model:
+        #         expr: 'rate(node_network_receive_bytes_total[5m]) > 100000000 or rate(node_network_transmit_bytes_total[5m]) > 100000000'
+        #         legendFormat: "{{instance}}: {{device}}"
+        #         refId: D
+        #   for: 5m
+        #   annotations: {}
+        #   labels:
+        #     team: "infra"
+        #   isPaused: false
+
+

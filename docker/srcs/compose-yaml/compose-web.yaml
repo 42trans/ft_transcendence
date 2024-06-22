@@ -19,29 +19,18 @@ services:
       # - ${VOLUME_PATH:?}:/container_output
       - ${VOLUME_PATH:?}/log_vol:/var/log/nginx
       - ./uwsgi-django/static/:/var/trans/static/
+      - ./uwsgi-django/media/:/var/trans/media/
     networks:
       - web_transcendence
+#      web_transcendence:
+#        ipv4_address: 192.168.200.10
       # - monitor_transcendence
     restart: unless-stopped
     depends_on:
-      - pgadmin
-      - uwsgi-django
+      uwsgi-django:
+        condition: service_healthy
     init: true
 
-  frontend:
-    container_name: frontend
-    build: ./frontend
-    image: frontend
-    env_file:
-      - .env
-    networks:
-      - web_transcendence
-      # - monitor_transcendence
-    ports:
-      - "${FRONTEND_PORT:?}:3000"
-      - "3090:3001"
-    restart: unless-stopped
-    init: true
 
   uwsgi-django:
     container_name: uwsgi-django
@@ -57,20 +46,29 @@ services:
     networks:
       - db_transcendence
       - web_transcendence
-      - blockchain_transcendence
-      - elk
+      # - blockchain_transcendence
+      # - elk
     ports:
-      - "8096:8001" # http
-      - "${DJANGO_PORT:?}:8000"
+      - "${DJANGO_PORT:?}:8443"  # https
+      - "8003:8003"  # wss
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    #      - postgres
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python manage.py check --deploy > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     init: true
     volumes:
       - '${VOLUME_PATH:?}/log_django_vol:/src/logs'
       - ./uwsgi-django/:/code/
-      - ./uwsgi-django/static/:/var/trans/static/
-      - ./hardhat/hardhat_pj/share/:/code/share_hardhat/
+      # - ./uwsgi-django/static/:/var/trans/static/
+      # - ./hardhat/hardhat_pj/share/:/code/share_hardhat/
+      # - ./webpack2/ft_trans/public/:/var/trans/static/share_webpack2/
+      - ./vite/pong-three/public/static/pong/three:/code/pong/static/pong/three/
       # - logs_volume:/src/logs
       # - ${VOLUME_PATH:?}/django/code:/code
   #     - ${VOLUME_PATH:?}/ft_django/uwsgi:/etc/uwsgi
@@ -86,9 +84,9 @@ services:
       # 冗長だが明示的に指定。　.envを上書きしたい場合に活用する
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?}
       - POSTGRES_USER=${POSTGRES_USER:?}
-      - POSTGRES_DB=${POSTGRES_DB:?POSTGRES_DB is not set}
-      - POSTGRES_HOST_AUTH_METHOD=${POSTGRES_HOST_AUTH_METHOD:?}
-      - POSTGRES_LOCAL_AUTH_METHOD=${POSTGRES_LOCAL_AUTH_METHOD:?}
+      - POSTGRES_DB=${POSTGRES_DB:?}
+#      - POSTGRES_HOST_AUTH_METHOD=${POSTGRES_HOST_AUTH_METHOD:?}
+#      - POSTGRES_LOCAL_AUTH_METHOD=${POSTGRES_LOCAL_AUTH_METHOD:?}
     volumes:
       - ${VOLUME_PATH:?}/postgres:/var/lib/postgresql/data
       # - ${VOLUME_PATH:?}:/container_output
@@ -96,46 +94,44 @@ services:
       - db_transcendence
     ports:
       - "${POSTGRES_PORT:?}:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:?} -d ${POSTGRES_DB:?}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     restart: unless-stopped
     init: true
 
-  pgadmin:
-    container_name: pgadmin
-    build: ./pgadmin
-    image: pgadmin
+  vite:
+    build: ./vite
+    container_name: vite
+    image: vite
     env_file:
       - .env
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:?}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:?}
-    ports:
-      - "${PGADMIN_PORT:?}:80"
-    volumes:
-      - ${VOLUME_PATH:?}/pgadmin:/var/lib/pgadmin
     networks:
-      - db_transcendence
       - web_transcendence
-    restart: unless-stopped
+    volumes:
+      - ./vite/pong-three:/app
+      - /app/node_modules
+    ports:
+      - "${VITE_PORT:?}:5173"
+    environment:
+      # - NODE_ENV=development
+      # - VITE_MODE=development
+      - VITE_MODE=production
+    profiles:
+      - three
     init: true
 
-  # pythontest:
-  #   container_name: pythontest
-  #   build: ./pythontest
-  #   image: pythontest
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - db_transcendence
-  #     - web_transcendence
-  #     - blockchain_transcendence
-  #     - elk
-  #   ports:
-  #     - "8097:8001" # http
-  #     - "8197:8000"
-  #   depends_on:
-  #     - postgres
-  #   restart: unless-stopped
-  #   init: true
-  #   volumes:
-  #     - ./pythontest/mysite/:/code/mysite/
-  #     - ./pythontest/polls/:/code/polls/
+  # access deny確認用
+  # curl -k https://nginx は403
+  bash_test:
+    image: debian:bullseye-slim
+    container_name: bash_test
+    command: ["bash", "-c", "apt-get update && apt-get install -y curl && bash"]
+    networks:
+      - web_transcendence
+      - test_network
+    stdin_open: true
+    tty: true

@@ -1,0 +1,29 @@
+@keyframes slideUp {
+	from {
+		transform: translateY(50%);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+/* テキストが下から現れるアニメーション */
+/* 適用したい文字列の要素に対し「直接一つずつ(ex.ulではなくli)」クラスを追加してください */
+#friends-container h3,
+#requests-container h3,
+#requests-container li,
+#friends-ul li,
+#nickname-input,
+#nickname-input-label,
+#nickname-submit,
+#dm-sessions li,
+.slideup-text {
+	animation: slideUp 0.5s ease-out forwards;
+}
+
+/* 色が変わる時間をゆっくりにするアニメーション */
+.transition-ease-color {
+	transition: color 0.5s ease, background-color 0.5s ease, border-color 0.5s ease;
+}

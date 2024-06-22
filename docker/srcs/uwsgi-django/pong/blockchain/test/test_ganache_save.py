@@ -3,8 +3,10 @@ from django.test import TestCase, Client
 from django.urls import reverse
 import json
 from .check_network import CheckNetwork
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestGanacheSave(TestCase):
 	"""
 	Django のAPIで Ganache のテストネットへの登録をテストするクラス

@@ -5,8 +5,10 @@ from django.test import Client, TestCase
 from django.urls import reverse
 # ganacheコンテナの起動チェック
 from .check_network import CheckNetwork
+from django.test import override_settings
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class TestGanacheFetch(TestCase):
 	"""
 	Django のAPIで Ganache のテストネットからのデータ取得をテストするクラス
@@ -35,4 +37,3 @@ class TestGanacheFetch(TestCase):
 		self.assertEqual(response.status_code, 400)
 		# エラーメッセージの内容に応じて検証を行う
 		self.assertEqual(response.json(), {'status': 'error', 'message': 'Query parameters are not supported'})
-

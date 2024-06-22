@@ -1,0 +1,74 @@
+
+/* #user-info {
+	list-style-type: none;
+} */
+
+
+#message-area {
+	color: #ffb320;
+}
+
+
+/* accounts container*/
+
+.hth-accounts-container {
+	margin: auto;
+	padding: 20px; 
+	max-width: 500px;
+	min-width: 300px;
+	background-color: rgba(35, 24, 1, 0.921); 
+	text-shadow: 0px 0px 0px #fff;
+	border-radius: 10px; 
+}
+
+.hth-accounts-container form{
+	padding-bottom: 2rem;
+}
+.hth-accounts-container h1{
+	padding-bottom: 1.5rem; 
+}
+
+.hth-accounts-container h2{
+	padding-bottom: 1rem; 
+}
+
+.hth-accounts-link {
+	margin-top: 0.5rem; 
+	margin-bottom: 2rem; 
+} 
+
+.hth-accounts-container li {
+	color: #fff;
+	list-style-type: none;
+	padding-bottom: 0.2rem;
+}
+
+.hth-accounts-container a {
+	color: #ffb320;
+}
+.hth-accounts-container a:hover {
+	color: #fff;
+}
+
+/* tournament UIHelper SPA後削除*/
+/* #user-info {
+	list-style-type: none;
+} */
+
+/* アバター画像 */
+.avatar {
+	width: 50px;    /* 幅を30pxに設定 */
+	height: 50px;   /* 高さを30pxに設定 */
+	border-radius: 50%;  /* 角を円形にする */
+	object-fit: cover;   /* 画像のアスペクト比を維持しながら、設定された領域に収まるようにする */
+	margin-right: 10px;  /* 画像とテキストの間の余白 */
+}
+
+/* online status */
+.status.online {
+	color: green;
+}
+
+.status.offline {
+	color: red;
+}

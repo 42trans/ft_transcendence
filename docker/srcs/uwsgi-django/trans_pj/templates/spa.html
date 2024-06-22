@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'spa/css/spa.css' %}" />
+    <link rel="stylesheet" crossorigin href="{% static 'pong/three/assets/index.css' %}">
+    <link rel="stylesheet" crossorigin href="{% static 'pong/css/hth-online.css' %}">
+    <link rel="stylesheet" crossorigin href="{% static 'pong/css/hth-tournament.css' %}">
+    <link rel="stylesheet" crossorigin href="{% static 'pong/css/hth-dm.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+        <div id="spa" class="spa_area">
+            {% comment %} SPA AREA 動的に生成される内容を表示  {% endcomment %}
+        </div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+    <script type="module" src="{% static 'spa/js/index.js' %}"></script>
+    <script type="module" src="{% static 'accounts/js/logout.js' %}"></script>
+{% endblock %}
