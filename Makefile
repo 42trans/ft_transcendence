@@ -168,6 +168,12 @@ logs:
 
 .PHONY: fclean
 fclean: down docker_rm remove_mount_volume
+	@rm -f docker/srcs/nginx/ssl/nginx.crt
+	@rm -f docker/srcs/nginx/ssl/nginx.key
+	@rm -f docker/srcs/uwsgi-django/ssl/django.crt
+	@rm -f docker/srcs/uwsgi-django/ssl/django.key
+	@rm -f docker/srcs/postgres/ssl/postgresql.crt
+	@rm -f docker/srcs/postgres/ssl/postgresql.key
 
 .PHONY: re
 re: fclean all
