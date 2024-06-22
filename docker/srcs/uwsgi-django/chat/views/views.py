@@ -141,9 +141,9 @@ class IsValidDmUserIdAPI(APIView):
         try:
             target_id = int(target_id)
             if target_id <= 0 or target_id == request.user.id:
-                return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'exists': False}, status=status.HTTP_200_OK)
         except Exception:
-            return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'exists': False}, status=status.HTTP_200_OK)
 
         user_exists = CustomUser.objects.filter(id=target_id).exists()
         return Response({'exists': user_exists}, status=status.HTTP_200_OK)

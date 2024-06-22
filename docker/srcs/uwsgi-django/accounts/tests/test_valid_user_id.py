@@ -86,7 +86,7 @@ class IsValidUserIdAPITests(TestCase):
             print(f"testing ng_id: {ng_id}")
             is_valid_user_id_api_path = reverse(self.kIsValidUserId, args=[ng_id])
             response = self.client.get(is_valid_user_id_api_path)
-            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_guest(self):
         is_valid_user_id_api_path = reverse(self.kIsValidUserId, args=[self.user1.id])
