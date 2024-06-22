@@ -4,7 +4,7 @@ import asyncio
 import random
 
 # asyn_log: docker/srcs/uwsgi-django/pong/utils/async_log.log
-DEBUG_FLOW = 1
+DEBUG_FLOW = 0
 DEBUG_DETAIL = 0
 
 class PongOnlineUpdater:
