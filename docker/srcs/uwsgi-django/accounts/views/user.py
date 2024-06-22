@@ -86,7 +86,7 @@ class EditUserProfileAPIView(APIView):
             is_ok, msg = self._update_nickname(request.user, new_nickname)
             if is_ok is False:
                 data = {'error': msg}
-                return Response(data, status=400)
+                return Response(data, status=200)
 
             data = {'message': msg}
             return Response(data, status=200)
@@ -95,13 +95,13 @@ class EditUserProfileAPIView(APIView):
             is_ok, msg = self._update_password(request, input_current_password, new_password)
             if is_ok is False:
                 data = {'error': msg}
-                return Response(data, status=400)
+                return Response(data, status=200)
 
             data = {'message': msg}
             return Response(data, status=200)
 
         data = {'error': 'Update profile error'}
-        return Response(data, status=400)
+        return Response(data, status=200)
 
     def _update_nickname(self, user, new_nickname):
         if self._is_progress_tournament_organizer(user):

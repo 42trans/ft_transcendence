@@ -89,22 +89,22 @@ class EditUserProfileAPITests(TestCase):
     def test_update_nickname_fail_same_old_nickname(self):
         response = self.client.post(self.edit_user_profile_url, {'nickname': self.kUserNickname})
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('new nickname same as current', response.data['error'])
 
     def test_update_nickname_fail_already_use_nickname(self):
         response = self.client.post(self.edit_user_profile_url, {'nickname': self.kUser2Nickname})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('This nickname is already in use', response.data['error'])
 
     def test_update_nickname_fail_invalid_nickname_len(self):
         response = self.client.post(self.edit_user_profile_url, {'nickname': 'aa'})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('The nickname must be at least 3 characters', response.data['error'])
 
     def test_update_nickname_fail_invalid_nickname_char(self):
         response = self.client.post(self.edit_user_profile_url, {'nickname': '***'})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Invalid nickname format', response.data['error'])
 
 
@@ -128,7 +128,7 @@ class EditUserProfileAPITests(TestCase):
             'new_password': 'newPassword123'
         })
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Current password is incorrect', response.data['error'])
 
     def test_update_password_fail_same_as_current(self):
@@ -137,7 +137,7 @@ class EditUserProfileAPITests(TestCase):
             'new_password': self.kUserPassword
         })
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('new password same as current', response.data['error'])
 
     def test_update_password_fail_invalid_password(self):
@@ -145,7 +145,7 @@ class EditUserProfileAPITests(TestCase):
             'current_password': self.kUserPassword,
             'new_password': '012345'
         })
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('error', response.json())
 
 
@@ -153,7 +153,7 @@ class EditUserProfileAPITests(TestCase):
     def test_no_data_provided(self):
         response = self.client.post(self.edit_user_profile_url, {})
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Update profile error', response.data['error'])
 
     def test_un_login_user(self):
