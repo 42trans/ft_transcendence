@@ -2,7 +2,7 @@ from django.test import TestCase
 from ...models import Tournament, Match
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from ...views.tournament_views import assign_winner_to_next_match
+from pong.views.tournament.save_views import assign_winner_to_next_match
 from django.test import override_settings
 
 @override_settings(SECURE_SSL_REDIRECT=False)
