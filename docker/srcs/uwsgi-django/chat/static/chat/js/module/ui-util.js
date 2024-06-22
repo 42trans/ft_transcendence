@@ -1,7 +1,9 @@
 // chat/js/ui-util.js
 
 // メッセージ送信のイベントを制御
-export function setupSendKeyEventListener() {
+export function setupSendKeyEventListener(isSystemUser) {
+    if (isSystemUser) { return; }
+
     const input = document.getElementById('message-input');
     const submitButton = document.getElementById('message-submit');
 

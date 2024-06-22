@@ -34,7 +34,9 @@ export function setupDmWebsocket(userInfo, targetInfo) {
     dmSocket.onclose = (event) => handleClose(event, userInfo, targetInfo);
     dmSocket.onerror = (event) => handleError(event, userInfo, targetInfo);
 
-    document.querySelector('#message-submit').onclick = () => handleSendMessage(dmSocket);
+    if (!targetInfo.isSystemUser) {
+       document.querySelector('#message-submit').onclick = () => handleSendMessage(dmSocket);
+    }
 
     if (TEST_RECCONNECTION) { handleClose({ wasClean: false }, userInfo, targetInfo); }
 }

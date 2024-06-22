@@ -21,7 +21,7 @@ export function initDM() {
     scrollToBottom();  // 受信時にスクロール位置を調整
 
     setupDmWebsocket(userInfo, targetInfo);
-    setupSendKeyEventListener();
+    setupSendKeyEventListener(targetInfo.isSystemUser);
 }
 
 

@@ -19,7 +19,10 @@ from django.urls import reverse, resolve
 from channels.testing import WebsocketCommunicator
 from rest_framework import status
 from django.test import override_settings
-
+from unittest.mock import patch
+from chat.views.system_message import send_direct_system_message
+from channels.layers import get_channel_layer
+from django.utils import timezone
 
 @override_settings(SECURE_SSL_REDIRECT=False)
 class DMConsumerTestCase(TransactionTestCase):
@@ -54,9 +57,12 @@ class DMConsumerTestCase(TransactionTestCase):
         login_api_path = reverse("api_accounts:api_login")
         login_data = {'email': email, 'password': password}
         response = await database_sync_to_async(self.client.post)(login_api_path, data=login_data)
+        print(f"Login response status: {response.status_code}")
+        print(f"Login response content: {response.content}")
         if response.status_code == status.HTTP_200_OK and 'Access-Token' in response.cookies:
             return response.cookies['Access-Token'].value
         else:
+            print("Access-Token not found in cookies")
             raise ValueError("Failed to retrieve JWT token")
 
     def _create_ws_communicator(self, user1_jwt):
@@ -204,6 +210,39 @@ class DMConsumerTestCase(TransactionTestCase):
 
         except Exception as e:
             self.fail(f"Unexpected error occurred: {str(e)}")
+
+
+    # async def test_receive_system_message(self):
+    #     """システムからUserへの送信テスト"""
+    #     await self.asyncSetUp()
+    #
+    #     system_user = await database_sync_to_async(CustomUser.objects.create)(
+    #         email="system@example.com",
+    #         nickname="system",
+    #         password="systempassword",
+    #         is_system=True
+    #     )
+    #     try:
+    #         connected, subprotocol = await self.communicator.connect()
+    #         self.assertTrue(connected, f"WebSocket connection failed, code: {subprotocol}")
+    #
+    #         message_text = "This is a system message."
+    #         success = await send_direct_system_message(self.user1.nickname, message_text)
+    #         self.assertTrue(success, "Failed to send system message")
+    #         # print(f"test_receive_system_message(): {self.user1.nickname}")
+    #
+    #         # メッセージがデータベースに保存されていることを確認
+    #         message_instance = await database_sync_to_async(
+    #             Message.objects.filter(sender=system_user, receiver=self.user1, message=message_text).first
+    #         )()
+    #
+    #         self.assertIsNotNone(message_instance, "System message was not saved to the database.")
+    #
+    #     except Exception as e:
+    #         self.fail(f"Unexpected error occurred: {str(e)}")
+    #     finally:
+    #         await self.communicator.disconnect()
+    #         await database_sync_to_async(system_user.delete)()
 
 
 @override_settings(SECURE_SSL_REDIRECT=False)

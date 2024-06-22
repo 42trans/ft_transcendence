@@ -10,11 +10,13 @@
 <label id="nickname-input-label" for="nickname-input">DM with:</label>
 <input id="nickname-input" type="text" size="20">
 <input id="nickname-submit" type="button" value="Enter">
+{% comment %} トーナメントお誘いボタン {% endcomment %}
+<input id="tournament-invite" type="button" value="Invite to Tournament">
 
 <hr>
 
  {% comment %} DM履歴のあるuserとのDMはこちらから {% endcomment %}
 <h3 class="slideup-text">DM Session List</h3>
 <ul id="dm-sessions"></ul>
-
+{{ user_info|json_script:"user_info" }}
 {% comment %} <script type=module src="{% static 'chat/js/dm-sessions.js' %}"></script> {% endcomment %}
