@@ -10,6 +10,11 @@ from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 import random
+from django.urls import reverse
+import requests
+from pong.utils.async_logger import sync_log
+
+from chat.views.system_message import send_direct_system_message  
 
 logger = logging.getLogger('django')
 User = get_user_model()
@@ -58,17 +63,36 @@ def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
 			next_match.can_start = True
 
 		next_match.save()
-		print(f"Updated next match {next_match.id}: "
-			  f"{next_match.player1} vs {next_match.player2}")
+		# print(f"Updated next match {next_match.id}: "
+		# 	  f"{next_match.player1} vs {next_match.player2}")
 
+def is_round_finished(tournament, round_number):
+	""" 「指定されたラウンド」が終了したかどうかを確認する"""
+	matches = Match.objects.filter(tournament=tournament, round_number=round_number)
+	# return all(match.is_finished for match in matches)
+	for match in matches:
+		if not match.is_finished:
+			return False
+	return True
 
 def is_tournament_finished(tournament):
-	"""「全ての試合」が終了していたら「トーナメントの終了フラグ」を立てる"""
+	"""「全ての試合」が終了したかどうかを確認する"""
 	matches = Match.objects.filter(tournament=tournament)
 	for match in matches:
 		if not match.is_finished:
 			return False
 	return True
+
+
+def send_system_message_to_organizer(tournament, next_round):
+	sync_log('send_system_message_to_organizer(): start')
+	organizer_nickname = tournament.organizer.nickname
+	if next_round == 4:
+		message = f"トーナメント「{tournament.name}」が終了しました！"
+	else:
+		message = f"トーナメント「{tournament.name}」のラウンド{next_round}が始まりました！"
+	sync_log('send_system_message_to_organizer(): 2')
+	return send_direct_system_message(organizer_nickname, message)
 
 # @csrf_exempt
 @api_view(['POST'])
@@ -76,8 +100,9 @@ def is_tournament_finished(tournament):
 def save_game_result(request):
 	"""試合結果を保存する"""
 	try:
+		sync_log('save_game_result(): start')
+
 		data = json.loads(request.body)
-		# print("Received data:", data)
 		match_id = data.get('match_id')
 		player1_score = data.get('player1_score', 0)
 		player2_score = data.get('player2_score', 0)
@@ -96,15 +121,35 @@ def save_game_result(request):
 
 		if winner:
 			assign_winner_to_next_match(match, winner)
+		
+		sync_log('save_game_result(): 1')
+		# ラウンドの最終試合の場合 次のラウンドの開始をDMする
+		current_round = match.round_number
+		if is_round_finished(match.tournament, current_round):
+			sync_log(f'save_game_result(): is_round_finished: {is_round_finished}')
+			match.tournament.last_finished_round = current_round
+			match.tournament.save()
+			# 次のラウンドの開始メッセージを送信
+			send_system_message_to_organizer(match.tournament, current_round + 1)
 
-			# トーナメントの全試合が終了していた場合、 is_Finisjed を立てる
-			if is_tournament_finished(match.tournament):
-				match.tournament.is_finished = True
-				match.tournament.save()
+		# debug test用
+		# send_system_message_to_organizer(match.tournament, 99)
+		
+		# トーナメントの全試合が終了していた場合、 is_Finisjed を立てる
+		if is_tournament_finished(match.tournament):
+			match.tournament.is_finished = True
+			match.tournament.save()
 
 		return JsonResponse({"status": "success", "message": "Game result saved successfully."})
 	except Exception as e:
 		import traceback
-		traceback.print_exc()  # サーバーのコンソールにエラーのトレースバックを出力
+		# サーバーのコンソールにエラーのトレースバックを出力
+		traceback.print_exc() 
 		return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
+
+
+# def send_direct_system_message(target_nickname, message):
+# 	# chat/のsend_direct_system_message関数を呼び出す
+# 	from chat.views.system_message import send_direct_system_message  
+# 	return send_direct_system_message(target_nickname, message)

@@ -22,6 +22,8 @@ export default class extends AbstractView {
     const dmSessionModule = await import("/static/chat/js/dm-sessions.js");
     dmSessionModule.fetchDMList();
     dmSessionModule.startDMwithUser();
+    // トーナメント招待機能
+    dmSessionModule.tournamentInvite();
 
   }
 }

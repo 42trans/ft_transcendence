@@ -22,7 +22,7 @@ _setting_cert_key() {
 _migrate_db() {
 # DBスキーマの変更に基づきマイグレーションファイルを生成
 # モデル変更時のみ実行
- python manage.py makemigrations
+# python manage.py makemigrations
 
 # マイグレーションファイルをDBに適用、DBを最新の状態で再構築
   python manage.py migrate --noinput
@@ -50,7 +50,7 @@ _main() {
   _migrate_db
 
   _add_user_to_db
-   _collect_static_to_root
+  _collect_static_to_root
 }
 
 
