@@ -285,9 +285,9 @@ class IsValidUserIdAPI(APIView):
         try:
             user_id = int(user_id)
             if user_id <= 0:
-                return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'exists': False}, status=status.HTTP_200_OK)
         except Exception:
-            return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'exists': False}, status=status.HTTP_200_OK)
 
         user_exists = CustomUser.objects.filter(id=user_id).exists()
         return Response({'exists': user_exists}, status=status.HTTP_200_OK)

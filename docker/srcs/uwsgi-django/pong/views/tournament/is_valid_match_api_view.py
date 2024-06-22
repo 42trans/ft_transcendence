@@ -17,10 +17,12 @@ class IsValidMatchIdAPI(APIView):
 		try:
 			match_id = int(match_id)
 			if match_id <= 0:
-				return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+				return Response({'exists': False}, status=status.HTTP_200_OK)
+				# return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
 
 			match_exists = Match.objects.filter(id=match_id).exists()
 			return Response({'exists': match_exists}, status=status.HTTP_200_OK)
 
 		except Exception:
-			return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'exists': False}, status=status.HTTP_200_OK)
+			# return Response({'exists': False}, status=status.HTTP_400_BAD_REQUEST)
