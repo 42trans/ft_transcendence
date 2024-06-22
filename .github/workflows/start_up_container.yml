@@ -53,6 +53,8 @@ jobs:
           FT_UID=${{ secrets.FT_UID }}
           FT_SECRET=${{ secrets.FT_SECRET }}
           
+          # Django Secret
+          DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
           # ------------------------------------------------------------------------------
           EOF
 

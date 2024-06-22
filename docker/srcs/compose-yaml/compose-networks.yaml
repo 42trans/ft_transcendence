@@ -5,9 +5,24 @@ networks:
   web_transcendence:
     driver: bridge
     name: web_transcendence
+    ipam:
+      config:
+        - subnet: '${WEB_NETWORK_SUBNET:?}'
+
   db_transcendence:
     driver: bridge
     name: db_transcendence
+    ipam:
+      config:
+        - subnet: '${DB_NETWORK_SUBNET:?}'
+
+  test_network:
+    driver: bridge
+    name: test_network
+    ipam:
+      config:
+        - subnet: '${TEST_NETWORK_SUBNET:?}'
+
   # blockchain_transcendence:
   #   driver: bridge
   #   name: blockchain_transcendence
