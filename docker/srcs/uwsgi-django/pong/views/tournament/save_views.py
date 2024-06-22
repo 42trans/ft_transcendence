@@ -17,12 +17,14 @@ logger = logging.getLogger('django')
 User = get_user_model()
 
 
-@require_POST
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def release_match(request, match_id):
 	match = get_object_or_404(Match, id=match_id)
 	match.is_playing = False
 	match.save()
 	return JsonResponse({'status': 'ok'})
+
 
 def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
 	def __is_valid_argument(current_match: Match,
