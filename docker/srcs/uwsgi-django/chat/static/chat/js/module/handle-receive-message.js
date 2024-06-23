@@ -77,12 +77,41 @@ export function handleReceiveMessage(event, userInfo, targetInfo) {
 
     const senderInfo = getSenderInfo(message_data.sender_id, userInfo, targetInfo);
 
+    // ---------------------------------------------
+    // message_data.timestamp を ローカライズ
+    // - サーバー側（Python）では、タイムスタンプを文字列形式（UTC）でクライアントに送信
+    // - クライアント側（JavaScript）では、受信したUTCタイムスタンプ文字列をDateオブジェクトに変換
+    // - toLocaleStringメソッドを使用して、Dateオブジェクトをクライアントのローカルタイムゾーンに基づいてフォーマット
+    // ---------------------------------------------
+    // 受信したタイムスタンプ文字列（message_data.timestamp）を、Dateコンストラクタで解析可能な形式（ISO 8601形式）に変換
+    const timestamp = message_data.timestamp;
+    const msgAt = new Date(timestamp.replace(' ', 'T') + 'Z');
+    // toLocaleStringメソッドを使用してローカライズされた日時文字列を取得
+    const formattedMsgAt = msgAt.toLocaleString(undefined, {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
     let messageElement = createMessageElement(
         senderInfo.nickname,
         message_data.message,
-        message_data.timestamp,
+        formattedMsgAt,
         senderInfo.avatar_url
     );
+    
+    // UTCで出力する場合の処理（既存）
+    // let messageElement = createMessageElement(
+    //     senderInfo.nickname,
+    //     message_data.message,
+    //     message_data.timestamp,
+    //     senderInfo.avatar_url
+    // );
+    
+    // ---------------------------------------------
+
     const isSystemMessage = message_data.is_system_message;
 
     // メッセージに適切なクラスを適用
