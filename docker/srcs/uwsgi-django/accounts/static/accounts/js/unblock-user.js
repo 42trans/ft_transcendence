@@ -23,8 +23,9 @@ function unblockUser(user_id) {
             switchPage(redirectTo)
         })
         .catch(error => {
-            console.error('hth: Error:', error);
+            // console.error('hth: Error:', error);
             alert('Failed to unblock the user');
+            switchPage(window.location.pathname)
         });
 }
 
