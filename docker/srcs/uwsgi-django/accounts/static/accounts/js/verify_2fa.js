@@ -32,7 +32,6 @@ function verify2FA() {
 				// console.log(data.message);
 				// alert('[tmp] varify2fa success, redirect:' + data.redirect)
 				switchPage(data.redirect)  // Redirect on successful verification
-                updateHeader();
 			}
 		})
 		.catch(error => console.error("hth: Error:", error));
