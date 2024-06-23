@@ -4,8 +4,8 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 
-function blockUser(nickname) {
-    fetch(`/accounts/api/block/${nickname}/`, {
+function blockUser(user_id) {
+    fetch(`/accounts/api/block/${user_id}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ function blockUser(nickname) {
         })
         .then(data => {
             alert(data.message);       // 結果をポップアップで表示
-            const redirectTo = routeTable['userInfoBase'].path + nickname + '/'
+            const redirectTo = routeTable['userInfoBase'].path + user_id + '/'
             switchPage(redirectTo)
         })
         .catch(error => {
@@ -36,9 +36,9 @@ export function setupBlockUserEventListener() {
         blockUserButton.addEventListener('click', (event) => {
             event.preventDefault();
 
-            const nickname = blockUserButton.dataset.nickname;
-            // console.log('blockUserButton clicked', nickname);
-            blockUser(nickname);
+            const user_id = blockUserButton.dataset.user_id;
+            // console.log('blockUserButton clicked', user_id);
+            blockUser(user_id);
         });
     }
 }
