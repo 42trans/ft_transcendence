@@ -23,9 +23,11 @@ export function sendFriendRequest(userId) {
             return data;
         });
     }).catch(error => {
-        console.error('hth: Error:', error);
+        // console.error('hth: Error:', error);
         const errorEvent = new CustomEvent('sendFriendRequest error:', { detail: error });
         document.dispatchEvent(errorEvent);
+        alert(error);
+        switchPage(window.location.pathname);
     });
 }
 
@@ -50,8 +52,9 @@ export function cancelFriendRequest(userId) {
             switchPage(window.location.pathname);
         })
         .catch(error => {
-            console.error('hth: Error:', error);
+            // console.error('hth: Error:', error);
             alert(error.message);
+            switchPage(window.location.pathname);
         });
 }
 
@@ -76,8 +79,9 @@ export function acceptFriendRequest(userId) {
             switchPage(window.location.pathname);
         })
         .catch(error => {
-            console.error('hth: Error:', error);
+            // console.error('hth: Error:', error);
             alert(error.message);
+            switchPage(window.location.pathname);
         });
 }
 
@@ -103,8 +107,9 @@ export function rejectFriendRequest(userId) {
                 switchPage(window.location.pathname);
             })
             .catch(error => {
-                console.error('hth: Error:', error);
+                // console.error('hth: Error:', error);
                 alert(error.message);
+                switchPage(window.location.pathname);
             });
     } else {
         alert('Request rejection has been canceled');
@@ -133,8 +138,9 @@ export function deleteFriend(userId) {
                 switchPage(window.location.pathname);
             })
             .catch(error => {
-                console.error('hth: Error:', error);
+                // console.error('hth: Error:', error);
                 alert(error.message);
+                switchPage(window.location.pathname);
             });
 
     } else {
