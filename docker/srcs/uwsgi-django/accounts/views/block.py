@@ -29,23 +29,23 @@ class BlockUserAPI(APIView):
             block_user = CustomUser.objects.get(id=id)
 
             if user == block_user:
-                response = {'message': 'Cannot block yourself'}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                response = {'error': 'Cannot block yourself'}
+                return Response(response, status=status.HTTP_200_OK)
 
             if user.is_blocking_user(block_user):
-                response = {'message': 'Already blocked'}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                response = {'error': 'Already blocked'}
+                return Response(response, status=status.HTTP_200_OK)
 
             user.block_user(block_user)
             response = {'message': f'User {block_user.nickname} successfully blocked'}
             return Response(response, status=status.HTTP_200_OK)
 
         except CustomUser.DoesNotExist:
-            response = {'message': f'User not found'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            response = {'error': f'User not found'}
+            return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
-            response = {'message': f'Unexpected error: {str(e)}'}
-            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            response = {'error': f'Unexpected error: {str(e)}'}
+            return Response(response, status=status.HTTP_200_OK)
 
 
 class UnblockUserAPI(APIView):
@@ -59,20 +59,20 @@ class UnblockUserAPI(APIView):
             unblock_user = CustomUser.objects.get(id=id)
 
             if user == unblock_user:
-                response = {'message': 'Cannot unblock yourself'}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                response = {'error': 'Cannot unblock yourself'}
+                return Response(response, status=status.HTTP_200_OK)
 
             if not user.is_blocking_user(unblock_user):
-                response = {'message': 'Already un blocked'}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                response = {'error': 'Already un blocked'}
+                return Response(response, status=status.HTTP_200_OK)
 
             user.unblock_user(unblock_user)
             response = {'message': f'User {unblock_user.nickname} successfully unblocked'}
             return Response(response, status=status.HTTP_200_OK)
 
         except CustomUser.DoesNotExist:
-            response = {'message': f'User not found'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            response = {'error': f'User not found'}
+            return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
-            response = {'message': f'Unexpected error: {str(e)}'}
-            return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            response = {'error': f'Unexpected error: {str(e)}'}
+            return Response(response, status=status.HTTP_200_OK)

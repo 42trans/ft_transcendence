@@ -18,9 +18,14 @@ function unblockUser(user_id) {
             return response.json();
         })
         .then(data => {
-            alert(data.message);       // 結果をポップアップで表示
-            const redirectTo = routeTable['userInfoBase'].path + user_id + '/'
-            switchPage(redirectTo)
+            if (data.error) {
+                alert('Failed to unblock the user. ' + data.error);
+                switchPage(window.location.pathname)
+            } else {
+                alert(data.message);       // 結果をポップアップで表示
+                const redirectTo = routeTable['userInfoBase'].path + user_id + '/'
+                switchPage(redirectTo)
+            }
         })
         .catch(error => {
             // console.error('hth: Error:', error);

@@ -76,8 +76,8 @@ class UserBlockTestCase(TestCase):
         """
         url = reverse(self.kBlockAPIName, kwargs={'user_id': self.user1.id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('Cannot block yourself', response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('Cannot block yourself', response.data['error'])
 
     def test_block_already_blocked_user(self):
         """
@@ -90,8 +90,8 @@ class UserBlockTestCase(TestCase):
 
         url = reverse(self.kBlockAPIName, kwargs={'user_id': self.user2.id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn(f'Already blocked', response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(f'Already blocked', response.data['error'])
 
         self.assertTrue(self.user1.is_blocking_user(self.user2))  # user1 blocking user2
 
@@ -168,8 +168,8 @@ class UserUnblockTestCase(TestCase):
         """
         url = reverse(self.kUnblockAPIName, kwargs={'user_id': self.user1.id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('Cannot unblock yourself', response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('Cannot unblock yourself', response.data['error'])
 
     def test_unblock_unblocked_user(self):
         """
@@ -181,7 +181,7 @@ class UserUnblockTestCase(TestCase):
 
         url = reverse(self.kUnblockAPIName, kwargs={'user_id': self.user2.id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn(f'Already un blocked', response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(f'Already un blocked', response.data['error'])
 
         self.assertFalse(self.user1.is_blocking_user(self.user2))  # user1 unblocking user2
