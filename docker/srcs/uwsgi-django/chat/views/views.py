@@ -64,7 +64,7 @@ class ValidateDmTargetAPI(APIView):
         logger.error(f"ValidateDmTargetAPI target: {target_nickname}")
         if err is not None:
             logger.error(f"ValidateDmTargetAPI error: {err}")
-            return Response({'error': err}, status=400)
+            return Response({'error': err}, status=200)
         return Response({'status': 'ok', 'target_id': dm_target.id}, status=200)
 
 

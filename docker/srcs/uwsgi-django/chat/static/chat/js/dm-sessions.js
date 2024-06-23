@@ -55,7 +55,7 @@ export function startDMwithUser() {
         })
             .then(response => {
                 return response.json().then(data => {
-                    if (!response.ok) {
+                    if (!response.ok || data.error) {
                         throw new Error(data.error);
                     } else {
                         // 検証が成功した場合にdiWithUserに遷移
@@ -131,7 +131,7 @@ export function tournamentInvite() {
         })
             .then(response => {
                 return response.json().then(data => {
-                    if (!response.ok) {
+                    if (!response.ok || data.error) {
                         throw new Error(data.error);
                     } else {
                         const targetId = data.target_id;
