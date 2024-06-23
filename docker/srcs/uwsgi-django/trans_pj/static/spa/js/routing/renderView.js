@@ -97,4 +97,5 @@ export const renderView = async (path) => {
   window.dispatchEvent(new CustomEvent('switchPageResetState'));
   // 
   setOnlineStatus();
+  updateHeader();
 };

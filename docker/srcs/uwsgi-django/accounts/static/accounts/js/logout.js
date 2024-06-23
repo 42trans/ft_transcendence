@@ -5,7 +5,7 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 
-const DEBUG = 0;
+const DEBUG = 1;
 
 function handleLogout() {
 	fetch('/accounts/api/logout/', {
@@ -49,16 +49,3 @@ export function setupLogoutEventListener() {
 		});
 	}
 }
-
-// header
-document.addEventListener('DOMContentLoaded', function() {
-	const button = document.querySelector('header .logoutButton');
-	if (button) {
-		button.addEventListener('click', function(event) {
-			if (event.target.classList.contains('logoutButton')) {
-				event.preventDefault();
-				handleLogout();
-			}
-		});
-	}
-});
