@@ -22,13 +22,13 @@ export function loginUser() {
 		.then(data => {
 			if (data.error) {
 				// Error
-				document.getElementById('message-area').textContent = data.error;
 				if (data.redirect) {
                     // alert('[tmp] login failure')
 					switchPage(data.redirect);
 				} else {
 					// alert('[tmp] error: ' + data.error)
-					throw new Error(data.error);
+					// throw new Error(data.error);
+					document.getElementById('message-area').textContent = data.error;
 				}
 			} else if (data.message) {
 				// Verified
@@ -36,7 +36,6 @@ export function loginUser() {
 				const nextUrl = data.redirect;
 				if (DEBUG_LOGIN) { console.log('login: nextUrl:' + nextUrl); }
 				switchPage(nextUrl);  // Redirect on successful verification
-                updateHeader();
 			}
 		})
 		.catch(error => console.error('hth: Error:', error));
