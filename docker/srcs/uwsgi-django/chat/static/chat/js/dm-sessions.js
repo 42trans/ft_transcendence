@@ -148,7 +148,12 @@ export function tournamentInvite() {
                 });
             })
             .catch(error => {
-                console.error('tournamentInvite(): error', error);
+                if (error.message.includes('<!doctype')) {
+                    messageArea.textContent = "The specified user does not exist";
+                } else {
+                    messageArea.textContent = error.message;
+                }
+                // console.error('tournamentInvite(): error', error);
             });
     };
 }
