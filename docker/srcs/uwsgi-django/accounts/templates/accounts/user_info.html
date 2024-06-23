@@ -34,10 +34,10 @@
 <h4 class="slideup-text">blocking</h4>
 <ul class="user-info-ul">
 	{% if not user_data.isBlockingUser %}
-		Unblocking
-		<button class="hth-btn blockUserButton" data-user_id="{{ user_data.info_user_id }}">block user</button>
+		<li class="slideup-text">Unblocking</li>
+		<button class="hth-btn blockUserButton slideup-text" data-user_id="{{ user_data.info_user_id }}">block user</button>
 	{% else %}
-		Blocking
-		<button class="hth-btn unBlockUserButton" data-user_id="{{ user_data.info_user_id }}">unblock user</button>
+		<li class="slideup-text">Blocking</li>
+		<button class="hth-btn unBlockUserButton slideup-text" data-user_id="{{ user_data.info_user_id }}">unblock user</button>
 	{% endif %}
 </ul>

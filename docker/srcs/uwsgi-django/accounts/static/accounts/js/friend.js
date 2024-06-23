@@ -275,7 +275,7 @@ export function createActionButton(text, action) {
     const actionLink = document.createElement('a');
     actionLink.textContent = text;
     actionLink.href = "#";
-    actionLink.className = text.toLowerCase() + 'Button' + ' hth-btn my-4';
+    actionLink.className = text.toLowerCase() + 'Button' + ' hth-btn my-4 mx-4';
     actionLink.onclick = function(event) {
         event.preventDefault();
         action();

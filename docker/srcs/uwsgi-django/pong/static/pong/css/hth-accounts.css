@@ -88,9 +88,13 @@
 }
 
 .user-info-ul button {
-	margin-left: 10px;
+	margin-left: 3rem;
   }
 
 #requests-container li{
 	list-style: none;
+}
+
+#requests-container .cancelButton{
+	margin-left: 3rem;
 }
