@@ -25,8 +25,8 @@ class BlockUserAPI(APIView):
         try:
             user = request.user
 
-            block_user_nickname = kwargs.get('nickname', None)
-            block_user = CustomUser.objects.get(nickname=block_user_nickname)
+            id = kwargs.get('user_id', None)
+            block_user = CustomUser.objects.get(id=id)
 
             if user == block_user:
                 response = {'message': 'Cannot block yourself'}
@@ -37,11 +37,11 @@ class BlockUserAPI(APIView):
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
             user.block_user(block_user)
-            response = {'message': f'User {block_user_nickname} successfully blocked'}
+            response = {'message': f'User {block_user.nickname} successfully blocked'}
             return Response(response, status=status.HTTP_200_OK)
 
         except CustomUser.DoesNotExist:
-            response = {'message': f'User {block_user_nickname} not found'}
+            response = {'message': f'User not found'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             response = {'message': f'Unexpected error: {str(e)}'}
@@ -55,8 +55,8 @@ class UnblockUserAPI(APIView):
         try:
             user = request.user
 
-            unblock_user_nickname = kwargs.get('nickname', None)
-            unblock_user = CustomUser.objects.get(nickname=unblock_user_nickname)
+            id = kwargs.get('user_id', None)
+            unblock_user = CustomUser.objects.get(id=id)
 
             if user == unblock_user:
                 response = {'message': 'Cannot unblock yourself'}
@@ -67,11 +67,11 @@ class UnblockUserAPI(APIView):
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
             user.unblock_user(unblock_user)
-            response = {'message': f'User {unblock_user_nickname} successfully unblocked'}
+            response = {'message': f'User {unblock_user.nickname} successfully unblocked'}
             return Response(response, status=status.HTTP_200_OK)
 
         except CustomUser.DoesNotExist:
-            response = {'message': f'User {unblock_user_nickname} not found'}
+            response = {'message': f'User not found'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             response = {'message': f'Unexpected error: {str(e)}'}

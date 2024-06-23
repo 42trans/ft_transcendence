@@ -43,8 +43,8 @@ urlpatterns = [
     path('api/token/refresh/'       , JWTRefreshAPIView.as_view()       , name='api_token_refresh'),
     path('oauth-ft/callback/'       , OAuthWith42.as_view()             , name='oauth_ft_callback'),
 
-    path('api/block/<str:nickname>/'    , BlockUserAPI.as_view()        , name='api_block'),
-    path('api/unblock/<str:nickname>/'  , UnblockUserAPI.as_view()      , name='api_unblock'),
+    path('api/block/<str:user_id>/'    , BlockUserAPI.as_view()        , name='api_block'),
+    path('api/unblock/<str:user_id>/'  , UnblockUserAPI.as_view()      , name='api_unblock'),
 
     path('api/friend/send-request/<int:user_id>/'   , SendFriendRequestAPI.as_view()    , name='send_friend_request'),
     path('api/friend/cancel-request/<int:user_id>/' , CancelFriendRequestAPI.as_view()  , name='cancel_friend_request'),
