@@ -52,10 +52,7 @@ function enable2FaVerifyToken() {
 		if (data.error) {
 			document.getElementById('error-message').textContent = "Verification failed: " + data.error;
 		} else if (data.redirect) {
-			// console.log(data.message);
-			switchPage(data.redirect)
-		} else if (data.success) {
-			// console.log(data.message);
+			console.log(data.message);
 			alert(data.message);
 			switchPage(data.redirect)
 		}
