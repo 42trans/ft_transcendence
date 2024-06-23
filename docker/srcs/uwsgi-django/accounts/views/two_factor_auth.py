@@ -60,7 +60,7 @@ class Enable2FaAPIView(APIView):
         if request.user.enable_2fa:
             data = {
                 "message": "Already enabled 2FA",
-                "redirect": settings.URL_CONFIG['kSpaPongTopUrl'],
+                "redirect": settings.URL_CONFIG['kSpaUserProfileUrl'],
             }
         else:
             secret_key, secret_key_base32 = self._get_secret_key(request)
@@ -76,7 +76,7 @@ class Enable2FaAPIView(APIView):
         if request.user.enable_2fa:
             data = {
                 "message": "Already enabled 2FA",
-                "redirect": settings.URL_CONFIG['kSpaPongTopUrl'],
+                "redirect": settings.URL_CONFIG['kSpaUserProfileUrl'],
             }
             return JsonResponse(data, status=200)
 

@@ -86,7 +86,8 @@ class TwoFactorAuthTest(TestConfig):
         self._send_to_elem(By.ID, "token", otp_token)
 
         # 有効化
-        self._click_button(enable2ba_button)
+        self._click_button(enable2ba_button, wait_for_button_invisible=False)
+        self._close_alert("2FA has been enabled successfully")
         return set_up_key
 
     def _setting_disable_2fa(self):
