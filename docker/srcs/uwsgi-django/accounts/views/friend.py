@@ -64,17 +64,17 @@ class SendFriendRequestAPI(APIView):
             if err is not None:
                 # logger.error(f"SendFriendRequestAPI 2")
                 response = {'error': err}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
 
             # logger.error(f"SendFriendRequestAPI 3 {user.nickname} -> {friend_request_target.nickname}")
             if Friend.is_friend(user, friend_request_target):
                 response = {'error': 'Already friend'}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
 
             if (Friend.is_already_sent(user, friend_request_target)
                     or Friend.is_already_received(user, friend_request_target)):
                 response = {'error': 'Friend request already friends'}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
 
             Friend.objects.create(sender=user, receiver=friend_request_target)
             response = {'status': 'Friend request sent successfully'}
@@ -82,10 +82,10 @@ class SendFriendRequestAPI(APIView):
 
         except CustomUser.DoesNotExist:
             error_msg = 'User not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Exception as e:
             error_msg = f'Unexpected error: {str(e)}'
-            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+            error_status = status.HTTP_200_OK
         response = {'error': error_msg}
         logger.error(f"SendFriendRequestAPI error: {error_msg}")
         return Response(response, status=error_status)
@@ -102,7 +102,7 @@ class CancelFriendRequestAPI(APIView):
             user, friend_request_target, err = _get_user_and_friend(request, user_id)
             if err is not None:
                 response = {'error': err}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
 
             # リクエストを取得
             friend_request = Friend.objects.get(sender=user,
@@ -116,13 +116,13 @@ class CancelFriendRequestAPI(APIView):
 
         except CustomUser.DoesNotExist:
             error_msg = 'User not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Friend.DoesNotExist:
             error_msg = 'Friend request not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Exception as e:
             error_msg = f'Unexpected error: {str(e)}'
-            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+            error_status = status.HTTP_200_OK
         response = {'error': error_msg}
         logger.error(f"CancelFriendRequestAPI error: {error_msg}")
         return Response(response, status=error_status)
@@ -141,7 +141,7 @@ class AcceptFriendRequestAPI(APIView):
             if err is not None:
                 # logger.error(f"AcceptFriendRequestAPI 2")
                 response = {'error': err}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
 
             # logger.error(f"AcceptFriendRequestAPI {request_sender.nickname} -> {user.nickname}")
             # request_sender -> user へのPending状態のリクエストリクエストを取得
@@ -160,13 +160,13 @@ class AcceptFriendRequestAPI(APIView):
 
         except CustomUser.DoesNotExist:
             error_msg = 'User not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Friend.DoesNotExist:
             error_msg = 'Friend request not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Exception as e:
             error_msg = f'Unexpected error: {str(e)}'
-            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+            error_status = status.HTTP_200_OK
         response = {'error': error_msg}
         logger.error(f"AcceptFriendRequestAPI error: {error_msg}")
         return Response(response, status=error_status)
@@ -184,7 +184,7 @@ class RejectFriendRequestAPI(APIView):
             user, request_sender, err = _get_user_and_friend(request, user_id)
             if err is not None:
                 response = {'error': err}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
 
             # request_sender -> user へのPending状態のリクエストリクエストを取得
             friend_request = Friend.objects.get(sender=request_sender,
@@ -197,13 +197,13 @@ class RejectFriendRequestAPI(APIView):
 
         except CustomUser.DoesNotExist:
             error_msg = 'User not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Friend.DoesNotExist:
             error_msg = 'Friend request not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Exception as e:
             error_msg = f'Unexpected error: {str(e)}'
-            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+            error_status = status.HTTP_200_OK
         response = {'error': error_msg}
         logger.error(f"RejectFriendRequestAPI error: {error_msg}")
         return Response(response, status=error_status)
@@ -220,7 +220,7 @@ class DeleteFriendAPI(APIView):
             user, friend, err = _get_user_and_friend(request, user_id)
             if err is not None:
                 response = {'error': err}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
 
             friend_requests = Friend.objects.filter(
                 Q(sender=user, receiver=friend) | Q(sender=friend, receiver=user),
@@ -229,7 +229,7 @@ class DeleteFriendAPI(APIView):
 
             if not friend_requests.exists():
                 response = {'error': 'Friend not found.'}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
 
             friend_requests.delete()
             response = {'status': 'Success: delete friend'}
@@ -237,13 +237,13 @@ class DeleteFriendAPI(APIView):
 
         except CustomUser.DoesNotExist:
             error_msg = 'User not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Friend.DoesNotExist:
             error_msg = 'Friend request not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Exception as e:
             error_msg = f'Unexpected error: {str(e)}'
-            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+            error_status = status.HTTP_200_OK
         response = {'error': error_msg}
         return Response(response, status=error_status)
 
@@ -273,13 +273,13 @@ class GetFriendListAPI(APIView):
 
         except CustomUser.DoesNotExist:
             error_msg = 'User not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Friend.DoesNotExist:
             error_msg = 'Friend request not found'
-            error_status = status.HTTP_400_BAD_REQUEST
+            error_status = status.HTTP_200_OK
         except Exception as e:
             error_msg = f'Unexpected error: {str(e)}'
-            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+            error_status = status.HTTP_200_OK
         response = {'error': error_msg}
         logger.debug(f'get_friends friends: error: {error_msg}')
 
@@ -331,6 +331,6 @@ class GetFriendRequestListAPI(APIView):
 
         except Exception as e:
             error_msg = f'Unexpected error: {str(e)}'
-            error_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+            error_status = status.HTTP_200_OK
         response = {'error': error_msg}
         return Response(response, status=error_status)

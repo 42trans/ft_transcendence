@@ -12,27 +12,35 @@ export function fetchEnable2FA() {
 			'Content-Type': 'application/json'
 		}
 	})
-		.then(response => response.json())
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`status: ${response.status}`);
+			}
+			return response.json();
+		})
 		.then(data => {
 			if (data.error) {
 				document.getElementById('error-message').textContent = "Error retrieving 2FA setup: " + data.error;
 			} else if (data.redirect) {
-				// console.log(data.message);
-				switchPage(data.redirect)
-			}
-			else {
+				switchPage(data.redirect);
+			} else {
 				const qrCodeHtml = `
-					<p>Scan this QR Code with your authenticator app:</p>
-					<p><img src="data:image/png;base64,${data.qr_code_data}" alt="2FA QR Code"></p>
-					<p>Or enter this setup key: </p>
-					<p class="pb-1">${data.setup_key}</p>
-				`;
+                <p>Scan this QR Code with your authenticator app:</p>
+                <p><img src="data:image/png;base64,${data.qr_code_data}" alt="2FA QR Code"></p>
+                <p>Or enter this setup key: </p>
+                <p class="pb-1">${data.setup_key}</p>
+            	`;
 				document.getElementById('qrCodeContainer').innerHTML = qrCodeHtml;
 			}
 		})
 		.catch(error => {
-			document.getElementById('error-message').textContent = "Network error or server is down.";
-			console.error("hth: Fetch error:", error);
+			// move to top
+			if (error.message.includes("status: 401")) {
+				alert("You have been logged out. Please log in again.");
+			} else {
+				alert("An error occurred. Returning to top page.");
+			}
+			switchPage(routeTable['top'].path);
 		});
 }
 
@@ -47,22 +55,30 @@ function enable2FaVerifyToken() {
 	},
 	body: JSON.stringify({ token: token })
 	})
-		.then(response => response.json())
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`status: ${response.status}`);
+			}
+			return response.json();
+		})
 		.then(data => {
-		if (data.error) {
-			document.getElementById('error-message').textContent = "Verification failed: " + data.error;
-		} else if (data.redirect) {
-			// console.log(data.message);
-			switchPage(data.redirect)
-		} else if (data.success) {
-			// console.log(data.message);
-			alert(data.message);
-			switchPage(data.redirect)
-		}
+			if (data.error) {
+				// invalid token, retry
+				document.getElementById('error-message').textContent = "Verification failed: " + data.error;
+			} else if (data.redirect) {
+				// console.log(data.message);
+				alert(data.message);
+				switchPage(data.redirect)
+			}
 		})
 		.catch(error => {
-		document.getElementById('error-message').textContent = "Network error or server is down.";
-		console.error("hth: Fetch error:", error);
+			// move to top
+			if (error.message.includes("status: 401")) {
+				alert("You have been logged out. Please log in again.");
+			} else {
+				alert("An error occurred. Returning to top page.");
+			}
+			switchPage(routeTable['top'].path);
 		});
 }
 
