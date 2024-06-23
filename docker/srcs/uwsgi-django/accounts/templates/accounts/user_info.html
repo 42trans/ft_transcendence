@@ -2,13 +2,11 @@
 
 {% load static %}
 
-<h1><img src="{{ user_data.avatar_url }}" alt="User Avatar" class="avatar"> User Info (public)</h1>
+<h1><img src="{{ user_data.avatar_url }}" alt="User Avatar" class="avatar">{{ user_data.info_user_nickname }}'s Info (public)</h1>
+
+{% comment %} StartDMリンク {% endcomment %}
 <ul>
-	<li>Nickname: {{ user_data.info_user_nickname }}</li>
-	<li>History: history here</li>
-	<li>xxx: xxx</li>
-	<li>xxx: xxx</li>
-	<li><a href="{{ url_config.kSpaDmWithUrlBase }}{{ user_data.info_user_id }}/" data-link>DM with {{ user_data.info_user_nickname }}</a></li>
+	<a href="{{ url_config.kSpaDmWithUrlBase }}{{ user_data.info_user_id }}/" class="hth-btn my-4" data-link>Start DM</a>
 </ul>
 
 <hr>
