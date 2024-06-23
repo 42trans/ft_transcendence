@@ -21,8 +21,10 @@ from django.dispatch import receiver
 logger = logging.getLogger('django')
 User = get_user_model()
 
-DEBUG_FLOW = 0
-DEBUG_DETAIL = 0
+DEBUG_FLOW		= 0
+DEBUG_DETAIL	= 0
+TEST_TRY1		= 0
+TEST_TRY2		= 0
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -77,8 +79,6 @@ def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
 			next_match.can_start = True
 
 		next_match.save()
-		# print(f"Updated next match {next_match.id}: "
-		# 	  f"{next_match.player1} vs {next_match.player2}")
 
 def is_round_finished(tournament, round_number):
 	""" 「指定されたラウンド」が終了したかどうかを確認する"""
@@ -108,6 +108,10 @@ def save_game_result(request):
 			sync_log('save_game_result(): start')
 
 		data = json.loads(request.body)
+		
+		if TEST_TRY1:
+			data = None
+
 		match_id = data.get('match_id')
 		player1_score = data.get('player1_score', 0)
 		player2_score = data.get('player2_score', 0)
@@ -127,6 +131,9 @@ def save_game_result(request):
 		if winner:
 			assign_winner_to_next_match(match, winner)
 		
+		if TEST_TRY2:
+			match.tournament = None
+
 		# ラウンドの最終試合の場合 次のラウンドの開始をDMする
 		current_round = match.round_number
 		if is_round_finished(match.tournament, current_round):
@@ -145,13 +152,14 @@ def save_game_result(request):
 			match.tournament.save()
 
 		if DEBUG_FLOW:
-				sync_log(f'save_game_result(): done')
+			sync_log(f'save_game_result(): done')
 
 		return JsonResponse({"status": "success", "message": "Game result saved successfully."})
 	except Exception as e:
 		import traceback
 		# サーバーのコンソールにエラーのトレースバックを出力
 		traceback.print_exc() 
+		sync_log(f'save_game_result() failed:  {str(e)}')
 		return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
 
