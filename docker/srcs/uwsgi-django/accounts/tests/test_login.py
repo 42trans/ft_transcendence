@@ -55,7 +55,7 @@ class LoginAPIViewTestCase(TestCase):
         response = self.client.post(self.login_path, data=login_data)
         response_json = response.json()
 
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Invalid credentials', response_json['error'])
 
     def test_2fa_authentication_needed(self):

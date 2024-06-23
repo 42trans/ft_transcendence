@@ -125,7 +125,7 @@ class LoginAPIView(APIView):
         user = authenticate(request, email=email, password=password)
         if user is None:
             data = {'error': 'Invalid credentials'}
-            return JsonResponse(data, status=401)
+            return JsonResponse(data, status=200)
 
         if user.enable_2fa:
             request.session['tmp_auth_user_id'] = user.id
