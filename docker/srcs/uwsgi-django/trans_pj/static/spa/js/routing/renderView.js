@@ -5,9 +5,6 @@ import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 import { setNoCache, clearNoCache } from "/static/spa/js/utility/cache.js"
 
 
-
-import { isValidParam } from "../utility/isValidParam.js"
-
 const DEBUG_DETAIL = 0;
 const DEBUG_LOG = 0;
 
