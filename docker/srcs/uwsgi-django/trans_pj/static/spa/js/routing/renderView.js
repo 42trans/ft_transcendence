@@ -33,7 +33,9 @@ export const switchPage = (targetPath) => {
   const targetUrl = new URL(targetPath, window.location.origin);
   const targetPathName = targetUrl.pathname;
 
-  history.pushState(null, null, targetPathName );
+  if (targetPathName !== routeTable['oAuthLogin']) {
+    history.pushState(null, null, targetPathName );
+  }
   controlCache()
 
   if (DEBUG_LOG) { console.log(` history.push: ${targetPathName}`); }
