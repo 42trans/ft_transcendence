@@ -19,13 +19,13 @@ function verify2FA() {
 		.then(data => {
 			if (data.error) {
 				// Error
-				document.getElementById('error-message').textContent = data.error;
 				if (data.redirect) {
 					// alert('[tmp] varify2fa error: redirectTo:' + data.redirect)
 					switchPage(data.redirect);
 				} else {
 					// alert('[tmp] varify2fa error' + data.error)
-					throw new Error(data.error);
+					// throw new Error(data.error);
+					document.getElementById('error-message').textContent = data.error;
 				}
 			} else if (data.message) {
 				// Verified

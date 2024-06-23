@@ -22,6 +22,7 @@ class AccountsAPITestCase(TestCase):
         exclude_urls = {
             "api/signup/",
             "api/login/",
+            "api/verify_2fa/",
             "api/is-user-logged-in/",
             "api/is-user-enabled2fa/",
             "oauth-ft/callback/",

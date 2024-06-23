@@ -6,6 +6,8 @@ import secrets
 from typing import Tuple, Optional
 import re
 import requests
+import string
+import random
 
 from django.conf import settings
 from django.contrib import messages
@@ -16,6 +18,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from accounts.views.jwt import set_jwt_to_cookie
+from accounts.models import CustomUser
 
 
 logging.basicConfig(
@@ -26,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 class OAuthWith42(View):
-    error_page_path = "pong/error.html"
+    error_page_path = ""
     callback_name = "api_accounts:oauth_ft_callback"
     api_path = "https://api.intra.42.fr"
 
@@ -57,46 +60,73 @@ class OAuthWith42(View):
         auth_url = f"{self.api_path}/oauth/authorize?{requests.compat.urlencode(params)}"
         return redirect(to=auth_url)
 
-
     def oauth_ft_callback(self, request: HttpRequest, *args, **kwargs) -> JsonResponse:
         if not self._is_valid_state(request):
             logger.error(f'error: {err}', exc_info=True)
-            return render(request, self.error_page_path, {'message': 'Invalid state parameter'})
+            return redirect(to=settings.URL_CONFIG['kSpaAuthSignupUrl'])
 
         err, email, nickname = self._get_email_and_nickname(request)
         if err is not None:
             logger.error(f'error: {err}', exc_info=True)
-            return render(request,
-                          self.error_page_path,
-                          {'message': 'An error occurred during the authentication process'})
-            # return JsonResponse({'error': 'An error occurred during the authentication process'}, status=500)
+            return redirect(to=settings.URL_CONFIG['kSpaAuthSignupUrl'])
 
-        User = get_user_model()
-        user, new_user_created = User.objects.get_or_create(email=email,
-                                                            defaults={'nickname': nickname})
-        if new_user_created:
-            user.set_unusable_password()
-            user.save()
+        try:
+            user, new_user_created = self._get_or_create(email, nickname)
+            if new_user_created:
+                user.set_unusable_password()
+                user.save()
 
-        if user.enable_2fa:
-            request.session['tmp_auth_user_id'] = user.id
-            return redirect(to=settings.URL_CONFIG['kSpaAuthVerify2FaUrl'])
-            # return JsonResponse({'redirect': '/verify-2fa/'})
+            if user.enable_2fa:
+                request.session['tmp_auth_user_id'] = user.id
+                return redirect(to=settings.URL_CONFIG['kSpaAuthVerify2FaUrl'])
 
-        # response_data = {
-        #     'message': 'OAuth successful',
-        #     'redirect': '/user-profile/',
-        #     'user_id': user.id,
-        # }
+            response = redirect(to=settings.URL_CONFIG['kSpaPongTopUrl'])
+            set_jwt_to_cookie(user, response)
+            return response
 
-        # リダイレクトURLにクエリパラメータを追加
-        # redirect_url = f"/user-profile/?message=OAuth%20successful&user_id={user.id}&redirect=/user-profile/"
-        # response = redirect(to=redirect_url)
-        response = redirect(to=settings.URL_CONFIG['kSpaPongTopUrl'])
-        # response = JsonResponse(response_data)
-        set_jwt_to_cookie(user, response)
-        return response
+        except Exception as e:
+            logger.error(f'error: {str(e)}', exc_info=True)
+            return redirect(to=settings.URL_CONFIG['kSpaAuthSignupUrl'])
 
+    def _get_or_create(self, email, nickname):
+        """
+        user数の最大値は10000
+        ditit 0-9 10種類を5文字=10^5, 10000回試せば十二分
+        """
+        try:
+            # すでにlogin済みであれば42emailが登録済み
+            user = CustomUser.objects.get(email=email)
+            return user, False
+        except Exception:
+            pass
+
+        try_max = 10000
+        i = 0
+        while i < try_max:
+            i += 1
+            try:
+                if i == 1:  # 初回はsuffixなし
+                    nick = nickname
+                else:
+                    random_suffix = self._random_digit(5)
+                    nick = f"{nickname}{random_suffix}"
+                user, new_user_created = CustomUser.objects.get_or_create(
+                    email=email,
+                    defaults={'nickname': nick}
+                )
+                return user, new_user_created
+
+            except Exception as e:
+                # nickname重複などでuser作成に失敗
+                logger.error(f'create user failed, retry: error: {str(e)}')
+                continue
+
+        raise Exception('create user failed')
+
+    def _random_digit(self, length=10):
+        characters = string.digits
+        random_string = ''.join(random.choice(characters) for _ in range(length))
+        return random_string
 
     def _is_valid_state(self, request: HttpRequest) -> bool:
         saved_state = request.session.get('oauth_state')

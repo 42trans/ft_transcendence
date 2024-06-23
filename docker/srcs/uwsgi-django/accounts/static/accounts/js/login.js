@@ -22,13 +22,13 @@ export function loginUser() {
 		.then(data => {
 			if (data.error) {
 				// Error
-				document.getElementById('message-area').textContent = data.error;
 				if (data.redirect) {
                     // alert('[tmp] login failure')
 					switchPage(data.redirect);
 				} else {
 					// alert('[tmp] error: ' + data.error)
-					throw new Error(data.error);
+					// throw new Error(data.error);
+					document.getElementById('message-area').textContent = data.error;
 				}
 			} else if (data.message) {
 				// Verified

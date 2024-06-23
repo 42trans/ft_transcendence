@@ -25,12 +25,12 @@ function signupUser() {
 	.then(data => {
 		if (data.error) {
 			// Error
-			document.getElementById('message-area').textContent = data.error;
 			if (data.redirect) {
 				if (DEBUG_LOG) { console.log('signup error: next: ' + data.redirect); };
 				switchPage(data.redirect);
 			} else {
-				throw new Error(data.error);
+				// throw new Error(data.error);
+				document.getElementById('message-area').textContent = data.error;
 			}
 		} else if (data.message) {
 			// Verified
