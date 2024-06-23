@@ -9,15 +9,22 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-import random
-from django.urls import reverse
-import requests
 from pong.utils.async_logger import sync_log
-
 from chat.views.system_message import send_direct_system_message  
+from django.views.decorators.http import require_POST
 
 logger = logging.getLogger('django')
 User = get_user_model()
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def release_match(request, match_id):
+	match = get_object_or_404(Match, id=match_id)
+	match.is_playing = False
+	match.save()
+	return JsonResponse({'status': 'ok'})
+
 
 def assign_winner_to_next_match(current_match: Match, winner_nickname: str):
 	def __is_valid_argument(current_match: Match,

@@ -2,8 +2,8 @@
 import { routeTable } from "/static/spa/js/routing/routeTable.js";
 
 const DEBUG_FLOW		= 0;
-const DEBUG_DETAIL1		= 1;
-const DEBUG_DETAIL2		= 1;
+const DEBUG_DETAIL1		= 0;
+const DEBUG_DETAIL2		= 0;
 const TEST_TRY1 		= 0;
 const TEST_TRY2 		= 0;
 const TEST_TRY_MATCH1	= 0;
