@@ -72,3 +72,29 @@
 .status.offline {
 	color: red;
 }
+
+.user-info-ul{
+	display: flex;
+}
+
+#user-info li{
+	list-style: none;
+}
+
+.user-info-ul li{
+	display: flex;
+	align-items: center;
+	list-style: none;
+}
+
+.user-info-ul button {
+	margin-left: 3rem;
+  }
+
+#requests-container li{
+	list-style: none;
+}
+
+#requests-container .cancelButton{
+	margin-left: 3rem;
+}

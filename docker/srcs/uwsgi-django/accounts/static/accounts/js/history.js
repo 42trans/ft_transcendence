@@ -172,10 +172,10 @@ class MatchHistory
 			const score = `${match.player1_score} - ${match.player2_score}`;
 		
 			listItem.innerHTML = `
-				<h4 class="match-stats-opponent">Opponent: ${opponent}</h4>
-				<h5 class="match-stats-result">Result: ${result}</h5>
-				<div class="match-stats-score">Score: ${score}</div>
-				<div class="match-stats-ended">Ended at: ${match.ended_at}</div>
+				<h4 class="match-stats-opponent slideup-text">Opponent: ${opponent}</h4>
+				<h5 class="match-stats-result slideup-text">Result: ${result}</h5>
+				<div class="match-stats-score slideup-text">Score: ${score}</div>
+				<div class="match-stats-ended slideup-text">Ended at: ${match.ended_at}</div>
 				<hr>
 			`;
 		
