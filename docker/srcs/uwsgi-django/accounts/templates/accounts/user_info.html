@@ -35,9 +35,9 @@
 	<h4>blocking</h4>
 	{% if not user_data.isBlockingUser %}
 		Unblocking
-		<button class="hth-btn blockUserButton" data-nickname="{{ user_data.info_user_nickname }}">block user</button>
+		<button class="hth-btn blockUserButton" data-user_id="{{ user_data.info_user_id }}">block user</button>
 	{% else %}
 		Blocking
-		<button class="hth-btn unBlockUserButton" data-nickname="{{ user_data.info_user_nickname }}">unblock user</button>
+		<button class="hth-btn unBlockUserButton" data-user_id="{{ user_data.info_user_id }}">unblock user</button>
 	{% endif %}
 </ul>

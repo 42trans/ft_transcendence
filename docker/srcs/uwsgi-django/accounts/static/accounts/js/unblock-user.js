@@ -4,8 +4,8 @@ import { routeTable } from "/static/spa/js/routing/routeTable.js";
 import { switchPage } from "/static/spa/js/routing/renderView.js"
 
 
-function unblockUser(nickname) {
-    fetch(`/accounts/api/unblock/${nickname}/`, {
+function unblockUser(user_id) {
+    fetch(`/accounts/api/unblock/${user_id}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -18,13 +18,19 @@ function unblockUser(nickname) {
             return response.json();
         })
         .then(data => {
-            alert(data.message);       // 結果をポップアップで表示
-            const redirectTo = routeTable['userInfoBase'].path + nickname + '/'
-            switchPage(redirectTo)
+            if (data.error) {
+                alert('Failed to unblock the user. ' + data.error);
+                switchPage(window.location.pathname)
+            } else {
+                alert(data.message);       // 結果をポップアップで表示
+                const redirectTo = routeTable['userInfoBase'].path + user_id + '/'
+                switchPage(redirectTo)
+            }
         })
         .catch(error => {
-            console.error('hth: Error:', error);
+            // console.error('hth: Error:', error);
             alert('Failed to unblock the user');
+            switchPage(window.location.pathname)
         });
 }
 
@@ -36,9 +42,9 @@ export function setupUnBlockUserEventListener() {
         unBlockUserButton.addEventListener('click', (event) => {
             event.preventDefault();
 
-            const nickname = unBlockUserButton.dataset.nickname;
-            // console.log('unblockUser clicked', nickname);
-            unblockUser(nickname);
+            const user_id = unBlockUserButton.dataset.user_id;
+            // console.log('unblockUser clicked', user_id);
+            unblockUser(user_id);
         });
     }
 }
