@@ -9,13 +9,20 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from pong.utils.async_logger import sync_log
+from pong.utils.async_logger import sync_log, async_log
 from chat.views.system_message import send_direct_system_message  
 from django.views.decorators.http import require_POST
+import random
+from asgiref.sync import async_to_sync
+# from django.core.cache import cache
+from .signals import round_finished
+from django.dispatch import receiver
 
 logger = logging.getLogger('django')
 User = get_user_model()
 
+DEBUG_FLOW = 0
+DEBUG_DETAIL = 0
 
 @require_POST
 def release_match(request, match_id):
@@ -89,23 +96,14 @@ def is_tournament_finished(tournament):
 	return True
 
 
-def send_system_message_to_organizer(tournament, next_round):
-	sync_log('send_system_message_to_organizer(): start')
-	organizer_nickname = tournament.organizer.nickname
-	if next_round == 4:
-		message = f"トーナメント「{tournament.name}」が終了しました！"
-	else:
-		message = f"トーナメント「{tournament.name}」のラウンド{next_round}が始まりました！"
-	sync_log('send_system_message_to_organizer(): 2')
-	return send_direct_system_message(organizer_nickname, message)
-
 # @csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def save_game_result(request):
 	"""試合結果を保存する"""
 	try:
-		sync_log('save_game_result(): start')
+		if DEBUG_FLOW:
+			sync_log('save_game_result(): start')
 
 		data = json.loads(request.body)
 		match_id = data.get('match_id')
@@ -127,23 +125,25 @@ def save_game_result(request):
 		if winner:
 			assign_winner_to_next_match(match, winner)
 		
-		sync_log('save_game_result(): 1')
 		# ラウンドの最終試合の場合 次のラウンドの開始をDMする
 		current_round = match.round_number
 		if is_round_finished(match.tournament, current_round):
-			sync_log(f'save_game_result(): is_round_finished: {is_round_finished}')
+			if DEBUG_FLOW:
+				sync_log(f'save_game_result(): is_round_finished: {is_round_finished}')
 			match.tournament.last_finished_round = current_round
 			match.tournament.save()
-			# 次のラウンドの開始メッセージを送信
-			send_system_message_to_organizer(match.tournament, current_round + 1)
+			# シグナルを発行　=>  @receiver(round_finished)によって、次のラウンドの開始メッセージを送信する関数 handle_round_finished() を呼び出す
+			round_finished.send(sender=match.tournament, current_round=current_round)
+			if DEBUG_FLOW:
+				sync_log(f'round_finished.send')
 
-		# debug test用
-		# send_system_message_to_organizer(match.tournament, 99)
-		
 		# トーナメントの全試合が終了していた場合、 is_Finisjed を立てる
 		if is_tournament_finished(match.tournament):
 			match.tournament.is_finished = True
 			match.tournament.save()
+
+		if DEBUG_FLOW:
+				sync_log(f'save_game_result(): done')
 
 		return JsonResponse({"status": "success", "message": "Game result saved successfully."})
 	except Exception as e:
@@ -153,8 +153,31 @@ def save_game_result(request):
 		return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
 
+@receiver(round_finished)
+def handle_round_finished(sender, **kwargs):
+	"""
+	※Djangoのシグナルディスパッチャー: 
+	- 同期的な動作を前提としているため、非同期関数を直接シグナルハンドラとして使用することができない。
+	- そのために、asyncをつけず同期関数として定義し、async_to_sync()を用いて非同期関数を処理する
+	"""
+	if DEBUG_FLOW:
+		sync_log('handle_round_finished(): start')
+	tournament = sender
+	current_round = kwargs['current_round']
+	send_system_message_to_organizer(tournament, current_round + 1)
 
-# def send_direct_system_message(target_nickname, message):
-# 	# chat/のsend_direct_system_message関数を呼び出す
-# 	from chat.views.system_message import send_direct_system_message  
-# 	return send_direct_system_message(target_nickname, message)
+
+def send_system_message_to_organizer(tournament, next_round):
+	"""
+	send_direct_system_message()が非同期処理を行うが、同期関数として扱う。※Djangoのシグナルディスパッチャーを利用するため。
+	"""
+	if DEBUG_FLOW:
+		sync_log('send_system_message_to_organizer(): start')
+	organizer_nickname = tournament.organizer.nickname
+	if next_round == 4:
+		message = f"トーナメント「{tournament.name}」が終了しました！"
+	else:
+		message = f"トーナメント「{tournament.name}」のラウンド{next_round}が始まりました！"
+	if DEBUG_FLOW:
+		async_log('send_system_message_to_organizer(): done')
+	return async_to_sync(send_direct_system_message)(organizer_nickname, message)
