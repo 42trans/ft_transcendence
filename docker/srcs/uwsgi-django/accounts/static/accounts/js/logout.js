@@ -27,7 +27,6 @@ function handleLogout() {
 
 			// alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
 			switchPage(data.redirect);
-			updateHeader();
 		} else {
 			throw new Error('No message in response');
 		}

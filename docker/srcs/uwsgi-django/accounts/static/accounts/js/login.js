@@ -36,7 +36,6 @@ export function loginUser() {
 				const nextUrl = data.redirect;
 				if (DEBUG_LOGIN) { console.log('login: nextUrl:' + nextUrl); }
 				switchPage(nextUrl);  // Redirect on successful verification
-                updateHeader();
 			}
 		})
 		.catch(error => console.error('hth: Error:', error));

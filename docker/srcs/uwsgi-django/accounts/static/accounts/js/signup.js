@@ -36,7 +36,6 @@ function signupUser() {
 			// Verified
 			if (DEBUG_LOG) { console.log(data.message); };
 			switchPage(data.redirect);  // Redirect on successful verification
-			updateHeader();
 		}
 	})
 	.catch(error => console.error('Error:', error));
