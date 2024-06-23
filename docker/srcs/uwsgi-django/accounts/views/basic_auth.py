@@ -61,6 +61,10 @@ class SignupAPIView(APIView):
             data = {'error': "passwords don't match"}
             return JsonResponse(data, status=400)
 
+        if self._is_42email(email):
+            data = {'error': "please signup for 42 account"}
+            return JsonResponse(data, status=400)
+
         ok, err = CustomUser.objects._is_valid_user_field(email, nickname, password1)
         if not ok:
             data = {'error': err}
@@ -79,6 +83,9 @@ class SignupAPIView(APIView):
         except Exception as e:
             data = {'error': str(e)}
             return JsonResponse(data, status=500)
+
+    def _is_42email(self, email):
+        return email.endswith('@tokyo.42.school')
 
 
 class LoginTemplateView(TemplateView):
