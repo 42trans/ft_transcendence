@@ -17,18 +17,29 @@ export function updateNickname(event) {
 			nickname: nickname,
 		})
 	})
-		.then(response => response.json())
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`status: ${response.status}`);
+			}
+			return response.json();
+		})
 		.then(data => {
 			if (data.error) {
 				document.getElementById('message-area').textContent = data.error;
 			} else {
 				document.getElementById('message-area').textContent = data.message;
-				// console.log('Success:', data.message);
 				const redirectTo = routeTable['userProfile'].path;
-				switchPage(redirectTo)
+				switchPage(redirectTo);
 			}
 		})
-		.catch(error => console.error('hth: Error:', error));
+		.catch(error => {
+			if (error.message.includes("status: 401")) {
+				alert("You have been logged out. Please log in again.");
+			} else {
+				alert("An error occurred. Returning to top page.");
+			}
+			switchPage(routeTable['top'].path);
+		});
 }
 
 
@@ -47,18 +58,29 @@ export function updatePassword(event) {
 			new_password: newPassword
 		})
 	})
-		.then(response => response.json())
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`status: ${response.status}`);
+			}
+			return response.json();
+		})
 		.then(data => {
 			if (data.error) {
 				document.getElementById('message-area').textContent = data.error;
 			} else {
 				document.getElementById('message-area').textContent = data.message;
-				// console.log('Success:', data.message);
 				const redirectTo = routeTable['userProfile'].path;
-				switchPage(redirectTo)
+				switchPage(redirectTo);
 			}
 		})
-		.catch(error => console.error('hth: Error:', error));
+		.catch(error => {
+			if (error.message.includes("status: 401")) {
+				alert("You have been logged out. Please log in again.");
+			} else {
+				alert("An error occurred. Returning to top page.");
+			}
+			switchPage(routeTable['top'].path);
+		});
 }
 
 
