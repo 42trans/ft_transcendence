@@ -14,7 +14,7 @@ export function sendFriendRequest(userId) {
         }
     }).then(response => {
         return response.json().then(data => {
-            if (!response.ok) {
+            if (!response.ok || data.error) {
                 throw new Error(data.error);
             }
             const event = new CustomEvent('sendFriendRequest success:', { detail: data });
@@ -41,7 +41,7 @@ export function cancelFriendRequest(userId) {
     })
         .then(response => {
             return response.json().then(data => {
-                if (!response.ok) {
+                if (!response.ok || data.error) {
                     throw new Error(data.error);
                 }
                 return data;
@@ -68,7 +68,7 @@ export function acceptFriendRequest(userId) {
         }
     }).then(response => {
         return response.json().then(data => {
-            if (!response.ok) {
+            if (!response.ok || data.error) {
                 throw new Error(data.error);
             }
             return data;
@@ -96,7 +96,7 @@ export function rejectFriendRequest(userId) {
         })
             .then(response => {
                 return response.json().then(data => {
-                    if (!response.ok) {
+                    if (!response.ok || data.error) {
                         throw new Error(data.error);
                     }
                     return data;
@@ -127,7 +127,7 @@ export function deleteFriend(userId) {
         })
             .then(response => {
                 return response.json().then(data => {
-                    if (!response.ok) {
+                    if (!response.ok || data.error) {
                         throw new Error(data.error);
                     }
                     return data;

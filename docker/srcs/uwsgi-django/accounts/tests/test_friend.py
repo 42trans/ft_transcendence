@@ -93,7 +93,7 @@ class SendFriendRequestAPITestCase(TestCase):
         user_id = self.user2.id
         url = reverse(self.kSendFriendRequestAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Already friend', response.data['error'])
 
     def test_send_friend_request_to_myself(self):
@@ -110,7 +110,7 @@ class SendFriendRequestAPITestCase(TestCase):
         user_id = self.user1.id
         url = reverse(self.kSendFriendRequestAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Cannot send request to yourself', response.data['error'])
 
     def test_send_friend_request_already_sent(self):
@@ -126,7 +126,7 @@ class SendFriendRequestAPITestCase(TestCase):
         user_id = self.user2.id
         url = reverse(self.kSendFriendRequestAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Friend request already friends', response.data['error'])
 
     def test_send_friend_request_already_received(self):
@@ -142,7 +142,7 @@ class SendFriendRequestAPITestCase(TestCase):
         user_id = self.user2.id
         url = reverse(self.kSendFriendRequestAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Friend request already friends', response.data['error'])
 
     def test_send_friend_request_to_nonexistent_user(self):
@@ -154,7 +154,7 @@ class SendFriendRequestAPITestCase(TestCase):
         invalid_user_id = 99999
         url = reverse(self.kSendFriendRequestAPIName, kwargs={'user_id': invalid_user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('User not found', response.data['error'])
 
 
@@ -239,7 +239,7 @@ class CancelFriendRequestAPITestCase(TestCase):
         invalid_user_id = 99999
         url = reverse(self.kCancelFriendRequestAPIName, kwargs={'user_id': invalid_user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('User not found', response.data['error'])
 
     def test_cancel_friend_request_to_myself(self):
@@ -251,7 +251,7 @@ class CancelFriendRequestAPITestCase(TestCase):
         user_id = self.user1.id
         url = reverse(self.kCancelFriendRequestAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Cannot send request to yourself', response.data['error'])
 
     def test_cancel_nonexistent_friend_request(self):
@@ -263,7 +263,7 @@ class CancelFriendRequestAPITestCase(TestCase):
         user_id = self.user2.id
         url = reverse(self.kCancelFriendRequestAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Friend request not found', response.data['error'])
 
 
@@ -343,7 +343,7 @@ class AcceptFriendRequestAPITestCase(TestCase):
         invalid_user_id = 99999
         url = reverse(self.kAcceptFriendRequestAPIName, kwargs={'user_id': invalid_user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('User not found', response.data['error'])
 
     def test_accept_friend_request_to_myself(self):
@@ -355,7 +355,7 @@ class AcceptFriendRequestAPITestCase(TestCase):
         user_id = self.user1.id
         url = reverse(self.kAcceptFriendRequestAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Cannot send request to yourself', response.data['error'])
 
     def test_accept_nonexistent_friend_request(self):
@@ -367,7 +367,7 @@ class AcceptFriendRequestAPITestCase(TestCase):
         user_id = self.user2.id
         url = reverse(self.kAcceptFriendRequestAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Friend request not found', response.data['error'])
 
 
@@ -447,7 +447,7 @@ class RejectFriendRequestAPITestCase(TestCase):
         invalid_user_id = 99999
         url = reverse(self.kRejectFriendRequestAPIName, kwargs={'user_id': invalid_user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('User not found', response.data['error'])
 
     def test_reject_friend_request_to_myself(self):
@@ -459,7 +459,7 @@ class RejectFriendRequestAPITestCase(TestCase):
         user_id = self.user1.id
         url = reverse(self.kRejectFriendRequestAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Cannot send request to yourself', response.data['error'])
 
     def test_reject_nonexistent_friend_request(self):
@@ -471,7 +471,7 @@ class RejectFriendRequestAPITestCase(TestCase):
         user_id = self.user2.id
         url = reverse(self.kRejectFriendRequestAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Friend request not found', response.data['error'])
 
 
@@ -540,7 +540,7 @@ class DeleteFriendAPITestCase(TestCase):
         user_id = self.user1.id
         url = reverse(self.kDeleteFriendAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Cannot send request to yourself', response.data['error'])
 
     def test_delete_friend_unauthenticated(self):
@@ -563,7 +563,7 @@ class DeleteFriendAPITestCase(TestCase):
         invalid_user_id = 99999
         url = reverse(self.kDeleteFriendAPIName, kwargs={'user_id': invalid_user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('User not found', response.data['error'])
 
     def test_delete_non_friend_relationship(self):
@@ -575,7 +575,7 @@ class DeleteFriendAPITestCase(TestCase):
         user_id = self.user2.id
         url = reverse(self.kDeleteFriendAPIName, kwargs={'user_id': user_id})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Friend not found.', response.data['error'])
 
 
