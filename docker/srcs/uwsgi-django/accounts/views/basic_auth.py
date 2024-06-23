@@ -59,16 +59,16 @@ class SignupAPIView(APIView):
 
         if password1 != password2:
             data = {'error': "passwords don't match"}
-            return JsonResponse(data, status=400)
+            return JsonResponse(data, status=200)
 
         if self._is_42email(email):
-            data = {'error': "please signup for 42 account"}
-            return JsonResponse(data, status=400)
+            data = {'error': "Please signup for 42 account"}
+            return JsonResponse(data, status=200)
 
         ok, err = CustomUser.objects._is_valid_user_field(email, nickname, password1)
         if not ok:
             data = {'error': err}
-            return JsonResponse(data, status=400)
+            return JsonResponse(data, status=200)
 
         try:
             user = CustomUser.objects.create_user(email=email,
@@ -82,7 +82,7 @@ class SignupAPIView(APIView):
             return get_jwt_response(user, data)
         except Exception as e:
             data = {'error': str(e)}
-            return JsonResponse(data, status=500)
+            return JsonResponse(data, status=200)
 
     def _is_42email(self, email):
         return email.endswith('@tokyo.42.school')
