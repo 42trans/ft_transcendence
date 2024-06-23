@@ -27,7 +27,6 @@ function handleLogout() {
 
 			// alert(`Redirecting to ${data.redirect}. Check console logs before proceeding.`);  // debug
 			switchPage(data.redirect);
-			updateHeader();
 		} else {
 			throw new Error('No message in response');
 		}
@@ -49,16 +48,3 @@ export function setupLogoutEventListener() {
 		});
 	}
 }
-
-// header
-document.addEventListener('DOMContentLoaded', function() {
-	const button = document.querySelector('header .logoutButton');
-	if (button) {
-		button.addEventListener('click', function(event) {
-			if (event.target.classList.contains('logoutButton')) {
-				event.preventDefault();
-				handleLogout();
-			}
-		});
-	}
-});

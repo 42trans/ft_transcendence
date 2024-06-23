@@ -128,6 +128,8 @@ class BasicAuthTest(TestConfig):
             {"email": "メール@email.com",      "message": "有効なメールアドレスを入力してください。"},
             {"email": "メールアドレス",         "message": "有効なメールアドレスを入力してください。"},
 
+            {"email": "test@tokyo.42.school", "message": "Please signup for 42 account"},
+
             # too short
             {"email": "a@b",                  "message": f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters"},
             {"email": "a@bc",                 "message": f"The email must be at least {CustomUser.kEMAIL_MIN_LENGTH} characters"},
@@ -148,7 +150,7 @@ class BasicAuthTest(TestConfig):
         for invalid_data in invalid_emails_and_expected_messages:
             invalid_email = invalid_data["email"]
             expected_message = invalid_data["message"]
-            # print(f" email: [{invalid_email}]")
+            print(f" email: [{invalid_email}]")
 
             nickname = self._generate_random_string()
             password1 = "pass0123"

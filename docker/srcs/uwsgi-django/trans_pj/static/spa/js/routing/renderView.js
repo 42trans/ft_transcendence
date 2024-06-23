@@ -5,9 +5,6 @@ import { updateHeader } from "/static/spa/js/views/updateHeader.js"
 import { setNoCache, clearNoCache } from "/static/spa/js/utility/cache.js"
 
 
-
-import { isValidParam } from "../utility/isValidParam.js"
-
 const DEBUG_DETAIL = 0;
 const DEBUG_LOG = 0;
 
@@ -33,7 +30,9 @@ export const switchPage = (targetPath) => {
   const targetUrl = new URL(targetPath, window.location.origin);
   const targetPathName = targetUrl.pathname;
 
-  history.pushState(null, null, targetPathName );
+  if (targetPathName !== routeTable['oAuthLogin']) {
+    history.pushState(null, null, targetPathName );
+  }
   controlCache()
 
   if (DEBUG_LOG) { console.log(` history.push: ${targetPathName}`); }
@@ -97,4 +96,5 @@ export const renderView = async (path) => {
   window.dispatchEvent(new CustomEvent('switchPageResetState'));
   // 
   setOnlineStatus();
+  updateHeader();
 };

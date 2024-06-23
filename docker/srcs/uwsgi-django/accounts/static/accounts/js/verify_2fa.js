@@ -19,20 +19,19 @@ function verify2FA() {
 		.then(data => {
 			if (data.error) {
 				// Error
-				document.getElementById('error-message').textContent = data.error;
 				if (data.redirect) {
 					// alert('[tmp] varify2fa error: redirectTo:' + data.redirect)
 					switchPage(data.redirect);
 				} else {
 					// alert('[tmp] varify2fa error' + data.error)
-					throw new Error(data.error);
+					// throw new Error(data.error);
+					document.getElementById('error-message').textContent = data.error;
 				}
 			} else if (data.message) {
 				// Verified
 				// console.log(data.message);
 				// alert('[tmp] varify2fa success, redirect:' + data.redirect)
 				switchPage(data.redirect)  // Redirect on successful verification
-                updateHeader();
 			}
 		})
 		.catch(error => console.error("hth: Error:", error));

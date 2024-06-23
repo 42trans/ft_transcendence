@@ -124,3 +124,7 @@
 	/* color: white;               文字色 */
 	max-width: 70%;             /* DM表示領域の70%の幅 */
 }
+
+#dm-sessions li {
+	list-style: none;
+}

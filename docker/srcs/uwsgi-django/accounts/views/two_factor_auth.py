@@ -60,7 +60,7 @@ class Enable2FaAPIView(APIView):
         if request.user.enable_2fa:
             data = {
                 "message": "Already enabled 2FA",
-                "redirect": settings.URL_CONFIG['kSpaPongTopUrl'],
+                "redirect": settings.URL_CONFIG['kSpaUserProfileUrl'],
             }
         else:
             secret_key, secret_key_base32 = self._get_secret_key(request)
@@ -76,7 +76,7 @@ class Enable2FaAPIView(APIView):
         if request.user.enable_2fa:
             data = {
                 "message": "Already enabled 2FA",
-                "redirect": settings.URL_CONFIG['kSpaPongTopUrl'],
+                "redirect": settings.URL_CONFIG['kSpaUserProfileUrl'],
             }
             return JsonResponse(data, status=200)
 
@@ -95,7 +95,7 @@ class Enable2FaAPIView(APIView):
             return JsonResponse(data, status=200)
         else:
             data = {"error": "Invalid token provided"}
-            return JsonResponse(data, status=400)
+            return JsonResponse(data, status=200)
 
     def _get_secret_key(self, request):
         """
@@ -172,7 +172,7 @@ class Disable2FaView(APIView):
                 'message': 'No valid 2FA session',
                 'redirect': settings.URL_CONFIG['kSpaUserProfileUrl'],
             }
-            return Response(data, status=400)
+            return Response(data, status=200)
 
         self._delete_totp_devices(user)
         self._disable_user_2fa(user)
@@ -217,7 +217,7 @@ class Verify2FaAPIView(APIView):
                 'error': 'No valid session found',
                 'redirect': settings.URL_CONFIG['kSpaAuthLoginUrl'],
             }
-            return Response(data, status=401)
+            return Response(data, status=200)
 
         token = request.data.get('token')
 
@@ -231,7 +231,7 @@ class Verify2FaAPIView(APIView):
                 return get_jwt_response(user, data)
 
         data = {'error': 'Invalid token'}
-        return Response(data, status=400)
+        return Response(data, status=200)
 
     @classmethod
     def _get_user_and_devices(self, request):

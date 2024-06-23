@@ -92,6 +92,8 @@ class Match(models.Model):
 	player2_score = models.IntegerField(default=0)
 	is_finished = models.BooleanField(default=False)
 	can_start = models.BooleanField(default=False)
+	# 複数ブラウザで起動できないようにするフラグ
+	is_playing = models.BooleanField(default=False) 
 	def __str__(self):
 		return f"Round {self.round_number} Match {self.match_number}: {self.player1} vs {self.player2}"
 

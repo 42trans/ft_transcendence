@@ -13,12 +13,17 @@
 /* 適用したい文字列の要素に対し「直接一つずつ(ex.ulではなくli)」クラスを追加してください */
 #friends-container h3,
 #requests-container h3,
-#requests-container li,
+/* #requests-container li, */
 #friends-ul li,
 #nickname-input,
 #nickname-input-label,
 #nickname-submit,
+#tournament-invite,
 #dm-sessions li,
+#dm-log li.dm-to,
+#dm-log li.dm-from,
+.user-info-ul li,
+#game-history-button,
 .slideup-text {
 	animation: slideUp 0.5s ease-out forwards;
 }

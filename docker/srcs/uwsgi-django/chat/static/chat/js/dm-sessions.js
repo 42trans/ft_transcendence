@@ -55,7 +55,7 @@ export function startDMwithUser() {
         })
             .then(response => {
                 return response.json().then(data => {
-                    if (!response.ok) {
+                    if (!response.ok || data.error) {
                         throw new Error(data.error);
                     } else {
                         // 検証が成功した場合にdiWithUserに遷移
@@ -131,7 +131,7 @@ export function tournamentInvite() {
         })
             .then(response => {
                 return response.json().then(data => {
-                    if (!response.ok) {
+                    if (!response.ok || data.error) {
                         throw new Error(data.error);
                     } else {
                         const targetId = data.target_id;
@@ -148,7 +148,12 @@ export function tournamentInvite() {
                 });
             })
             .catch(error => {
-                console.error('tournamentInvite(): error', error);
+                if (error.message.includes('<!doctype')) {
+                    messageArea.textContent = "The specified user does not exist";
+                } else {
+                    messageArea.textContent = error.message;
+                }
+                // console.error('tournamentInvite(): error', error);
             });
     };
 }

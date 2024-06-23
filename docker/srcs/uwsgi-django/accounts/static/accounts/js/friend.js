@@ -14,7 +14,7 @@ export function sendFriendRequest(userId) {
         }
     }).then(response => {
         return response.json().then(data => {
-            if (!response.ok) {
+            if (!response.ok || data.error) {
                 throw new Error(data.error);
             }
             const event = new CustomEvent('sendFriendRequest success:', { detail: data });
@@ -23,9 +23,11 @@ export function sendFriendRequest(userId) {
             return data;
         });
     }).catch(error => {
-        console.error('hth: Error:', error);
+        // console.error('hth: Error:', error);
         const errorEvent = new CustomEvent('sendFriendRequest error:', { detail: error });
         document.dispatchEvent(errorEvent);
+        alert(error);
+        switchPage(window.location.pathname);
     });
 }
 
@@ -39,7 +41,7 @@ export function cancelFriendRequest(userId) {
     })
         .then(response => {
             return response.json().then(data => {
-                if (!response.ok) {
+                if (!response.ok || data.error) {
                     throw new Error(data.error);
                 }
                 return data;
@@ -50,8 +52,9 @@ export function cancelFriendRequest(userId) {
             switchPage(window.location.pathname);
         })
         .catch(error => {
-            console.error('hth: Error:', error);
+            // console.error('hth: Error:', error);
             alert(error.message);
+            switchPage(window.location.pathname);
         });
 }
 
@@ -65,7 +68,7 @@ export function acceptFriendRequest(userId) {
         }
     }).then(response => {
         return response.json().then(data => {
-            if (!response.ok) {
+            if (!response.ok || data.error) {
                 throw new Error(data.error);
             }
             return data;
@@ -76,8 +79,9 @@ export function acceptFriendRequest(userId) {
             switchPage(window.location.pathname);
         })
         .catch(error => {
-            console.error('hth: Error:', error);
+            // console.error('hth: Error:', error);
             alert(error.message);
+            switchPage(window.location.pathname);
         });
 }
 
@@ -92,7 +96,7 @@ export function rejectFriendRequest(userId) {
         })
             .then(response => {
                 return response.json().then(data => {
-                    if (!response.ok) {
+                    if (!response.ok || data.error) {
                         throw new Error(data.error);
                     }
                     return data;
@@ -103,8 +107,9 @@ export function rejectFriendRequest(userId) {
                 switchPage(window.location.pathname);
             })
             .catch(error => {
-                console.error('hth: Error:', error);
+                // console.error('hth: Error:', error);
                 alert(error.message);
+                switchPage(window.location.pathname);
             });
     } else {
         alert('Request rejection has been canceled');
@@ -122,7 +127,7 @@ export function deleteFriend(userId) {
         })
             .then(response => {
                 return response.json().then(data => {
-                    if (!response.ok) {
+                    if (!response.ok || data.error) {
                         throw new Error(data.error);
                     }
                     return data;
@@ -133,8 +138,9 @@ export function deleteFriend(userId) {
                 switchPage(window.location.pathname);
             })
             .catch(error => {
-                console.error('hth: Error:', error);
+                // console.error('hth: Error:', error);
                 alert(error.message);
+                switchPage(window.location.pathname);
             });
 
     } else {
@@ -269,7 +275,7 @@ export function createActionButton(text, action) {
     const actionLink = document.createElement('a');
     actionLink.textContent = text;
     actionLink.href = "#";
-    actionLink.className = text.toLowerCase() + 'Button';
+    actionLink.className = text.toLowerCase() + 'Button' + ' hth-btn my-4 mx-4';
     actionLink.onclick = function(event) {
         event.preventDefault();
         action();

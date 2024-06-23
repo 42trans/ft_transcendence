@@ -247,20 +247,22 @@ class TestConfig(LiveServerTestCase):
 
     def _access_to(self, url, wait_to_be_url=True):
         self.driver.get(url)
-        time.sleep(0.1)  # 明示的に待機
+        # time.sleep(0.1)  # 明示的に待機
+        time.sleep(1)  # 明示的に待機
         if wait_to_be_url:
             self._wait_to_be_url(url)
 
     def _click_link(self, target, wait_for_link_invisible=False):
         url = target.get_attribute("href")
-        self.driver.execute_script("arguments[0].click();", target)
-        time.sleep(1)  # 明示的に待機
-
-        if wait_for_link_invisible:
-            self._wait_invisible(target)
-        else:
-            self._wait_to_be_url(url)
-        self.driver.refresh()
+        self._access_to(url)
+        # self.driver.execute_script("arguments[0].click();", target)
+        # time.sleep(1)  # 明示的に待機
+        #
+        # if wait_for_link_invisible:
+        #     self._wait_invisible(target)
+        # else:
+        #     self._wait_to_be_url(url)
+        # self.driver.refresh()
 
     def _click_button(self, target, wait_for_button_invisible=True):
         self.driver.execute_script("arguments[0].click();", target)
@@ -402,7 +404,8 @@ class TestConfig(LiveServerTestCase):
         self._send_to_elem(By.ID, "token", otp_token)
 
         # 有効化
-        self._click_button(enable2ba_button)
+        self._click_button(enable2ba_button, wait_for_button_invisible=False)
+        self._close_alert("2FA has been enabled successfully")
         return set_up_key
 
     def _verify_login_2fa(self, set_up_key: str):

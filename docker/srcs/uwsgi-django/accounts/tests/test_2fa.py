@@ -93,7 +93,7 @@ class Enable2FaAPITests(TestCase):
 
     def test_post_invalid_token1(self):
         response = self.client.post(self.enable_2fa_api_url, {'token': '012345'})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Invalid token provided", response.json()['error'])
 
         self.user.refresh_from_db()
@@ -101,7 +101,7 @@ class Enable2FaAPITests(TestCase):
 
     def test_post_invalid_token2(self):
         response = self.client.post(self.enable_2fa_api_url, {'token': ''})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Invalid token provided", response.json()['error'])
 
         self.user.refresh_from_db()
@@ -109,7 +109,7 @@ class Enable2FaAPITests(TestCase):
 
     def test_post_invalid_token3(self):
         response = self.client.post(self.enable_2fa_api_url, {'token': 'abc'})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Invalid token provided", response.json()['error'])
 
         self.user.refresh_from_db()
@@ -117,7 +117,7 @@ class Enable2FaAPITests(TestCase):
 
     def test_post_empty_token(self):
         response = self.client.post(self.enable_2fa_api_url, {'token': ''})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Invalid token provided', response.json()['error'])
 
         self.user.refresh_from_db()
@@ -125,7 +125,7 @@ class Enable2FaAPITests(TestCase):
 
     def test_post_empty_request(self):
         response = self.client.post(self.enable_2fa_api_url, {})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Invalid token provided', response.json()['error'])
 
         self.user.refresh_from_db()
@@ -220,26 +220,26 @@ class Verify2FaAPITests(TestCase):
         self._login()
 
         response = self.client.post(self.verify_2fa_api_url, {'token': '012345'})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Invalid token', response.json()['error'])
 
     def test_faulure_empty_token(self):
         self._login()
 
         response = self.client.post(self.verify_2fa_api_url, {'token': ''})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Invalid token', response.json()['error'])
 
     def test_faulure_empty_request(self):
         self._login()
 
         response = self.client.post(self.verify_2fa_api_url, {})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Invalid token', response.json()['error'])
 
     def test_un_login_user(self):
         response = self.client.post(self.verify_2fa_api_url, {'token': '012345'})
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('No valid session found', response.json()['error'])
         self.assertIn(settings.URL_CONFIG['kSpaAuthLoginUrl'], response.json()['redirect'])
 

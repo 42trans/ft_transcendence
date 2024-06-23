@@ -3,7 +3,7 @@ from ..utils.async_logger import async_log
 from .pong_online_consumer_util import PongOnlineConsumerUtil
 
 # asyn_log: docker/srcs/uwsgi-django/pong/utils/async_log.log
-DEBUG_FLOW = 1
+DEBUG_FLOW = 0
 DEBUG_DETAIL = 0
 
 class PongOnlineMatch:
