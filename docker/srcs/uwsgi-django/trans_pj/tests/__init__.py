@@ -404,7 +404,8 @@ class TestConfig(LiveServerTestCase):
         self._send_to_elem(By.ID, "token", otp_token)
 
         # 有効化
-        self._click_button(enable2ba_button)
+        self._click_button(enable2ba_button, wait_for_button_invisible=False)
+        self._close_alert("2FA has been enabled successfully")
         return set_up_key
 
     def _verify_login_2fa(self, set_up_key: str):
