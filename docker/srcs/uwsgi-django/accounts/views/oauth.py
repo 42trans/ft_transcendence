@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class OAuthWith42(View):
-    error_page_path = "pong/error.html"
+    error_page_path = ""
     callback_name = "api_accounts:oauth_ft_callback"
     api_path = "https://api.intra.42.fr"
 
@@ -61,42 +61,41 @@ class OAuthWith42(View):
     def oauth_ft_callback(self, request: HttpRequest, *args, **kwargs) -> JsonResponse:
         if not self._is_valid_state(request):
             logger.error(f'error: {err}', exc_info=True)
-            return render(request, self.error_page_path, {'message': 'Invalid state parameter'})
+            return redirect(to=settings.URL_CONFIG['kSpaAuthSignupUrl'])
 
         err, email, nickname = self._get_email_and_nickname(request)
         if err is not None:
             logger.error(f'error: {err}', exc_info=True)
-            return render(request,
-                          self.error_page_path,
-                          {'message': 'An error occurred during the authentication process'})
-            # return JsonResponse({'error': 'An error occurred during the authentication process'}, status=500)
+            return redirect(to=settings.URL_CONFIG['kSpaAuthSignupUrl'])
 
-        User = get_user_model()
-        user, new_user_created = User.objects.get_or_create(email=email,
-                                                            defaults={'nickname': nickname})
-        if new_user_created:
-            user.set_unusable_password()
-            user.save()
+        try:
+            User = get_user_model()
+            user, new_user_created = User.objects.get_or_create(email=email,
+                                                                defaults={'nickname': nickname})
+            if new_user_created:
+                user.set_unusable_password()
+                user.save()
 
-        if user.enable_2fa:
-            request.session['tmp_auth_user_id'] = user.id
-            return redirect(to=settings.URL_CONFIG['kSpaAuthVerify2FaUrl'])
-            # return JsonResponse({'redirect': '/verify-2fa/'})
+            if user.enable_2fa:
+                request.session['tmp_auth_user_id'] = user.id
+                return redirect(to=settings.URL_CONFIG['kSpaAuthVerify2FaUrl'])
 
-        # response_data = {
-        #     'message': 'OAuth successful',
-        #     'redirect': '/user-profile/',
-        #     'user_id': user.id,
-        # }
+            # response_data = {
+            #     'message': 'OAuth successful',
+            #     'redirect': '/user-profile/',
+            #     'user_id': user.id,
+            # }
 
-        # リダイレクトURLにクエリパラメータを追加
-        # redirect_url = f"/user-profile/?message=OAuth%20successful&user_id={user.id}&redirect=/user-profile/"
-        # response = redirect(to=redirect_url)
-        response = redirect(to=settings.URL_CONFIG['kSpaPongTopUrl'])
-        # response = JsonResponse(response_data)
-        set_jwt_to_cookie(user, response)
-        return response
-
+            # リダイレクトURLにクエリパラメータを追加
+            # redirect_url = f"/user-profile/?message=OAuth%20successful&user_id={user.id}&redirect=/user-profile/"
+            # response = redirect(to=redirect_url)
+            response = redirect(to=settings.URL_CONFIG['kSpaPongTopUrl'])
+            # response = JsonResponse(response_data)
+            set_jwt_to_cookie(user, response)
+            return response
+        except Exception as e:
+            logger.error(f'error: {str(e)}', exc_info=True)
+            return redirect(to=settings.URL_CONFIG['kSpaAuthSignupUrl'])
 
     def _is_valid_state(self, request: HttpRequest) -> bool:
         saved_state = request.session.get('oauth_state')
