@@ -1,7 +1,7 @@
 import { setupLogoutEventListener } from "/static/accounts/js/logout.js"
 import { isUserLoggedIn } from "../utility/isUser.js"
 
-const DEBUG = 1;
+const DEBUG = 0;
 
 // headerを取得し差し替え
 export function updateHeader() {

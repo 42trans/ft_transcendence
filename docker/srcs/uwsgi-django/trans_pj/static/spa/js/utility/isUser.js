@@ -1,6 +1,6 @@
 // spa/js/utility/isUser.js
 
-const DEBUG_LOG = 1;
+const DEBUG_LOG = 0;
 
 export async function isUserLoggedIn() {
     try {
