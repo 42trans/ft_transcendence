@@ -18,7 +18,12 @@
 #nickname-input,
 #nickname-input-label,
 #nickname-submit,
+#tournament-invite,
 #dm-sessions li,
+#dm-log li.dm-to,
+#dm-log li.dm-from,
+.user-info-ul li,
+#game-history-button,
 .slideup-text {
 	animation: slideUp 0.5s ease-out forwards;
 }

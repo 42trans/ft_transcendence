@@ -14,10 +14,12 @@ function drawUserProfile(data) {
 
 	const emailItem = document.createElement('li');
 	emailItem.textContent = `Email: ${data.email}`;
+	emailItem.classList.add("slideup-text");
 	userInfo.appendChild(emailItem);
 
 	const nicknameItem = document.createElement('li');
 	nicknameItem.textContent = `Nickname: ${data.nickname}`;
+	nicknameItem.classList.add("slideup-text");
 	userInfo.appendChild(nicknameItem);
 
 	if (data.has_usable_password) {
@@ -32,6 +34,7 @@ function drawUserProfile(data) {
 	editProfileLink.setAttribute('data-link', '');
 	editProfileLink.textContent = 'Edit Profile';
 	editProfileItem.appendChild(editProfileLink);
+	editProfileItem.classList.add("slideup-text");
 	userInfo.appendChild(editProfileItem);
 
 	userInfo.appendChild(document.createElement('hr'));
@@ -43,6 +46,7 @@ function drawUserProfile(data) {
 	changeAvatarLink.setAttribute('data-link', '');
 	changeAvatarLink.textContent = 'Edit Avatar';
 	avatarItem.appendChild(changeAvatarLink);
+	avatarItem.classList.add("slideup-text");
 	userInfo.appendChild(avatarItem);
 
 	userInfo.appendChild(document.createElement('hr'));
@@ -52,6 +56,7 @@ function drawUserProfile(data) {
 	if (data.enable_2fa) {
 		twoFAItem.textContent = '2FA: ✅Enabled ';
 		const disable2FAButton = createActionButton('Disable2FA', disable2FA);
+		twoFAItem.classList.add("slideup-text");
 		twoFAItem.appendChild(disable2FAButton);
 	} else {
 		twoFAItem.textContent = '2FA: Disabled ';
@@ -59,6 +64,7 @@ function drawUserProfile(data) {
 		enable2FALink.href = routeTable['enable2fa'].path;
 		enable2FALink.setAttribute('data-link', '');
 		enable2FALink.textContent = 'Enable2FA';
+		twoFAItem.classList.add("slideup-text");
 		twoFAItem.appendChild(enable2FALink);
 	}
 	userInfo.appendChild(twoFAItem);
