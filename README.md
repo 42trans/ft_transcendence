@@ -1,4 +1,6 @@
 
+![gif](other/images/demo.gif)
+
 # 使い方
 
 - mdファイルは`⌘ + Shift + v`でプレビュー表示
